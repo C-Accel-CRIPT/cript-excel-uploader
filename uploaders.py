@@ -6,17 +6,29 @@ import cript as C
 
 
 def connect(db_username, db_password, db_project, db_database, user):
+    """
+    connect with Mongodb database
+    (WARNING: will migrate to Postgre soon)
+    :return: database connection object
+    """
     return C.CriptDB(db_username, db_password, db_project, db_database, user)
 
 
 def upload_group(db, group_name):
+    """
+    search for existing group_uid
+    (WARNING: db.view() has a default return limit of 50)
+    :param db: C.CriptDB object, database connection
+    :param group_name: string, group name
+    :return: string, unique id of group
+    """
     # Check if Group exists
     my_groups = db.view(C.Group)
     for group in my_groups:
         if group['name'] == group_name:
             group_uid = str(group['_id'])
             return group_uid
-    
+
     # # Create group if it doesn't exist
     # group = C.Group(group_name)
 
@@ -34,13 +46,21 @@ def upload_group(db, group_name):
 
 
 def upload_collection(db, group_uid, coll_name):
+    """
+    search for existing collection_uid, create collection if not exists
+    (WARNING: db.view() has a default return limit of 50)
+    :param db: C.CriptDB object, database connection
+    :param group_uid: string, unique id for group
+    :param coll_name: string, collection name
+    :return: string, unique id of collection
+    """
     # Check if Collection exists
     my_colls = db.view(C.Collection)
     for coll in my_colls:
         if coll['name'] == coll_name:
             coll_uid = str(coll['_id'])
             return coll_uid
-    
+
     # Create Collection if it doesn't exist
     coll = C.Collection(coll_name)
     group = db.view(C.Group, {'scope': 'all', 'key': {'_id': ObjectId(group_uid)}})[0]
@@ -50,13 +70,27 @@ def upload_collection(db, group_uid, coll_name):
 
 
 def upload_experiment(db, coll_uid, parsed_expts):
+    """
+    upload the experiment data and return unique id of experiment
+    (WARNING: db.view() is taking all of the data in the collection out.
+    It also has a default return limit of 50)
+    (WARNING: currently only add supported, so there'll be duplicated data)
+    (TBC: make an update on last_modified_date once update is supported)
+    :param db: C.CriptDB object, database connection
+    :param coll_uid: unique id of collection
+    :param parsed_expts: dict, parsed data of experiments (experiment_sheet.parsed)
+    :return: dict, (experiment name) : (unique id of experiment) pair
+    """
     expt_uids = {}
     for key in parsed_expts:
         # Create Experiment
         expt = C.Experiment(**parsed_expts[key])
         coll = db.view(C.Collection, {'scope': 'all', 'key': {'_id': ObjectId(coll_uid)}})[0]
+
+        # Collection is the parent key of experiment, we need to update collection
+        # when a new experiment is added.
         db.save(expt, coll)
-        
+
         expt_uids[key] = expt.uid
 
     return expt_uids
@@ -65,18 +99,25 @@ def upload_experiment(db, coll_uid, parsed_expts):
 def _create_cond_list(db, parsed_conds, data_uids=None):
     """
     Create a list of Cond objects.
+    Used in Material,Process and Data
+    :param db: C.CriptDB object, database connection
+    :param parsed_conds: dict, (cond) : (value dict) pair
+    (eg.'temp': {'data': {}, 'value': 2, 'unit': 'degC'})
+    :param data_uids:
+    :return: list, list of dicts of condition pair
+    (eg.[{ "uncer": null, "key": "temp", "c_data": [], "value": "2 degree_Celsius"}]
     """
     conds = []
     for cond_key in parsed_conds:
         # Create Cond object
         if 'unit' in parsed_conds[cond_key]:
             cond = C.Cond(
-                key=cond_key, 
+                key=cond_key,
                 value=parsed_conds[cond_key]['value'] * C.Unit(parsed_conds[cond_key]['unit'])
             )
         else:
             cond = C.Cond(
-                key=cond_key, 
+                key=cond_key,
                 value=parsed_conds[cond_key]['value']
             )
 
@@ -96,6 +137,10 @@ def _create_cond_list(db, parsed_conds, data_uids=None):
 def _create_prop_list(db, parsed_props, data_uids=None):
     """
     Create a list of Prop objects.
+    :param db: C.CriptDB object, database connection
+    :param parsed_props:
+    :param data_uids:
+    :return:
     """
     props = []
     for prop_key in parsed_props:
@@ -104,16 +149,16 @@ def _create_prop_list(db, parsed_props, data_uids=None):
         # Create Prop object
         if 'unit' in parsed_props[prop_key]:
             prop = C.Prop(
-                key=prop_key, 
+                key=prop_key,
                 value=parsed_props[prop_key]['value'] * C.Unit(parsed_props[prop_key]['unit']),
                 **attrs
             )
         else:
             prop = C.Prop(
-                key=prop_key, 
+                key=prop_key,
                 value=parsed_props[prop_key]['value'],
                 **attrs
-                )
+            )
 
         # Add Data object
         parsed_datum = parsed_props[prop_key]['data']
@@ -134,6 +179,14 @@ def _create_prop_list(db, parsed_props, data_uids=None):
 
 
 def upload_data(db, expt_uids, parsed_data):
+    """
+    upload data to the database and return a dict of name:data_uid pair
+    :param db: C.CriptDB object, database connection
+    :param expt_uids: dict, (name) : (unique id of experiment) pair
+    :param parsed_data: dict, parsed data of data_sheet.parsed (data_sheet.parsed)
+    (name) : (base,file,cond,expt) pair
+    :return: dict, (name) : (unique id of data) pair
+    """
     data_uids = {}
     for key in parsed_data:
         parsed_datum = parsed_data[key]
@@ -158,6 +211,15 @@ def upload_data(db, expt_uids, parsed_data):
 
 
 def upload_material(db, parsed_materials, data_uids, type, process_uids=None):
+    """
+    upload material to the database and return a dict of name:material_uid pair
+    :param db: C.CriptDB object, database connection
+    :param parsed_materials: dict, reagent_sheet.parsed or product_sheet.parsed
+    :param data_uids: dict, (name) : (unique id of data) pair
+    :param type: ?
+    :param process_uids: dict, (name) : (unique id of process) pair
+    :return: dict, (name) : (unique id of material) pair
+    """
     material_uids = {}
     for parsed_material in parsed_materials.values():
         # Check if Material exists by CAS/Name combo
@@ -165,10 +227,10 @@ def upload_material(db, parsed_materials, data_uids, type, process_uids=None):
             cas = parsed_material['iden']['cas']
             name = parsed_material['iden']['name']
             check = db.view(C.Material, {
-                                    'scope': 'all', 
-                                    'key': {'iden.0.cas': cas, 
-                                    'iden.0.name': name}
-                                })
+                'scope': 'all',
+                'key': {'iden.0.cas': cas,
+                        'iden.0.name': name}
+            })
             if len(check) > 0:
                 # Add Material object to materials dict
                 material_uids[name] = str(check[0]['_id'])
@@ -207,6 +269,16 @@ def upload_material(db, parsed_materials, data_uids, type, process_uids=None):
 
 
 def upload_process(db, expt_uids, parsed_ingrs, parsed_processes, reagent_uids, data_uids):
+    """
+    upload process to the database and return a dict of name:process_uid pair
+    :param db: C.CriptDB object, database connection
+    :param expt_uids: dict, (name) : (unique id of experiment) pair
+    :param parsed_ingrs: dict, ingr_sheet.parsed
+    :param parsed_processes: dict, process_sheet.parsed
+    :param reagent_uids: dict, (name) : (unique id of material) pair
+    :param data_uids:  dict, (name) : (unique id of data) pair
+    :return: dict, (name) : (unique id of process) pair
+    """
     process_uids = {}
     for process_key in parsed_processes:
         parsed_process = parsed_processes[process_key]
@@ -218,7 +290,7 @@ def upload_process(db, expt_uids, parsed_ingrs, parsed_processes, reagent_uids, 
             # Define reagent
             reagent_uid = reagent_uids[ingr_key]
             reagent = db.view(C.Material, {
-                'scope': 'all', 
+                'scope': 'all',
                 'key': {
                     '_id': ObjectId(reagent_uid),
                 }
