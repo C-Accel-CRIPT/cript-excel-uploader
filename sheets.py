@@ -4,6 +4,7 @@ from params import params
 from errors import DataAssignmentError, UnsupportedFieldName, UnsupportedValue, ValueDoesNotExist, MissingRequiredFieldError
 
 
+
 class Sheet:
     """
     The base Sheet class.

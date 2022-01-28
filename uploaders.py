@@ -187,6 +187,7 @@ def upload_data(db, expt_uids, parsed_data):
     (name) : (base,file,cond,expt) pair
     :return: dict, (name) : (unique id of data) pair
     """
+    # updateByPrimaryKey(name)
     data_uids = {}
     for key in parsed_data:
         parsed_datum = parsed_data[key]
