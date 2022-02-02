@@ -42,12 +42,12 @@ time.sleep(1)
 
 
 # Instantiate Sheet objects
-experiment_sheet = sheets.ExperimentSheet(path, 'experiment')
-data_sheet = sheets.DataSheet(path, 'data')
-reagent_sheet = sheets.MaterialSheet(path, 'reagent_material')
-process_sheet = sheets.ProcessSheet(path, 'process')
-ingr_sheet = sheets.IngrSheet(path, 'process_ingredients')
-product_sheet = sheets.MaterialSheet(path, 'product_material')
+experiment_sheet = sheets.ExperimentSheet(path, "experiment")
+data_sheet = sheets.DataSheet(path, "data")
+reagent_sheet = sheets.MaterialSheet(path, "reagent_material")
+process_sheet = sheets.ProcessSheet(path, "process")
+ingr_sheet = sheets.IngrSheet(path, "process_ingredients")
+product_sheet = sheets.MaterialSheet(path, "product_material")
 
 
 # Parse Excel sheets
@@ -64,9 +64,13 @@ group_uid = uploaders.upload_group(db, group)
 coll_uid = uploaders.upload_collection(db, group_uid, collection)
 expt_uids = uploaders.upload_experiment(db, coll_uid, experiment_sheet.parsed)
 data_uids = uploaders.upload_data(db, expt_uids, data_sheet.parsed)
-reagent_uids = uploaders.upload_material(db, reagent_sheet.parsed, data_uids, 'reagent')
-process_uids = uploaders.upload_process(db, expt_uids, ingr_sheet.parsed, process_sheet.parsed, reagent_uids, data_uids)
-product_uids = uploaders.upload_material(db, product_sheet.parsed, data_uids, 'product', process_uids)
+reagent_uids = uploaders.upload_material(db, reagent_sheet.parsed, data_uids, "reagent")
+process_uids = uploaders.upload_process(
+    db, expt_uids, ingr_sheet.parsed, process_sheet.parsed, reagent_uids, data_uids
+)
+product_uids = uploaders.upload_material(
+    db, product_sheet.parsed, data_uids, "product", process_uids
+)
 
 
 # End

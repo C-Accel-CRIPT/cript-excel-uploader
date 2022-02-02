@@ -39,4 +39,7 @@ class MissingRequiredFieldError(Exception):
         self.message = message
 
     def __str__(self):
-        return f"'{self.field}' is a required column in the '{self.sheet}' Excel sheet." + self.message
+        return (
+            f"'{self.field}' is a required column in the '{self.sheet}' Excel sheet."
+            + self.message
+        )
