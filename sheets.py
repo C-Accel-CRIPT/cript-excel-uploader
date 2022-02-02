@@ -1,8 +1,13 @@
 import pandas as pd
 
 from params import params
-from errors import DataAssignmentError, UnsupportedFieldName, UnsupportedValue, ValueDoesNotExist, \
-    MissingRequiredFieldError
+from errors import (
+    DataAssignmentError,
+    UnsupportedFieldName,
+    UnsupportedValue,
+    ValueDoesNotExist,
+    MissingRequiredFieldError,
+)
 
 
 class Sheet:
@@ -15,7 +20,7 @@ class Sheet:
         self.sheet_name = sheet_name
 
         self.df = pd.read_excel(path, sheet_name=sheet_name)
-        self.df.dropna(how='all', inplace=True)
+        self.df.dropna(how="all", inplace=True)
 
         self.cols = self.df.columns
 
@@ -35,7 +40,7 @@ class Sheet:
             return True
 
         # Check if col starts with '#'
-        if col[0] == '#':
+        if col[0] == "#":
             return True
 
         return False
@@ -51,7 +56,7 @@ class Sheet:
         """
         for key in params:
             for param in params[key]:
-                if field == param or field in params[key][param]['names']:
+                if field == param or field in params[key][param]["names"]:
                     return param
 
         raise UnsupportedFieldName(field)
@@ -72,7 +77,7 @@ class Sheet:
             if required_col in cols:
                 continue
 
-            required_col = required_col.replace('*', '')
+            required_col = required_col.replace("*", "")
             raise MissingRequiredFieldError(required_col, sheet_name)
 
     def _check_either_or_cols(self, either_or_cols, cols, sheet_name, message=""):
@@ -93,7 +98,7 @@ class Sheet:
                 break
 
         if exists == False:
-            raise MissingRequiredFieldError('quantity', sheet_name, message)
+            raise MissingRequiredFieldError("quantity", sheet_name, message)
 
     def _parse_data(self, col_list, parsed_object, value, parsed_data, prop_params):
         """
@@ -115,7 +120,7 @@ class Sheet:
         # Check if data name exists in the data sheet
         # Name of something in other sheet must have same name as it is in the data sheet
         if value not in parsed_data:
-            raise ValueDoesNotExist(value, 'data')
+            raise ValueDoesNotExist(value, "data")
 
         # Ensure the data is being applied to something
         # No cols like ":data"
@@ -125,14 +130,14 @@ class Sheet:
         # Check if data should be applied to a property or condition
         prev_field = col_list[-2]
         if prev_field in prop_params:
-            parent = parsed_object['prop'][prev_field]
-        elif prev_field in params['cond']:
-            parent = parsed_object['cond'][prev_field]
+            parent = parsed_object["prop"][prev_field]
+        elif prev_field in params["cond"]:
+            parent = parsed_object["cond"][prev_field]
         else:
             raise DataAssignmentError
 
         # add the name of something to the 'data' field in parsed object
-        parent['data'] = value
+        parent["data"] = value
 
     def _parse_prop(self, col_list, field, value, parsed_object, prop_params):
         """
@@ -150,23 +155,18 @@ class Sheet:
         :type prop_params: dict
         """
         # Create property dict
-        parsed_object['prop'].update({
-            field: {
-                'attr': {},
-                'data': {}
-            }
-        })
+        parsed_object["prop"].update({field: {"attr": {}, "data": {}}})
 
-        parsed_object['prop'][field].update({'value': value})
+        parsed_object["prop"][field].update({"value": value})
 
         # Add property units
-        unit = prop_params[field]['unit']
+        unit = prop_params[field]["unit"]
         if unit:
-            parsed_object['prop'][field].update({'unit': unit})
+            parsed_object["prop"][field].update({"unit": unit})
 
         # Add property attributes
-        if field in params['prop'] and len(col_list) > 1:
-            parsed_object['prop'][col_list[-2]]['attr'].update({field: value})
+        if field in params["prop"] and len(col_list) > 1:
+            parsed_object["prop"][col_list[-2]]["attr"].update({field: value})
 
     def _parse_cond(self, col_list, field, value, parsed_object):
         """
@@ -185,29 +185,21 @@ class Sheet:
         if len(col_list) == 1:
             parent = parsed_object
         else:
-            parent = parsed_object['prop'][col_list[-2]]
+            parent = parsed_object["prop"][col_list[-2]]
 
         # Create condition dict
-        if 'cond' in parent:
-            parent['cond'].update({
-                field: {
-                    'data': {}
-                }
-            })
+        if "cond" in parent:
+            parent["cond"].update({field: {"data": {}}})
         else:
-            parent['cond'] = ({
-                field: {
-                    'data': {}
-                }
-            })
+            parent["cond"] = {field: {"data": {}}}
 
             # Add condition value
-        parent['cond'][field].update({'value': value})
+        parent["cond"][field].update({"value": value})
 
         # Add condition units
-        unit = params['cond'][field]['unit']
+        unit = params["cond"][field]["unit"]
         if unit:
-            parent['cond'][field].update({'unit': unit})
+            parent["cond"][field].update({"unit": unit})
 
 
 class ExperimentSheet(Sheet):
@@ -222,7 +214,7 @@ class ExperimentSheet(Sheet):
 
     def parse(self):
         # Validate required columns
-        required_cols = ['*name']
+        required_cols = ["*name"]
         self._check_required_cols(required_cols, self.cols, self.sheet_name)
 
         for index, row in self.df.iterrows():
@@ -238,16 +230,16 @@ class ExperimentSheet(Sheet):
                     continue
 
                 # Clean col
-                col = col.replace('*', '')
+                col = col.replace("*", "")
 
                 # Standardize col field
                 col = self._standardize_field(col)
 
                 # Populate parsed_experiment dict
-                if col in params['experiment']:
+                if col in params["experiment"]:
                     parsed_experiment[col] = value
 
-            self.parsed[row['*name'].strip()] = parsed_experiment
+            self.parsed[row["*name"].strip()] = parsed_experiment
 
         return self.parsed
 
@@ -264,15 +256,11 @@ class DataSheet(Sheet):
 
     def parse(self, parsed_experiments):
         # Validate required columns
-        required_cols = ['*name', '*type', '*path']
+        required_cols = ["*name", "*type", "*path"]
         self._check_required_cols(required_cols, self.cols, self.sheet_name)
 
         for index, row in self.df.iterrows():
-            parsed_datum = {
-                'base': {},
-                'file': {},
-                'cond': {}
-            }
+            parsed_datum = {"base": {}, "file": {}, "cond": {}}
             for col in self.cols:
                 # Define and clean value
                 value = row[col]
@@ -284,34 +272,34 @@ class DataSheet(Sheet):
                     continue
 
                 # Clean col and create col_list
-                col = col.replace('*', '')
-                col_list = col.split(':')
+                col = col.replace("*", "")
+                col_list = col.split(":")
 
                 # Define field
                 field = col_list[-1]
 
                 # Handle 'experiment' field
-                if field == 'experiment':
+                if field == "experiment":
                     if value in parsed_experiments:
-                        parsed_datum['expt'] = value
+                        parsed_datum["expt"] = value
                     else:
-                        raise ValueDoesNotExist(value, 'experiment')
+                        raise ValueDoesNotExist(value, "experiment")
                     continue
 
                 # Standardize field
                 field = self._standardize_field(field)
 
                 # Populate parsed_datum dict
-                if field in params['data']:
-                    parsed_datum['base'][field] = value
+                if field in params["data"]:
+                    parsed_datum["base"][field] = value
 
-                elif field in params['file']:
-                    parsed_datum['file'][field] = value
+                elif field in params["file"]:
+                    parsed_datum["file"][field] = value
 
-                elif field in params['cond']:
+                elif field in params["cond"]:
                     self._parse_cond(col_list, field, value, parsed_datum)
 
-            self.parsed[row['*name'].strip()] = parsed_datum
+            self.parsed[row["*name"].strip()] = parsed_datum
 
         return self.parsed
 
@@ -328,16 +316,11 @@ class MaterialSheet(Sheet):
 
     def parse(self, parsed_data, parsed_processes=None):
         # Validate required columns
-        required_cols = ['*name']
+        required_cols = ["*name"]
         self._check_required_cols(required_cols, self.cols, self.sheet_name)
 
         for index, row in self.df.iterrows():
-            parsed_material = {
-                'base': {},
-                'iden': {},
-                'prop': {},
-                'cond': {}
-            }
+            parsed_material = {"base": {}, "iden": {}, "prop": {}, "cond": {}}
 
             for col in self.cols:
                 # Define and clean value
@@ -350,55 +333,63 @@ class MaterialSheet(Sheet):
                     continue
 
                 # Clean col and create col_list
-                col = col.replace('*', '')
-                col_list = col.split(':')
+                col = col.replace("*", "")
+                col_list = col.split(":")
 
                 # Define field
                 # Read the last field in the col everytime
                 field = col_list[-1]
 
                 # Handle list fields
-                if field == 'keywords' or field == 'hazard':
-                    parsed_material['base'][field] = row[field].split(',')
+                if field == "keywords" or field == "hazard":
+                    parsed_material["base"][field] = row[field].split(",")
                     continue
-                elif field == 'names':
-                    parsed_material['iden']['names'] = row['names'].split(',')
+                elif field == "names":
+                    parsed_material["iden"]["names"] = row["names"].split(",")
                     continue
 
                 # Handle process field
-                if field == 'process':
+                if field == "process":
                     # Check that process field exists in process sheet
                     if parsed_processes and value not in parsed_processes:
-                        raise ValueDoesNotExist(value, 'process')
+                        raise ValueDoesNotExist(value, "process")
 
-                    parsed_material['process'] = value
+                    parsed_material["process"] = value
                     continue
 
                 # Handle data
-                if field == 'data':
-                    self._parse_data(col_list, parsed_material, value, parsed_data, params['material_prop'])
+                if field == "data":
+                    self._parse_data(
+                        col_list,
+                        parsed_material,
+                        value,
+                        parsed_data,
+                        params["material_prop"],
+                    )
                     continue
 
                 # Standardize field
                 field = self._standardize_field(field)
 
                 # Handle base material fields
-                if field in params['material']:
-                    parsed_material['base'][field] = value
+                if field in params["material"]:
+                    parsed_material["base"][field] = value
 
                 # Handle material identity fields
-                elif field in params['material_iden']:
-                    parsed_material['iden'][field] = value
+                elif field in params["material_iden"]:
+                    parsed_material["iden"][field] = value
 
                 # Handle properties
-                elif field in params['material_prop']:
-                    self._parse_prop(col_list, field, value, parsed_material, params['material_prop'])
+                elif field in params["material_prop"]:
+                    self._parse_prop(
+                        col_list, field, value, parsed_material, params["material_prop"]
+                    )
 
                 # Handle conditions
-                elif field in params['cond']:
+                elif field in params["cond"]:
                     self._parse_cond(col_list, field, value, parsed_material)
 
-            self.parsed[row['*name'].strip()] = parsed_material
+            self.parsed[row["*name"].strip()] = parsed_material
 
         return self.parsed
 
@@ -415,15 +406,11 @@ class ProcessSheet(Sheet):
 
     def parse(self, parsed_experiments, parsed_data):
         # Validate required columns
-        required_cols = ['*experiment', '*name']
+        required_cols = ["*experiment", "*name"]
         self._check_required_cols(required_cols, self.cols, self.sheet_name)
 
         for index, row in self.df.iterrows():
-            parsed_process = {
-                'base': {},
-                'prop': {},
-                'cond': {}
-            }
+            parsed_process = {"base": {}, "prop": {}, "cond": {}}
             for col in self.cols:
                 # Define and clean value
                 value = row[col]
@@ -435,44 +422,52 @@ class ProcessSheet(Sheet):
                     continue
 
                 # Clean col and create col_list
-                col = col.replace('*', '')
-                col_list = col.split(':')
+                col = col.replace("*", "")
+                col_list = col.split(":")
 
                 # Define field
                 field = col_list[-1]
 
                 # Handle 'experiment' field
-                if field == 'experiment':
+                if field == "experiment":
                     if value in parsed_experiments:
-                        parsed_process['expt'] = value
+                        parsed_process["expt"] = value
                     continue
 
                 # Handle lists
-                if field == 'keywords':
-                    parsed_process['keywords'] = row['keywords'].split(',')
+                if field == "keywords":
+                    parsed_process["keywords"] = row["keywords"].split(",")
                     continue
 
                 # Handle data
-                if field == 'data':
-                    self._parse_data(col_list, parsed_process, value, parsed_data, params['process_prop'])
+                if field == "data":
+                    self._parse_data(
+                        col_list,
+                        parsed_process,
+                        value,
+                        parsed_data,
+                        params["process_prop"],
+                    )
                     continue
 
                 # Sandardize field
                 field = self._standardize_field(field)
 
                 # Handle base process fields
-                if field in params['process']:
-                    parsed_process['base'][field] = value
+                if field in params["process"]:
+                    parsed_process["base"][field] = value
 
                 # Handle properties
-                elif field in params['process_prop']:
-                    self._parse_prop(col_list, field, value, parsed_process, params['process_prop'])
+                elif field in params["process_prop"]:
+                    self._parse_prop(
+                        col_list, field, value, parsed_process, params["process_prop"]
+                    )
 
                 # Handle conditions
-                elif field in params['cond']:
+                elif field in params["cond"]:
                     self._parse_cond(col_list, field, value, parsed_process)
 
-            self.parsed[row['*name'].strip()] = parsed_process
+            self.parsed[row["*name"].strip()] = parsed_process
 
         return self.parsed
 
@@ -492,19 +487,19 @@ class IngrSheet(Sheet):
             process_cols = process_df.columns
 
             # Validate required columns
-            required_cols = ['*process', '*keyword', '*material']
+            required_cols = ["*process", "*keyword", "*material"]
             self._check_required_cols(required_cols, process_cols, self.sheet_name)
 
             # Validate either/or columns
-            either_or_cols = ['mole', 'mass', 'volume']
+            either_or_cols = ["mole", "mass", "volume"]
             message = " Options: mole, mass, and/or volume."
-            self._check_either_or_cols(either_or_cols, process_cols, self.sheet_name, message)
+            self._check_either_or_cols(
+                either_or_cols, process_cols, self.sheet_name, message
+            )
 
             parsed_ingrs = {}
             for index, row in process_df.iterrows():
-                parsed_ingr = {
-                    'quantity': {}
-                }
+                parsed_ingr = {"quantity": {}}
                 for col in process_cols:
                     # Define and clean value
                     value = row[col]
@@ -516,40 +511,42 @@ class IngrSheet(Sheet):
                         continue
 
                     # Clean col and create col_list
-                    col = col.replace('*', '')
-                    col_list = col.split(':')
+                    col = col.replace("*", "")
+                    col_list = col.split(":")
 
                     # Define field
                     field = col_list[-1]
 
                     # Handle process field
-                    if field == 'process':
+                    if field == "process":
                         if value not in parsed_processes:
-                            raise ValueDoesNotExist(value, 'process')
+                            raise ValueDoesNotExist(value, "process")
                         continue
 
                     # Handle material field
-                    if field == 'material':
+                    if field == "material":
                         if value not in parsed_reagents:
-                            raise ValueDoesNotExist(value, 'reagent')
+                            raise ValueDoesNotExist(value, "reagent")
                         continue
 
                     # Validate keyword field
-                    if field == 'keyword':
-                        if value not in params['ingrs_keywords']:
+                    if field == "keyword":
+                        if value not in params["ingrs_keywords"]:
                             raise UnsupportedValue(value, field)
 
                     # Handle process ingredient fields
-                    if field in params['process_ingr']:
-                        unit = params['process_ingr'][field]['unit']
+                    if field in params["process_ingr"]:
+                        unit = params["process_ingr"][field]["unit"]
                         if unit:
                             # Skip if a quantity field has already been parsed
-                            if len(parsed_ingr['quantity']) > 0:
+                            if len(parsed_ingr["quantity"]) > 0:
                                 continue
 
                             # Add quantity field with units
-                            parsed_ingr['quantity'][field] = {'value': value}
-                            parsed_ingr['quantity'][field].update({'unit': params['process_ingr'][field]['unit']})
+                            parsed_ingr["quantity"][field] = {"value": value}
+                            parsed_ingr["quantity"][field].update(
+                                {"unit": params["process_ingr"][field]["unit"]}
+                            )
 
                         else:
                             parsed_ingr[field] = value
@@ -557,11 +554,11 @@ class IngrSheet(Sheet):
                     else:
                         raise UnsupportedFieldName(field)
 
-                parsed_ingrs[row['*material'].strip()] = parsed_ingr
+                parsed_ingrs[row["*material"].strip()] = parsed_ingr
 
-            if row['*process'] in self.parsed:
-                self.parsed[row['*process']].update(parsed_ingrs)
+            if row["*process"] in self.parsed:
+                self.parsed[row["*process"]].update(parsed_ingrs)
             else:
-                self.parsed[row['*process']] = parsed_ingrs
+                self.parsed[row["*process"]] = parsed_ingrs
 
         return self.parsed
