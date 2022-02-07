@@ -6,10 +6,38 @@ import cript as C
 
 
 def connect(db_username, db_password, db_project, db_database, user):
+    """
+    connect with Mongodb database
+    (WARNING: will migrate to Postgre soon)
+
+    :param db_username: database username
+    :type db_username: str
+    :param db_password: database password
+    :type db_password: str
+    :param db_project: database project name
+    :type db_project: str
+    :param db_database: database name
+    :type db_database: str
+    :param user: user email address
+    :type user: str
+    :return: database connection object
+    :rtype: class:`cript.CriptDB`
+    """
     return C.CriptDB(db_username, db_password, db_project, db_database, user)
 
 
 def upload_group(db, group_name):
+    """
+    search for existing group_uid
+    (WARNING: db.view() has a default return limit of 50)
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param group_name: group name
+    :type group_name: str
+    :return: unique id of group
+    :rtype: str
+    """
     # Check if Group exists
     my_groups = db.view(C.Group)
     for group in my_groups:
@@ -34,6 +62,19 @@ def upload_group(db, group_name):
 
 
 def upload_collection(db, group_uid, coll_name):
+    """
+    search for existing collection_uid, create collection if not exists
+    (WARNING: db.view() has a default return limit of 50)
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param group_uid: unique id for group
+    :type group_uid: str
+    :param coll_name: collection name
+    :type coll_name: str
+    :return: unique id of collection
+    :rtype: str
+    """
     # Check if Collection exists
     my_colls = db.view(C.Collection)
     for coll in my_colls:
@@ -56,6 +97,22 @@ def upload_collection(db, group_uid, coll_name):
 
 
 def upload_experiment(db, coll_uid, parsed_expts):
+    """
+    upload the experiment data and return unique id of experiment
+    (WARNING: db.view() is taking all of the data in the collection out.
+    It also has a default return limit of 50)
+    (WARNING: currently only add supported, so there'll be duplicated data)
+    (TBC: make an update on last_modified_date once update is supported)
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param coll_uid: unique id of collection
+    :type coll_uid: str
+    :param parsed_expts: parsed data of experiments (experiment_sheet.parsed)
+    :type parsed_expts: dict
+    :return: a dict contains (experiment name) : (unique id of experiment) pair
+    :rtype: dict
+    """
     expt_uids = {}
     for key in parsed_expts:
         # Create Experiment
@@ -75,7 +132,20 @@ def upload_experiment(db, coll_uid, parsed_expts):
 
 
 def _create_cond_list(db, parsed_conds, data_uids=None):
-    """Create a list of Cond objects."""
+    """
+    Create a list of Cond objects.
+    Used in Material,Process and Data
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param parsed_conds: dict contains (cond) : (value dict) pair (eg.'temp': {'data': {}, 'value': 2, 'unit': 'degC'})
+    :type parsed_conds: dict
+    :param data_uids: dict contains (name) : (data_uid) pair
+    :type data_uids: dict
+    :return: list of dicts of condition pair
+            (eg.[{ "uncer": null, "key": "temp", "c_data": [], "value": "2 degree_Celsius"}]
+    :rtype: list
+    """
     conds = []
     for cond_key in parsed_conds:
         # Create Cond object
@@ -108,7 +178,18 @@ def _create_cond_list(db, parsed_conds, data_uids=None):
 
 
 def _create_prop_list(db, parsed_props, data_uids=None):
-    """Create a list of Prop objects."""
+    """
+    Create a list of Prop objects.
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param parsed_props: a dict contains parsed properties
+    :type parsed_props: dict
+    :param data_uids: dict contains (name) : (data_uid) pair
+    :type data_uids: dict
+    :return: a list of class: `cript.Prop` objects
+    :rtype: list
+    """
     props = []
     for prop_key in parsed_props:
         attrs = parsed_props[prop_key]["attr"]
@@ -149,6 +230,18 @@ def _create_prop_list(db, parsed_props, data_uids=None):
 
 
 def upload_data(db, expt_uids, parsed_data):
+    """
+    upload data to the database and return a dict of name:data_uid pair
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param expt_uids: (name) : (unique id of experiment) pair
+    :type expt_uids: dict
+    :param parsed_data: parsed data of data_sheet.parsed (data_sheet.parsed)
+    :type parsed_data: dict
+    :return: (name) : (unique id of data) pair
+    :rtype: dict
+    """
     data_uids = {}
     for key in parsed_data:
         parsed_datum = parsed_data[key]
@@ -178,6 +271,22 @@ def upload_data(db, expt_uids, parsed_data):
 
 
 def upload_material(db, parsed_materials, data_uids, type, process_uids=None):
+    """
+    upload material to the database and return a dict of name:material_uid pair
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param parsed_materials: reagent_sheet.parsed or product_sheet.parsed
+    :type parsed_materials: dict
+    :param data_uids: (name) : (unique id of data) pair
+    :type data_uids: dict
+    :param type: ?
+    :type type: ?
+    :param process_uids: (name) : (unique id of process) pair
+    :type process_uids: dict
+    :return: (name) : (unique id of material) pair
+    :rtype: dict
+    """
     material_uids = {}
     for parsed_material in parsed_materials.values():
         # Check if Material exists by CAS/Name combo
@@ -239,6 +348,24 @@ def upload_material(db, parsed_materials, data_uids, type, process_uids=None):
 def upload_process(
     db, expt_uids, parsed_ingrs, parsed_processes, reagent_uids, data_uids
 ):
+    """
+    upload process to the database and return a dict of name:process_uid pair
+
+    :param db: database connection object
+    :type db: class:`cript.CriptDB`
+    :param expt_uids: (name) : (unique id of experiment) pair
+    :type expt_uids: dict
+    :param parsed_ingrs: ingr_sheet.parsed
+    :type parsed_ingrs: dict
+    :param parsed_processes: process_sheet.parsed
+    :type parsed_processes: dict
+    :param reagent_uids: (name) : (unique id of material) pair
+    :type reagent_uids: dict
+    :param data_uids: (name) : (unique id of data) pair\
+    :type data_uids: dict
+    :return: (name) : (unique id of process) pair
+    :rtype: dict
+    """
     process_uids = {}
     for process_key in parsed_processes:
         parsed_process = parsed_processes[process_key]
