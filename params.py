@@ -18,8 +18,16 @@ params = {
             "names": [],
             "unit": None,
         },
-        "type_": {
-            "names": ["type"],
+        "data_type": {
+            "names": [],
+            "unit": None,
+        },
+        "calibration": {
+            "names": [],
+            "unit": None,
+        },
+        "configuration": {
+            "names": [],
             "unit": None,
         },
         "sample_prep": {
@@ -27,21 +35,21 @@ params = {
             "unit": None,
         },
         "notes": {
-            "names": [],
+            "names": ["note"],
             "unit": None,
         },
     },
     "file": {
         "file_name": {
-            "names": ["filename"],
+            "names": ["filename", "file name"],
             "unit": None,
         },
         "path": {
             "names": [],
             "unit": None,
         },
-        "descr": {
-            "names": ["description"],
+        "file_descr": {
+            "names": ["file_description"],
             "unit": None,
         },
         "ext": {
@@ -71,7 +79,7 @@ params = {
             "unit": None,
         },
     },
-    "material_iden": {
+    "identity": {
         "name": {
             "names": [],
             "unit": None,
@@ -345,10 +353,6 @@ params = {
             "names": [],
             "unit": None,
         },
-        "procedure": {
-            "names": [],
-            "unit": None,
-        },
         "keywords": {
             "names": [],
             "unit": None,
@@ -358,7 +362,11 @@ params = {
             "unit": None,
         },
     },
-    "process_ingr": {
+    "step_reagent_and_product": {
+        "ingredient": {
+            "names": [],
+            "unit": None,
+        },
         "keyword": {
             "names": [],
             "unit": None,
@@ -396,7 +404,21 @@ params = {
             "unit": None,
         },
     },
-    "process_prop": {
+    "step": {
+        "step_id": {
+            "names": [],
+            "unit": None,
+        },
+        "step_type": {
+            "names": [],
+            "unit": None,
+        },
+        "step_descr": {
+            "names": ["step_description"],
+            "unit": None,
+        },
+    },
+    "step_prop": {
         "conv": {
             "names": ["conversion"],
             "unit": None,
