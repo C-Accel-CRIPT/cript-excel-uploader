@@ -3,7 +3,6 @@ import copy
 from typing import Union
 
 from beartype import beartype
-from collections import defaultdict
 from weakref import WeakSet
 
 from .errors import AddNodeError, RemoveNodeError, UnsavedNodeError
@@ -25,10 +24,6 @@ class Base:
 
     def __str__(self):
         return self._to_json()
-
-    @classmethod
-    def _get_instances(cls):
-        return cls.__refs__[cls]
 
     def print_json(self):
         print(self._to_json())
@@ -91,6 +86,19 @@ class Base:
                 getattr(self, attr).remove(node)
         else:
             raise RemoveNodeError(node.node_name, self.node_name)
+
+
+class User(Base):
+    node_type = "primary"
+    node_name = "User"
+    slug = "user"
+    list_name = "users"
+
+    @beartype
+    def __init__(self, email: str, url: Union[str, None] = None):
+        super().__init__()
+        self.url = url
+        self.email = email
 
 
 class Group(Base):
