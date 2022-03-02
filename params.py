@@ -58,11 +58,15 @@ params = {
         },
     },
     "material": {
-        "keywords": {
+        "name": {
             "names": [],
             "unit": None,
         },
-        "source": {
+        "vendor": {
+            "names": [],
+            "unit": None,
+        },
+        "keywords": {
             "names": [],
             "unit": None,
         },

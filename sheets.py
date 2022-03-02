@@ -314,7 +314,6 @@ class DataSheet(Sheet):
         for index, row in self.df.iterrows():
             parsed_datum = {
                 "base": {},
-                "file": {},
             }
             for col in self.cols:
                 # Define and clean value
@@ -457,7 +456,7 @@ class MaterialSheet(Sheet):
                     field = col_list[-1]
 
                     # Handle list fields
-                    if field == "keywords" or field == "hazard":
+                    if field == "keywords":
                         parsed_material["base"][field] = row[field].split(",")
                         continue
                     elif field == "names":
@@ -483,11 +482,11 @@ class MaterialSheet(Sheet):
                         parsed_material["base"][field] = value
 
                     # Handle material identity fields
-                    elif field in params["identity"]:
+                    if field in params["identity"]:
                         parsed_material["iden"][field] = value
 
                     # Handle properties
-                    elif field in params["material_prop"]:
+                    if field in params["material_prop"]:
                         self._parse_prop(
                             col_list,
                             field,
@@ -498,7 +497,7 @@ class MaterialSheet(Sheet):
                         )
 
                     # Handle conditions
-                    elif field in params["cond"]:
+                    if field in params["cond"]:
                         self._parse_cond(
                             col_list,
                             field,
@@ -589,7 +588,6 @@ class StepSheet(Sheet):
                 "base": {},
                 "prop": {},
                 "cond": {},
-                "data": {},
             }
 
             for col in self.cols:
@@ -619,17 +617,6 @@ class StepSheet(Sheet):
                     if field == "process":
                         if value in parsed_process:
                             parsed_step["process"] = value
-                        continue
-
-                    # Handle data
-                    if field == "data":
-                        self._parse_data(
-                            col_list,
-                            parsed_step,
-                            value,
-                            parsed_data,
-                            params["step_prop"],
-                        )
                         continue
 
                     # Standardize field
@@ -662,7 +649,6 @@ class StepSheet(Sheet):
 
                     if row["*process"].strip() not in self.parsed:
                         self.parsed[row["*process"].strip()] = {}
-
                     self.parsed[row["*process"].strip()][row["*step_id"]] = parsed_step
 
         return self.parsed

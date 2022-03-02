@@ -6,6 +6,7 @@ from getpass import getpass
 import ascii_art
 import sheets
 import uploaders
+import config
 
 # Display title
 print(ascii_art.title.template)
@@ -24,7 +25,7 @@ print(ascii_art.title.template)
 # Get Excel file path
 # path = input("\nExcel file path: ")
 
-path = r"C:\Users\Orange Meow\Desktop\MIT CRIPT\excel_uploader\excel template\example_template_NEW_0226.xlsx"
+path = config.EXCEL_TEMPLATE_FILE_PATE
 """To do: file type validation"""
 while not os.path.exists(path):
     print("\nCouldn't find the file. Try again.\n")
@@ -33,8 +34,8 @@ while not os.path.exists(path):
 # Get Group and Collection names
 # group = input("\nCRIPT Group (must be an existing group): ")
 # collection = input("\nCRIPT Collection: ")
-group = "Olsen_Lab"
-collection = "test0226"
+group = "TestGroup3"
+collection = "excel_uploader_test0227_5"
 
 # Display chem art
 # print(ascii_art.chem.template)
@@ -54,37 +55,55 @@ file_sheet = sheets.FileSheet(path, "file")
 # Parse Excel sheets
 # print("parsing")
 experiment_sheet.parse()
-print(experiment_sheet.parsed)
+# print(experiment_sheet.parsed)
 data_sheet.parse(experiment_sheet.parsed)
-print(data_sheet.parsed)
+# print(data_sheet.parsed)
 file_sheet.parse(data_sheet.parsed)
-print(file_sheet.parsed)
+# print(file_sheet.parsed)
 material_sheet.parse(data_sheet.parsed)
-print(material_sheet.parsed)
+# print(material_sheet.parsed)
 process_sheet.parse(experiment_sheet.parsed)
-print(process_sheet.parsed)
+# print(process_sheet.parsed)
 step_sheet.parse(data_sheet.parsed, process_sheet.parsed)
-print(step_sheet.parsed)
+# print(step_sheet.parsed)
 stepIngredients_sheet.parse(
     material_sheet.parsed, process_sheet.parsed, step_sheet.parsed
 )
-print(stepIngredients_sheet.parsed)
+# print(stepIngredients_sheet.parsed)
 stepProducts_sheet.parse(material_sheet.parsed, process_sheet.parsed, step_sheet.parsed)
 
 
 # Upload parsed data
-# group_uid = uploaders.upload_group(db, group)
-# coll_uid = uploaders.upload_collection(db, group_uid, collection)
-# expt_uids = uploaders.upload_experiment(db, coll_uid, experiment_sheet.parsed)
-# data_uids = uploaders.upload_data(db, expt_uids, data_sheet.parsed)
-# reagent_uids = uploaders.upload_material(db, reagent_sheet.parsed, data_uids, "reagent")
-# process_uids = uploaders.upload_process(
-#     db, expt_uids, ingr_sheet.parsed, process_sheet.parsed, reagent_uids, data_uids
-# )
-# product_uids = uploaders.upload_material(
-#     db, product_sheet.parsed, data_uids, "product", process_uids
-# )
-
+db = uploaders.connect()
+print(f"***********************")
+group_obj = uploaders.upload_group(db, group)
+print(f"group_obj:{group_obj}\n***********************")
+coll_obj = uploaders.upload_collection(db, group_obj, collection)
+print(f"coll_obj:{coll_obj}\n***********************")
+expt_objs = uploaders.upload_experiment(
+    db, group_obj, coll_obj, experiment_sheet.parsed
+)
+print(f"expt_objs:{expt_objs}\n***********************")
+data_objs = uploaders.upload_data(db, group_obj, expt_objs, data_sheet.parsed)
+print(f"data_objs:{data_objs}\n***********************")
+# file_objs = uploaders.upload_file(db, group_obj, data_objs, file_sheet.parsed)
+# print(f"file_objs:{file_objs}\n***********************")
+material_objs = uploaders.upload_material(
+    db, group_obj, data_objs, material_sheet.parsed
+)
+print(f"material_objs:{material_objs}\n***********************")
+process_objs = uploaders.upload_process(db, group_obj, expt_objs, process_sheet.parsed)
+print(f"process_objs:{process_objs}\n***********************")
+print(step_sheet.parsed)
+step_objs = uploaders.upload_step(
+    db, group_obj, process_objs, data_objs, step_sheet.parsed
+)
+print(f"step_objs:{step_objs}\n***********************")
+print(stepIngredients_sheet.parsed)
+stepIngredient_objs = uploaders.upload_stepIngredient(
+    db, group_obj, process_objs, step_objs, data_objs, stepIngredients_sheet.parsed
+)
+print(f"stepIngredient_objs:{stepIngredient_objs}\n***********************")
 
 # db = uploaders.connect()
 # group_url = uploaders.upload_group(db, group)
