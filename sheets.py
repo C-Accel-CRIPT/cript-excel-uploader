@@ -599,6 +599,8 @@ class StepSheet(Sheet):
                 else:
                     # Define and clean value
                     value = row[col]
+                    if col == "*step_id":
+                        value = str(value)
                     if isinstance(value, str):
                         value = value.strip()
 
@@ -649,7 +651,9 @@ class StepSheet(Sheet):
 
                     if row["*process"].strip() not in self.parsed:
                         self.parsed[row["*process"].strip()] = {}
-                    self.parsed[row["*process"].strip()][row["*step_id"]] = parsed_step
+                    self.parsed[row["*process"].strip()][
+                        str(row["*step_id"])
+                    ] = parsed_step
 
         return self.parsed
 
@@ -691,6 +695,8 @@ class StepIngredientSheet(Sheet):
                 else:
                     # Define and clean value
                     value = row[col]
+                    if col == "*step_id":
+                        value = str(value)
                     if isinstance(value, str):
                         value = value.strip()
 
@@ -719,20 +725,32 @@ class StepIngredientSheet(Sheet):
 
                     # Handle ingredient field
                     if field == "ingredient":
-                        if value not in parsed_materials:
-                            raise ValueDoesNotExist(value, "ingredient")
-                        continue
+                        ingredient_name_list = value.split(":")
+                        if len(ingredient_name_list) == 1 and value in parsed_materials:
+                            parsed_ingredient[field] = value
+                            continue
+                        elif len(ingredient_name_list) == 2:
+                            from_process = ingredient_name_list[0]
+                            from_step_id = ingredient_name_list[1]
+                            if (
+                                from_process in parsed_steps
+                                and from_step_id in parsed_steps[from_process]
+                            ):
+                                parsed_ingredient[field] = value
+                                continue
+                        raise ValueDoesNotExist(value, "ingredient")
 
                     # Handle process ingredient fields
                     if field in params["step_reagent_and_product"]:
                         supported_unit = params["step_reagent_and_product"][field][
                             "unit"
                         ]
-                        input_unit = None
-                        if col in unit:
-                            input_unit = unit[col]
+                        input_unit = unit.get(col)
                         self._check_unit(
-                            supported_unit, input_unit, field, self.sheet_name
+                            supported_unit,
+                            input_unit,
+                            field,
+                            self.sheet_name,
                         )
                         if input_unit:
                             # Skip if a quantity field has already been parsed
@@ -740,19 +758,23 @@ class StepIngredientSheet(Sheet):
                                 continue
 
                             # Add quantity field with units
-                            parsed_ingredient["quantity"][field] = {"value": value}
-                            parsed_ingredient["quantity"][field].update(
-                                {"unit": input_unit}
-                            )
+                            parsed_ingredient["quantity"][field] = {
+                                "value": value,
+                                "unit": input_unit,
+                            }
                         else:
                             parsed_ingredient[field] = value
                     else:
                         raise UnsupportedFieldName(field)
 
-                    if row["*step_id"] in self.parsed:
-                        self.parsed[row["*step_id"]].append(parsed_ingredient)
-                    else:
-                        self.parsed[row["*step_id"]] = [parsed_ingredient]
+            if index != 0:
+                if row["*process"] not in self.parsed:
+                    self.parsed[row["*process"]] = {}
+                if str(row["*step_id"]) not in self.parsed[row["*process"]]:
+                    self.parsed[row["*process"]][str(row["*step_id"])] = []
+                self.parsed[row["*process"]][str(row["*step_id"])].append(
+                    parsed_ingredient
+                )
 
         return self.parsed
 
@@ -777,9 +799,7 @@ class StepProductSheet(Sheet):
         self._check_required_cols(required_cols, self.cols, self.sheet_name)
 
         for index, row in self.df.iterrows():
-            parsed_product = {
-                "quantity": {},
-            }
+            parsed_product = {}
             for col in self.cols:
                 if index == 0:
                     if pd.isna(row[col]):
@@ -789,6 +809,8 @@ class StepProductSheet(Sheet):
                 else:
                     # Define and clean value
                     value = row[col]
+                    if col == "*step_id":
+                        value = str(value)
                     if isinstance(value, str):
                         value = value.strip()
 
@@ -819,37 +841,22 @@ class StepProductSheet(Sheet):
                     if field == "product":
                         if value not in parsed_materials:
                             raise ValueDoesNotExist(value, "product")
+                        parsed_product["product"] = value
                         continue
 
                     # Handle process ingredient fields
                     if field in params["step_reagent_and_product"]:
-                        supported_unit = params["step_reagent_and_product"][field][
-                            "unit"
-                        ]
-                        input_unit = None
-                        if col in unit:
-                            input_unit = unit[col]
-                        self._check_unit(
-                            supported_unit, input_unit, field, self.sheet_name
-                        )
-                        if input_unit:
-                            # Skip if a quantity field has already been parsed
-                            if len(parsed_product["quantity"]) > 0:
-                                continue
-
-                            # Add quantity field with units
-                            parsed_product["quantity"][field] = {"value": value}
-                            parsed_product["quantity"][field].update(
-                                {"unit": input_unit}
-                            )
-                        else:
-                            parsed_product[field] = value
+                        parsed_product[field] = value
                     else:
                         raise UnsupportedFieldName(field)
 
-                    if row["*step_id"] in self.parsed:
-                        self.parsed[row["*step_id"]].append(parsed_product)
-                    else:
-                        self.parsed[row["*step_id"]] = [parsed_product]
+                    if index != 0:
+                        if row["*process"] not in self.parsed:
+                            self.parsed[row["*process"]] = {}
+                        if str(row["*step_id"]) not in self.parsed[row["*process"]]:
+                            self.parsed[row["*process"]][str(row["*step_id"])] = []
+                        self.parsed[row["*process"]][str(row["*step_id"])].append(
+                            parsed_product
+                        )
 
         return self.parsed

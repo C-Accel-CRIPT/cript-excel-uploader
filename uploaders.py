@@ -171,6 +171,14 @@ def _create_prop_list(parsed_props, data_objs=None):
     return props
 
 
+def _create_quantity_list(parsed_object):
+    quantity_list = []
+    for key in parsed_object:
+        quantity_obj = C.Quantity(key=key, **parsed_object[key])
+        quantity_list.append(quantity_obj)
+    return quantity_list
+
+
 def _replace_field(parsed_object, raw_key, replace_key):
     if raw_key in parsed_object:
         parsed_object[replace_key] = parsed_object[raw_key]
@@ -213,28 +221,26 @@ def upload_data(api, group_obj, expt_objs, parsed_data):
     return data_objs
 
 
-def upload_file(api, group_url, data_urls, parsed_file):
+def upload_file(api, group_obj, data_objs, parsed_file):
     """
     upload data to the database and return a dict of name:file_url pair
 
     :param api: api connection object
     :type api: class:`cript.API`
-    :param group_url: url of group
-    :type group_url: string
-    :param data_urls: (name) : (url of data) pair
-    :type data_urls: dict
+    :param group_obj: object of group
+    :type group_obj: string
+    :param data_objs: (name) : (obj of data) pair
+    :type data_objs: dict
     :param parsed_file: parsed data of file_sheet.parsed
     :type parsed_file: dict
-    :return: (name) : (url of file) pair
+    :return: (name) : (obj of file) pair
     :rtype: dict
     """
-    file_urls = {}
-    group_obj = api.get(group_url)
+    file_objs = {}
     for key in parsed_file:
         file_dict = parsed_file[key]
         # Grab Data
-        data_url = data_urls[key]
-        data_obj = api.get(data_url)
+        data_obj = data_objs[key]
         for file in file_dict:
             # Replace field name
             _replace_field(file["base"], "path", "source")
@@ -251,12 +257,11 @@ def upload_file(api, group_url, data_urls, parsed_file):
             api.save(data_obj)
 
             # Update file_urls
-            if key in file_urls:
-                file_urls[key].append(file_obj.url)
-            else:
-                file_urls[key] = [file_obj.url]
+            if key not in file_objs:
+                file_objs[key] = []
+            file_objs[key].append(file_obj)
 
-    return file_urls
+    return file_objs
 
 
 def upload_material(api, group_obj, data_objs, parsed_material):
@@ -363,8 +368,6 @@ def upload_process(api, group_obj, expt_objs, parsed_processes):
         # Save Process
         api.save(process_obj)
         process_objs[key] = process_obj
-        expt_obj.processes.append(process_obj)
-        api.save(expt_obj)
 
     return process_objs
 
@@ -418,70 +421,106 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps):
             # Save Process
             api.save(step_obj)
             if key not in step_objs:
-                step_objs[key] = []
-            step_objs[key].append(step_obj)
-            process_obj.steps.append(step_obj)
-
-        api.save(process_obj)
+                step_objs[key] = {}
+            step_objs[key][step_id] = step_obj
 
     return step_objs
 
 
 def upload_stepIngredient(
-    api, group_obj, process_objs, step_objs, data_objs, parsed_stepIngredient
+    api, process_objs, step_objs, material_objs, parsed_stepIngredients
 ):
     """
     upload step to the database and return a dict of name:step_url pair
 
     :param api: api connection object
     :type api: class:`cript.API`
-    :param group_obj: obj of group
-    :type group_obj: `cript.nodes.Group`
     :param process_objs: (name) : (process object) pair
     :type process_objs: dict
-    :param data_objs: (name) : (object of data) pair
-    :type data_objs: dict
-    :param parsed_steps:
+    :param step_objs: (step_id) : (step object) pair
+    :type step_objs: dict
+    :param material_objs: (name) : (object of material) pair
+    :type material_objs: dict
+    :param parsed_stepIngredients:
     :type dict
     :return: (name) : (step object) pair
     :rtype: dict
     """
-    stepIngredient_objs = {}
-    for key in parsed_stepIngredient:
+    for process_name in parsed_stepIngredients:
         # Grab Process
-        process_obj = process_objs[key]
-
-        for step_id in parsed_steps[key]:
-            parsed_step = parsed_steps[key][step_id]
+        process_obj = process_objs[process_name]
+        for step_id in parsed_stepIngredients[process_name]:
+            # Grab Step
+            step_obj = step_objs[process_name][step_id]
 
             # Replace field name
-            _replace_field(parsed_step["base"], "step_type", "type")
-            _replace_field(parsed_step["base"], "step_descr", "description")
-            parsed_step["base"].pop("step_id")
-            # Create Process
-            step_obj = C.Step(
-                group=group_obj,
-                process=process_obj,
-                **parsed_step["base"],
-            )
+            # _replace_field(parsed_step["base"], "step_type", "type")
+            # _replace_field(parsed_step["base"], "step_descr", "description")
+            # parsed_step["base"].pop("step_id")
+            for parsed_stepIngredient in parsed_stepIngredients[process_name][step_id]:
+                # Create stepIngredient
+                stepIngredient_obj = None
+                print(parsed_stepIngredient)
+                ingredient_name = parsed_stepIngredient.pop("ingredient")
+                ingredient_name_list = ingredient_name.split(":")
+                ingredient_quantities = parsed_stepIngredient.pop("quantity")
+                if len(ingredient_name_list) == 1:
+                    material_obj = material_objs[ingredient_name]
+                    stepIngredient_obj = C.MaterialIngredient(
+                        ingredient=material_obj,
+                        quantity=_create_quantity_list(ingredient_quantities),
+                        **parsed_stepIngredient,
+                    )
 
-            # Add Prop objects
-            parsed_props = parsed_step["prop"]
-            if len(parsed_props) > 0:
-                step_obj.properties = _create_prop_list(parsed_props, data_objs)
+                elif len(ingredient_name_list) == 2:
+                    from_process_name = ingredient_name_list[0]
+                    from_step_id = ingredient_name_list[1]
+                    from_step_obj = step_objs[from_process_name][from_step_id]
+                    stepIngredient_obj = C.IntermediateIngredient(
+                        ingredient=from_step_obj,
+                        quantity=_create_quantity_list(ingredient_quantities),
+                        **parsed_stepIngredient,
+                    )
 
-            # Add Cond objects
-            parsed_conds = parsed_step["cond"]
-            if len(parsed_conds) > 0:
-                step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
-
-            # Save Process
+                # Save StepIngredient
+                step_obj.add_ingredient(stepIngredient_obj)
             api.save(step_obj)
-            if key not in step_objs:
-                step_objs[key] = []
-            step_objs[key].append(step_obj)
-            process_obj.steps.append(step_obj)
 
-        api.save(process_obj)
 
-    return step_objs
+def upload_stepProduct(
+    api, process_objs, step_objs, material_objs, parsed_stepProducts
+):
+    """
+    upload step to the database and return a dict of name:step_url pair
+
+    :param api: api connection object
+    :type api: class:`cript.API`
+    :param process_objs: (name) : (process object) pair
+    :type process_objs: dict
+    :param step_objs: (step_id) : (step object) pair
+    :type step_objs: dict
+    :param material_objs: (name) : (object of material) pair
+    :type material_objs: dict
+    :param parsed_stepProducts:
+    :type dict
+    :return: (name) : (step object) pair
+    :rtype: dict
+    """
+    for process_name in parsed_stepProducts:
+        # Grab Process
+        process_obj = process_objs[process_name]
+        for step_id in parsed_stepProducts[process_name]:
+            # Grab Step
+            step_obj = step_objs[process_name][step_id]
+
+            # Replace field name
+            # _replace_field(parsed_step["base"], "step_type", "type")
+            # _replace_field(parsed_step["base"], "step_descr", "description")
+            # parsed_step["base"].pop("step_id")
+            for parsed_stepProducts in parsed_stepProducts[process_name][step_id]:
+                # Create stepIngredient
+                stepProduct_obj = material_objs[parsed_stepProducts["product"]]
+
+                # Save StepIngredient
+                step_obj.add_product(stepProduct_obj)
+            api.save(step_obj)

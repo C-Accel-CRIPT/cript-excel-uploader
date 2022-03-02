@@ -86,31 +86,26 @@ expt_objs = uploaders.upload_experiment(
 print(f"expt_objs:{expt_objs}\n***********************")
 data_objs = uploaders.upload_data(db, group_obj, expt_objs, data_sheet.parsed)
 print(f"data_objs:{data_objs}\n***********************")
-# file_objs = uploaders.upload_file(db, group_obj, data_objs, file_sheet.parsed)
-# print(f"file_objs:{file_objs}\n***********************")
+file_objs = uploaders.upload_file(db, group_obj, data_objs, file_sheet.parsed)
+print(f"file_objs:{file_objs}\n***********************")
 material_objs = uploaders.upload_material(
     db, group_obj, data_objs, material_sheet.parsed
 )
 print(f"material_objs:{material_objs}\n***********************")
 process_objs = uploaders.upload_process(db, group_obj, expt_objs, process_sheet.parsed)
 print(f"process_objs:{process_objs}\n***********************")
-print(step_sheet.parsed)
 step_objs = uploaders.upload_step(
     db, group_obj, process_objs, data_objs, step_sheet.parsed
 )
 print(f"step_objs:{step_objs}\n***********************")
-print(stepIngredients_sheet.parsed)
-stepIngredient_objs = uploaders.upload_stepIngredient(
-    db, group_obj, process_objs, step_objs, data_objs, stepIngredients_sheet.parsed
+uploaders.upload_stepIngredient(
+    db, process_objs, step_objs, material_objs, stepIngredients_sheet.parsed
 )
-print(f"stepIngredient_objs:{stepIngredient_objs}\n***********************")
-
-# db = uploaders.connect()
-# group_url = uploaders.upload_group(db, group)
-# coll_url = uploaders.upload_collection(db, group_url, collection)
-# expt_urls = uploaders.upload_experiment(db, group_url, coll_url, experiment_sheet.parsed)
-# data_urls = uploaders.upload_data(db,group_url,expt_urls,data_sheet.parsed)
-
+print(f"step_objs after adding ingredients:{step_objs}\n***********************")
+uploaders.upload_stepProduct(
+    db, process_objs, step_objs, material_objs, stepProducts_sheet.parsed
+)
+print(f"step_objs after adding products:{step_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")
