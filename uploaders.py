@@ -2,17 +2,17 @@ import time
 import sys
 
 import cript as C
-from config import BASE_URL, TOKEN
+from config import BASE_URL
 
 
-def connect():
+def connect(token):
     """
     connect with backend service
 
     :return: backend service connection object
     :rtype: class:`cript.API`
     """
-    return C.API(BASE_URL, TOKEN)
+    return C.API(BASE_URL, token)
 
 
 def upload_group(api, group_name):
@@ -27,7 +27,7 @@ def upload_group(api, group_name):
     :rtype: `cript.nodes.Group`
     """
     # Check if Group exists
-    my_groups = api.search(C.Group)
+    my_groups = api.search(C.Group, {"name": group_name})
     if my_groups["count"] == 0:
         print(
             "\nError: You don't belong to any CRIPT group currently. Please contact with us."
@@ -35,13 +35,11 @@ def upload_group(api, group_name):
         time.sleep(5)
         sys.exit(1)
 
-    for group in my_groups["results"]:
-        if group["name"] == group_name:
-            return api.get(group["url"])
-
-    # Temp solution while group creation is broken
-    print("\nError: You must enter an existing CRIPT group. Try again.\n")
-    sys.exit(1)
+    group_search_result = api.search(C.Group, {"name": group_name})
+    if group_search_result["count"] == 0:
+        print("\nError: You must enter an existing CRIPT group. Try again.\n")
+    else:
+        return api.get(group_search_result["results"][0]["url"])
 
 
 def upload_collection(api, group_obj, coll_name):
@@ -58,10 +56,13 @@ def upload_collection(api, group_obj, coll_name):
     :rtype: `cript.nodes.Group`
     """
     # Check if Collection exists
-    my_collections = api.search(C.Collection)
-    for collection in my_collections["results"]:
-        if collection["name"] == coll_name:
-            return api.get(collection["url"])
+    start_time = time.time()
+    collection_search_result = api.search(C.Collection, {"name": coll_name})
+    print(f"time to search:{time.time()-start_time}")
+    if collection_search_result["count"] > 0:
+        obj = api.get(collection_search_result["results"][0]["url"])
+        print(f"time to get:{time.time()-start_time}")
+        return obj
 
     # Create Collection if it doesn't exist
     collection = C.Collection(group=group_obj, name=coll_name)

@@ -10,78 +10,86 @@ import uploaders
 # Display title
 print(ascii_art.title.template)
 
-# Get DB info
-# db_project = input("DB Project: ")
-# db_database = input("DB Name: ")
-# db_username = input("DB Username: ")
-# db_password = getpass("DB Password: ")
-
-
-# Get User email and establish connection to CRIPT database
-# user = input("\nCRIPT User email: ")
-db = uploaders.connect()
-
 # Get Excel file path
-# path = input("\nExcel file path: ")
-
-path = r"C:\Users\Orange Meow\Desktop\MIT CRIPT\excel_uploader\excel template\example_template_NEW_0226.xlsx"
+path = input("\nExcel file path: ")
 """To do: file type validation"""
 while not os.path.exists(path):
     print("\nCouldn't find the file. Try again.\n")
     path = input("Excel file path: ")
 
-# Get Group and Collection names
-# group = input("\nCRIPT Group (must be an existing group): ")
-# collection = input("\nCRIPT Collection: ")
-group = "Olsen_Lab"
-collection = "test0226"
 
+# Get Group and Collection names
+group = input("\nCRIPT Group (must be an existing group): ")
+collection = input("\nCRIPT Collection: ")
+token = input("\nAPI token: ")
 # Display chem art
 print(ascii_art.chem.template)
 time.sleep(1)
 
 # Instantiate Sheet objects
 #
+material_sheet = sheets.MaterialSheet(path, "material")
 experiment_sheet = sheets.ExperimentSheet(path, "experiment")
-data_sheet = sheets.DataSheet(path, "data")
-reagent_sheet = sheets.MaterialSheet(path, "reagent_material")
 process_sheet = sheets.ProcessSheet(path, "process")
-ingr_sheet = sheets.IngrSheet(path, "ingredients")
-product_sheet = sheets.MaterialSheet(path, "product_material")
+step_sheet = sheets.StepSheet(path, "step")
+stepIngredients_sheet = sheets.StepIngredientSheet(path, "step_ingredients")
+stepProducts_sheet = sheets.StepProductSheet(path, "step_products")
+data_sheet = sheets.DataSheet(path, "data")
+file_sheet = sheets.FileSheet(path, "file")
 
 # Parse Excel sheets
-# C:\Users\Orange Meow\Desktop\MIT CRIPT\excel_uploader\excel template
 experiment_sheet.parse()
+# print(experiment_sheet.parsed)
 data_sheet.parse(experiment_sheet.parsed)
-reagent_sheet.parse(data_sheet.parsed)
+# print(data_sheet.parsed)
+file_sheet.parse(data_sheet.parsed)
+# print(file_sheet.parsed)
+material_sheet.parse(data_sheet.parsed)
+# print(material_sheet.parsed)
 process_sheet.parse(experiment_sheet.parsed)
 # print(process_sheet.parsed)
-# ingr_sheet.parse(process_sheet.parsed, reagent_sheet.parsed)
-# product_sheet.parse(data_sheet.parsed, process_sheet.parsed)
+step_sheet.parse(data_sheet.parsed, process_sheet.parsed)
+# print(step_sheet.parsed)
+stepIngredients_sheet.parse(
+    material_sheet.parsed, process_sheet.parsed, step_sheet.parsed
+)
+# print(stepIngredients_sheet.parsed)
+stepProducts_sheet.parse(material_sheet.parsed, process_sheet.parsed, step_sheet.parsed)
 
 
 # Upload parsed data
-# group_uid = uploaders.upload_group(db, group)
-# coll_uid = uploaders.upload_collection(db, group_uid, collection)
-# expt_uids = uploaders.upload_experiment(db, coll_uid, experiment_sheet.parsed)
-# data_uids = uploaders.upload_data(db, expt_uids, data_sheet.parsed)
-# reagent_uids = uploaders.upload_material(db, reagent_sheet.parsed, data_uids, "reagent")
-# process_uids = uploaders.upload_process(
-#     db, expt_uids, ingr_sheet.parsed, process_sheet.parsed, reagent_uids, data_uids
-# )
-# product_uids = uploaders.upload_material(
-#     db, product_sheet.parsed, data_uids, "product", process_uids
-# )
-
-
-db = uploaders.connect()
-group_url = uploaders.upload_group(db, group)
-coll_url = uploaders.upload_collection(db, group_url, collection)
-expt_urls = uploaders.upload_experiment(
-    db, group_url, coll_url, experiment_sheet.parsed
+db = uploaders.connect(token)
+print(f"***********************")
+group_obj = uploaders.upload_group(db, group)
+print(f"group_obj:{group_obj}\n***********************")
+coll_obj = uploaders.upload_collection(db, group_obj, collection)
+print(f"coll_obj:{coll_obj}\n***********************")
+expt_objs = uploaders.upload_experiment(
+    db, group_obj, coll_obj, experiment_sheet.parsed
 )
-data_urls = uploaders.upload_data(db, group_url, expt_urls, data_sheet.parsed)
-
+print(f"expt_objs:{expt_objs}\n***********************")
+data_objs = uploaders.upload_data(db, group_obj, expt_objs, data_sheet.parsed)
+print(f"data_objs:{data_objs}\n***********************")
+file_objs = uploaders.upload_file(db, group_obj, data_objs, file_sheet.parsed)
+print(f"file_objs:{file_objs}\n***********************")
+material_objs = uploaders.upload_material(
+    db, group_obj, data_objs, material_sheet.parsed
+)
+print(f"material_objs:{material_objs}\n***********************")
+process_objs = uploaders.upload_process(db, group_obj, expt_objs, process_sheet.parsed)
+print(f"process_objs:{process_objs}\n***********************")
+step_objs = uploaders.upload_step(
+    db, group_obj, process_objs, data_objs, step_sheet.parsed
+)
+print(f"step_objs:{step_objs}\n***********************")
+uploaders.upload_stepIngredient(
+    db, process_objs, step_objs, material_objs, stepIngredients_sheet.parsed
+)
+print(f"step_objs after adding ingredients:{step_objs}\n***********************")
+uploaders.upload_stepProduct(
+    db, process_objs, step_objs, material_objs, stepProducts_sheet.parsed
+)
+print(f"step_objs after adding products:{step_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")
