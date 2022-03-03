@@ -77,13 +77,22 @@ material_sheet.parse(data_sheet.parsed)
 # print(material_sheet.parsed)
 process_sheet.parse(experiment_sheet.parsed)
 # print(process_sheet.parsed)
-step_sheet.parse(data_sheet.parsed, process_sheet.parsed)
+step_sheet.parse(
+    data_sheet.parsed,
+    process_sheet.parsed,
+)
 # print(step_sheet.parsed)
 stepIngredients_sheet.parse(
-    material_sheet.parsed, process_sheet.parsed, step_sheet.parsed
+    material_sheet.parsed,
+    process_sheet.parsed,
+    step_sheet.parsed,
 )
 # print(stepIngredients_sheet.parsed)
-stepProducts_sheet.parse(material_sheet.parsed, process_sheet.parsed, step_sheet.parsed)
+stepProducts_sheet.parse(
+    material_sheet.parsed,
+    process_sheet.parsed,
+    step_sheet.parsed,
+)
 
 
 # Upload parsed data
