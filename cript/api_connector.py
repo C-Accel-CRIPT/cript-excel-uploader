@@ -135,15 +135,12 @@ class API:
 
             # Upload file
             if response.status_code == 200:
-                response_json = response.json()
-                url = response_json["url"]
-                data = response_json["fields"]
-                files = {"file": open(file_path, "rb")}
-                response = requests.post(url=url, data=data, files=files)
-
                 print("\nUpload in progress ...\n")
+                url = json.loads(response.content)
+                files = {"file": open(file_path, "rb")}
+                response = requests.put(url=url, files=files)
 
-                if response.status_code != 204:
+                if response.status_code != 200:
                     raise APISaveError(f"Unable to upload the file: {response.content}")
             else:
                 pprint(response.content)
@@ -206,11 +203,12 @@ class API:
         return slug
 
     @beartype
-    def get(self, obj: Union[str, Type[Base]], query: dict = None):
+    def get(self, obj: Union[str, Type[Base]], query: dict = None, count: int = 0):
         """
         Get the JSON for a node and use it to generated a local node object.
 
         :param url: The API URL of the node.
+        :param count: Recursion counter to pass to the _generate_nodes() method.
         :return: The generated node object.
         """
         # Fetch node from a URL, if defined
@@ -262,15 +260,21 @@ class API:
             node.created_at = created_at
             node.updated_at = updated_at
 
-            self._generate_nodes(node)
+            self._generate_nodes(node, count=count + 1)
+
             return node
 
-    def _generate_nodes(self, node: Base):
+    def _generate_nodes(self, node: Base, count: int = 0):
         """
         Generate nested node objects within a given node.
 
         :param node: The parent node.
+        :param count: Recursion counter.
         """
+        # Limit recursion to one level
+        if count > 1:
+            return
+
         node_dict = node.__dict__
         for key, value in node_dict.items():
             # Skip the url field
@@ -284,7 +288,7 @@ class API:
                     node_dict[key] = local_node
                 else:
                     try:
-                        node_dict[key] = self.get(value)
+                        node_dict[key] = self.get(value, count=count + 1)
                     except APIGetError:
                         # Leave the URL if node is not viewable
                         pass
@@ -293,7 +297,7 @@ class API:
                 node_class = self._define_node_class(key)
                 secondary_node = node_class(**value[i])
                 node_dict[key] = secondary_node
-                self._generate_nodes(secondary_node)
+                self._generate_nodes(secondary_node, count=count + 1)
             # Handle lists
             elif isinstance(value, list):
                 for i in range(len(value)):
@@ -305,7 +309,7 @@ class API:
                             value[i] = local_node
                         else:
                             try:
-                                value[i] = self.get(value[i])
+                                value[i] = self.get(value[i], count=count + 1)
                             except APIGetError:
                                 # Leave the URL if node is not viewable
                                 pass
@@ -314,7 +318,7 @@ class API:
                         node_class = self._define_node_class(key)
                         secondary_node = node_class(**value[i])
                         value[i] = secondary_node
-                        self._generate_nodes(secondary_node)
+                        self._generate_nodes(secondary_node, count=count + 1)
 
     def _define_node_class(self, key: str):
         """
