@@ -65,3 +65,11 @@ class MissingUnitError(Exception):
             f"Unit for '{self.field}' is required column in the '{self.sheet}' Excel sheet."
             + self.message
         )
+
+
+class GroupRelatedError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return f"{self.message}"

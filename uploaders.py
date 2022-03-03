@@ -1,8 +1,8 @@
 import time
-import sys
 
 import cript as C
 from config import BASE_URL
+from errors import GroupRelatedError
 
 
 def connect(token):
@@ -27,22 +27,22 @@ def upload_group(api, group_name):
     :rtype: `cript.nodes.Group`
     """
     # Check if Group exists
-    my_groups = api.search(C.Group, {"name": group_name})
+    my_groups = api.search(C.Group)
     if my_groups["count"] == 0:
-        print(
-            "\nError: You don't belong to any CRIPT group currently. Please contact with us."
+        raise GroupRelatedError(
+            "Error: You don't belong to any CRIPT group currently. Please contact with us."
         )
-        time.sleep(5)
-        sys.exit(1)
 
     group_search_result = api.search(C.Group, {"name": group_name})
-    if group_search_result["count"] == 0:
-        print("\nError: You must enter an existing CRIPT group. Try again.\n")
+    if group_search_result["count"] == 0 or len(group_name) == 0:
+        raise GroupRelatedError(
+            "Error: You must enter an existing CRIPT group. Try again."
+        )
     else:
         return api.get(group_search_result["results"][0]["url"])
 
 
-def upload_collection(api, group_obj, coll_name):
+def upload_collection(api, group_obj, coll_name, public_flag):
     """
     search for existing collection_url, create collection if not exists
 
@@ -52,26 +52,25 @@ def upload_collection(api, group_obj, coll_name):
     :type group_obj: `cript.nodes.Group`
     :param coll_name: collection name
     :type coll_name: str
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: object of collection
     :rtype: `cript.nodes.Group`
     """
     # Check if Collection exists
-    start_time = time.time()
     collection_search_result = api.search(C.Collection, {"name": coll_name})
-    print(f"time to search:{time.time()-start_time}")
     if collection_search_result["count"] > 0:
         obj = api.get(collection_search_result["results"][0]["url"])
-        print(f"time to get:{time.time()-start_time}")
         return obj
 
     # Create Collection if it doesn't exist
-    collection = C.Collection(group=group_obj, name=coll_name)
+    collection = C.Collection(group=group_obj, name=coll_name, public=public_flag)
     api.save(collection)
 
     return collection
 
 
-def upload_experiment(api, group_obj, collection_obj, parsed_expts):
+def upload_experiment(api, group_obj, collection_obj, parsed_expts, public_flag):
     """
     upload the experiment data and return url of experiment
     (WARNING: db.view() is taking all of the data in the collection out.
@@ -81,10 +80,14 @@ def upload_experiment(api, group_obj, collection_obj, parsed_expts):
 
     :param api: api connection object
     :type api: class:`cript.API`
+    :param group_obj: object of group
+    :type group_obj: `cript.nodes.Group`
     :param collection_obj: object of collection
     :type collection_obj: `cript.nodes.Collection`
     :param parsed_expts: parsed data of experiments (experiment_sheet.parsed)
     :type parsed_expts: dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: a dict contains (experiment name) : (experiment object) pair
     :rtype: dict
     """
@@ -92,7 +95,10 @@ def upload_experiment(api, group_obj, collection_obj, parsed_expts):
     for key in parsed_expts:
         # Create Experiment
         expt = C.Experiment(
-            group=group_obj, collection=collection_obj, **parsed_expts[key]
+            group=group_obj,
+            collection=collection_obj,
+            public=public_flag,
+            **parsed_expts[key],
         )
         api.save(expt)
         expt_objs[key] = expt
@@ -186,7 +192,7 @@ def _replace_field(parsed_object, raw_key, replace_key):
         parsed_object.pop(raw_key)
 
 
-def upload_data(api, group_obj, expt_objs, parsed_data):
+def upload_data(api, group_obj, expt_objs, parsed_data, public_flag):
     """
     upload data to the database and return a dict of name:data_url pair
 
@@ -196,6 +202,8 @@ def upload_data(api, group_obj, expt_objs, parsed_data):
     :type expt_objs: dict
     :param parsed_data: parsed data of data_sheet.parsed (data_sheet.parsed)
     :type parsed_data: dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: (name) : (object of data) pair
     :rtype: dict
     """
@@ -211,6 +219,7 @@ def upload_data(api, group_obj, expt_objs, parsed_data):
         datum = C.Data(
             group=group_obj,
             experiment=expt_obj,
+            public=public_flag,
             **parsed_datum["base"],
         )
         # Save Data
@@ -222,7 +231,7 @@ def upload_data(api, group_obj, expt_objs, parsed_data):
     return data_objs
 
 
-def upload_file(api, group_obj, data_objs, parsed_file):
+def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
     """
     upload data to the database and return a dict of name:file_url pair
 
@@ -234,6 +243,8 @@ def upload_file(api, group_obj, data_objs, parsed_file):
     :type data_objs: dict
     :param parsed_file: parsed data of file_sheet.parsed
     :type parsed_file: dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: (name) : (obj of file) pair
     :rtype: dict
     """
@@ -250,6 +261,7 @@ def upload_file(api, group_obj, data_objs, parsed_file):
             file_obj = C.File(
                 group=group_obj,
                 data=data_obj,
+                public=public_flag,
                 **file["base"],
             )
             # Save Data
@@ -265,7 +277,7 @@ def upload_file(api, group_obj, data_objs, parsed_file):
     return file_objs
 
 
-def upload_material(api, group_obj, data_objs, parsed_material):
+def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     """
     upload material to the database and return a dict of name:material_url pair
 
@@ -277,6 +289,8 @@ def upload_material(api, group_obj, data_objs, parsed_material):
     :type data_objs: dict
     :param parsed_material: reagent_sheet.parsed or product_sheet.parsed
     :type parsed_material: dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: (name) : (url of material) pair
     :rtype: dict
     """
@@ -301,7 +315,11 @@ def upload_material(api, group_obj, data_objs, parsed_material):
             identity_objs[name] = api.get(identity_url)
         else:
             # Create Identity
-            identity_obj = C.Identity(group=group_obj, **material["iden"])
+            identity_obj = C.Identity(
+                group=group_obj,
+                public=public_flag,
+                **material["iden"],
+            )
             # Save Identity
             api.save(identity_obj)
             # Update identity_urls
@@ -313,6 +331,7 @@ def upload_material(api, group_obj, data_objs, parsed_material):
         material_obj = C.Material(
             group_obj,
             components=[component],
+            public=public_flag,
             **material["base"],
         )
 
@@ -335,7 +354,7 @@ def upload_material(api, group_obj, data_objs, parsed_material):
     return material_objs
 
 
-def upload_process(api, group_obj, expt_objs, parsed_processes):
+def upload_process(api, group_obj, expt_objs, parsed_processes, public_flag):
     """
     upload process to the database and return a dict of name:process_url pair
 
@@ -347,6 +366,8 @@ def upload_process(api, group_obj, expt_objs, parsed_processes):
     :type expt_objs: dict
     :param parsed_processes:
     :type dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: (name) : (url of process) pair
     :rtype: dict
     """
@@ -364,6 +385,7 @@ def upload_process(api, group_obj, expt_objs, parsed_processes):
             group=group_obj,
             experiment=expt_obj,
             keywords=parsed_process.get("keywords"),
+            public=public_flag,
             **parsed_process["base"],
         )
         # Save Process
@@ -373,7 +395,7 @@ def upload_process(api, group_obj, expt_objs, parsed_processes):
     return process_objs
 
 
-def upload_step(api, group_obj, process_objs, data_objs, parsed_steps):
+def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_flag):
     """
     upload step to the database and return a dict of name:step_url pair
 
@@ -387,6 +409,8 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps):
     :type data_objs: dict
     :param parsed_steps:
     :type dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
     :return: (name) : (step object) pair
     :rtype: dict
     """
@@ -406,6 +430,7 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps):
             step_obj = C.Step(
                 group=group_obj,
                 process=process_obj,
+                public=public_flag,
                 **parsed_step["base"],
             )
 
@@ -461,7 +486,6 @@ def upload_stepIngredient(
             for parsed_stepIngredient in parsed_stepIngredients[process_name][step_id]:
                 # Create stepIngredient
                 stepIngredient_obj = None
-                print(parsed_stepIngredient)
                 ingredient_name = parsed_stepIngredient.pop("ingredient")
                 ingredient_name_list = ingredient_name.split(":")
                 ingredient_quantities = parsed_stepIngredient.pop("quantity")
