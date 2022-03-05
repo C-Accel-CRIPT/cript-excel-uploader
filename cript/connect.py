@@ -31,6 +31,7 @@ class API:
 
         :param url: The API endpoint URL.
         """
+
         self.url = url.rstrip("/")
         self.session = requests.Session()
         if token is None:
@@ -92,9 +93,13 @@ class API:
                 response = self.session.post(
                     url=f"{self.url}/{node.slug}/", data=node._to_json()
                 )
+
             if response.status_code in (200, 201):
-                if node.slug == "file":
-                    self._upload_file(response.json()["id"], node.source)
+                # Handle new file uploads
+                if node.slug == "file" and os.path.exists(node.source):
+                    file_id = response.json()["url"].rstrip("/").split("/")[-1]
+                    self._upload_file(file_id, node.source)
+
                 self._set_node_attributes(node, response.json())
                 self._generate_nodes(node)
 
@@ -126,24 +131,91 @@ class API:
 
         :param node: ID of the File node.
         """
-        if file_path and os.path.exists(file_path):
-            # Generate signed URL for uploading
-            data = {"action": "upload", "file_id": file_id}
-            response = self.session.post(
-                url=f"{self.url}/signed-url/", data=json.dumps(data)
-            )
+        # Choose multipart or single file upload based on file size
+        file_size = os.path.getsize(file_path)
+        if file_size < 655360:
+            self._single_file_upload(file_id, file_path)
+        else:
+            self._multipart_file_upload(file_id, file_path)
 
-            # Upload file
-            if response.status_code == 200:
-                print("\nUpload in progress ...\n")
-                url = json.loads(response.content)
-                files = {"file": open(file_path, "rb")}
-                response = requests.put(url=url, files=files)
+    def _single_file_upload(self, file_id, file_path):
+        # Generate signed URL for uploading
+        data = {"action": "upload", "file_id": file_id}
+        response = self.session.post(
+            url=f"{self.url}/signed-url/", data=json.dumps(data)
+        )
 
-                if response.status_code != 200:
-                    raise APISaveError(f"Unable to upload the file: {response.content}")
-            else:
-                pprint(response.content)
+        # Upload file
+        if response.status_code == 200:
+            print("\nUpload in progress ...\n")
+
+            url = json.loads(response.content)
+            files = {"file": open(file_path, "rb")}
+            response = requests.put(url=url, files=files)
+
+            if response.status_code != 200:
+                raise APISaveError(f"Unable to upload the file: {response.content}")
+        else:
+            pprint(response.content)
+
+    def _multipart_file_upload(self, file_id, file_path):
+        chunk_size = 500 * 1024**2
+
+        # Create multipart upload and get upload ID
+        data = {"action": "create", "file_id": file_id}
+        response = self.session.post(
+            url=f"{self.url}/multipart-upload/",
+            data=json.dumps(data),
+        )
+        upload_id = json.loads(response.content)["UploadId"]
+
+        # Upload file in chunks
+        print("\nUpload in progress ...\n")
+        parts = []
+        with open(file_path, "rb") as local_file:
+            while True:
+                file_data = local_file.read(chunk_size)
+                if not file_data:
+                    break
+
+                # Generate signed URL for uploading
+                data = {
+                    "action": "upload",
+                    "file_id": file_id,
+                    "upload_id": upload_id,
+                    "part_number": len(parts) + 1,
+                }
+                response = self.session.post(
+                    url=f"{self.url}/signed-url/", data=json.dumps(data)
+                )
+
+                # Upload file chunk
+                if response.status_code == 200:
+                    signed_url = json.loads(response.content)
+                    response = requests.put(url=signed_url, data=file_data)
+                    if response.status_code == 200:
+                        etag = response.headers["ETag"]
+                        parts.append({"ETag": etag, "PartNumber": len(parts) + 1})
+                    else:
+                        raise APISaveError(
+                            f"Unable to upload the file: {response.content}"
+                        )
+                else:
+                    pprint(response.content)
+
+        # Complete multipart upload
+        data = {
+            "action": "complete",
+            "file_id": file_id,
+            "upload_id": upload_id,
+            "parts": parts,
+        }
+        response = self.session.post(
+            url=f"{self.url}/multipart-upload/",
+            data=json.dumps(data),
+        )
+        if response.status_code != 200:
+            raise APISaveError(f"Unable to upload the file: {response.content}")
 
     def delete(self, node: Base):
         """

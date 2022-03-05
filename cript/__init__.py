@@ -20,7 +20,6 @@ from .nodes import (
     Experiment,
 )
 
-
 node_classes = [
     User,
     Group,
@@ -43,5 +42,4 @@ node_classes = [
     Experiment,
 ]
 
-
-from .api_connector import API
+from .connect import API

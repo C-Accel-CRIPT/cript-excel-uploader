@@ -315,7 +315,7 @@ class File(Base):
         self,
         group: Union[Group, str],
         data: Union[Data, str],
-        source: Union[str, None],
+        source: str,
         name: Union[str, None] = None,
         id: Union[int, None] = None,
         extension: Union[str, None] = None,
