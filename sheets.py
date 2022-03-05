@@ -1,4 +1,3 @@
-import numpy
 import pandas as pd
 
 from params import params
@@ -22,7 +21,6 @@ class Sheet:
 
         self.df = pd.read_excel(path, sheet_name=sheet_name)
         self.df.dropna(how="all", inplace=True)
-
         self.cols = self.df.columns
 
     def _skip_col(self, col, val):
@@ -600,7 +598,7 @@ class StepSheet(Sheet):
                     # Define and clean value
                     value = row[col]
                     if col == "*step_id":
-                        value = str(value)
+                        value = int(value)
                     if isinstance(value, str):
                         value = value.strip()
 
@@ -652,7 +650,7 @@ class StepSheet(Sheet):
                     if row["*process"].strip() not in self.parsed:
                         self.parsed[row["*process"].strip()] = {}
                     self.parsed[row["*process"].strip()][
-                        str(row["*step_id"])
+                        int(row["*step_id"])
                     ] = parsed_step
 
         return self.parsed
@@ -692,11 +690,13 @@ class StepIngredientSheet(Sheet):
                         unit[col] = None
                     else:
                         unit[col] = row[col]
+                    # print(f"col:{col},value:{unit[col]}")
                 else:
                     # Define and clean value
                     value = row[col]
                     if col == "*step_id":
-                        value = str(value)
+                        # print(f"index:{index},row:{row}")
+                        value = int(value)
                     if isinstance(value, str):
                         value = value.strip()
 
@@ -705,8 +705,8 @@ class StepIngredientSheet(Sheet):
                         continue
 
                     # Clean col and create col_list
-                    col = col.replace("*", "")
-                    col_list = col.split(":")
+                    col_temp = col.replace("*", "")
+                    col_list = col_temp.split(":")
 
                     # Define field
                     field = col_list[-1]
@@ -770,9 +770,9 @@ class StepIngredientSheet(Sheet):
             if index != 0:
                 if row["*process"] not in self.parsed:
                     self.parsed[row["*process"]] = {}
-                if str(row["*step_id"]) not in self.parsed[row["*process"]]:
-                    self.parsed[row["*process"]][str(row["*step_id"])] = []
-                self.parsed[row["*process"]][str(row["*step_id"])].append(
+                if int(row["*step_id"]) not in self.parsed[row["*process"]]:
+                    self.parsed[row["*process"]][int(row["*step_id"])] = []
+                self.parsed[row["*process"]][int(row["*step_id"])].append(
                     parsed_ingredient
                 )
 
@@ -810,7 +810,7 @@ class StepProductSheet(Sheet):
                     # Define and clean value
                     value = row[col]
                     if col == "*step_id":
-                        value = str(value)
+                        value = int(value)
                     if isinstance(value, str):
                         value = value.strip()
 
@@ -853,9 +853,9 @@ class StepProductSheet(Sheet):
                     if index != 0:
                         if row["*process"] not in self.parsed:
                             self.parsed[row["*process"]] = {}
-                        if str(row["*step_id"]) not in self.parsed[row["*process"]]:
-                            self.parsed[row["*process"]][str(row["*step_id"])] = []
-                        self.parsed[row["*process"]][str(row["*step_id"])].append(
+                        if int(row["*step_id"]) not in self.parsed[row["*process"]]:
+                            self.parsed[row["*process"]][int(row["*step_id"])] = []
+                        self.parsed[row["*process"]][int(row["*step_id"])].append(
                             parsed_product
                         )
 

@@ -58,19 +58,27 @@ def upload_collection(api, group_obj, coll_name, public_flag):
     :rtype: `cript.nodes.Group`
     """
     # Check if Collection exists
+    start_time = time.time()
     collection_search_result = api.search(C.Collection, {"name": coll_name})
+    print(f"search_time:{time.time()-start_time}")
     if collection_search_result["count"] > 0:
-        obj = api.get(collection_search_result["results"][0]["url"])
-        return obj
+        url = collection_search_result["results"][0]["url"]
+        collection_obj = api.get(url)
+        print(f"get_time:{time.time()-start_time}")
+    else:
+        # Create Collection if it doesn't exist
+        collection_obj = C.Collection(
+            group=group_obj,
+            name=coll_name,
+            public=public_flag,
+        )
+        api.save(collection_obj)
+        api.refresh(group_obj)
 
-    # Create Collection if it doesn't exist
-    collection = C.Collection(group=group_obj, name=coll_name, public=public_flag)
-    api.save(collection)
-
-    return collection
+    return collection_obj
 
 
-def upload_experiment(api, group_obj, collection_obj, parsed_expts, public_flag):
+def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public_flag):
     """
     upload the experiment data and return url of experiment
     (WARNING: db.view() is taking all of the data in the collection out.
@@ -84,26 +92,41 @@ def upload_experiment(api, group_obj, collection_obj, parsed_expts, public_flag)
     :type group_obj: `cript.nodes.Group`
     :param collection_obj: object of collection
     :type collection_obj: `cript.nodes.Collection`
-    :param parsed_expts: parsed data of experiments (experiment_sheet.parsed)
-    :type parsed_expts: dict
+    :param parsed_experiments: parsed data of experiments (experiment_sheet.parsed)
+    :type parsed_experiments: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
     :return: a dict contains (experiment name) : (experiment object) pair
     :rtype: dict
     """
-    expt_objs = {}
-    for key in parsed_expts:
-        # Create Experiment
-        expt = C.Experiment(
-            group=group_obj,
-            collection=collection_obj,
-            public=public_flag,
-            **parsed_expts[key],
+    experiment_objs = {}
+    for experiment_name in parsed_experiments:
+        # Search for Duplicates
+        experiment_search_result = api.search(
+            C.Experiment,
+            {
+                "collection": _get_id_from_url(collection_obj.url),
+                "name": experiment_name,
+            },
         )
-        api.save(expt)
-        expt_objs[key] = expt
+        if experiment_search_result["count"] > 0:
+            experiment_url = experiment_search_result["results"][0]["url"]
+            experiment_obj = api.get(experiment_url)
+            print(f"Expriment node [{experiment_obj.name}] already exists")
+        else:
+            # Create Experiment
+            experiment_obj = C.Experiment(
+                group=group_obj,
+                collection=collection_obj,
+                public=public_flag,
+                **parsed_experiments[experiment_name],
+            )
+            api.save(experiment_obj)
+            api.refresh(collection_obj)
 
-    return expt_objs
+        experiment_objs[experiment_name] = experiment_obj
+
+    return experiment_objs
 
 
 def _create_cond_list(parsed_conds, data_objs=None):
@@ -192,14 +215,19 @@ def _replace_field(parsed_object, raw_key, replace_key):
         parsed_object.pop(raw_key)
 
 
-def upload_data(api, group_obj, expt_objs, parsed_data, public_flag):
+def _get_id_from_url(url: str):
+    _id = url.rstrip("/").split("/")[-1]
+    return int(_id)
+
+
+def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     """
     upload data to the database and return a dict of name:data_url pair
 
     :param api: api connection object
     :type api: class:`cript.API`
-    :param expt_objs: (name) : (object of experiment) pair
-    :type expt_objs: dict
+    :param experiment_objs: (name) : (object of experiment) pair
+    :type experiment_objs: dict
     :param parsed_data: parsed data of data_sheet.parsed (data_sheet.parsed)
     :type parsed_data: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
@@ -208,25 +236,36 @@ def upload_data(api, group_obj, expt_objs, parsed_data, public_flag):
     :rtype: dict
     """
     data_objs = {}
-    for key in parsed_data:
-        parsed_datum = parsed_data[key]
+    for data_name in parsed_data:
+        parsed_datum = parsed_data[data_name]
         # Grab Experiment
-        expt_obj = expt_objs[parsed_datum["expt"]]
+        experiment_obj = experiment_objs[parsed_datum["expt"]]
 
-        # Replace field name
-        _replace_field(parsed_datum["base"], "data_type", "type")
-        # Create Data
-        datum = C.Data(
-            group=group_obj,
-            experiment=expt_obj,
-            public=public_flag,
-            **parsed_datum["base"],
+        # Search for Duplicates
+        data_search_result = api.search(
+            C.Data,
+            {"experiment": _get_id_from_url(experiment_obj.url), "name": data_name},
         )
-        # Save Data
-        api.save(datum)
-        data_objs[key] = datum
-        expt_obj.data.append(datum.url)
-        api.save(expt_obj)
+
+        if data_search_result["count"] > 0:
+            url = data_search_result["results"][0]["url"]
+            datum_obj = api.get(url)
+            print(f"Data node [{datum_obj.name}] already exists")
+        else:
+            # Replace field name
+            _replace_field(parsed_datum["base"], "data_type", "type")
+            # Create Data
+            datum_obj = C.Data(
+                group=group_obj,
+                experiment=experiment_obj,
+                public=public_flag,
+                **parsed_datum["base"],
+            )
+            # Save Data
+            api.save(datum_obj)
+            api.refresh(experiment_obj)
+
+        data_objs[data_name] = datum_obj
 
     return data_objs
 
@@ -264,10 +303,21 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
                 public=public_flag,
                 **file["base"],
             )
-            # Save Data
-            api.save(file_obj)
-            data_obj.add_file(file_obj)
-            api.save(data_obj)
+
+            # # Search for Duplicates
+            file_search_result = api.search(
+                C.File, {"data": _get_id_from_url(data_obj.url), "name": file_obj.name}
+            )
+
+            if file_search_result["count"] > 0:
+                url = file_search_result["results"][0]["url"]
+                file_obj = api.get(url)
+                print(f"File node [{file_obj.name}] already exists")
+            else:
+                # Save Data
+                api.save(file_obj)
+
+            api.refresh(data_obj)
 
             # Update file_urls
             if key not in file_objs:
@@ -297,64 +347,88 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     identity_objs = {}
     material_objs = {}
     for material in parsed_material.values():
-        name = material["base"]["name"]
+        material_name = material["base"]["name"]
+
         # Check if Identity exists
-        query = {"name": name}
+        query = {}
         cas = material["iden"].get("cas")
         if cas:
             query.update({"cas": cas})
-        smiles = material["iden"].get("smiles")
-        if smiles:
-            query.update({"smiles": smiles})
-
-        check = api.search(C.Identity, query)
-
-        if check["count"] > 0:
-            # Add Identity object to identity_urls dict
-            identity_url = str(check["results"][0]["url"])
-            identity_objs[name] = api.get(identity_url)
         else:
-            # Create Identity
-            identity_obj = C.Identity(
-                group=group_obj,
-                public=public_flag,
-                **material["iden"],
-            )
-            # Save Identity
-            api.save(identity_obj)
-            # Update identity_urls
-            identity_objs[name] = identity_obj
+            query.update({"name": material_name})
 
-        # Create Component object
-        component = C.Component(identity=identity_objs[name])
-        # Create Material object
-        material_obj = C.Material(
-            group_obj,
-            components=[component],
-            public=public_flag,
-            **material["base"],
+            smiles = material["iden"].get("smiles")
+            if smiles:
+                query.update({"smiles": smiles})
+
+            bigsmiles = material["iden"].get("bigsmiles")
+            if bigsmiles:
+                query.update({"bigsmiles": bigsmiles})
+
+        identity_search_result = api.search(C.Identity, query)
+        if identity_search_result["count"] > 0:
+            # Add Identity object to identity_urls dict
+            identity_url = identity_search_result["results"][0]["url"]
+            identity_objs[material_name] = api.get(identity_url)
+            print(f"Identity node [{identity_objs[material_name].name}] already exists")
+        else:
+            if len(material["iden"]) > 0:
+                # Create Identity
+                print(material["iden"])
+                identity_obj = C.Identity(
+                    group=group_obj,
+                    public=public_flag,
+                    **material["iden"],
+                )
+                # Save Identity
+                api.save(identity_obj)
+                print(f"Identity node [{identity_obj.name}] created")
+            else:
+                identity_obj = None
+
+            # Update identity_objs
+            identity_objs[material_name] = identity_obj
+        material_search_result = api.search(
+            C.Material,
+            {"group": _get_id_from_url(group_obj.url), "name": material_name},
         )
-
-        # Add Prop objects
-        parsed_props = material["prop"]
-        if len(parsed_props) > 0:
-            material_obj.properties = _create_prop_list(parsed_props, data_objs)
-
-        # Save material to DB
-        try:
-            api.save(material_obj)
-        except AttributeError as e:
-            print(
-                f"AttributeError when saving '{material_obj.name}': {e}\nContinuing anyways..."
+        if material_search_result["count"] > 0:
+            url = material_search_result["results"][0]["url"]
+            material_obj = api.get(url)
+            print(f"Material node [{material_obj.name}] already exists")
+        else:
+            component_obj = None
+            # Create Component object
+            if identity_objs.get(material_name) is not None:
+                component_obj = C.Component(identity=identity_objs.get(material_name))
+            # Create Material object
+            material_obj = C.Material(
+                group=group_obj,
+                components=[component_obj] if component_obj else None,
+                public=public_flag,
+                **material["base"],
             )
+
+            # Add Prop objects
+            parsed_props = material["prop"]
+            if len(parsed_props) > 0:
+                material_obj.properties = _create_prop_list(parsed_props, data_objs)
+
+            # Save material to DB
+            try:
+                api.save(material_obj)
+            except AttributeError as e:
+                print(
+                    f"AttributeError when saving '{material_obj.name}': {e}\nContinuing anyways..."
+                )
 
         # Add saved Material object to materials dict
-        material_objs[material_obj.name] = material_obj
+        material_objs[material_name] = material_obj
 
     return material_objs
 
 
-def upload_process(api, group_obj, expt_objs, parsed_processes, public_flag):
+def upload_process(api, group_obj, experiment_objs, parsed_processes, public_flag):
     """
     upload process to the database and return a dict of name:process_url pair
 
@@ -362,8 +436,8 @@ def upload_process(api, group_obj, expt_objs, parsed_processes, public_flag):
     :type api: class:`cript.API`
     :param group_obj: obj of group
     :type group_obj: `cript.nodes.Group`
-    :param expt_objs: (name) : (experiment object) pair
-    :type expt_objs: dict
+    :param experiment_objs: (name) : (experiment object) pair
+    :type experiment_objs: dict
     :param parsed_processes:
     :type dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
@@ -372,25 +446,32 @@ def upload_process(api, group_obj, expt_objs, parsed_processes, public_flag):
     :rtype: dict
     """
     process_objs = {}
-    for key in parsed_processes:
-        parsed_process = parsed_processes[key]
+    for process_name in parsed_processes:
+        parsed_process = parsed_processes[process_name]
 
         # Grab Experiment
-        expt_obj = expt_objs[parsed_process["expt"]]
+        experiment_obj = experiment_objs[parsed_process["expt"]]
 
-        # Replace field name
-        # _replace_field(parsed_datum["base"], "data_type", "type")
-        # Create Process
-        process_obj = C.Process(
-            group=group_obj,
-            experiment=expt_obj,
-            keywords=parsed_process.get("keywords"),
-            public=public_flag,
-            **parsed_process["base"],
+        process_search_result = api.search(
+            C.Process, {"group": _get_id_from_url(group_obj.url), "name": process_name}
         )
-        # Save Process
-        api.save(process_obj)
-        process_objs[key] = process_obj
+        if process_search_result["count"] > 0:
+            url = process_search_result["results"][0]["url"]
+            process_obj = api.get(url)
+            print(f"Process node [{process_obj.name}] already exists")
+        else:
+            # Create Process
+            process_obj = C.Process(
+                group=group_obj,
+                experiment=experiment_obj,
+                keywords=parsed_process.get("keywords"),
+                public=public_flag,
+                **parsed_process["base"],
+            )
+            # Save Process
+            api.save(process_obj)
+
+        process_objs[process_name] = process_obj
 
     return process_objs
 
@@ -415,40 +496,52 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
     :rtype: dict
     """
     step_objs = {}
-    for key in parsed_steps:
+    for process_name in parsed_steps:
         # Grab Process
-        process_obj = process_objs[key]
+        process_obj = process_objs[process_name]
 
-        for step_id in parsed_steps[key]:
-            parsed_step = parsed_steps[key][step_id]
-
-            # Replace field name
-            _replace_field(parsed_step["base"], "step_type", "type")
-            _replace_field(parsed_step["base"], "step_descr", "description")
-            parsed_step["base"].pop("step_id")
-            # Create Process
-            step_obj = C.Step(
-                group=group_obj,
-                process=process_obj,
-                public=public_flag,
-                **parsed_step["base"],
+        for step_id in parsed_steps[process_name]:
+            parsed_step = parsed_steps[process_name][step_id]
+            step_search_result = api.search(
+                C.Step,
+                {
+                    "group": _get_id_from_url(group_obj.url),
+                    "process": _get_id_from_url(process_obj.url),
+                    "step_id": step_id,
+                },
             )
+            if step_search_result["count"] > 0:
+                url = step_search_result["results"][0]["url"]
+                step_obj = api.get(url)
+                print(f"Step node [{step_obj.step_id}] already exists")
+            else:
+                # Replace field name
+                _replace_field(parsed_step["base"], "step_type", "type")
+                _replace_field(parsed_step["base"], "step_descr", "description")
+                # Create Process
+                step_obj = C.Step(
+                    group=group_obj,
+                    process=process_obj,
+                    public=public_flag,
+                    **parsed_step["base"],
+                )
 
-            # Add Prop objects
-            parsed_props = parsed_step["prop"]
-            if len(parsed_props) > 0:
-                step_obj.properties = _create_prop_list(parsed_props, data_objs)
+                # Add Prop objects
+                parsed_props = parsed_step["prop"]
+                if len(parsed_props) > 0:
+                    step_obj.properties = _create_prop_list(parsed_props, data_objs)
 
-            # Add Cond objects
-            parsed_conds = parsed_step["cond"]
-            if len(parsed_conds) > 0:
-                step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
+                # Add Cond objects
+                parsed_conds = parsed_step["cond"]
+                if len(parsed_conds) > 0:
+                    step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
 
-            # Save Process
-            api.save(step_obj)
-            if key not in step_objs:
-                step_objs[key] = {}
-            step_objs[key][step_id] = step_obj
+                # Save Process
+                api.save(step_obj)
+
+            if process_name not in step_objs:
+                step_objs[process_name] = {}
+            step_objs[process_name][step_id] = step_obj
 
     return step_objs
 
@@ -509,6 +602,10 @@ def upload_stepIngredient(
 
                 # Save StepIngredient
                 step_obj.add_ingredient(stepIngredient_obj)
+                print(
+                    f"StepIngredient [{stepIngredient_obj.ingredient.name}] "
+                    f"has been added to Step [{step_obj.step_id}]"
+                )
             api.save(step_obj)
 
 
@@ -548,4 +645,8 @@ def upload_stepProduct(
 
                 # Save StepIngredient
                 step_obj.add_product(stepProduct_obj)
+                print(
+                    f"StepIngredient [{stepProduct_obj.name}] "
+                    f"has been added to Step [{step_obj.step_id}]"
+                )
             api.save(step_obj)

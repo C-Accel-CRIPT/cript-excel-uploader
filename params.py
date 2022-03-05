@@ -40,10 +40,6 @@ params = {
         },
     },
     "file": {
-        "file_name": {
-            "names": ["filename", "file name"],
-            "unit": None,
-        },
         "path": {
             "names": [],
             "unit": None,
@@ -155,7 +151,7 @@ params = {
             "unit": "deg",
         },
         "crys_frac": {
-            "names": ["fraction crystallinity"],
+            "names": ["fraction crystallinity", "crystallinity"],
             "unit": None,
         },
         "density": {
@@ -350,6 +346,22 @@ params = {
         "viscosity_kinematic": {
             "names": ["momentum diffusivity"],
             "unit": "cSt",
+        },
+        "modulus_elastic": {
+            "unit": "MPa",
+            "names": ["elastic modulus", "young modulus"],
+        },
+        "density_graft": {
+            "unit": None,
+            "names": ["grafting density"],
+        },
+        "stress_yield": {
+            "unit": "MPa",
+            "names": ["yield stress"],
+        },
+        "strain_failure": {
+            "unit": None,
+            "names": ["failure strain", "refractive index"],
         },
     },
     "process": {
