@@ -5,6 +5,7 @@ from typing import Union
 
 from beartype import beartype
 from weakref import WeakSet
+from pathlib import Path
 
 from .errors import AddNodeError, RemoveNodeError, UnsavedNodeError
 
@@ -328,7 +329,7 @@ class File(Base):
         self.group = group
         self.data = data
         self.source = source
-        if self.source and os.path.exists(self.source):
+        if self.source:
             self.name = os.path.basename(self.source)
         else:
             self.name = name

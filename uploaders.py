@@ -1,4 +1,5 @@
 import time
+import os
 
 import cript as C
 from config import BASE_URL
@@ -295,7 +296,6 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
         for file in file_dict:
             # Replace field name
             _replace_field(file["base"], "path", "source")
-            _replace_field(file["base"], "file_name", "name")
             # Create File
             file_obj = C.File(
                 group=group_obj,
@@ -303,10 +303,13 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
                 public=public_flag,
                 **file["base"],
             )
-
-            # # Search for Duplicates
+            # Search for Duplicates
             file_search_result = api.search(
-                C.File, {"data": _get_id_from_url(data_obj.url), "name": file_obj.name}
+                C.File,
+                {
+                    "data": _get_id_from_url(data_obj.url),
+                    "name": file_obj.name,
+                },
             )
 
             if file_search_result["count"] > 0:

@@ -125,14 +125,14 @@ data_objs = uploaders.upload_data(
     public_flag,
 )
 print(f"data_objs:{data_objs}\n***********************")
-# file_objs = uploaders.upload_file(
-#     db,
-#     group_obj,
-#     data_objs,
-#     file_sheet.parsed,
-#     public_flag,
-# )
-# print(f"file_objs:{file_objs}\n***********************")
+file_objs = uploaders.upload_file(
+    db,
+    group_obj,
+    data_objs,
+    file_sheet.parsed,
+    public_flag,
+)
+print(f"file_objs:{file_objs}\n***********************")
 material_objs = uploaders.upload_material(
     db,
     group_obj,
@@ -157,7 +157,7 @@ step_objs = uploaders.upload_step(
     step_sheet.parsed,
     public_flag,
 )
-print(f"step_objs:{step_objs}\n***********************")
+print(f"step_objs:\n***********************")
 uploaders.upload_stepIngredient(
     db,
     process_objs,
@@ -165,7 +165,7 @@ uploaders.upload_stepIngredient(
     material_objs,
     stepIngredients_sheet.parsed,
 )
-print(f"step_objs after adding ingredients:{step_objs}\n***********************")
+print(f"step_objs after adding ingredients:\n***********************")
 uploaders.upload_stepProduct(
     db,
     process_objs,
@@ -173,7 +173,7 @@ uploaders.upload_stepProduct(
     material_objs,
     stepProducts_sheet.parsed,
 )
-print(f"step_objs after adding products:{step_objs}\n***********************")
+print(f"step_objs after adding products:\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")
