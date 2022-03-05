@@ -2,18 +2,40 @@ import cript as C
 
 # Configs
 BASE_URL = "https://criptapp.herokuapp.com/api/"
-TOKEN = "Token 51ed84aeb0d85910cf992133e6dac3f2788c1486"
-GROUP_URL = "https://criptapp.herokuapp.com/api/group/5/"
-COLLECTION_URL = "https://criptapp.herokuapp.com/api/collection/7/"
-EXPERIMENT_URL = "https://criptapp.herokuapp.com/api/experiment/93/"
+TOKEN = ""  # Your Token
+PUBLIC_FLAG = True  # Set the flag to true to make your data go public
+# GROUP_URL = "https://criptapp.herokuapp.com/api/group/5/"
+# COLLECTION_URL = "https://criptapp.herokuapp.com/api/collection/7/"
 
 FILE_PATH = r"C:\Users\Orange Meow\Desktop\MIT CRIPT\excel_uploader\excel template\test files\file1.txt"
 
 # Server Connection
 db = C.API(BASE_URL, TOKEN)
+
+# Group, Collection and Experiment
+group_name = "test_group"
+collection_name = "excel_uploader_test0303"
+experiment_name = ""
+
+
+# Helper methods
+def _get_id_from_url(url: str):
+    _id = url.rstrip("/").split("/")[-1]
+    return int(_id)
+
+
+# Search for Group, Collection and Experiment
+group_search_result = db.search(C.Group, {"name": group_name})
+GROUP_URL = group_search_result["results"][0]["url"]
 group_obj = db.get(GROUP_URL)
+
+
+collection_search_result = db.search(
+    C.Collection, {"name": collection_name, "group": _get_id_from_url(GROUP_URL)}
+)
+COLLECTION_URL = collection_search_result["result"][0]["url"]
 collection_obj = db.get(COLLECTION_URL)
-experiment_obj = db.get(EXPERIMENT_URL)
+
 
 # Create Data and File Object
 data_obj = C.Data(
@@ -22,11 +44,12 @@ data_obj = C.Data(
     name="Crude SEC of polystyrene",
     type="sec",
     sample_prep="test prep",
+    public=PUBLIC_FLAG,
 )
 db.save(data_obj)
 print("Data Node Saved")
 
-file_obj = C.File(group=group_obj, data=data_obj, source=FILE_PATH)
+file_obj = C.File(group=group_obj, data=data_obj, source=FILE_PATH, public=PUBLIC_FLAG)
 db.save(file_obj)
 print("File Node Saved")
 
@@ -36,7 +59,11 @@ print("Data Node Updated")
 
 # search for result
 material_search_result = db.search(
-    C.Material, {"name": "polystyrene"}
+    C.Material,
+    {
+        "group": _get_id_from_url(GROUP_URL),
+        "name": "polystyrene",
+    },
 )  # You may add more fields to the query
 if material_search_result["count"] == 0:
     print("Material Not Found,Raise an error")
