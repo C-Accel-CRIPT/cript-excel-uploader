@@ -56,7 +56,6 @@ print(ascii_art.chem.template)
 time.sleep(1)
 
 # Instantiate Sheet objects
-#
 material_sheet = sheets.MaterialSheet(path, "material")
 experiment_sheet = sheets.ExperimentSheet(path, "experiment")
 process_sheet = sheets.ProcessSheet(path, "process")
@@ -157,7 +156,7 @@ step_objs = uploaders.upload_step(
     step_sheet.parsed,
     public_flag,
 )
-print(f"step_objs:\n***********************")
+print(f"step_objs:{step_objs}\n***********************")
 uploaders.upload_stepIngredient(
     db,
     process_objs,
@@ -165,7 +164,7 @@ uploaders.upload_stepIngredient(
     material_objs,
     stepIngredients_sheet.parsed,
 )
-print(f"step_objs after adding ingredients:\n***********************")
+print(f"step_objs after adding ingredients:{step_objs}\n***********************")
 uploaders.upload_stepProduct(
     db,
     process_objs,
@@ -173,7 +172,7 @@ uploaders.upload_stepProduct(
     material_objs,
     stepProducts_sheet.parsed,
 )
-print(f"step_objs after adding products:\n***********************")
+print(f"step_objs after adding products:{step_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")

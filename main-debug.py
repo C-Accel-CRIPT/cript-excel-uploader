@@ -98,18 +98,19 @@ while True:
         )
 
         # Upload parsed data
+        print(f"***********************")
         group_obj = uploaders.upload_group(
             db,
             group,
         )
-        print(f"***********************")
+        print(f"group_obj:{group_obj}\n***********************")
         coll_obj = uploaders.upload_collection(
             db,
             group_obj,
             collection,
             public_flag,
         )
-        print(f"***********************")
+        print(f"coll_obj:{coll_obj}\n***********************")
         expt_objs = uploaders.upload_experiment(
             db,
             group_obj,
@@ -117,7 +118,7 @@ while True:
             experiment_sheet.parsed,
             public_flag,
         )
-        print(f"***********************")
+        print(f"expt_objs:{expt_objs}\n***********************")
         data_objs = uploaders.upload_data(
             db,
             group_obj,
@@ -125,7 +126,7 @@ while True:
             data_sheet.parsed,
             public_flag,
         )
-        print(f"***********************")
+        print(f"data_objs:{data_objs}\n***********************")
         file_objs = uploaders.upload_file(
             db,
             group_obj,
@@ -133,7 +134,7 @@ while True:
             file_sheet.parsed,
             public_flag,
         )
-        print(f"***********************")
+        print(f"file_objs:{file_objs}\n***********************")
         material_objs = uploaders.upload_material(
             db,
             group_obj,
@@ -141,7 +142,7 @@ while True:
             material_sheet.parsed,
             public_flag,
         )
-        print(f"***********************")
+        print(f"material_objs:{material_objs}\n***********************")
         process_objs = uploaders.upload_process(
             db,
             group_obj,
@@ -149,7 +150,7 @@ while True:
             process_sheet.parsed,
             public_flag,
         )
-        print(f"***********************")
+        print(f"process_objs:{process_objs}\n***********************")
         step_objs = uploaders.upload_step(
             db,
             group_obj,
@@ -158,7 +159,7 @@ while True:
             step_sheet.parsed,
             public_flag,
         )
-        print(f"***********************")
+        print(f"step_objs:{step_objs}\n***********************")
         uploaders.upload_stepIngredient(
             db,
             process_objs,
@@ -166,7 +167,9 @@ while True:
             material_objs,
             stepIngredients_sheet.parsed,
         )
-        print(f"***********************")
+        print(
+            f"step_objs after adding ingredients:{step_objs}\n***********************"
+        )
         uploaders.upload_stepProduct(
             db,
             process_objs,
@@ -174,7 +177,7 @@ while True:
             material_objs,
             stepProducts_sheet.parsed,
         )
-        print(f"***********************")
+        print(f"step_objs after adding products:{step_objs}\n***********************")
 
         # End
         print("\n\nAll data was uploaded successfully!\n")
