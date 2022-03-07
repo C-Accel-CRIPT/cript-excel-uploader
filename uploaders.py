@@ -252,10 +252,8 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
                 "name": data_name,
             },
         )
-        print(f"data_search_result{data_search_result}")
         if data_search_result["count"] > 0:
             url = data_search_result["results"][0]["url"]
-            print(f"url:{url}")
             datum_obj = api.get(url)
             print(f"Data node [{datum_obj.name}] already exists")
         else:
@@ -384,23 +382,20 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
             if identity_search_result["count"] > 0:
                 # Add Identity object to identity_urls dict
                 identity_url = identity_search_result["results"][0]["url"]
-                identity_objs[material_name] = api.get(identity_url)
-                print(
-                    f"Identity node [{identity_objs[material_name].name}] already exists"
+                identity_obj = api.get(identity_url)
+                print(f"Identity node [{identity_obj.name}] already exists")
+            elif len(material["iden"]) > 0:
+                # Create Identity
+                identity_obj = C.Identity(
+                    group=group_obj,
+                    public=public_flag,
+                    **material["iden"],
                 )
+                # Save Identity
+                api.save(identity_obj)
+                print(f"Identity node [{identity_obj.name}] created")
             else:
-                if len(material["iden"]) > 0:
-                    # Create Identity
-                    identity_obj = C.Identity(
-                        group=group_obj,
-                        public=public_flag,
-                        **material["iden"],
-                    )
-                    # Save Identity
-                    api.save(identity_obj)
-                    print(f"Identity node [{identity_obj.name}] created")
-                else:
-                    identity_obj = None
+                identity_obj = None
 
         # Update identity_objs
         identity_objs[material_name] = identity_obj
