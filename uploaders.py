@@ -106,6 +106,7 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
         experiment_search_result = api.search(
             C.Experiment,
             {
+                "group": _get_id_from_url(group_obj.url),
                 "collection": _get_id_from_url(collection_obj.url),
                 "name": experiment_name,
             },
@@ -245,11 +246,16 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
         # Search for Duplicates
         data_search_result = api.search(
             C.Data,
-            {"experiment": _get_id_from_url(experiment_obj.url), "name": data_name},
+            {
+                "group": _get_id_from_url(group_obj.url),
+                "experiment": _get_id_from_url(experiment_obj.url),
+                "name": data_name,
+            },
         )
-
+        print(f"data_search_result{data_search_result}")
         if data_search_result["count"] > 0:
             url = data_search_result["results"][0]["url"]
+            print(f"url:{url}")
             datum_obj = api.get(url)
             print(f"Data node [{datum_obj.name}] already exists")
         else:
@@ -307,6 +313,7 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
             file_search_result = api.search(
                 C.File,
                 {
+                    "group": _get_id_from_url(group_obj.url),
                     "data": _get_id_from_url(data_obj.url),
                     "name": file_obj.name,
                 },
@@ -353,6 +360,7 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
         material_name = material["base"]["name"]
 
         # Check if Identity exists
+        # Create Query
         query = {}
         cas = material["iden"].get("cas")
         if cas:
@@ -368,32 +376,42 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
             if bigsmiles:
                 query.update({"bigsmiles": bigsmiles})
 
-        identity_search_result = api.search(C.Identity, query)
-        if identity_search_result["count"] > 0:
-            # Add Identity object to identity_urls dict
-            identity_url = identity_search_result["results"][0]["url"]
-            identity_objs[material_name] = api.get(identity_url)
-            print(f"Identity node [{identity_objs[material_name].name}] already exists")
+        # Check Query is not empty
+        if len(query) == 0:
+            identity_obj = None
         else:
-            if len(material["iden"]) > 0:
-                # Create Identity
-                print(material["iden"])
-                identity_obj = C.Identity(
-                    group=group_obj,
-                    public=public_flag,
-                    **material["iden"],
+            identity_search_result = api.search(C.Identity, query)
+            if identity_search_result["count"] > 0:
+                # Add Identity object to identity_urls dict
+                identity_url = identity_search_result["results"][0]["url"]
+                identity_objs[material_name] = api.get(identity_url)
+                print(
+                    f"Identity node [{identity_objs[material_name].name}] already exists"
                 )
-                # Save Identity
-                api.save(identity_obj)
-                print(f"Identity node [{identity_obj.name}] created")
             else:
-                identity_obj = None
+                if len(material["iden"]) > 0:
+                    # Create Identity
+                    identity_obj = C.Identity(
+                        group=group_obj,
+                        public=public_flag,
+                        **material["iden"],
+                    )
+                    # Save Identity
+                    api.save(identity_obj)
+                    print(f"Identity node [{identity_obj.name}] created")
+                else:
+                    identity_obj = None
 
-            # Update identity_objs
-            identity_objs[material_name] = identity_obj
+        # Update identity_objs
+        identity_objs[material_name] = identity_obj
+
+        # Search for Material Node
         material_search_result = api.search(
             C.Material,
-            {"group": _get_id_from_url(group_obj.url), "name": material_name},
+            {
+                "group": _get_id_from_url(group_obj.url),
+                "name": material_name,
+            },
         )
         if material_search_result["count"] > 0:
             url = material_search_result["results"][0]["url"]
@@ -418,12 +436,7 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
                 material_obj.properties = _create_prop_list(parsed_props, data_objs)
 
             # Save material to DB
-            try:
-                api.save(material_obj)
-            except AttributeError as e:
-                print(
-                    f"AttributeError when saving '{material_obj.name}': {e}\nContinuing anyways..."
-                )
+            api.save(material_obj)
 
         # Add saved Material object to materials dict
         material_objs[material_name] = material_obj
@@ -456,7 +469,12 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
         experiment_obj = experiment_objs[parsed_process["expt"]]
 
         process_search_result = api.search(
-            C.Process, {"group": _get_id_from_url(group_obj.url), "name": process_name}
+            C.Process,
+            {
+                "group": _get_id_from_url(group_obj.url),
+                "experiment": _get_id_from_url(experiment_obj.url),
+                "name": process_name,
+            },
         )
         if process_search_result["count"] > 0:
             url = process_search_result["results"][0]["url"]
