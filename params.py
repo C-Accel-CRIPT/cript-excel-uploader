@@ -158,6 +158,14 @@ params = {
             "names": ["specific mass"],
             "unit": "g/ml",
         },
+        "diffusivity": {
+            "names": [],
+            "unit": "meter**2/second",
+        },
+        "density_graft": {
+            "names": ["grafting density"],
+            "unit": None,
+        },
         "enth_crys": {
             "names": ["enthalpy of crystallization"],
             "unit": "J/mol",
@@ -219,6 +227,14 @@ params = {
         "molar_mass": {
             "names": [],
             "unit": "g/mol",
+        },
+        "modulus_elastic": {
+            "unit": "MPa",
+            "names": ["elastic modulus", "young modulus"],
+        },
+        "modulus_shear": {
+            "names": ["young modulus"],
+            "unit": "GPa",
         },
         "mw_d": {
             "names": [
@@ -287,6 +303,10 @@ params = {
             "names": ["refractive index"],
             "unit": None,
         },
+        "rate_biodegrade_mass": {"names": [], "unit": "g/day"},
+        "rate_biodegrade_dist": {"names": [], "unit": "mm/day"},
+        "rate_degrade_mass": {"names": [], "unit": "g/day"},
+        "rate_degrade_mole": {"names": [], "unit": "mole/day"},
         "solubility": {
             "names": [],
             "unit": "g/ml",
@@ -294,6 +314,14 @@ params = {
         "surface_tension": {
             "names": [],
             "unit": "J/m**2",
+        },
+        "stress_yield": {
+            "unit": "MPa",
+            "names": ["yield stress"],
+        },
+        "strain_failure": {
+            "unit": None,
+            "names": ["failure strain", "refractive index"],
         },
         "temp_autoignition": {
             "names": [
@@ -335,9 +363,33 @@ params = {
             "names": ["volumetric thermal expansion"],
             "unit": "1/k",
         },
+        "time_relax_e": {
+            "names": [],
+            "unit": "s",
+        },
+        "time_relax_long": {
+            "names": [],
+            "unit": "s",
+        },
+        "time_relax_seg": {
+            "names": [],
+            "unit": "s",
+        },
+        "time_reptation": {
+            "names": [],
+            "unit": "s",
+        },
         "vapor_pres": {
             "names": ["vapor pressure", "equilibrium vapor pressure"],
             "unit": "kPa",
+        },
+        "virial_coef_s": {
+            "names": [],
+            "unit": "cm**3*mole*gram**-2",
+        },
+        "virial_coef_t": {
+            "names": [],
+            "unit": "cm**3*mole*gram**-2",
         },
         "viscosity_dynamic": {
             "names": [""],
@@ -346,22 +398,6 @@ params = {
         "viscosity_kinematic": {
             "names": ["momentum diffusivity"],
             "unit": "cSt",
-        },
-        "modulus_elastic": {
-            "unit": "MPa",
-            "names": ["elastic modulus", "young modulus"],
-        },
-        "density_graft": {
-            "unit": None,
-            "names": ["grafting density"],
-        },
-        "stress_yield": {
-            "unit": "MPa",
-            "names": ["yield stress"],
-        },
-        "strain_failure": {
-            "unit": None,
-            "names": ["failure strain", "refractive index"],
         },
     },
     "process": {
@@ -459,6 +495,7 @@ params = {
             "names": ["rate constant"],
             "unit": None,
         },
+        "torque_curve": {"names": [], "unit": None},
     },
     "prop": {
         "method": {
