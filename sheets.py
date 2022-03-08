@@ -850,13 +850,13 @@ class StepProductSheet(Sheet):
                     else:
                         raise UnsupportedFieldName(field)
 
-                    if index != 0:
-                        if row["*process"] not in self.parsed:
-                            self.parsed[row["*process"]] = {}
-                        if int(row["*step_id"]) not in self.parsed[row["*process"]]:
-                            self.parsed[row["*process"]][int(row["*step_id"])] = []
-                        self.parsed[row["*process"]][int(row["*step_id"])].append(
-                            parsed_product
-                        )
+            if index != 0:
+                if row["*process"] not in self.parsed:
+                    self.parsed[row["*process"]] = {}
+                if int(row["*step_id"]) not in self.parsed[row["*process"]]:
+                    self.parsed[row["*process"]][int(row["*step_id"])] = []
+                self.parsed[row["*process"]][int(row["*step_id"])].append(
+                    parsed_product
+                )
 
         return self.parsed
