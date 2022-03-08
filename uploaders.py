@@ -61,7 +61,13 @@ def upload_collection(api, group_obj, coll_name, public_flag):
     """
     # Check if Collection exists
     start_time = time.time()
-    collection_search_result = api.search(C.Collection, {"name": coll_name})
+    collection_search_result = api.search(
+        C.Collection,
+        {
+            "group": _get_id_from_url(group_obj.url),
+            "name": coll_name,
+        },
+    )
     print(f"search_time:{time.time() - start_time}")
     if collection_search_result["count"] > 0:
         url = collection_search_result["results"][0]["url"]
