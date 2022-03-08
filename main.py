@@ -177,7 +177,8 @@ while True:
         print(f"***********************")
 
         # End
-        print("\n\nAll data was uploaded successfully!\n")
+        print(f"\n\nAll data was uploaded successfully!")
+        print(f"Have a check at {coll_obj.url}")
         time.sleep(5)
     except Exception:
         print(traceback.format_exc())
