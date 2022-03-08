@@ -4,6 +4,7 @@ CRIPT REST API Connector
 import os
 import requests
 import json
+import urllib
 from typing import Union
 from getpass import getpass
 
@@ -31,7 +32,6 @@ class API:
 
         :param url: The API endpoint URL.
         """
-
         self.url = url.rstrip("/")
         self.session = requests.Session()
         if token is None:
@@ -271,7 +271,10 @@ class API:
         """Generate the query URL slug."""
         slug = ""
         for key in query:
-            slug += f"{key}={query[key]}&"
+            value = query[key]
+            if isinstance(value, str):
+                value = urllib.parse.quote(value.encode("utf8"))
+            slug += f"{key}={value}&"
         return slug
 
     @beartype

@@ -5,7 +5,6 @@ from typing import Union
 
 from beartype import beartype
 from weakref import WeakSet
-from pathlib import Path
 
 from .errors import AddNodeError, RemoveNodeError, UnsavedNodeError
 
@@ -27,6 +26,19 @@ class Base:
     def __str__(self):
         return self._to_json()
 
+    def as_dict(self):
+        """
+        Convert a node object to a custom dict.
+
+        :return: The custom dict.
+        """
+        custom_dict = {}
+        for key, value in self.__dict__.items():
+            if "_" == key[0]:
+                key = key.lstrip("_")
+            custom_dict[key] = value
+        return custom_dict
+
     def print_json(self):
         print(self._to_json())
 
@@ -35,7 +47,7 @@ class Base:
 
     def _prep_for_upload(self):
         """Convert a node into a dict that can be sent to the API."""
-        node_dict = copy.deepcopy(self.__dict__)
+        node_dict = copy.deepcopy(self.as_dict())
         for key, value in node_dict.items():
             # Check if the value is a node
             if isinstance(value, Base):
@@ -328,17 +340,24 @@ class File(Base):
         self.url = url
         self.group = group
         self.data = data
-        self.source = source
-        if self.source:
-            self.name = os.path.basename(self.source)
-        else:
-            self.name = name
+        self.name = name
         self.id = id
+        self.source = source
         self.extension = extension
         self.external_source = external_source
         self.created_at = None
         self.updated_at = None
         self.public = public
+
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, value):
+        if os.path.exists(value):
+            self.name = os.path.basename(value)
+        self._source = value
 
 
 class Condition(Base):
