@@ -748,10 +748,13 @@ def upload_stepProduct(
         count = count + 1
 
         # Grab Process
-        process_obj = process_objs[process_name]
+        process_obj = process_objs.get(process_name)
+        if process_obj is None:
+            continue
+
         for step_id in parsed_stepProducts[process_name]:
             # Grab Step
-            step_obj = step_objs[process_name][step_id]
+            step_obj = step_objs[process_name].get(step_id)
             if step_obj is None:
                 continue
 
@@ -759,9 +762,9 @@ def upload_stepProduct(
             # _replace_field(parsed_step["base"], "step_type", "type")
             # _replace_field(parsed_step["base"], "step_descr", "description")
             # parsed_step["base"].pop("step_id")
-            for parsed_stepProducts in parsed_stepProducts[process_name][step_id]:
+            for stepProduct in parsed_stepProducts[process_name][step_id]:
                 # Create stepProduct
-                stepProduct_obj = material_objs[parsed_stepProducts["product"]]
+                stepProduct_obj = material_objs.get(stepProduct["product"])
                 if stepProduct_obj is None:
                     continue
                 # Save StepProduct
