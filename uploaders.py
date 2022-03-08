@@ -1,5 +1,6 @@
 import time
 import os
+import traceback
 
 import cript as C
 from config import BASE_URL
@@ -61,11 +62,11 @@ def upload_collection(api, group_obj, coll_name, public_flag):
     # Check if Collection exists
     start_time = time.time()
     collection_search_result = api.search(C.Collection, {"name": coll_name})
-    print(f"search_time:{time.time()-start_time}")
+    print(f"search_time:{time.time() - start_time}")
     if collection_search_result["count"] > 0:
         url = collection_search_result["results"][0]["url"]
         collection_obj = api.get(url)
-        print(f"get_time:{time.time()-start_time}")
+        print(f"get_time:{time.time() - start_time}")
     else:
         # Create Collection if it doesn't exist
         collection_obj = C.Collection(
@@ -101,7 +102,13 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
     :rtype: dict
     """
     experiment_objs = {}
+    count = 0
     for experiment_name in parsed_experiments:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"Experiment Uploaded: {count}/{len(parsed_experiments)}")
+        count = count + 1
+
         # Search for Duplicates
         experiment_search_result = api.search(
             C.Experiment,
@@ -148,7 +155,7 @@ def _create_cond_list(parsed_conds, data_objs=None):
         # Create Cond object
         cond = C.Condition(
             key=cond_key,
-            value=parsed_conds[cond_key]["value"],
+            value=float(parsed_conds[cond_key]["value"]),
             unit=parsed_conds[cond_key].get("unit"),
         )
 
@@ -182,7 +189,7 @@ def _create_prop_list(parsed_props, data_objs=None):
         # Create Prop object
         prop = C.Property(
             key=prop_key,
-            value=parsed_props[prop_key]["value"],
+            value=float(parsed_props[prop_key]["value"]),
             unit=parsed_props[prop_key].get("unit"),
             **attrs,
         )
@@ -219,7 +226,7 @@ def _replace_field(parsed_object, raw_key, replace_key):
 
 def _get_id_from_url(url: str):
     _id = url.rstrip("/").split("/")[-1]
-    return int(_id)
+    return str(_id)
 
 
 def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
@@ -238,7 +245,13 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     :rtype: dict
     """
     data_objs = {}
+    count = 0
     for data_name in parsed_data:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"Data Uploaded: {count}/{len(parsed_data)}")
+        count = count + 1
+
         parsed_datum = parsed_data[data_name]
         # Grab Experiment
         experiment_obj = experiment_objs[parsed_datum["expt"]]
@@ -293,27 +306,26 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
     :rtype: dict
     """
     file_objs = {}
+    count = 0
     for key in parsed_file:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"File Uploaded: {count}/{len(parsed_file)}")
+        count = count + 1
+
         file_dict = parsed_file[key]
         # Grab Data
         data_obj = data_objs[key]
         for file in file_dict:
             # Replace field name
             _replace_field(file["base"], "path", "source")
-            # Create File
-            file_obj = C.File(
-                group=group_obj,
-                data=data_obj,
-                public=public_flag,
-                **file["base"],
-            )
             # Search for Duplicates
             file_search_result = api.search(
                 C.File,
                 {
                     "group": _get_id_from_url(group_obj.url),
                     "data": _get_id_from_url(data_obj.url),
-                    "name": file_obj.name,
+                    "name": os.path.basename(file["base"]["source"]),
                 },
             )
 
@@ -322,10 +334,15 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
                 file_obj = api.get(url)
                 print(f"File node [{file_obj.name}] already exists")
             else:
+                # Create File
+                file_obj = C.File(
+                    group=group_obj,
+                    data=data_obj,
+                    public=public_flag,
+                    **file["base"],
+                )
                 # Save Data
                 api.save(file_obj)
-
-            api.refresh(data_obj)
 
             # Update file_urls
             if key not in file_objs:
@@ -354,7 +371,13 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     """
     identity_objs = {}
     material_objs = {}
+    count = 0
     for material in parsed_material.values():
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"Material Uploaded: {count}/{len(parsed_material)}")
+        count = count + 1
+
         material_name = material["base"]["name"]
 
         # Check if Identity exists
@@ -392,8 +415,16 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
                     **material["iden"],
                 )
                 # Save Identity
-                api.save(identity_obj)
-                print(f"Identity node [{identity_obj.name}] created")
+                try:
+                    api.save(identity_obj)
+                    print(f"Identity node [{identity_obj.name}] created")
+                except Exception:
+                    print(
+                        f"[WARNING]Identity Save Failed."
+                        f"Identity: [{identity_obj.name}]"
+                    )
+                    print(traceback.format_exc())
+                    identity_obj = None
             else:
                 identity_obj = None
 
@@ -430,8 +461,14 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
             if len(parsed_props) > 0:
                 material_obj.properties = _create_prop_list(parsed_props, data_objs)
 
-            # Save material to DB
-            api.save(material_obj)
+            try:
+                # Save material to DB
+                api.save(material_obj)
+            except Exception:
+                print(
+                    f"[WARNING]Material Save Failed." f"Material:[{material_obj.name}]"
+                )
+                material_obj = None
 
         # Add saved Material object to materials dict
         material_objs[material_name] = material_obj
@@ -457,7 +494,13 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
     :rtype: dict
     """
     process_objs = {}
+    count = 0
     for process_name in parsed_processes:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"Process Uploaded: {count}/{len(parsed_processes)}")
+        count = count + 1
+
         parsed_process = parsed_processes[process_name]
 
         # Grab Experiment
@@ -485,7 +528,11 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
                 **parsed_process["base"],
             )
             # Save Process
-            api.save(process_obj)
+            try:
+                api.save(process_obj)
+            except Exception:
+                print(f"[WARNING]Process Save Failed." f"Process:[{process_obj.name}]")
+                process_obj = None
 
         process_objs[process_name] = process_obj
 
@@ -512,9 +559,17 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
     :rtype: dict
     """
     step_objs = {}
+    count = 0
     for process_name in parsed_steps:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"Step Uploaded: {count}/{len(parsed_steps)}")
+        count = count + 1
+
         # Grab Process
         process_obj = process_objs[process_name]
+        if process_obj is None:
+            continue
 
         for step_id in parsed_steps[process_name]:
             parsed_step = parsed_steps[process_name][step_id]
@@ -529,7 +584,9 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
             if step_search_result["count"] > 0:
                 url = step_search_result["results"][0]["url"]
                 step_obj = api.get(url)
-                print(f"Step node [{step_obj.step_id}] already exists")
+                print(
+                    f"Step node [{step_obj.step_id}] for Process [{process_obj.name}] already exists"
+                )
             else:
                 # Replace field name
                 _replace_field(parsed_step["base"], "step_type", "type")
@@ -553,7 +610,16 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
                     step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
 
                 # Save Process
-                api.save(step_obj)
+                try:
+                    api.save(step_obj)
+                except Exception:
+                    print(
+                        f"[WARNING]Step Save Failed"
+                        f"Step:[{step_obj.step_id}],"
+                        f"Process:[{process_obj.name}]"
+                    )
+                    print(traceback.format_exc())
+                    step_obj = None
 
             if process_name not in step_objs:
                 step_objs[process_name] = {}
@@ -581,12 +647,23 @@ def upload_stepIngredient(
     :return: (name) : (step object) pair
     :rtype: dict
     """
+    count = 0
     for process_name in parsed_stepIngredients:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"StepIngredient Uploaded: {count}/{len(parsed_stepIngredients)}")
+        count = count + 1
+
         # Grab Process
         process_obj = process_objs[process_name]
+        if process_obj is None:
+            continue
+
         for step_id in parsed_stepIngredients[process_name]:
             # Grab Step
             step_obj = step_objs[process_name][step_id]
+            if step_obj is None:
+                continue
 
             # Replace field name
             # _replace_field(parsed_step["base"], "step_type", "type")
@@ -600,29 +677,48 @@ def upload_stepIngredient(
                 ingredient_quantities = parsed_stepIngredient.pop("quantity")
                 if len(ingredient_name_list) == 1:
                     material_obj = material_objs[ingredient_name]
+                    if material_obj is None:
+                        continue
                     stepIngredient_obj = C.MaterialIngredient(
                         ingredient=material_obj,
                         quantity=_create_quantity_list(ingredient_quantities),
                         **parsed_stepIngredient,
                     )
-
                 elif len(ingredient_name_list) == 2:
                     from_process_name = ingredient_name_list[0]
                     from_step_id = ingredient_name_list[1]
-                    from_step_obj = step_objs[from_process_name][from_step_id]
+                    from_step_obj = step_objs[from_process_name].get(from_step_id)
+                    if from_step_obj is None:
+                        continue
                     stepIngredient_obj = C.IntermediateIngredient(
                         ingredient=from_step_obj,
                         quantity=_create_quantity_list(ingredient_quantities),
                         **parsed_stepIngredient,
                     )
 
-                # Save StepIngredient
                 step_obj.add_ingredient(stepIngredient_obj)
                 print(
                     f"StepIngredient [{stepIngredient_obj.ingredient.name}] "
-                    f"has been added to Step [{step_obj.step_id}]"
+                    f"has been added to Step [{step_obj.step_id}] "
+                    f"for Process [{process_obj.name}]"
                 )
-            api.save(step_obj)
+
+            # Save StepIngredient
+            try:
+                api.save(step_obj)
+                print(
+                    f"StepIngredients has been saved "
+                    f"to Step [{step_obj.step_id}] "
+                    f"for Process [{process_obj.name}]"
+                )
+            except Exception:
+                print(
+                    f"[WARNING]StepIngredient Save Failed. "
+                    f"Material:[{stepIngredient_obj.ingredient.name}],"
+                    f"Step:[{step_obj.step_id}],"
+                    f"Process:[{process_obj.name}]"
+                )
+                print(traceback.format_exc())
 
 
 def upload_stepProduct(
@@ -644,25 +740,44 @@ def upload_stepProduct(
     :return: (name) : (step object) pair
     :rtype: dict
     """
+    count = 0
     for process_name in parsed_stepProducts:
+        # process-track
+        if count != 0 and count % 10 == 0:
+            print(f"StepProduct Uploaded: {count}/{len(parsed_stepProducts)}")
+        count = count + 1
+
         # Grab Process
         process_obj = process_objs[process_name]
         for step_id in parsed_stepProducts[process_name]:
             # Grab Step
             step_obj = step_objs[process_name][step_id]
+            if step_obj is None:
+                continue
 
             # Replace field name
             # _replace_field(parsed_step["base"], "step_type", "type")
             # _replace_field(parsed_step["base"], "step_descr", "description")
             # parsed_step["base"].pop("step_id")
             for parsed_stepProducts in parsed_stepProducts[process_name][step_id]:
-                # Create stepIngredient
+                # Create stepProduct
                 stepProduct_obj = material_objs[parsed_stepProducts["product"]]
-
-                # Save StepIngredient
-                step_obj.add_product(stepProduct_obj)
-                print(
-                    f"StepIngredient [{stepProduct_obj.name}] "
-                    f"has been added to Step [{step_obj.step_id}]"
-                )
-            api.save(step_obj)
+                if stepProduct_obj is None:
+                    continue
+                # Save StepProduct
+                try:
+                    step_obj.add_product(stepProduct_obj)
+                    api.save(step_obj)
+                    print(
+                        f"StepProduct [{stepProduct_obj.name}] "
+                        f"has been added to Step [{step_obj.step_id}] "
+                        f"for Process [{process_obj.name}]"
+                    )
+                except Exception:
+                    print(
+                        f"[WARNING]StepProduct Save Failed. "
+                        f"Material:[{stepProduct_obj.name}],"
+                        f"Step:[{step_obj.step_id}],"
+                        f"Process:[{process_obj.name}]"
+                    )
+                    print(traceback.format_exc())
