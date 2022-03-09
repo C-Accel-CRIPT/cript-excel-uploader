@@ -161,7 +161,7 @@ def _create_cond_list(parsed_conds, data_objs=None):
         # Create Cond object
         cond = C.Condition(
             key=cond_key,
-            value=float(parsed_conds[cond_key]["value"]),
+            value=parsed_conds[cond_key]["value"],
             unit=parsed_conds[cond_key].get("unit"),
         )
 
@@ -195,7 +195,7 @@ def _create_prop_list(parsed_props, data_objs=None):
         # Create Prop object
         prop = C.Property(
             key=prop_key,
-            value=float(parsed_props[prop_key]["value"]),
+            value=parsed_props[prop_key]["value"],
             unit=parsed_props[prop_key].get("unit"),
             **attrs,
         )
@@ -325,6 +325,9 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
         for file in file_dict:
             # Replace field name
             _replace_field(file["base"], "path", "source")
+            file["base"]["source"] = "".join(
+                [char for char in file["base"]["source"] if ord(char) < 128]
+            )
             # Search for Duplicates
             file_search_result = api.search(
                 C.File,
@@ -340,6 +343,7 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
                 file_obj = api.get(url)
                 print(f"File node [{file_obj.name}] already exists")
             else:
+                print(f"create file node[{file}]")
                 # Create File
                 file_obj = C.File(
                     group=group_obj,
