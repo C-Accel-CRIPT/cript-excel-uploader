@@ -22,6 +22,7 @@ class Sheet:
         self.df = pd.read_excel(path, sheet_name=sheet_name)
         self.df.dropna(how="all", inplace=True)
         self.cols = self.df.columns
+        self.errors = []
 
     def _skip_col(self, col, val):
         """
@@ -59,9 +60,11 @@ class Sheet:
                 if field == param or field in params[key][param]["names"]:
                     return param
 
-        raise UnsupportedFieldName(field)
+        self.errors.append(
+            f"UnsupportedFieldName: " f"Field [{field}] is not supported. Have a check."
+        )
 
-    def _check_required_cols(self, required_cols, cols, sheet_name):
+    def _check_required_cols(self, required_cols, cols):
         """
         Validate that all required columns are present.
 
@@ -69,16 +72,16 @@ class Sheet:
         :type required_cols: list
         :param cols: a list contains all the column names in a sheet
         :type cols: list
-        :param sheet_name: sheet_name
-        :type sheet_name: str
         :raises: MissingRequiredFieldError: Missing required column in the excel template
         """
         for required_col in required_cols:
             if required_col in cols:
-                continue
-
-            required_col = required_col.replace("*", "")
-            raise MissingRequiredFieldError(required_col, sheet_name)
+                pass
+            else:
+                self.errors.append(
+                    f"MissingRequiredField: "
+                    f"Field [{required_col}] is a required field."
+                )
 
     def _check_either_or_cols(self, either_or_cols, cols, sheet_name, message=""):
         """
@@ -98,8 +101,11 @@ class Sheet:
                 exists = True
                 break
 
-        if exists == False:
-            raise MissingRequiredFieldError("quantity", sheet_name, message)
+        if not exists:
+            self.errors.append(
+                f"MissingRequiredField: "
+                f"You must have at least one of the fields in [{either_or_cols}]"
+            )
 
     def _check_unit(self, supported_unit, input_unit, field, sheet_name):
         """
@@ -117,17 +123,20 @@ class Sheet:
         :raise UnsupportedUnitError
         :raise MissingUnitError
         """
-        if supported_unit is not None and input_unit is not None:
-            if input_unit == supported_unit:
-                return True
-            else:
-                raise UnsupportedUnitError(input_unit, field)
-        elif supported_unit is not None and input_unit is None:
-            raise MissingUnitError(field, sheet_name)
-        elif supported_unit is None and input_unit is not None:
-            raise UnsupportedUnitError(input_unit, field)
-        else:
+        if (
+            supported_unit is not None
+            and input_unit is not None
+            and input_unit == supported_unit
+        ):
             return True
+        elif supported_unit is None and input_unit is None:
+            return True
+        else:
+            self.errors.append(
+                f"UnsupportedUnitName: "
+                f"[{input_unit}] is not supported for field [{field}]. "
+                f"Supported unit: [{supported_unit}]"
+            )
 
     def _parse_data(self, col_list, parsed_object, value, parsed_data, prop_params):
         """
@@ -153,7 +162,12 @@ class Sheet:
 
         # Ensure the data is being applied to something
         if len(col_list) == 1:
-            raise DataAssignmentError
+            self.errors.append(
+                f"DataAssignmentError: "
+                f"You need to apply [{col_list[0]}] to something. "
+                f"Eg. (property):data, (condition):data"
+            )
+            return None
 
         # Check if data should be applied to a property or condition
         prev_field = col_list[-2]
@@ -162,7 +176,12 @@ class Sheet:
         elif prev_field in params["cond"]:
             parent = parsed_object["cond"][prev_field]
         else:
-            raise DataAssignmentError
+            self.errors.append(
+                f"DataAssignmentError: "
+                f"You need to apply [{col_list[0]}] to something. "
+                f"Eg. (property):data, (condition):data"
+            )
+            return None
 
         parent["data"] = value
 
