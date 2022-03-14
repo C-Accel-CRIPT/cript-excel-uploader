@@ -18,18 +18,69 @@ class Sheet:
     def __init__(self, path, sheet_name):
         self.path = path
         self.sheet_name = sheet_name
-
-        self.df = pd.read_excel(path, sheet_name=sheet_name)
-        self.df.dropna(how="all", inplace=True)
-        self.cols = self.df.columns
+        self.df = None
+        self.cols = None
+        self.required_cols = []
+        self.either_or_cols = []
+        self.col_lists_dict = {}
+        self.unit_dict = {}
         self.errors = []
+        self.has_error = False
+        self._data_preprocess()
 
-    def _skip_col(self, col, val):
+    def _data_preprocess(self):
+        try:
+            self.df = pd.read_excel(self.path, sheet_name=self.sheet_name)
+        except ValueError:
+            print(f"Worksheet named [{self.sheet_name}] not found in the excel file.")
+
+        # Drop NaN Columns:
+        self.df.dropna(axis="columns", how="all", inplace=True)
+
+        # Drop Commented Columns
+        for col in self.df.columns:
+            if col[0] == "#":
+                self.df = self.df.drop(col, 1)
+
+        # Clean Col Name
+        self.cols = [col.replace("*", "") for col in self.df.columns]
+        self.df.columns = self.df.cols
+
+        # Create Col List
+        for col in self.cols:
+            self.col_lists_dict[col] = col.split(":")
+
+        # Standardize Field
+        for col in self.col_lists_dict:
+            col_list = self.col_lists_dict[col]
+            field = col_list[-1]
+
+            col_list[-1] = self._standardize_field(field)
+            self.col_lists_dict[col] = col_list
+
+        # Check Unit
+        for col in self.cols:
+            if pd.isna(self.df.loc[0, col]):
+                self.unit_dict[col] = None
+            else:
+                self.unit_dict[col] = self.df.loc[0, col].strip()
+
+        # Drop Unit Row
+        self.df.drop(labels=0, axis=0)
+        # Drop NaN Rows
+        self.df.dropna(axis="rows", how="all", inplace=True)
+
+        # Remove Space
+        for index, row in self.df.iterrows():
+            for col in self.cols:
+                value = row[col]
+                if isinstance(value, str):
+                    self.df.loc[index, col] = value.strip()
+
+    def _skip_col(self, val):
         """
         Check if a column should be skipped.
 
-        :param col: column name (eg.*name)
-        :type col: str
         :param val: specific value belongs to the column (eg.Exp1)
         :type val: str
         :return: boolean result whether the col should be skipped
@@ -37,10 +88,6 @@ class Sheet:
         """
         # Check if val empty
         if pd.isna(val):
-            return True
-
-        # Check if col starts with '#'
-        if col[0] == "#":
             return True
 
         return False
@@ -60,52 +107,45 @@ class Sheet:
                 if field == param or field in params[key][param]["names"]:
                     return param
 
-        self.errors.append(
-            f"UnsupportedFieldName: " f"Field [{field}] is not supported. Have a check."
-        )
+        exception = UnsupportedFieldName(field, self.sheet_name)
+        self.errors.append(exception.__str__())
 
-    def _check_required_cols(self, required_cols, cols):
+    def _check_required_cols(self):
         """
         Validate that all required columns are present.
-
-        :param required_cols: a list contains required column names
-        :type required_cols: list
-        :param cols: a list contains all the column names in a sheet
-        :type cols: list
-        :raises: MissingRequiredFieldError: Missing required column in the excel template
         """
-        for required_col in required_cols:
-            if required_col in cols:
+        for required_col in self.required_cols:
+            if required_col in self.cols:
                 pass
             else:
-                self.errors.append(
-                    f"MissingRequiredField: "
-                    f"Field [{required_col}] is a required field."
+                exception = MissingRequiredFieldError(
+                    field=required_col,
+                    sheet=self.sheet_name,
+                    is_either_or_cols=False,
                 )
+                self.errors.append(exception.__str__())
 
-    def _check_either_or_cols(self, either_or_cols, cols, sheet_name, message=""):
+    def _check_either_or_cols(self):
         """
         Validate that at least one of the either/or columns are present.
         Validation passes when we find one either_or_col name in cols
-
-        :param either_or_cols: a list contains either_or column names
-        :type either_or_cols: list
-        :param cols list list, a list contains all the column names in a sheet
-        :param sheet_name string, sheet_name
-        :param message string, A message tells the user what's either_or column
-        :raises: MissingRequiredFieldError: Missing either_or column in the excel template
         """
         exists = False
-        for either_or_col in either_or_cols:
-            if either_or_col in cols:
+        if len(self.either_or_cols) == 0:
+            exists = True
+
+        for either_or_col in self.either_or_cols:
+            if either_or_col in self.cols:
                 exists = True
                 break
 
         if not exists:
-            self.errors.append(
-                f"MissingRequiredField: "
-                f"You must have at least one of the fields in [{either_or_cols}]"
+            exception = MissingRequiredFieldError(
+                field=self.either_or_cols,
+                sheet=self.sheet_name,
+                is_either_or_cols=True,
             )
+            self.errors.append(exception.__str__())
 
     def _check_unit(self, supported_unit, input_unit, field, sheet_name):
         """
@@ -132,11 +172,13 @@ class Sheet:
         elif supported_unit is None and input_unit is None:
             return True
         else:
-            self.errors.append(
-                f"UnsupportedUnitName: "
-                f"[{input_unit}] is not supported for field [{field}]. "
-                f"Supported unit: [{supported_unit}]"
+            exception = UnsupportedUnitError(
+                input_unit=input_unit,
+                supported_unit=supported_unit,
+                field=field,
+                sheet=self.sheet_name,
             )
+            self.errors.append(exception.__str__())
 
     def _parse_data(self, col_list, parsed_object, value, parsed_data, prop_params):
         """
@@ -158,15 +200,18 @@ class Sheet:
         """
         # Check if data name exists in the data sheet
         if value not in parsed_data:
-            raise ValueDoesNotExist(value, "data")
+            exception = ValueDoesNotExist(value, "data")
+            self.errors.append(exception.__str__())
+            return None
 
         # Ensure the data is being applied to something
         if len(col_list) == 1:
-            self.errors.append(
-                f"DataAssignmentError: "
-                f"You need to apply [{col_list[0]}] to something. "
-                f"Eg. (property):data, (condition):data"
+            exception = DataAssignmentError(
+                col_list=col_list,
+                sheet=self.sheet_name,
+                type=1,
             )
+            self.errors.append(exception.__str__())
             return None
 
         # Check if data should be applied to a property or condition
@@ -176,11 +221,12 @@ class Sheet:
         elif prev_field in params["cond"]:
             parent = parsed_object["cond"][prev_field]
         else:
-            self.errors.append(
-                f"DataAssignmentError: "
-                f"You need to apply [{col_list[0]}] to something. "
-                f"Eg. (property):data, (condition):data"
+            exception = DataAssignmentError(
+                col_list=col_list,
+                sheet=self.sheet_name,
+                type=2,
             )
+            self.errors.append(exception.__str__())
             return None
 
         parent["data"] = value
@@ -279,14 +325,14 @@ class ExperimentSheet(Sheet):
     """Experiment Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
+
+        self.required_cols = ["name"]
+        self.parsed = {}
 
     def parse(self):
         # Validate required columns
-        required_cols = ["*name"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+        self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_experiment = {}
@@ -319,14 +365,14 @@ class DataSheet(Sheet):
     """Data Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
+
+        self.required_cols = ["experiment", "name", "data_type"]
+        self.parsed = {}
 
     def parse(self, parsed_experiments):
         # Validate required columns
-        required_cols = ["*experiment", "*name", "*data_type"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+        self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_datum = {
@@ -373,14 +419,14 @@ class FileSheet(Sheet):
     """File Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
+
+        required_cols = ["data", "path"]
+        self.parsed = {}
 
     def parse(self, parsed_data):
         # Validate required columns
-        required_cols = ["*data", "*path"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+        self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_datum = {
@@ -393,7 +439,7 @@ class FileSheet(Sheet):
                     value = value.strip()
 
                 # Check if col should be skipped
-                if self._skip_col(col, value) == True:
+                if self._skip_col(value) == True:
                     continue
 
                 # Clean col and create col_list
@@ -430,16 +476,16 @@ class MaterialSheet(Sheet):
     """Material Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
+
+        self.parsed = {}
+        required_cols = ["name"]
 
     def parse(self, parsed_data):
         unit = {}
 
         # Validate required columns
-        required_cols = ["*name"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+        self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_material = {
@@ -532,14 +578,14 @@ class ProcessSheet(Sheet):
     """Process Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
+
+        self.required_cols = ["experiment", "name"]
+        self.parsed = {}
 
     def parse(self, parsed_experiments):
         # Validate required columns
-        required_cols = ["*experiment", "*name"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+        self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_process = {
@@ -589,16 +635,17 @@ class StepSheet(Sheet):
     """Step Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
+
+        self.required_cols = ["process", "step_id", "step_type"]
+        self.parsed = {}
 
     def parse(self, parsed_data, parsed_process):
         unit = {}
 
         # Validate required columns
-        required_cols = ["*process", "*step_id", "*step_type"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+
+        self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_step = {
@@ -679,123 +726,119 @@ class StepIngredientSheet(Sheet):
     """StepIngredient Excel sheet."""
 
     def __init__(self, path, sheet_name):
-        self.parsed = {}
-
         super().__init__(path, sheet_name)
 
-    def parse(
-        self,
-        parsed_materials,
-        parsed_process,
-        parsed_steps,
-    ):
-        unit = {}
-        # Validate required columns
-        required_cols = ["*process", "*step_id", "*keyword", "*ingredient"]
-        self._check_required_cols(required_cols, self.cols, self.sheet_name)
+        self.parsed = {}
+        self.required_cols = ["process", "step_id", "keyword", "ingredient"]
+        self.either_or_cols = ["mole", "mass", "volume"]
 
-        # Validate either/or columns
-        either_or_cols = ["mole", "mass", "volume"]
-        message = " Options: mole, mass, and/or volume."
-        self._check_either_or_cols(either_or_cols, self.cols, self.sheet_name, message)
 
-        for index, row in self.df.iterrows():
-            parsed_ingredient = {
-                "quantity": {},
-            }
-            for col in self.cols:
-                if index == 0:
-                    if pd.isna(row[col]):
-                        unit[col] = None
-                    else:
-                        unit[col] = row[col]
-                    # print(f"col:{col},value:{unit[col]}")
+def parse(
+    self,
+    parsed_materials,
+    parsed_process,
+    parsed_steps,
+):
+    unit = {}
+    # Validate required columns
+    self._check_required_cols()
+
+    # Validate either/or columns
+    self._check_either_or_cols()
+
+    for index, row in self.df.iterrows():
+        parsed_ingredient = {
+            "quantity": {},
+        }
+        for col in self.cols:
+            if index == 0:
+                if pd.isna(row[col]):
+                    unit[col] = None
                 else:
-                    # Define and clean value
-                    value = row[col]
-                    if col == "*step_id":
-                        # print(f"index:{index},row:{row}")
-                        value = int(value)
-                    if isinstance(value, str):
-                        value = value.strip()
+                    unit[col] = row[col]
+                # print(f"col:{col},value:{unit[col]}")
+            else:
+                # Define and clean value
+                value = row[col]
+                if col == "*step_id":
+                    # print(f"index:{index},row:{row}")
+                    value = int(value)
+                if isinstance(value, str):
+                    value = value.strip()
 
-                    # Check if col should be skipped
-                    if self._skip_col(col, value) == True:
+                # Check if col should be skipped
+                if self._skip_col(col, value) == True:
+                    continue
+
+                # Clean col and create col_list
+                col_temp = col.replace("*", "")
+                col_list = col_temp.split(":")
+
+                # Define field
+                field = col_list[-1]
+
+                # Handle process field
+                if field == "process":
+                    if value not in parsed_process:
+                        raise ValueDoesNotExist(value, "process")
+                    continue
+
+                # Handle step_id field
+                if field == "step_id":
+                    if value not in parsed_steps[row["*process"]]:
+                        raise ValueDoesNotExist(value, "step_id")
+                    continue
+
+                # Handle ingredient field
+                if field == "ingredient":
+                    ingredient_name_list = value.split(":")
+                    if len(ingredient_name_list) == 1 and value in parsed_materials:
+                        parsed_ingredient[field] = value
                         continue
-
-                    # Clean col and create col_list
-                    col_temp = col.replace("*", "")
-                    col_list = col_temp.split(":")
-
-                    # Define field
-                    field = col_list[-1]
-
-                    # Handle process field
-                    if field == "process":
-                        if value not in parsed_process:
-                            raise ValueDoesNotExist(value, "process")
-                        continue
-
-                    # Handle step_id field
-                    if field == "step_id":
-                        if value not in parsed_steps[row["*process"]]:
-                            raise ValueDoesNotExist(value, "step_id")
-                        continue
-
-                    # Handle ingredient field
-                    if field == "ingredient":
-                        ingredient_name_list = value.split(":")
-                        if len(ingredient_name_list) == 1 and value in parsed_materials:
+                    elif len(ingredient_name_list) == 2:
+                        from_process = ingredient_name_list[0]
+                        from_step_id = ingredient_name_list[1]
+                        if (
+                            from_process in parsed_steps
+                            and from_step_id in parsed_steps[from_process]
+                        ):
                             parsed_ingredient[field] = value
                             continue
-                        elif len(ingredient_name_list) == 2:
-                            from_process = ingredient_name_list[0]
-                            from_step_id = ingredient_name_list[1]
-                            if (
-                                from_process in parsed_steps
-                                and from_step_id in parsed_steps[from_process]
-                            ):
-                                parsed_ingredient[field] = value
-                                continue
-                        raise ValueDoesNotExist(value, "ingredient")
+                    raise ValueDoesNotExist(value, "ingredient")
 
-                    # Handle process ingredient fields
-                    if field in params["step_reagent_and_product"]:
-                        supported_unit = params["step_reagent_and_product"][field][
-                            "unit"
-                        ]
-                        input_unit = unit.get(col)
-                        self._check_unit(
-                            supported_unit,
-                            input_unit,
-                            field,
-                            self.sheet_name,
-                        )
-                        if input_unit:
-                            # Skip if a quantity field has already been parsed
-                            if len(parsed_ingredient["quantity"]) > 0:
-                                continue
+                # Handle process ingredient fields
+                if field in params["step_reagent_and_product"]:
+                    supported_unit = params["step_reagent_and_product"][field]["unit"]
+                    input_unit = unit.get(col)
+                    self._check_unit(
+                        supported_unit,
+                        input_unit,
+                        field,
+                        self.sheet_name,
+                    )
+                    if input_unit:
+                        # Skip if a quantity field has already been parsed
+                        if len(parsed_ingredient["quantity"]) > 0:
+                            continue
 
-                            # Add quantity field with units
-                            parsed_ingredient["quantity"][field] = {
-                                "value": value,
-                                "unit": input_unit,
-                            }
-                        else:
-                            parsed_ingredient[field] = value
+                        # Add quantity field with units
+                        parsed_ingredient["quantity"][field] = {
+                            "value": value,
+                            "unit": input_unit,
+                        }
                     else:
-                        raise UnsupportedFieldName(field)
+                        parsed_ingredient[field] = value
+                else:
+                    raise UnsupportedFieldName(field)
 
-            if index != 0:
-                if row["*process"] not in self.parsed:
-                    self.parsed[row["*process"]] = {}
-                if int(row["*step_id"]) not in self.parsed[row["*process"]]:
-                    self.parsed[row["*process"]][int(row["*step_id"])] = []
-                self.parsed[row["*process"]][int(row["*step_id"])].append(
-                    parsed_ingredient
-                )
+        if index != 0:
+            if row["*process"] not in self.parsed:
+                self.parsed[row["*process"]] = {}
+            if int(row["*step_id"]) not in self.parsed[row["*process"]]:
+                self.parsed[row["*process"]][int(row["*step_id"])] = []
+            self.parsed[row["*process"]][int(row["*step_id"])].append(parsed_ingredient)
 
-        return self.parsed
+    return self.parsed
 
 
 class StepProductSheet(Sheet):

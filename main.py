@@ -1,12 +1,13 @@
 import os
 import time
+import pandas as pd
 import traceback
 
 import ascii_art
 import sheets
 import uploaders
 
-from cript.errors import APIAuthError
+
 from errors import GroupRelatedError
 
 # Display title
@@ -18,9 +19,6 @@ while token is None:
     token = input("\nAPI token: ")
     try:
         db = uploaders.connect(token)
-    except APIAuthError as e:
-        print(f"{e}")
-        token = None
     except Exception as e:
         print(e.with_traceback())
         token = None
@@ -44,9 +42,11 @@ while True:
 
         # Get Excel file path
         path = input("\nExcel file path: ")
-        """To do: file type validation"""
-        while not os.path.exists(path):
-            print("Couldn't find the file. Try again.\n")
+        while not os.path.exists(path) or os.path.splitext(path)[-1] != ".xlsx":
+            if os.path.exists(path):
+                print("Couldn't find the file. Try again.\n")
+            else:
+                print("This is not an excel file. Try again.\n")
             path = input("Excel file path: ")
 
         public_flag = None
