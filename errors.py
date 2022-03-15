@@ -60,7 +60,7 @@ class ValueDoesNotExist(Exception):
         return f"'{self.value}' does not exist in the {self.sheet} Excel sheet."
 
 
-class MissingRequiredFieldError(Exception):
+class MissingRequiredField(Exception):
     def __init__(self, field, sheet, is_either_or_cols=False):
         self.field = field
         self.sheet = sheet
@@ -81,6 +81,30 @@ class MissingRequiredFieldError(Exception):
                 f"Field {self.field}, "
                 f"Must include at least one of the fields from the list."
             )
+
+
+# Add it to validator
+# class MissingRequiredFieldValue(Exception):
+#     def __init__(self, index, field, sheet, is_either_or_cols=False):
+#         self.field = field
+#         self.sheet = sheet
+#         self.is_either_or_cols = is_either_or_cols
+#
+#     def __str__(self):
+#         if not self.is_either_or_cols:
+#             return (
+#                 f"MissingRequiredFieldError: "
+#                 f"Sheet [{self.sheet}], "
+#                 f"Field [{self.field}], "
+#                 f"Please add the missing required field to the sheet."
+#             )
+#         else:
+#             return (
+#                 f"MissingRequiredFieldError: "
+#                 f"Sheet [{self.sheet}], "
+#                 f"Field {self.field}, "
+#                 f"Must include at least one of the fields from the list."
+#             )
 
 
 class UnsupportedUnitError(Exception):
