@@ -1,14 +1,12 @@
 import pandas as pd
+import re
 
 from params import params
 from errors import (
     DataAssignmentError,
     UnsupportedFieldName,
-    UnsupportedValue,
-    ValueDoesNotExist,
     MissingRequiredField,
     UnsupportedUnitError,
-    MissingUnitError,
 )
 
 
@@ -19,14 +17,23 @@ class Sheet:
         self.path = path
         self.sheet_name = sheet_name
         self.df = None
+
         self.cols = None
         self.required_cols = []
         self.either_or_cols = []
+        self.not_null_cols = []
+        self.list_fields = []
         self.col_lists_dict = {}
+
+        self.unique_keys = []
+        self.unique_keys_dict = {}
+        self.foreign_keys = []
+        self.foreign_keys_dict = {}
+
         self.unit_dict = {}
+
         self.errors = []
         self.has_error = False
-        self._data_preprocess()
 
     def _data_preprocess(self):
         try:
@@ -35,12 +42,12 @@ class Sheet:
             print(f"Worksheet named [{self.sheet_name}] not found in the excel file.")
 
         # Drop NaN Columns:
-        self.df.dropna(axis="columns", how="all", inplace=True)
+        self.df.dropna(axis=1, how="all", inplace=True)
 
         # Drop Commented Columns
         for col in self.df.columns:
             if col[0] == "#":
-                self.df = self.df.drop(col, 1)
+                self.df = self.df.drop(col, axis=1)
 
         # Clean Col Name
         self.cols = [col.replace("*", "") for col in self.df.columns]
@@ -68,20 +75,35 @@ class Sheet:
         # Drop Unit Row
         self.df.drop(labels=0, axis=0, inplace=True)
         # Drop NaN Rows
-        self.df.dropna(axis="rows", how="all", inplace=True)
+        self.df.dropna(axis=0, how="all", inplace=True)
 
-        # Remove Space
+        # Remove Space, Convert id to Integer, Handle List Fields
         for index, row in self.df.iterrows():
             for col in self.cols:
                 value = row[col]
                 if pd.isna(value):
                     value = None
-                elif isinstance(value, str):
-                    value = value.strip()
-                    value = value.strip("\u202a")
-                elif col[-2:] == "id":
-                    value = int(value)
+                else:
+                    # Convert id to Integer
+                    if col[-3:] == "_id":
+                        value = int(value)
+                    # Handle List Fields
+                    if col in self.list_fields:
+                        value = value.split(",")
+                        value = [val.strip() for val in value]
+                    # Remove Space
+                    if isinstance(value, str):
+                        value = value.strip()
+                        value = value.strip("\u202a")
                 self.df.loc[index, col] = value
+
+        # Create Foreign Key Dict
+        for col in self.foreign_keys:
+            self.foreign_keys_dict[col] = {}
+            for index, row in self.df.iterrows():
+                value = row[col]
+                _value = re.sub(r"[\s]+", "", str(value)).lower()
+                self.foreign_keys_dict[col].update({_value: [value, index]})
 
     def _standardize_field(self, field):
         """
@@ -93,6 +115,9 @@ class Sheet:
         :return: standardized param name
         :rtype: str
         """
+        # bad idea, will change later
+        if field in self.required_cols or field == "data":
+            return field
         for key in params:
             for param in params[key]:
                 if field == param or field in params[key][param]["names"]:
@@ -106,9 +131,7 @@ class Sheet:
         Validate that all required columns are present.
         """
         for required_col in self.required_cols:
-            if required_col in self.cols:
-                pass
-            else:
+            if required_col not in self.cols:
                 exception = MissingRequiredField(
                     field=required_col,
                     sheet=self.sheet_name,
@@ -171,7 +194,7 @@ class Sheet:
             )
             self.errors.append(exception.__str__())
 
-    def _parse_data(self, col_list, parsed_object, value, parsed_data, prop_params):
+    def _parse_data(self, col_list, parsed_object, value, prop_params):
         """
         Parse a data column and attach to it's appropriate parsed object.
         Currently used in material sheet and process sheet
@@ -182,19 +205,11 @@ class Sheet:
         :type parsed_object: dict
         :param value: name of something in data sheet
         :type value: str
-        :param parsed_data: data extracted from excel sheet with name as keys, defined in DataSheet class
-        :type parsed_data: dict
         :param prop_params property param template defined in params.py
         :type prop_params: dict
         :raises: ValueDoesNotExist: can't find the data of the material from data sheet according to input name.
         :raises: DataAssignmentError: data is not applied to a prop or cond (e.g., molar_mass:data)
         """
-        # Check if data name exists in the data sheet
-        if value not in parsed_data:
-            exception = ValueDoesNotExist(value, "data")
-            self.errors.append(exception.__str__())
-            return None
-
         # Ensure the data is being applied to something
         if len(col_list) == 1:
             exception = DataAssignmentError(
@@ -287,20 +302,16 @@ class Sheet:
             parent = parsed_object["prop"][col_list[-2]]
 
         # Create condition dict
-        if "cond" in parent:
-            parent["cond"].update(
-                {
-                    field: {
-                        "data": {},
-                    }
-                }
-            )
-        else:
-            parent["cond"] = {
+        if "cond" not in parent:
+            parent["cond"] = {}
+
+        parent["cond"].update(
+            {
                 field: {
                     "data": {},
                 }
             }
+        )
 
         # Add condition value
         parent["cond"][field].update({"value": value})
@@ -319,6 +330,8 @@ class ExperimentSheet(Sheet):
         super().__init__(path, sheet_name)
 
         self.required_cols = ["name"]
+        self.not_null_cols = ["name"]
+        self._data_preprocess()
         self.parsed = {}
 
     def parse(self):
@@ -326,18 +339,16 @@ class ExperimentSheet(Sheet):
         self._check_required_cols()
 
         for index, row in self.df.iterrows():
-            parsed_experiment = {}
+            parsed_experiment = {"index": index + 2}
+            experiment_name = row["name"]
             for col in self.cols:
                 value = row[col]
-                # Check if value is NaN
-                if pd.isna(value):
-                    continue
 
                 # Populate parsed_experiment dict
                 if col in params["experiment"]:
                     parsed_experiment[col] = value
 
-            self.parsed[row["name"]] = parsed_experiment
+            self.parsed[experiment_name] = parsed_experiment
 
         return self.parsed
 
@@ -349,36 +360,29 @@ class DataSheet(Sheet):
         super().__init__(path, sheet_name)
 
         self.required_cols = ["experiment", "name", "data_type"]
+        self.not_null_cols = ["experiment", "name", "data_type"]
+        self.foreign_keys = ["experiment"]
+        self._data_preprocess()
         self.parsed = {}
 
-    def parse(self, parsed_experiments):
+    def parse(self):
         # Validate required columns
         self._check_required_cols()
 
         for index, row in self.df.iterrows():
-            parsed_datum = {
-                "base": {},
-            }
+            parsed_datum = {"base": {}, "experiment": None, "index": index + 2}
             for col in self.cols:
                 value = row[col]
-
-                # Check if col should be skipped
-                if pd.isna(value):
-                    continue
 
                 # Define field
                 field = self.col_lists_dict[col][-1]
 
-                # Handle 'experiment' field
-                if field == "experiment":
-                    if value in parsed_experiments:
-                        parsed_datum["expt"] = value
-                    else:
-                        raise ValueDoesNotExist(value, "experiment")
-                    continue
+                # Handle foreign keys
+                if field in self.foreign_keys:
+                    parsed_datum[field] = value
 
                 # Populate parsed_datum dict
-                if field in params["data"]:
+                elif field in params["data"]:
                     parsed_datum["base"][field] = value
 
             self.parsed[row["name"]] = parsed_datum
@@ -393,15 +397,20 @@ class FileSheet(Sheet):
         super().__init__(path, sheet_name)
 
         self.required_cols = ["data", "path"]
+        self.not_null_cols = ["data", "path"]
+        self.foreign_keys = ["data"]
+        self._data_preprocess()
         self.parsed = {}
 
-    def parse(self, parsed_data):
+    def parse(self):
         # Validate required columns
         self._check_required_cols()
 
         for index, row in self.df.iterrows():
-            parsed_datum = {
+            parsed_file = {
                 "base": {},
+                "data": None,
+                "index": index,
             }
             for col in self.cols:
                 # Define and clean value
@@ -410,22 +419,19 @@ class FileSheet(Sheet):
                 # Define field
                 field = self.col_lists_dict[col][-1]
 
-                # Handle 'data' field
-                if field == "data":
-                    if value in parsed_data:
-                        parsed_datum["data"] = value
-                    else:
-                        raise ValueDoesNotExist(value, "data")
-                    continue
+                # Handle foreign keys field
+                if field in self.foreign_keys:
+                    parsed_file[field] = value
 
                 # Populate parsed_datum dict
-                if field in params["file"]:
-                    parsed_datum["base"][field] = value
+                elif field in params["file"]:
+                    parsed_file["base"][field] = value
 
-            if row["data"] in self.parsed:
-                self.parsed[row["data"]].append(parsed_datum)
-            else:
-                self.parsed[row["data"]] = [parsed_datum]
+            data_name = row["data"]
+            if data_name is not None:
+                if data_name not in self.parsed:
+                    self.parsed[data_name] = []
+                self.parsed[data_name].append(parsed_file)
 
         return self.parsed
 
@@ -437,11 +443,12 @@ class MaterialSheet(Sheet):
         super().__init__(path, sheet_name)
 
         self.required_cols = ["name"]
+        self.not_null_cols = ["name"]
+        self.list_fields = ["keywords", "names"]
+        self._data_preprocess()
         self.parsed = {}
 
-    def parse(self, parsed_data):
-        unit = {}
-
+    def parse(self):
         # Validate required columns
         self._check_required_cols()
 
@@ -451,6 +458,7 @@ class MaterialSheet(Sheet):
                 "iden": {},
                 "prop": {},
                 "cond": {},
+                "index": index + 2,
             }
             for col in self.cols:
                 # Define and clean value
@@ -462,10 +470,10 @@ class MaterialSheet(Sheet):
 
                 # Handle list fields
                 if field == "keywords":
-                    parsed_material["base"][field] = row[field].split(",")
+                    parsed_material["base"][field] = row[field]
                     continue
                 elif field == "names":
-                    parsed_material["iden"]["names"] = row["names"].split(",")
+                    parsed_material["iden"]["names"] = row[field]
                     continue
 
                 # Handle data
@@ -474,7 +482,6 @@ class MaterialSheet(Sheet):
                         col_list,
                         parsed_material,
                         value,
-                        parsed_data,
                         params["material_prop"],
                     )
                     continue
@@ -520,15 +527,19 @@ class ProcessSheet(Sheet):
         super().__init__(path, sheet_name)
 
         self.required_cols = ["experiment", "name"]
+        self.not_null_cols = ["experiment", "name"]
+        self.foreign_keys = ["experiment"]
+        self._data_preprocess()
         self.parsed = {}
 
-    def parse(self, parsed_experiments):
+    def parse(self):
         # Validate required columns
         self._check_required_cols()
 
         for index, row in self.df.iterrows():
             parsed_process = {
                 "base": {},
+                "index": index + 2,
             }
             for col in self.cols:
                 # Define and clean value
@@ -538,24 +549,20 @@ class ProcessSheet(Sheet):
                 field = self.col_lists_dict[col][-1]
 
                 # Handle 'experiment' field
-                if field == "experiment":
-                    if value in parsed_experiments:
-                        parsed_process["expt"] = value
+                if field in self.foreign_keys:
+                    parsed_process[field] = value
                     continue
 
                 # Handle lists
                 if field == "keywords":
-                    parsed_process["keywords"] = row["keywords"].split(",")
+                    parsed_process["keywords"] = row["keywords"]
                     continue
-
-                # Sandardize field
-                field = self._standardize_field(field)
 
                 # Handle base process fields
                 if field in params["process"]:
                     parsed_process["base"][field] = value
 
-            self.parsed[row["*name"].strip()] = parsed_process
+            self.parsed[row["name"]] = parsed_process
 
         return self.parsed
 
@@ -567,15 +574,31 @@ class StepSheet(Sheet):
         super().__init__(path, sheet_name)
 
         self.required_cols = ["process", "step_id", "step_type"]
+        self.not_null_cols = ["process", "step_id", "step_type", "keywords"]
+        self.foreign_keys = ["process"]
+        self._data_preprocess()
+        self._create_helper_cols()
         self.parsed = {}
 
-    def parse(self, parsed_data, parsed_process):
+    def _create_helper_cols(self):
+        for index, row in self.df.iterrows():
+            _value = (
+                self.df.loc[index, "process"] + ":" + str(self.df.loc[index, "step_id"])
+            )
+            self.df.loc[index, "process:step_id"] = _value
+
+    def parse(self):
 
         # Validate required columns
         self._check_required_cols()
 
         for index, row in self.df.iterrows():
-            parsed_step = {"base": {}, "prop": {}, "cond": {}, "process": None}
+            parsed_step = {
+                "base": {},
+                "prop": {},
+                "cond": {},
+                "index": index + 2,
+            }
 
             for col in self.cols:
                 # Define and clean value
@@ -585,10 +608,9 @@ class StepSheet(Sheet):
                 col_list = self.col_lists_dict[col]
                 field = self.col_lists_dict[col][-1]
 
-                # Handle process
-                if field == "process":
-                    if value in parsed_process:
-                        parsed_step["process"] = value
+                # Handle foreign key
+                if field in self.foreign_keys:
+                    parsed_step[field] = value
                     continue
 
                 # Handle base step fields
@@ -616,9 +638,9 @@ class StepSheet(Sheet):
                         self.unit_dict[col],
                     )
 
-                if row["process"] not in self.parsed:
-                    self.parsed[row["process"]] = {}
-                self.parsed[row["process"]][row["step_id"]] = parsed_step
+            if row["process"] not in self.parsed:
+                self.parsed[row["process"]] = {}
+            self.parsed[row["process"]][row["step_id"]] = parsed_step
 
         return self.parsed
 
@@ -629,16 +651,31 @@ class StepIngredientSheet(Sheet):
     def __init__(self, path, sheet_name):
         super().__init__(path, sheet_name)
 
-        self.parsed = {}
         self.required_cols = ["process", "step_id", "keyword", "ingredient"]
         self.either_or_cols = ["mole", "mass", "volume"]
+        self.not_null_cols = ["process", "step_id", "keyword", "ingredient"]
+        self.foreign_key = ["process", "step_id", "ingredient"]
+        self._data_preprocess()
+        self._create_helper_cols()
+        self.parsed = {}
 
-    def parse(
-        self,
-        parsed_materials,
-        parsed_process,
-        parsed_steps,
-    ):
+    def _create_helper_cols(self):
+        for index, row in self.df.iterrows():
+            _value = (
+                self.df.loc[index, "process"] + ":" + str(self.df.loc[index, "step_id"])
+            )
+            self.df.loc[index, "process:step_id"] = _value
+
+            self.df.loc[index, "ingredient-material"] = None
+            self.df.loc[index, "ingredient-step"] = None
+            _list = self.df.loc[index, "ingredient"].split(":")
+            # Data assign error check
+            if len(_list) == 1:
+                self.df.loc[index, "ingredient-material"] = _list[0]
+            if len(_list) == 2:
+                self.df.loc[index, "ingredient-step"] = _list[0] + ":" + _list[1]
+
+    def parse(self):
         # Validate required columns
         self._check_required_cols()
 
@@ -656,34 +693,9 @@ class StepIngredientSheet(Sheet):
                 # Define field
                 field = self.col_lists_dict[col][-1]
 
-                # Handle process field
-                if field == "process":
-                    if value not in parsed_process:
-                        raise ValueDoesNotExist(value, "process")
-                    continue
-
-                # Handle step_id field
-                if field == "step_id":
-                    if value not in parsed_steps[row["*process"]]:
-                        raise ValueDoesNotExist(value, "step_id")
-                    continue
-
-                # Handle ingredient field
-                if field == "ingredient":
-                    ingredient_name_list = value.split(":")
-                    if len(ingredient_name_list) == 1 and value in parsed_materials:
-                        parsed_ingredient[field] = value
-                        continue
-                    elif len(ingredient_name_list) == 2:
-                        from_process = ingredient_name_list[0]
-                        from_step_id = ingredient_name_list[1]
-                        if (
-                            from_process in parsed_steps
-                            and from_step_id in parsed_steps[from_process]
-                        ):
-                            parsed_ingredient[field] = value
-                            continue
-                    raise ValueDoesNotExist(value, "ingredient")
+                # Handle foreign key
+                if field in self.foreign_keys:
+                    parsed_ingredient[field] = value
 
                 # Handle process ingredient fields
                 if field in params["step_reagent_and_product"]:
@@ -707,8 +719,6 @@ class StepIngredientSheet(Sheet):
                         }
                     else:
                         parsed_ingredient[field] = value
-                else:
-                    raise UnsupportedFieldName(field, self.sheet_name)
 
             if row["process"] not in self.parsed:
                 self.parsed[row["process"]] = {}
@@ -725,15 +735,21 @@ class StepProductSheet(Sheet):
     def __init__(self, path, sheet_name):
         super().__init__(path, sheet_name)
 
-        self.parsed = {}
         self.required_cols = ["process", "step_id", "keyword", "product"]
+        self.not_null_cols = ["process", "step_id", "keyword", "product"]
+        self.foreign_keys = ["process", "step_id", "product"]
+        self._data_preprocess()
+        self._create_helper_cols()
+        self.parsed = {}
 
-    def parse(
-        self,
-        parsed_materials,
-        parsed_process,
-        parsed_steps,
-    ):
+    def _create_helper_cols(self):
+        for index, row in self.df.iterrows():
+            _value = (
+                self.df.loc[index, "process"] + ":" + str(self.df.loc[index, "step_id"])
+            )
+            self.df.loc[index, "process:step_id"] = _value
+
+    def parse(self):
         # Validate required columns
         self._check_required_cols()
 
@@ -746,30 +762,12 @@ class StepProductSheet(Sheet):
                 # Define field
                 field = self.col_lists_dict[col][-1]
 
-                # Handle process field
-                if field == "process":
-                    if value not in parsed_process:
-                        raise ValueDoesNotExist(value, "process")
-                    continue
-
-                # Handle step_id field
-                if field == "step_id":
-                    if value not in parsed_steps[row["*process"]]:
-                        raise ValueDoesNotExist(value, "step_id")
-                    continue
-
-                # Handle ingredient field
-                if field == "product":
-                    if value not in parsed_materials:
-                        raise ValueDoesNotExist(value, "product")
-                    parsed_product["product"] = value
-                    continue
+                if field in self.foreign_keys:
+                    parsed_product[field] = value
 
                 # Handle process ingredient fields
                 if field in params["step_reagent_and_product"]:
                     parsed_product[field] = value
-                else:
-                    raise UnsupportedFieldName(field, self.sheet_name)
 
             if row["process"] not in self.parsed:
                 self.parsed[row["process"]] = {}

@@ -31,25 +31,57 @@ group_obj = db.get(GROUP_URL)
 
 
 collection_search_result = db.search(
-    C.Collection, {"name": collection_name, "group": _get_id_from_url(GROUP_URL)}
+    C.Collection,
+    {
+        "name": collection_name,
+        "group": _get_id_from_url(GROUP_URL),
+    },
 )
 COLLECTION_URL = collection_search_result["result"][0]["url"]
 collection_obj = db.get(COLLECTION_URL)
 
+experiment_search_result = db.search(
+    C.Experiment,
+    {
+        "name": experiment_name,
+        "group": _get_id_from_url(GROUP_URL),
+    },
+)
+EXPERIMENT_URL = experiment_search_result["result"][0]["url"]
+experiment_obj = db.get(EXPERIMENT_URL)
 
-# Create Data and File Object
-data_obj = C.Data(
+
+data_search_result = db.search(
+    C.Data,
+    {
+        "group": _get_id_from_url(group_obj.url),
+        "experiment": _get_id_from_url(experiment_obj.url),
+        "name": "Crude SEC of polystyrene",
+    },
+)
+
+if data_search_result["count"] == 0:
+    # Create Data and File Object
+    data_obj = C.Data(
+        group=group_obj,
+        experiment=experiment_obj,
+        name="Crude SEC of polystyrene",
+        type="sec",
+        sample_prep="test prep",
+        public=PUBLIC_FLAG,
+    )
+    db.save(data_obj)
+    print("Data Node Saved")
+else:
+    data_url = data_search_result["results"][0]["url"]
+    data_obj = db.get(data_url)
+
+file_obj = C.File(
     group=group_obj,
-    experiment=experiment_obj,
-    name="Crude SEC of polystyrene",
-    type="sec",
-    sample_prep="test prep",
+    data=data_obj,
+    source=FILE_PATH,
     public=PUBLIC_FLAG,
 )
-db.save(data_obj)
-print("Data Node Saved")
-
-file_obj = C.File(group=group_obj, data=data_obj, source=FILE_PATH, public=PUBLIC_FLAG)
 db.save(file_obj)
 print("File Node Saved")
 

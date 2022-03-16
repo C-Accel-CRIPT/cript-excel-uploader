@@ -52,12 +52,64 @@ class UnsupportedValue(Exception):
 
 
 class ValueDoesNotExist(Exception):
-    def __init__(self, value, sheet):
+    def __init__(self, value, index, field, sheet, sheet_to_check, field_to_check):
         self.value = value
+        self.index = index
+        self.field = field
+        self.sheet = sheet
+        self.sheet_to_check = sheet_to_check
+        self.field_to_check = field_to_check
+
+        self.field = self.field.strip("#")
+        self.field = self.field.split("-")[0]
+
+    def __str__(self):
+        return (
+            f"ValueDoesNotExist: "
+            f"Sheet [{self.sheet}], "
+            f"Field [{self.field}], "
+            f"Index [{self.index}], "
+            f"Value [{self.value}] does not exist "
+            f"in the [{self.field_to_check}] field "
+            f"of [{self.sheet_to_check}] sheet."
+        )
+
+
+class DuplicatedValueError(Exception):
+    def __init__(self, value1, index1, value2, index2, field, sheet):
+        self.value1 = value1
+        self.index1 = index1
+        self.value2 = value2
+        self.index2 = index2
+        self.field = field
         self.sheet = sheet
 
     def __str__(self):
-        return f"'{self.value}' does not exist in the {self.sheet} Excel sheet."
+        return (
+            f"DuplicatedValueError: "
+            f"Sheet [{self.sheet}], "
+            f"Field [{self.field}], "
+            f"Index [{self.index1}], "
+            f"Value [{self.value1}] is duplicated with"
+            f"value [{self.value2}] at index [{self.index2}]. "
+            f"Every value should be unique in this field."
+        )
+
+
+class NullValueError(Exception):
+    def __init__(self, index, field, sheet):
+        self.index = index
+        self.field = field
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"NullValueError: "
+            f"Sheet [{self.sheet}], "
+            f"Field [{self.field}], "
+            f"Index [{self.index}], "
+            f"Null value is not allowed for this field."
+        )
 
 
 class MissingRequiredField(Exception):
@@ -69,7 +121,7 @@ class MissingRequiredField(Exception):
     def __str__(self):
         if not self.is_either_or_cols:
             return (
-                f"MissingRequiredFieldError: "
+                f"MissingRequiredField: "
                 f"Sheet [{self.sheet}], "
                 f"Field [{self.field}], "
                 f"Please add the missing required field to the sheet."
@@ -81,30 +133,6 @@ class MissingRequiredField(Exception):
                 f"Field {self.field}, "
                 f"Must include at least one of the fields from the list."
             )
-
-
-# Add it to validator
-# class MissingRequiredFieldValue(Exception):
-#     def __init__(self, index, field, sheet, is_either_or_cols=False):
-#         self.field = field
-#         self.sheet = sheet
-#         self.is_either_or_cols = is_either_or_cols
-#
-#     def __str__(self):
-#         if not self.is_either_or_cols:
-#             return (
-#                 f"MissingRequiredFieldError: "
-#                 f"Sheet [{self.sheet}], "
-#                 f"Field [{self.field}], "
-#                 f"Please add the missing required field to the sheet."
-#             )
-#         else:
-#             return (
-#                 f"MissingRequiredFieldError: "
-#                 f"Sheet [{self.sheet}], "
-#                 f"Field {self.field}, "
-#                 f"Must include at least one of the fields from the list."
-#             )
 
 
 class UnsupportedUnitError(Exception):

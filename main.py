@@ -1,12 +1,11 @@
 import os
 import time
-import pandas as pd
 import traceback
 
 import ascii_art
 import sheets
 import uploaders
-
+import validators
 
 from errors import GroupRelatedError
 
@@ -58,46 +57,110 @@ while True:
         print(ascii_art.chem.template)
         time.sleep(1)
 
-        # Instantiate Sheet objects
-        #
-        material_sheet = sheets.MaterialSheet(path, "material")
-        experiment_sheet = sheets.ExperimentSheet(path, "experiment")
-        process_sheet = sheets.ProcessSheet(path, "process")
-        step_sheet = sheets.StepSheet(path, "step")
-        stepIngredients_sheet = sheets.StepIngredientSheet(path, "step_ingredients")
-        stepProducts_sheet = sheets.StepProductSheet(path, "step_products")
-        data_sheet = sheets.DataSheet(path, "data")
-        file_sheet = sheets.FileSheet(path, "file")
+        bug_count = 1
+        while bug_count > 0:
+            # Instantiate Sheet objects
+            #
+            material_sheet = sheets.MaterialSheet(path, "material")
+            experiment_sheet = sheets.ExperimentSheet(path, "experiment")
+            process_sheet = sheets.ProcessSheet(path, "process")
+            step_sheet = sheets.StepSheet(path, "step")
+            stepIngredients_sheet = sheets.StepIngredientSheet(path, "step_ingredients")
+            stepProducts_sheet = sheets.StepProductSheet(path, "step_products")
+            data_sheet = sheets.DataSheet(path, "data")
+            file_sheet = sheets.FileSheet(path, "file")
 
-        # Parse Excel sheets
-        experiment_sheet.parse()
-        # print(experiment_sheet.parsed)
-        data_sheet.parse(experiment_sheet.parsed)
-        # print(data_sheet.parsed)
-        file_sheet.parse(data_sheet.parsed)
-        # print(file_sheet.parsed)
-        material_sheet.parse(data_sheet.parsed)
-        # print(material_sheet.parsed)
-        process_sheet.parse(experiment_sheet.parsed)
-        # print(process_sheet.parsed)
-        step_sheet.parse(
-            data_sheet.parsed,
-            process_sheet.parsed,
-        )
-        # print(step_sheet.parsed)
-        stepIngredients_sheet.parse(
-            material_sheet.parsed,
-            process_sheet.parsed,
-            step_sheet.parsed,
-        )
-        # print(stepIngredients_sheet.parsed)
-        stepProducts_sheet.parse(
-            material_sheet.parsed,
-            process_sheet.parsed,
-            step_sheet.parsed,
-        )
+            # Validate Excel Sheets
+            #
+            sheet_list = [
+                material_sheet,
+                experiment_sheet,
+                process_sheet,
+                step_sheet,
+                stepIngredients_sheet,
+                stepProducts_sheet,
+                data_sheet,
+                file_sheet,
+            ]
+            # Validate unique key and not null value
+            for sheet in sheet_list:
+                validators.validate_unique_key(sheet)
+                validators.validate_not_null_value(sheet)
+            # Validate foreign key
+            validators.validate_foreign_key(
+                "experiment", data_sheet, "name", experiment_sheet
+            )
+            validators.validate_foreign_key("data", file_sheet, "name", data_sheet)
+            validators.validate_foreign_key(
+                "experiment", process_sheet, "name", experiment_sheet
+            )
+            validators.validate_foreign_key(
+                "process", step_sheet, "name", process_sheet
+            )
+            validators.validate_foreign_key(
+                "process", stepIngredients_sheet, "name", process_sheet
+            )
+            validators.validate_foreign_key(
+                "process:step_id", stepIngredients_sheet, "process:step_id", step_sheet
+            )
+            validators.validate_foreign_key(
+                "process:step_id", stepProducts_sheet, "process:step_id", step_sheet
+            )
+            validators.validate_foreign_key(
+                "ingredient-material", stepIngredients_sheet, "name", material_sheet
+            )
+            validators.validate_foreign_key(
+                "ingredient-step", stepIngredients_sheet, "process+step_id", step_sheet
+            )
+            validators.validate_foreign_key(
+                "product", stepProducts_sheet, "name", material_sheet
+            )
+            for sheet in sheet_list:
+                for field in sheet.col_lists_dict:
+                    col_list = sheet.col_lists_dict[field]
+                    if len(col_list) == 2 and col_list[-1] == "data":
+                        validators.validate_foreign_key(
+                            field, sheet.sheet_name, "name", data_sheet
+                        )
+
+            # Parse Excel Sheets
+            #
+            for sheet in sheet_list:
+                sheet.parse()
+
+            bug_count = 0
+            for sheet in sheet_list:
+                for exception_message in sheet.errors:
+                    print(exception_message)
+                    bug_count = bug_count + 1
+                    if bug_count >= 500:
+                        break
+                if bug_count >= 500:
+                    break
+
+            if bug_count == 0:
+                print(
+                    f"No bugs here! Your excel sheet looks good. "
+                    f"Start uploading now."
+                )
+            elif bug_count < 500:
+                print(f"\nYou have {bug_count} bugs to fix.")
+            elif bug_count >= 500:
+                print(
+                    f"\nYou have too many bugs. "
+                    f"Fix the 500 bugs above first and have a check again."
+                )
+            print(f"***********************\n")
+
+            reupload_flag = "y" if bug_count == 0 else None
+            while reupload_flag != "y":
+                reupload_flag = input(
+                    f"Ready to upload again? "
+                    f"Make sure you have saved the changes. y/n ---"
+                )
 
         # Upload parsed data
+        #
         group_obj = uploaders.upload_group(
             db,
             group,
