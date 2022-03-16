@@ -135,7 +135,7 @@ class MissingRequiredField(Exception):
             )
 
 
-class UnsupportedUnitError(Exception):
+class UnsupportedUnitName(Exception):
     def __init__(self, input_unit, supported_unit, field, sheet):
         self.input_unit = input_unit
         self.supported_unit = supported_unit
