@@ -56,15 +56,18 @@ public_flag = public_flag == "y"
 print(ascii_art.chem.template)
 time.sleep(1)
 
+# Get parameters
+param = db.get_keys()
+
 # Instantiate Sheet objects
-material_sheet = sheets.MaterialSheet(path, "material")
-experiment_sheet = sheets.ExperimentSheet(path, "experiment")
-process_sheet = sheets.ProcessSheet(path, "process")
-step_sheet = sheets.StepSheet(path, "step")
-stepIngredients_sheet = sheets.StepIngredientSheet(path, "step_ingredients")
-stepProducts_sheet = sheets.StepProductSheet(path, "step_products")
-data_sheet = sheets.DataSheet(path, "data")
-file_sheet = sheets.FileSheet(path, "file")
+material_sheet = sheets.MaterialSheet(path, "material", param)
+experiment_sheet = sheets.ExperimentSheet(path, "experiment", param)
+process_sheet = sheets.ProcessSheet(path, "process", param)
+step_sheet = sheets.StepSheet(path, "step", param)
+stepIngredients_sheet = sheets.StepIngredientSheet(path, "step_ingredients", param)
+stepProducts_sheet = sheets.StepProductSheet(path, "step_products", param)
+data_sheet = sheets.DataSheet(path, "data", param)
+file_sheet = sheets.FileSheet(path, "file", param)
 
 sheet_list = [
     material_sheet,
@@ -76,11 +79,16 @@ sheet_list = [
     data_sheet,
     file_sheet,
 ]
+# Check for reading data template
 
 # Validate unique key and not null value
 for sheet in sheet_list:
+    validators.validate_required_cols(sheet)
+    validators.validate_either_or_cols(sheet)
     validators.validate_unique_key(sheet)
     validators.validate_not_null_value(sheet)
+    # validators.validate_unit(sheet) # to be discussed
+
 # Validate foreign key
 validators.validate_foreign_key("experiment", data_sheet, "name", experiment_sheet)
 validators.validate_foreign_key("data", file_sheet, "name", data_sheet)
@@ -107,20 +115,28 @@ for sheet in sheet_list:
             validators.validate_foreign_key(field, sheet.sheet_name, "name", data_sheet)
 
 # Parse Excel sheets
+print(f"***********************")
 experiment_sheet.parse()
 print(experiment_sheet.parsed)
+print(f"***********************")
 data_sheet.parse()
 print(data_sheet.parsed)
+print(f"***********************")
 file_sheet.parse()
 print(file_sheet.parsed)
+print(f"***********************")
 material_sheet.parse()
 print(material_sheet.parsed)
+print(f"***********************")
 process_sheet.parse()
 print(process_sheet.parsed)
+print(f"***********************")
 step_sheet.parse()
 print(step_sheet.parsed)
+print(f"***********************")
 stepIngredients_sheet.parse()
 print(stepIngredients_sheet.parsed)
+print(f"***********************")
 stepProducts_sheet.parse()
 print(stepProducts_sheet.parsed)
 
@@ -131,11 +147,12 @@ for sheet in sheet_list:
         print(exception_message)
         bug_count = bug_count + 1
         if bug_count >= 500:
-
             break
+    if bug_count >= 500:
+        break
 
 if bug_count == 0:
-    print(f"No bugs here! Your excel sheet looks good. " f"Start uploading now.")
+    print(f"No bugs here! Your excel sheet looks good. Start uploading now.")
 elif bug_count < 500:
     print(f"\nYou have {bug_count} bugs to fix.")
 elif bug_count >= 500:

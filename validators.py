@@ -4,7 +4,72 @@ from errors import (
     ValueDoesNotExist,
     DuplicatedValueError,
     NullValueError,
+    MissingRequiredField,
+    UnsupportedUnitName,
 )
+
+
+def validate_required_cols(sheet):
+    """
+    Validate that all required columns are present.
+    """
+    for required_col in sheet.required_cols:
+        if required_col not in sheet.cols:
+            exception = MissingRequiredField(
+                field=required_col,
+                sheet=sheet.sheet_name,
+                is_either_or_cols=False,
+            )
+            sheet.errors.append(exception.__str__())
+
+
+def validate_either_or_cols(sheet):
+    """
+    Validate that at least one of the either/or columns are present.
+    Validation passes when we find one either_or_col name in cols
+    """
+    exists = False
+    if len(sheet.either_or_cols) == 0:
+        exists = True
+
+    for either_or_col in sheet.either_or_cols:
+        if either_or_col in sheet.cols:
+            exists = True
+            break
+
+    if not exists:
+        exception = MissingRequiredField(
+            field=sheet.either_or_cols,
+            sheet=sheet.sheet_name,
+            is_either_or_cols=True,
+        )
+        sheet.errors.append(exception.__str__())
+
+
+def validate_unit(sheet):
+    """
+    Validate that the input unit is supported
+    """
+
+    for col in sheet.cols:
+        supported_unit = None
+        input_unit = sheet.unit_dict[col]
+        if (
+            supported_unit is not None
+            and input_unit is not None
+            and input_unit == supported_unit
+        ):
+            continue
+        elif supported_unit is None and input_unit is None:
+            continue
+        else:
+            exception = UnsupportedUnitName(
+                input_unit=input_unit,
+                supported_unit=supported_unit,
+                field=col,
+                sheet=sheet.sheet_name,
+            )
+            sheet.errors.append(exception.__str__())
 
 
 def validate_unique_key(sheet_obj):
@@ -78,3 +143,7 @@ def validate_not_null_value(sheet_obj):
                         index=index, field=col, sheet=sheet_obj.sheet_name
                     )
                     sheet_obj.errors.append(exception.__str__())
+
+
+# def validate_data_assignments(sheet_obj):
+#

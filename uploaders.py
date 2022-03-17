@@ -137,7 +137,6 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
                 **parsed_experiments[experiment_name],
             )
             api.save(experiment_obj)
-            api.refresh(collection_obj)
 
         experiment_objs[experiment_name] = experiment_obj
 
@@ -325,9 +324,7 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
         for file in file_dict:
             # Replace field name
             _replace_field(file["base"], "path", "source")
-            file["base"]["source"] = "".join(
-                [char for char in file["base"]["source"] if ord(char) < 128]
-            )
+            file["base"]["source"] = file["base"]["source"]
             # Search for Duplicates
             file_search_result = api.search(
                 C.File,

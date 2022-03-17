@@ -29,17 +29,30 @@ class DataAssignmentError(Exception):
 
 
 class UnsupportedFieldName(Exception):
-    def __init__(self, field, sheet):
+    def __init__(self, field, col_list, sheet):
         self.sheet = sheet
+        self.col_list = col_list
         self.field = field
 
     def __str__(self):
-        return (
-            f"UnsupportedFieldName: "
-            f"Sheet [{self.sheet}], "
-            f"Field [{self.field}], "
-            f"Input field is not supported."
-        )
+        if len(self.col_list) == 1:
+            return (
+                f"UnsupportedFieldName: "
+                f"Sheet [{self.sheet}], "
+                f"Field [{self.field}], "
+                f"Input field is not supported."
+            )
+        else:
+            col = ""
+            for _field in self.col_list:
+                col = col.join(_field).join(":")
+            col = col[:-1]
+            return (
+                f"UnsupportedFieldName: "
+                f"Sheet [{self.sheet}], "
+                f"Field [{col}], "
+                f"Input field is not supported."
+            )
 
 
 class UnsupportedValue(Exception):
