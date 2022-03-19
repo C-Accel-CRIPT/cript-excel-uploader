@@ -1,5 +1,3 @@
-import re
-
 from errors import (
     ValueDoesNotExist,
     DuplicatedValueError,
@@ -86,7 +84,7 @@ def validate_unique_key(sheet_obj):
             value = row[col]
             if value is None:
                 continue
-            _value = re.sub(r"[\s]+", "", value).lower()
+            _value = value.replace(" ", "").lower()
             if _value in _dict:
                 exception = DuplicatedValueError(
                     value1=value,
@@ -119,7 +117,7 @@ def validate_foreign_key(
         value = row[from_field]
         if value is None:
             continue
-        _value = re.sub(r"[\s]+", "", value).lower()
+        _value = value.replace(" ", "").lower()
         if _value not in _dict:
             exception = ValueDoesNotExist(
                 value=value,
@@ -133,7 +131,7 @@ def validate_foreign_key(
 
 
 def validate_not_null_value(sheet_obj):
-    # Check for unique keys
+    # Check for not null value
     for col in sheet_obj.not_null_cols:
         if col in sheet_obj.cols:
             for index, row in sheet_obj.df.iterrows():
