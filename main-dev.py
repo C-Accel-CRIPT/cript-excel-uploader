@@ -4,6 +4,7 @@ import config
 from getpass import getpass
 
 import ascii_art
+import configs
 import sheets
 import uploaders
 import validators
@@ -57,7 +58,7 @@ print(ascii_art.chem.template)
 time.sleep(1)
 
 # Get parameters
-param = db.get_keys()
+param = db.keys
 
 # Instantiate Sheet objects
 material_sheet = sheets.MaterialSheet(path, "material", param)
@@ -69,20 +70,20 @@ stepProducts_sheet = sheets.StepProductSheet(path, "step_products", param)
 data_sheet = sheets.DataSheet(path, "data", param)
 file_sheet = sheets.FileSheet(path, "file", param)
 
-sheet_list = [
-    material_sheet,
-    experiment_sheet,
-    process_sheet,
-    step_sheet,
-    stepIngredients_sheet,
-    stepProducts_sheet,
-    data_sheet,
-    file_sheet,
-]
+sheet_dict = {
+    "material_sheet": material_sheet,
+    "experiment_sheet": experiment_sheet,
+    "process_sheet": process_sheet,
+    "step_sheet": step_sheet,
+    "stepIngredients_sheet": stepIngredients_sheet,
+    "stepProducts_sheet": stepProducts_sheet,
+    "data_sheet": data_sheet,
+    "file_sheet": file_sheet,
+}
 # Check for reading data template
 
 # Validate unique key and not null value
-for sheet in sheet_list:
+for sheet in sheet_dict.values():
     validators.validate_required_cols(sheet)
     validators.validate_either_or_cols(sheet)
     validators.validate_unique_key(sheet)
@@ -90,25 +91,12 @@ for sheet in sheet_list:
     # validators.validate_unit(sheet) # to be discussed
 
 # Validate foreign key
-validators.validate_foreign_key("experiment", data_sheet, "name", experiment_sheet)
-validators.validate_foreign_key("data", file_sheet, "name", data_sheet)
-validators.validate_foreign_key("experiment", process_sheet, "name", experiment_sheet)
-validators.validate_foreign_key("process", step_sheet, "name", process_sheet)
-validators.validate_foreign_key("process", stepIngredients_sheet, "name", process_sheet)
-validators.validate_foreign_key(
-    "process:step_id", stepIngredients_sheet, "process:step_id", step_sheet
-)
-validators.validate_foreign_key(
-    "process:step_id", stepProducts_sheet, "process:step_id", step_sheet
-)
-validators.validate_foreign_key(
-    "ingredient-material", stepIngredients_sheet, "name", material_sheet
-)
-validators.validate_foreign_key(
-    "ingredient-step", stepIngredients_sheet, "process+step_id", step_sheet
-)
-validators.validate_foreign_key("product", stepProducts_sheet, "name", material_sheet)
-for sheet in sheet_list:
+for pair in configs.foreign_key_validation_pairs:
+    pair["from_sheet_obj"] = sheet_dict[pair["from_sheet_obj"]]
+    pair["to_sheet_obj"] = sheet_dict[pair["to_sheet_obj"]]
+    validators.validate_foreign_key(**pair)
+
+for sheet in sheet_dict.values():
     for field in sheet.col_lists_dict:
         col_list = sheet.col_lists_dict[field]
         if len(col_list) == 2 and col_list[-1] == "data":
@@ -142,7 +130,7 @@ print(stepProducts_sheet.parsed)
 
 print(f"***********************")
 bug_count = 0
-for sheet in sheet_list:
+for sheet in sheet_dict.values():
     for exception_message in sheet.errors:
         print(exception_message)
         bug_count = bug_count + 1
@@ -163,84 +151,84 @@ elif bug_count >= 500:
 print(f"***********************")
 
 # # Upload parsed data
-# print(f"***********************")
-# group_obj = uploaders.upload_group(
-#     db,
-#     group,
-# )
-# #print(f"group_obj:{group_obj}\n***********************")
-# coll_obj = uploaders.upload_collection(
-#     db,
-#     group_obj,
-#     collection,
-#     public_flag,
-# )
-# #print(f"coll_obj:{coll_obj}\n***********************")
-# expt_objs = uploaders.upload_experiment(
-#     db,
-#     group_obj,
-#     coll_obj,
-#     experiment_sheet.parsed,
-#     public_flag,
-# )
-# #print(f"expt_objs:{expt_objs}\n***********************")
-# data_objs = uploaders.upload_data(
-#     db,
-#     group_obj,
-#     expt_objs,
-#     data_sheet.parsed,
-#     public_flag,
-# )
-# #print(f"data_objs:{data_objs}\n***********************")
-# file_objs = uploaders.upload_file(
-#     db,
-#     group_obj,
-#     data_objs,
-#     file_sheet.parsed,
-#     public_flag,
-# )
-# #print(f"file_objs:{file_objs}\n***********************")
-# material_objs = uploaders.upload_material(
-#     db,
-#     group_obj,
-#     data_objs,
-#     material_sheet.parsed,
-#     public_flag,
-# )
-# #print(f"material_objs:{material_objs}\n***********************")
-# process_objs = uploaders.upload_process(
-#     db,
-#     group_obj,
-#     expt_objs,
-#     process_sheet.parsed,
-#     public_flag,
-# )
-# #print(f"process_objs:{process_objs}\n***********************")
-# step_objs = uploaders.upload_step(
-#     db,
-#     group_obj,
-#     process_objs,
-#     data_objs,
-#     step_sheet.parsed,
-#     public_flag,
-# )
-# #print(f"step_objs:{step_objs}\n***********************")
-# uploaders.upload_stepIngredient(
-#     db,
-#     process_objs,
-#     step_objs,
-#     material_objs,
-#     stepIngredients_sheet.parsed,
-# )
-# #print(f"step_objs after adding ingredients:{step_objs}\n***********************")
-# uploaders.upload_stepProduct(
-#     db,
-#     process_objs,
-#     step_objs,
-#     material_objs,
-#     stepProducts_sheet.parsed,
-# )
-# #print(f"step_objs after adding products:{step_objs}\n***********************")
+print(f"***********************")
+group_obj = uploaders.upload_group(
+    db,
+    group,
+)
+print(f"group_obj:{group_obj}\n***********************")
+coll_obj = uploaders.upload_collection(
+    db,
+    group_obj,
+    collection,
+    public_flag,
+)
+print(f"coll_obj:{coll_obj}\n***********************")
+expt_objs = uploaders.upload_experiment(
+    db,
+    group_obj,
+    coll_obj,
+    experiment_sheet.parsed,
+    public_flag,
+)
+print(f"expt_objs:{expt_objs}\n***********************")
+data_objs = uploaders.upload_data(
+    db,
+    group_obj,
+    expt_objs,
+    data_sheet.parsed,
+    public_flag,
+)
+print(f"data_objs:{data_objs}\n***********************")
+file_objs = uploaders.upload_file(
+    db,
+    group_obj,
+    data_objs,
+    file_sheet.parsed,
+    public_flag,
+)
+print(f"file_objs:{file_objs}\n***********************")
+material_objs = uploaders.upload_material(
+    db,
+    group_obj,
+    data_objs,
+    material_sheet.parsed,
+    public_flag,
+)
+print(f"material_objs:{material_objs}\n***********************")
+process_objs = uploaders.upload_process(
+    db,
+    group_obj,
+    expt_objs,
+    process_sheet.parsed,
+    public_flag,
+)
+print(f"process_objs:{process_objs}\n***********************")
+step_objs = uploaders.upload_step(
+    db,
+    group_obj,
+    process_objs,
+    data_objs,
+    step_sheet.parsed,
+    public_flag,
+)
+print(f"step_objs:{step_objs}\n***********************")
+uploaders.upload_stepIngredient(
+    db,
+    process_objs,
+    step_objs,
+    material_objs,
+    stepIngredients_sheet.parsed,
+)
+print(f"step_objs after adding ingredients:{step_objs}\n***********************")
+uploaders.upload_stepProduct(
+    db,
+    process_objs,
+    step_objs,
+    material_objs,
+    stepProducts_sheet.parsed,
+)
+print(f"step_objs after adding products:{step_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")
