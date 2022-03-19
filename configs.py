@@ -1,8 +1,8 @@
 required_cols = {
     "experiment": ["name"],
     "data": ["experiment", "name", "type"],
-    "file": ["data", "source"],
-    "material": ["name"],
+    "file": ["data", "source", "type"],
+    "material": ["name", "keywords"],
     "process": ["experiment", "name"],
     "step": ["process", "step_id", "type"],
     "step_ingredients": ["process", "step_id", "keyword", "ingredient"],
@@ -31,17 +31,6 @@ unique_keys = {
     "step_products": ["process:step_id:product"],
 }
 
-not_null_cols = {
-    "experiment": ["name"],
-    "data": ["experiment", "name", "data_type"],
-    "file": ["data", "path"],
-    "material": ["name"],
-    "process": ["experiment", "name"],
-    "step": ["process", "step_id", "step_type", "keywords"],
-    "step_ingredients": ["process", "step_id", "keyword", "ingredient"],
-    "step_products": ["process", "step_id", "keyword", "product"],
-}
-
 foreign_keys = {
     "experiment": [],
     "data": ["experiment"],
@@ -64,6 +53,7 @@ list_fields = {
     "step_products": [],
 }
 
+
 base_cols = {
     "experiment": {
         "name",
@@ -71,7 +61,6 @@ base_cols = {
         "notes",
     },
     "data": {
-        "experiment",
         "name",
         "type",
         "sample_prep",
@@ -81,6 +70,7 @@ base_cols = {
     },
     "file": {
         "source",
+        "type",
         "external_source",
     },
     "identity": {
@@ -122,8 +112,18 @@ base_cols = {
         "value",
         "unit",
     },
+    "property": {
+        "key",
+        "value",
+        "unit",
+        "type",
+        "method",
+        "method_description",
+        "uncertainty",
+        "uncertainty_type",
+    },
 }
-
+# sheet_nodes
 base_nodes = {
     "experiment": {"experiment"},
     "data": {"data"},
@@ -139,3 +139,72 @@ sheet_name_to_prop_key = {
     "material": "material-property-key",
     "step": "step-property-key",
 }
+
+foreign_key_validation_pairs = [
+    {
+        "from_field": "experiment",
+        "from_sheet_obj": "data_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "experiment_sheet",
+    },
+    {
+        "from_field": "data",
+        "from_sheet_obj": "file_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "data_sheet",
+    },
+    {
+        "from_field": "experiment",
+        "from_sheet_obj": "process_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "experiment_sheet",
+    },
+    {
+        "from_field": "process",
+        "from_sheet_obj": "step_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "process_sheet",
+    },
+    {
+        "from_field": "process",
+        "from_sheet_obj": "stepIngredients_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "process_sheet",
+    },
+    {
+        "from_field": "process",
+        "from_sheet_obj": "stepProducts_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "process_sheet",
+    },
+    {
+        "from_field": "process:step_id",
+        "from_sheet_obj": "stepIngredients_sheet",
+        "to_field": "process:step_id",
+        "to_sheet_obj": "step_sheet",
+    },
+    {
+        "from_field": "process:step_id",
+        "from_sheet_obj": "stepProducts_sheet",
+        "to_field": "process:step_id",
+        "to_sheet_obj": "step_sheet",
+    },
+    {
+        "from_field": "ingredient-material",
+        "from_sheet_obj": "stepIngredients_sheet",
+        "to_field": "name",
+        "to_sheet_obj": "material_sheet",
+    },
+    {
+        "from_field": "ingredient-step",
+        "from_sheet_obj": "stepIngredients_sheet",
+        "to_field": "process:step_id",
+        "to_sheet_obj": "step_sheet",
+    },
+    {
+        "from_field": "product",
+        "from_sheet_obj": "stepProducts_sheet",
+        "to_field": "material",
+        "to_sheet_obj": "material_sheet",
+    },
+]
