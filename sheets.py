@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 
 import configs
 from errors import (
@@ -20,7 +19,7 @@ class Sheet:
         self.cols = None
         self.required_cols = configs.required_cols[self.sheet_name]
         self.either_or_cols = configs.either_or_cols[self.sheet_name]
-        self.not_null_cols = configs.not_null_cols[self.sheet_name]
+        self.not_null_cols = configs.required_cols[self.sheet_name]
         self.list_fields = configs.list_fields[self.sheet_name]
         self.col_lists_dict = {}
         self.col_type = {}
@@ -39,7 +38,7 @@ class Sheet:
         try:
             self.df = pd.read_excel(self.path, sheet_name=self.sheet_name)
         except ValueError:
-            print(f"Worksheet named [{self.sheet_name}] not found in the excel file.")
+            print(f"Worksheet [{self.sheet_name}] not found in your excel file.")
 
     def _data_preprocess(self):
         if self.df is None:
@@ -61,12 +60,12 @@ class Sheet:
         for col in self.cols:
             self.col_lists_dict[col] = col.split(":")
 
-        # Standardize Field
+        # Standardize and Categorize Field
         for col in self.col_lists_dict:
             col_list = self.col_lists_dict[col]
 
             for i in range(len(col_list)):
-                col_list[i] = self._standardize_field(col_list, i)
+                col_list[i] = self._standardize_and_categorize_field(col_list, i)
 
             self.col_lists_dict[col] = col_list
 
@@ -82,6 +81,11 @@ class Sheet:
         # Drop NaN Rows
         self.df.dropna(axis=0, how="all", inplace=True)
 
+        # Convert id to Integer
+        for col in self.cols:
+            if col[-3:] == "_id":
+                self.df = self.df.astype({col: "int"})
+
         # Remove Space, Convert id to Integer, Handle List Fields
         for index, row in self.df.iterrows():
             for col in self.cols:
@@ -89,12 +93,8 @@ class Sheet:
                 if pd.isna(value):
                     value = None
                 else:
-                    # Convert id to Integer
-                    if col[-3:] == "_id":
-                        value = int(value)
-                        print(f"col:{col},value:{value}")
                     # Handle List Fields
-                    elif col in self.list_fields:
+                    if col in self.list_fields:
                         value = value.split(",")
                         value = [val.strip() for val in value]
                     # Remove Space
@@ -106,12 +106,14 @@ class Sheet:
         # Create Foreign Key Dict
         for col in self.foreign_keys:
             self.foreign_keys_dict[col] = {}
+            #! display index as row_index/row_number
             for index, row in self.df.iterrows():
                 value = row[col]
-                _value = re.sub(r"[\s]+", "", str(value)).lower()
+                if value is not None:
+                    _value = str(value).replace(" ", "").lower()
                 self.foreign_keys_dict[col].update({_value: [value, index]})
 
-    def _standardize_field(self, col_list, i):
+    def _standardize_and_categorize_field(self, col_list, i):
         """
         Convert a field to the standardized version
 
@@ -122,9 +124,9 @@ class Sheet:
 
         # Base cols
         for base_node in configs.base_nodes.get(self.sheet_name):
-            print(
-                f"sheet:{self.sheet_name},field:{field},base_cols:{configs.base_cols.get(base_node)},result:{field in configs.base_cols.get(base_node)}"
-            )
+            # print(
+            #     f"sheet:{self.sheet_name},field:{field},base_cols:{configs.base_cols.get(base_node)},result:{field in configs.base_cols.get(base_node)}"
+            # )
             if field in configs.base_cols.get(base_node):
                 self.col_type.update({field: "base"})
                 return field
@@ -143,20 +145,20 @@ class Sheet:
         prop_key = configs.sheet_name_to_prop_key.get(self.sheet_name)
         if prop_key is not None:
             for prop in self.param[prop_key]:
-                if field == prop["name"] or field in prop["names"]:
+                if field == prop["name"]:
                     self.col_type.update({prop["name"]: "prop"})
                     return prop["name"]
 
         # Condition Keys
         cond_key = "condition-key"
         for cond in self.param[cond_key]:
-            if field == cond["name"] or field in cond["names"]:
+            if field == cond["name"]:
                 self.col_type.update({cond["name"]: "cond"})
                 return cond["name"]
 
         quan_key = "quantity-key"
         for quan in self.param[quan_key]:
-            if field == quan["name"] or field in quan["names"]:
+            if field == quan["name"]:
                 self.col_type.update({quan["name"]: "quantity"})
                 return quan["name"]
 
@@ -215,17 +217,18 @@ class Sheet:
         """
         # Create property dict
         field = self.col_lists_dict[col][-1]
-        parsed_object["prop"].update(
-            {
-                field: {
-                    "key": field,
-                    "value": value,
-                    "unit": self.unit_dict[col],
-                    "cond": {},
-                    "data": {},
+        if len(self.col_lists_dict[col]) == 1:
+            parsed_object["prop"].update(
+                {
+                    field: {
+                        "key": field,
+                        "value": value,
+                        "unit": self.unit_dict[col],
+                        "cond": {},
+                        "data": {},
+                    }
                 }
-            }
-        )
+            )
 
     def _parse_cond(self, col, value, parsed_object):
         """
