@@ -25,8 +25,6 @@ from .errors import (
 
 
 class API:
-    keys = None  # Stores a dictionary of keys and associated parameters
-
     @beartype
     def __init__(self, url: str = None, token: str = None):
         """
@@ -48,18 +46,17 @@ class API:
             "Content-Type": "application/json",
         }
 
-        # Test API authentication
-        response = self.session.get(self.url)
-        if response.status_code == 404:
+        # Test API authentication by fetching keys
+        response = self.session.get(f"{self.url}/keys/all/")
+        if response.status_code == 200:
+            API.keys = response.json()
+            print(f"\nConnection to the API was successful!\n")
+        elif response.status_code == 404:
             raise APIAuthError("Please provide a correct base URL.")
         elif response.status_code == 401:
             raise APIAuthError(response.json()["detail"])
-
-        # Print success message
-        print(f"\nConnection to the API was successful!\n")
-
-        # Get key tables from API
-        API.keys = self._get_keys()
+        else:
+            raise APIAuthError(f"Status code: {response.status_code}")
 
     def __repr__(self):
         return f"Connected to {self.url}"
@@ -433,32 +430,3 @@ class API:
             if hasattr(instance, "url") and url == instance.url:
                 return instance
         return None
-
-    def _get_keys(self):
-        """
-        Fetch the controlled vocabulary keys.
-
-        :return: A compiled dict of all keys.
-        """
-        slugs = [
-            "data-type",
-            "file-type",
-            "material-property-key",
-            "step-property-key",
-            "condition-key",
-            "quantity-key",
-            "set-type",
-            "uncertainty-type",
-            "step-type",
-            "property-method",
-            "material-keyword",
-            "process-keyword",
-            "ingredient-keyword",
-        ]
-
-        keys_dict = {}
-        for slug in slugs:
-            response = self.session.get(f"{self.url}/option/{slug}/")
-            keys_dict.update({slug: response.json()})
-
-        return keys_dict
