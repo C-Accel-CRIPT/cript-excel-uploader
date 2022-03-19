@@ -134,7 +134,7 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
                 group=group_obj,
                 collection=collection_obj,
                 public=public_flag,
-                **parsed_experiments[experiment_name],
+                **parsed_experiments[experiment_name]["base"],
             )
             api.save(experiment_obj)
 
@@ -189,14 +189,12 @@ def _create_prop_list(parsed_props, data_objs=None):
     """
     props = []
     for prop_key in parsed_props:
-        attrs = parsed_props[prop_key]["attr"]
 
         # Create Prop object
         prop = C.Property(
             key=prop_key,
             value=parsed_props[prop_key]["value"],
             unit=parsed_props[prop_key].get("unit"),
-            **attrs,
         )
 
         # Add Data object
@@ -218,7 +216,7 @@ def _create_prop_list(parsed_props, data_objs=None):
 def _create_quantity_list(parsed_object):
     quantity_list = []
     for key in parsed_object:
-        quantity_obj = C.Quantity(key=key, **parsed_object[key])
+        quantity_obj = C.Quantity(**parsed_object[key])
         quantity_list.append(quantity_obj)
     return quantity_list
 
@@ -259,7 +257,7 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
 
         parsed_datum = parsed_data[data_name]
         # Grab Experiment
-        experiment_obj = experiment_objs[parsed_datum["expt"]]
+        experiment_obj = experiment_objs[parsed_datum["experiment"]]
 
         # Search for Duplicates
         data_search_result = api.search(
@@ -275,8 +273,6 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
             datum_obj = api.get(url)
             print(f"Data node [{datum_obj.name}] already exists")
         else:
-            # Replace field name
-            _replace_field(parsed_datum["base"], "data_type", "type")
             # Create Data
             datum_obj = C.Data(
                 group=group_obj,
@@ -340,7 +336,6 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
                 file_obj = api.get(url)
                 print(f"File node [{file_obj.name}] already exists")
             else:
-                print(f"create file node[{file}]")
                 # Create File
                 file_obj = C.File(
                     group=group_obj,
@@ -511,7 +506,7 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
         parsed_process = parsed_processes[process_name]
 
         # Grab Experiment
-        experiment_obj = experiment_objs[parsed_process["expt"]]
+        experiment_obj = experiment_objs[parsed_process["experiment"]]
 
         process_search_result = api.search(
             C.Process,
@@ -530,7 +525,6 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
             process_obj = C.Process(
                 group=group_obj,
                 experiment=experiment_obj,
-                keywords=parsed_process.get("keywords"),
                 public=public_flag,
                 **parsed_process["base"],
             )
@@ -608,13 +602,13 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
 
                 # Add Prop objects
                 parsed_props = parsed_step["prop"]
-                if len(parsed_props) > 0:
-                    step_obj.properties = _create_prop_list(parsed_props, data_objs)
+                # if len(parsed_props) > 0:
+                #    step_obj.properties = _create_prop_list(parsed_props, data_objs)
 
                 # Add Cond objects
                 parsed_conds = parsed_step["cond"]
-                if len(parsed_conds) > 0:
-                    step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
+                # if len(parsed_conds) > 0:
+                #    step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
 
                 # Save Process
                 try:
@@ -671,11 +665,7 @@ def upload_stepIngredient(
             step_obj = step_objs[process_name][step_id]
             if step_obj is None:
                 continue
-
-            # Replace field name
-            # _replace_field(parsed_step["base"], "step_type", "type")
-            # _replace_field(parsed_step["base"], "step_descr", "description")
-            # parsed_step["base"].pop("step_id")
+            # print(parsed_stepIngredients[process_name])
             for parsed_stepIngredient in parsed_stepIngredients[process_name][step_id]:
                 # Create stepIngredient
                 stepIngredient_obj = None
@@ -688,8 +678,8 @@ def upload_stepIngredient(
                         continue
                     stepIngredient_obj = C.MaterialIngredient(
                         ingredient=material_obj,
-                        quantity=_create_quantity_list(ingredient_quantities),
-                        **parsed_stepIngredient,
+                        quantities=_create_quantity_list(ingredient_quantities),
+                        **parsed_stepIngredient["base"],
                     )
                 elif len(ingredient_name_list) == 2:
                     from_process_name = ingredient_name_list[0]
@@ -699,8 +689,8 @@ def upload_stepIngredient(
                         continue
                     stepIngredient_obj = C.IntermediateIngredient(
                         ingredient=from_step_obj,
-                        quantity=_create_quantity_list(ingredient_quantities),
-                        **parsed_stepIngredient,
+                        quantities=_create_quantity_list(ingredient_quantities),
+                        **parsed_stepIngredient["base"],
                     )
 
                 step_obj.add_ingredient(stepIngredient_obj)
@@ -765,10 +755,6 @@ def upload_stepProduct(
             if step_obj is None:
                 continue
 
-            # Replace field name
-            # _replace_field(parsed_step["base"], "step_type", "type")
-            # _replace_field(parsed_step["base"], "step_descr", "description")
-            # parsed_step["base"].pop("step_id")
             for stepProduct in parsed_stepProducts[process_name][step_id]:
                 # Create stepProduct
                 stepProduct_obj = material_objs.get(stepProduct["product"])
