@@ -1,8 +1,11 @@
+import cript as C
+import inspect
+
 required_cols = {
     "experiment": ["name"],
     "data": ["experiment", "name", "type"],
     "file": ["data", "source", "type"],
-    "material": ["name", "keywords"],
+    "material": ["name"],
     "process": ["experiment", "name"],
     "step": ["process", "step_id", "type"],
     "step_ingredients": ["process", "step_id", "keyword", "ingredient"],
@@ -14,6 +17,28 @@ either_or_cols = {
     "data": [],
     "file": [],
     "material": [],
+    "process": [],
+    "step": [],
+    "step_ingredients": ["mole", "mass", "volume"],
+    "step_products": [],
+}
+
+integer_cols = {
+    "experiment": [],
+    "data": [],
+    "file": [],
+    "material": [],
+    "process": [],
+    "step": ["step_id"],
+    "step_ingredients": ["step_id"],
+    "step_products": ["step_id"],
+}
+
+float_cols = {
+    "experiment": [],
+    "data": [],
+    "file": [],
+    "material": ["molar_mass", "temp_boil", "temp_melt"],
     "process": [],
     "step": [],
     "step_ingredients": ["mole", "mass", "volume"],
@@ -53,82 +78,18 @@ list_fields = {
     "step_products": [],
 }
 
+base_cols = {}
+base_cols["experiment"] = inspect.signature(C.Experiment.__init__).parameters
+base_cols["material"] = inspect.signature(C.Material.__init__).parameters
+base_cols["data"] = inspect.signature(C.Data.__init__).parameters
+base_cols["file"] = inspect.signature(C.File.__init__).parameters
+base_cols["process"] = inspect.signature(C.Process.__init__).parameters
 
-base_cols = {
-    "experiment": {
-        "name",
-        "funding",
-        "notes",
-    },
-    "data": {
-        "name",
-        "type",
-        "sample_prep",
-        "calibration",
-        "configuration",
-        "notes",
-    },
-    "file": {
-        "source",
-        "type",
-        "external_source",
-    },
-    "identity": {
-        "name",
-        "names",
-        "cas",
-        "smiles",
-        "bigsmiles",
-        "chem_formula",
-        "chem_repeat",
-        "pubchem_cid",
-        "inchi",
-        "inchi_key",
-    },
-    "material": {
-        "name",
-        "vendor",
-        "lot_number",
-        "keywords",
-        "notes",
-    },
-    "process": {
-        "name",
-        "keywords",
-        "notes",
-    },
-    "step": {
-        "step_id",
-        "type",
-        "description",
-        "equipment",
-    },
-    "materialIngredient": {
-        "keyword",
-        "method",
-    },
-    "quantity": {
-        "key",
-        "value",
-        "unit",
-    },
-    "property": {
-        "key",
-        "value",
-        "unit",
-        "type",
-        "method",
-        "method_description",
-        "uncertainty",
-        "uncertainty_type",
-    },
-}
 # sheet_nodes
 base_nodes = {
     "experiment": {"experiment"},
-    "data": {"data"},
-    "file": {"file"},
-    "material": {"material", "identity"},
+    "data": {"data", "file"},
+    "material": {"material"},
     "process": {"process"},
     "step": {"step"},
     "step_ingredients": {"materialIngredient"},
