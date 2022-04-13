@@ -63,7 +63,6 @@ class Sheet:
         # Standardize and Categorize Field
         for col in self.col_lists_dict:
             col_list = self.col_lists_dict[col]
-
             for i in range(len(col_list)):
                 col_list[i] = self._standardize_and_categorize_field(col_list, i)
 
@@ -85,20 +84,16 @@ class Sheet:
         for col in self.cols:
             if col[-3:] == "_id":
                 self.df = self.df.astype({col: "int"})
+            if col in configs.float_cols[self.sheet_name]:
+                self.df = self.df.astype({col: "float"})
 
         # Remove Space, Convert id to Integer, Handle List Fields
         for index, row in self.df.iterrows():
             for col in self.cols:
                 value = row[col]
-                if pd.isna(value):
-                    value = None
-                else:
-                    # Handle List Fields
-                    if col in self.list_fields:
-                        value = value.split(",")
-                        value = [val.strip() for val in value]
+                if not pd.isna(value):
                     # Remove Space
-                    elif isinstance(value, str):
+                    if isinstance(value, str):
                         value = value.strip()
                         value = value.strip("\u202a")
                 self.df.loc[index, col] = value
@@ -121,25 +116,32 @@ class Sheet:
         :rtype: str
         """
         field = col_list[i]
-
-        # Base cols
-        for base_node in configs.base_nodes.get(self.sheet_name):
-            # print(
-            #     f"sheet:{self.sheet_name},field:{field},base_cols:{configs.base_cols.get(base_node)},result:{field in configs.base_cols.get(base_node)}"
-            # )
-            if field in configs.base_cols.get(base_node):
-                self.col_type.update({field: "base"})
-                return field
+        # If field has already existed
+        if field in self.col_type:
+            return field
 
         # Foreign keys
         if field in self.foreign_keys:
             self.col_type.update({field: "foreign_key"})
             return field
 
+        # Base cols
+        for base_node in configs.base_nodes.get(self.sheet_name):
+            if field.replace(base_node + "-", "") in configs.base_cols.get(base_node):
+                self.col_type.update({field: base_node + "-base"})
+                return field
+
         # Data keys
         if field == "data":
             self.col_type.update({field: "data"})
             return field
+
+        # Identifier Keys
+        iden_key = "material-identifier"
+        for iden in self.param[iden_key]:
+            if field == iden["name"]:
+                self.col_type.update({iden["name"]: "iden"})
+                return iden["name"]
 
         # Property Keys
         prop_key = configs.sheet_name_to_prop_key.get(self.sheet_name)
@@ -195,7 +197,7 @@ class Sheet:
         _type = self.col_type.get(prev_field)
         if _type == "prop" or _type == "cond":
             parent = parsed_object[_type][prev_field]
-            parent["data"] = value
+            parent["data"] = value.replace(" ", "").lower()
         else:
             exception = DataAssignmentError(
                 col_list=col_list,
@@ -287,19 +289,45 @@ class ExperimentSheet(Sheet):
             parsed_experiment = {
                 "base": {},
                 "index": index + 2,
+                "name": row["name"],
             }
-            experiment_name = row["name"]
+            experiment_std_name = row["name"].replace(" ", "").lower()
             for col in self.cols:
                 # Define value and field
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
 
                 # Populate parsed_experiment dict
                 if col in configs.base_cols["experiment"]:
                     parsed_experiment["base"][col] = value
 
-            self.parsed[experiment_name] = parsed_experiment
+            self.parsed[experiment_std_name] = parsed_experiment
+
+        return self.parsed
+
+
+class MixtureComponentSheet(Sheet):
+    """MixtureComponent Excel sheet."""
+
+    def __init__(self, path, sheet_name, param):
+        super().__init__(path, sheet_name, param)
+
+        self._read_file()
+        self._data_preprocess()
+        self.parsed = {}
+
+    def parse(self):
+        for index, row in self.df.iterrows():
+            parsed_mixture = {
+                "index": index + 2,
+                "name": row["components"],
+            }
+
+            material_std_name = row["material"].replace(" ", "").lower()
+            if material_std_name not in self.parsed:
+                self.parsed[material_std_name] = {}
+            self.parsed[material_std_name].addend(parsed_mixture)
 
         return self.parsed
 
@@ -323,23 +351,28 @@ class DataSheet(Sheet):
                 "base": {},
                 "experiment": None,
                 "index": index + 2,
+                "name": row["name"],
             }
+            data_std_name = row["name"].replace(" ", "").lower()
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
 
                 # Handle foreign keys
                 if field in self.foreign_keys:
                     parsed_datum[field] = value
 
                 # Populate parsed_datum dict
-                if field in configs.base_cols["data"]:
+                if col in configs.base_cols.get("data"):
                     parsed_datum["base"][field] = value
 
-            self.parsed[row["name"]] = parsed_datum
+            self.parsed[data_std_name] = parsed_datum
 
         return self.parsed
 
@@ -366,21 +399,24 @@ class FileSheet(Sheet):
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
 
                 # Handle foreign keys field
                 if field in self.foreign_keys:
                     parsed_file.update({field: value})
 
                 # Populate parsed_datum dict
-                if field in configs.base_cols["file"]:
+                if col in configs.base_cols.get("file"):
                     parsed_file["base"][field] = value
 
-            data_name = row["data"]
-            if data_name not in self.parsed:
-                self.parsed[data_name] = []
-            self.parsed[data_name].append(parsed_file)
+            data_std_name = row["data"].replace(" ", "").lower()
+            if data_std_name not in self.parsed:
+                self.parsed[data_std_name] = []
+            self.parsed[data_std_name].append(parsed_file)
 
         return self.parsed
 
@@ -398,31 +434,35 @@ class MaterialSheet(Sheet):
     def parse(self):
         for index, row in self.df.iterrows():
             parsed_material = {
-                "base": {},
+                "material-base": {},
                 "iden": {},
                 "prop": {},
                 "cond": {},
                 "index": index + 2,
+                "name": row["name"],
             }
+            material_std_name = row["name"].replace(" ", "").lower()
             for col in self.cols:
                 # Define value and field
                 col_list = self.col_lists_dict[col]
                 field = self.col_lists_dict[col][-1]
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
-                # print(f"col_list:{col_list}, field:{field}, type:{self.col_type.get(field)}")
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
 
                 # Handle data
                 if field == "data":
                     self._parse_data(col_list, parsed_material, value)
 
                 # Handle material base fields
-                if field in configs.base_cols["material"]:
-                    parsed_material["base"][field] = value
+                if self.col_type.get(field) == "material-base":
+                    parsed_material["material-base"][field] = value
 
                 # Handle identity base fields
-                if field in configs.base_cols["identity"]:
+                if self.col_type.get(field) == "iden":
                     parsed_material["iden"][field] = value
 
                 # Handle properties
@@ -433,7 +473,7 @@ class MaterialSheet(Sheet):
                 if self.col_type.get(field) == "cond":
                     self._parse_cond(col, value, parsed_material)
 
-                self.parsed[row["name"]] = parsed_material
+                self.parsed[material_std_name] = parsed_material
 
         return self.parsed
 
@@ -453,92 +493,53 @@ class ProcessSheet(Sheet):
             parsed_process = {
                 "base": {},
                 "index": index + 2,
+                "name": row["name"],
             }
+            process_std_name = row["name"].replace(" ", "").lower()
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
 
                 # Handle foreign keys
                 if field in self.foreign_keys:
                     parsed_process[field] = value
 
                 # Handle base process fields
-                if field in configs.base_cols["process"]:
-                    parsed_process["base"][field] = value
+                if col in configs.base_cols.get("process"):
+                    parsed_process["process-base"][field] = value
 
-            self.parsed[row["name"]] = parsed_process
+            self.parsed[process_std_name] = parsed_process
 
         return self.parsed
 
 
-class StepSheet(Sheet):
-    """Step Excel sheet."""
+class DependentProcessSheet(Sheet):
+    """MixtureComponent Excel sheet."""
 
     def __init__(self, path, sheet_name, param):
         super().__init__(path, sheet_name, param)
 
         self._read_file()
-        # will remove later
-        self.df.columns = self._replace_field(self.df.columns, "*step_type", "type")
-        self.df.columns = self._replace_field(
-            self.df.columns, "step_description", "description"
-        )
-
         self._data_preprocess()
-        self._create_helper_cols()
         self.parsed = {}
-
-    def _create_helper_cols(self):
-        if self.df is None:
-            return None
-
-        for index, row in self.df.iterrows():
-            _value = (
-                "".join(self.df.loc[index, "process"])
-                .join(":")
-                .join(str(self.df.loc[index, "step_id"]))
-            )
-
-            self.df.loc[index, "process:step_id"] = _value
 
     def parse(self):
         for index, row in self.df.iterrows():
-            parsed_step = {
-                "base": {},
-                "prop": {},
-                "cond": {},
+            parsed_dependency = {
                 "index": index + 2,
+                "name": row["dependent_processes"],
             }
 
-            for col in self.cols:
-                # Define value and field
-                field = self.col_lists_dict[col][-1]
-                value = row[col]
-                if value is None:
-                    continue
-
-                # Handle foreign key
-                if field in self.foreign_keys:
-                    parsed_step[field] = value
-
-                # Handle base step fields
-                if field in configs.base_cols["step"]:
-                    parsed_step["base"][field] = value
-
-                # Handle properties
-                if self.col_type.get(field) == "prop":
-                    self._parse_prop(col, value, parsed_step)
-
-                # Handle conditions
-                if self.col_type.get(field) == "cond":
-                    self._parse_cond(col, value, parsed_step)
-
-            if row["process"] not in self.parsed:
-                self.parsed[row["process"]] = {}
-            self.parsed[row["process"]][row["step_id"]] = parsed_step
+            process_std_name = row["process"].replace(" ", "").lower()
+            if process_std_name not in self.parsed:
+                self.parsed[process_std_name] = {}
+            self.parsed[process_std_name].addend(parsed_dependency)
 
         return self.parsed
 
@@ -586,17 +587,25 @@ class StepIngredientSheet(Sheet):
                 "base": {},
                 "quantity": {},
             }
+            process_std_name = row["process"].replace(" ", "").lower()
+            step_id = row["step_id"]
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
 
                 # Handle foreign key
                 if field in self.foreign_keys:
                     parsed_ingredient[field] = value
-                # print(f"col:{col},type:{self.col_type.get(col)}")
+
+                if col in configs.base_cols.get("materialIngredient"):
+                    parsed_ingredient["base"][field] = value
+
                 # Handle process ingredient fields
                 if self.col_type[col] == "quantity":
                     # Add quantity field with units
@@ -606,11 +615,11 @@ class StepIngredientSheet(Sheet):
                         "unit": self.unit_dict[col],
                     }
 
-            if row["process"] not in self.parsed:
-                self.parsed[row["process"]] = {}
-            if row["step_id"] not in self.parsed[row["process"]]:
-                self.parsed[row["process"]][row["step_id"]] = []
-            self.parsed[row["process"]][row["step_id"]].append(parsed_ingredient)
+            if process_std_name not in self.parsed:
+                self.parsed[process_std_name] = {}
+            if step_id not in self.parsed[process_std_name]:
+                self.parsed[process_std_name][step_id] = []
+            self.parsed[process_std_name][step_id].append(parsed_ingredient)
 
         return self.parsed
 
@@ -644,21 +653,26 @@ class StepProductSheet(Sheet):
     def parse(self):
         for index, row in self.df.iterrows():
             parsed_product = {}
+            process_std_name = row["process"].replace(" ", "").lower()
+            step_id = row["step_id"]
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
                 value = row[col]
-                if value is None:
+                if pd.isna(value):
                     continue
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
 
                 # Handle foreign keys
                 if field in self.foreign_keys:
                     parsed_product[field] = value
 
-            if row["process"] not in self.parsed:
-                self.parsed[row["process"]] = {}
-            if row["step_id"] not in self.parsed[row["process"]]:
-                self.parsed[row["process"]][row["step_id"]] = []
-            self.parsed[row["process"]][row["step_id"]].append(parsed_product)
+            if process_std_name not in self.parsed:
+                self.parsed[process_std_name] = {}
+            if step_id not in self.parsed[process_std_name]:
+                self.parsed[process_std_name][step_id] = []
+            self.parsed[process_std_name][step_id].append(parsed_product)
 
         return self.parsed
