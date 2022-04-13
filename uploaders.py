@@ -472,48 +472,67 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
     """
     process_objs = {}
     count = 0
-    for process_std_name in parsed_processes:
+    for experiment_std_name in parsed_processes:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"Process Uploaded: {count}/{len(parsed_processes)}")
-        count = count + 1
+        _process_track("Process Uploaded", count, len(parsed_processes))
 
-        parsed_process = parsed_processes[process_std_name]
-        process_name = parsed_process["name"]
         # Grab Experiment
-        experiment_std_name = parsed_process["experiment"].replace(" ", "").lower()
-        experiment_obj = experiment_objs[experiment_std_name]
+        experiment_obj = experiment_objs.get(experiment_std_name)
+        process_list = parsed_processes[experiment_std_name]
+        prev_process_std_name = None
+        for i in range(len(process_list)):
+            parsed_process = process_list[i]
+            process_name = parsed_process["name"]
+            process_std_name = process_name.replace(" ", "").lower()
 
-        process_search_result = api.search(
-            C.Process,
-            {
-                "group": _get_id_from_url(group_obj.url),
-                "experiment": _get_id_from_url(experiment_obj.url),
-                "name": process_name,
-            },
-        )
-        if process_search_result["count"] > 0:
-            url = process_search_result["results"][0]["url"]
-            process_obj = api.get(url)
-            print(f"Process node [{process_obj.name}] already exists")
-        else:
-            # Create Process
-            process_obj = C.Process(
-                group=group_obj,
-                experiment=experiment_obj,
-                public=public_flag,
-                **parsed_process["base"],
+            process_search_result = api.search(
+                C.Process,
+                {
+                    "group": _get_id_from_url(group_obj.url),
+                    "experiment": _get_id_from_url(experiment_obj.url),
+                    "name": process_name,
+                },
             )
-            # Save Process
-            try:
-                api.save(process_obj)
-            except Exception:
-                print(f"[WARNING]Process Save Failed." f"Process:[{process_obj.name}]")
-                process_obj = None
+            if process_search_result["count"] > 0:
+                url = process_search_result["results"][0]["url"]
+                process_obj = api.get(url)
+                print(f"Process node [{process_obj.name}] already exists")
+            else:
+                # Create Process
+                process_obj = C.Process(
+                    group=group_obj,
+                    experiment=experiment_obj,
+                    public=public_flag,
+                    **parsed_process["base"],
+                )
+                prev_process_std_name = process_std_name
+                if i > 0:
+                    prev_process_obj = process_objs.get(prev_process_std_name)
+                    process_obj.add_dependent_process(prev_process_obj)
 
-        process_objs[process_std_name] = process_obj
+                # Save Process
+                try:
+                    api.save(process_obj)
+                except Exception:
+                    print(
+                        f"[WARNING]Process Save Failed." f"Process:[{process_obj.name}]"
+                    )
+                    process_obj = None
+
+            process_objs[process_std_name] = process_obj
 
     return process_objs
+
+
+def update_dependent_process(api, process_objs, parsed_dependent_processes):
+    for process_std_name in parsed_dependent_processes:
+        process_obj = process_objs.get(process_std_name)
+        dependent_process_list = parsed_dependent_processes.get(process_std_name)
+        for i in range(len(dependent_process_list)):
+            dependent_process_std_name = dependent_process_list[i]["dependent_process"]
+            dependent_process_obj = process_objs.get(dependent_process_std_name)
+            process_obj.add_dependent_process(dependent_process_obj)
+        api.save(process_obj)
 
 
 def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_flag):

@@ -495,7 +495,7 @@ class ProcessSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            process_std_name = row["name"].replace(" ", "").lower()
+            experiment_std_name = row["experiment"].replace(" ", "").lower()
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
@@ -513,8 +513,9 @@ class ProcessSheet(Sheet):
                 # Handle base process fields
                 if col in configs.base_cols.get("process"):
                     parsed_process["process-base"][field] = value
-
-            self.parsed[process_std_name] = parsed_process
+            if experiment_std_name not in self.parsed:
+                self.parsed[experiment_std_name] = []
+            self.parsed[experiment_std_name].append(parsed_process)
 
         return self.parsed
 
@@ -533,13 +534,13 @@ class DependentProcessSheet(Sheet):
         for index, row in self.df.iterrows():
             parsed_dependency = {
                 "index": index + 2,
-                "name": row["dependent_processes"],
+                "dependent_process": row["dependent_processes"],
             }
 
             process_std_name = row["process"].replace(" ", "").lower()
             if process_std_name not in self.parsed:
                 self.parsed[process_std_name] = {}
-            self.parsed[process_std_name].addend(parsed_dependency)
+            self.parsed[process_std_name].append(parsed_dependency)
 
         return self.parsed
 
