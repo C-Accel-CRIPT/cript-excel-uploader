@@ -319,15 +319,15 @@ class MixtureComponentSheet(Sheet):
 
     def parse(self):
         for index, row in self.df.iterrows():
+            material_std_name = row["material"].replace(" ", "").lower()
+            component_std_name = row["components"].replace(" ", "").lower()
             parsed_mixture = {
                 "index": index + 2,
-                "name": row["components"],
+                "component": component_std_name,
             }
-
-            material_std_name = row["material"].replace(" ", "").lower()
             if material_std_name not in self.parsed:
                 self.parsed[material_std_name] = {}
-            self.parsed[material_std_name].addend(parsed_mixture)
+            self.parsed[material_std_name].append(parsed_mixture)
 
         return self.parsed
 

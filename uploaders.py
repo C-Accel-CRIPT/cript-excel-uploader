@@ -255,9 +255,7 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     count = 0
     for data_std_name in parsed_data:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"Data Uploaded: {count}/{len(parsed_data)}")
-        count = count + 1
+        _process_track("Data Uploaded", count, len(parsed_data))
 
         parsed_datum = parsed_data[data_std_name]
         data_name = parsed_data[data_std_name]["name"]
@@ -316,9 +314,7 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
     count = 0
     for key in parsed_file:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"File Uploaded: {count}/{len(parsed_file)}")
-        count = count + 1
+        _process_track("File Uploaded", count, len(parsed_file))
 
         file_dict = parsed_file[key]
         # Grab Data
@@ -382,9 +378,8 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     count = 0
     for material_std_name in parsed_material:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"Material Uploaded: {count}/{len(parsed_material)}")
-        count = count + 1
+        _process_track("Data Uploaded", count, len(parsed_material))
+
         material_dict = parsed_material[material_std_name]
         material_name = parsed_material[material_std_name]["name"]
 
@@ -441,6 +436,21 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
         material_objs[material_std_name] = material_obj
 
     return material_objs
+
+
+def update_components(api, material_objs, parsed_components):
+    for material_std_name in parsed_components:
+        material_obj = material_objs.get(material_std_name)
+        uid = 1
+        for parsed_component in parsed_components[material_std_name]:
+            component_std_name = parsed_component["component"]
+            component_obj = C.Component(
+                component=material_objs.get(component_std_name),
+                component_uid=uid,
+            )
+            material_obj.add_component(component_obj)
+            uid = uid + 1
+        api.save(material_obj)
 
 
 def upload_process(api, group_obj, experiment_objs, parsed_processes, public_flag):
