@@ -17,6 +17,12 @@ def connect(token):
     return C.API(BASE_URL, token)
 
 
+def _process_track(msg, count, total_count):
+    count = count + 1
+    if count != 0 and count % 10 == 0:
+        print(f"{msg}: {count}/{total_count}")
+
+
 def upload_group(api, group_name):
     """
     search for existing group_url
@@ -81,7 +87,6 @@ def upload_collection(api, group_obj, coll_name, public_flag):
             public=public_flag,
         )
         api.save(collection_obj)
-        api.refresh(group_obj)
 
     return collection_obj
 
@@ -109,11 +114,11 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
     """
     experiment_objs = {}
     count = 0
-    for experiment_name in parsed_experiments:
+    for experiment_std_name in parsed_experiments:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"Experiment Uploaded: {count}/{len(parsed_experiments)}")
-        count = count + 1
+        _process_track("Experiment Uploaded", count, len(parsed_experiments))
+
+        experiment_name = parsed_experiments[experiment_std_name]["name"]
 
         # Search for Duplicates
         experiment_search_result = api.search(
@@ -134,11 +139,11 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
                 group=group_obj,
                 collection=collection_obj,
                 public=public_flag,
-                **parsed_experiments[experiment_name]["base"],
+                **parsed_experiments[experiment_std_name]["base"],
             )
             api.save(experiment_obj)
 
-        experiment_objs[experiment_name] = experiment_obj
+        experiment_objs[experiment_std_name] = experiment_obj
 
     return experiment_objs
 
@@ -189,7 +194,6 @@ def _create_prop_list(parsed_props, data_objs=None):
     """
     props = []
     for prop_key in parsed_props:
-
         # Create Prop object
         prop = C.Property(
             key=prop_key,
@@ -249,15 +253,17 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     """
     data_objs = {}
     count = 0
-    for data_name in parsed_data:
+    for data_std_name in parsed_data:
         # process-track
         if count != 0 and count % 10 == 0:
             print(f"Data Uploaded: {count}/{len(parsed_data)}")
         count = count + 1
 
-        parsed_datum = parsed_data[data_name]
+        parsed_datum = parsed_data[data_std_name]
+        data_name = parsed_data[data_std_name]["name"]
         # Grab Experiment
-        experiment_obj = experiment_objs[parsed_datum["experiment"]]
+        experiment_std_name = parsed_datum["experiment"].replace(" ", "").lower()
+        experiment_obj = experiment_objs[experiment_std_name]
 
         # Search for Duplicates
         data_search_result = api.search(
@@ -284,7 +290,7 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
             api.save(datum_obj)
             api.refresh(experiment_obj)
 
-        data_objs[data_name] = datum_obj
+        data_objs[data_std_name] = datum_obj
 
     return data_objs
 
@@ -374,64 +380,13 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     identity_objs = {}
     material_objs = {}
     count = 0
-    for material in parsed_material.values():
+    for material_std_name in parsed_material:
         # process-track
         if count != 0 and count % 10 == 0:
             print(f"Material Uploaded: {count}/{len(parsed_material)}")
         count = count + 1
-
-        material_name = material["base"]["name"]
-
-        # Check if Identity exists
-        # Create Query
-        query = {}
-        cas = material["iden"].get("cas")
-        if cas:
-            query.update({"cas": cas})
-        else:
-            query.update({"name": material_name})
-
-            smiles = material["iden"].get("smiles")
-            if smiles:
-                query.update({"smiles": smiles})
-
-            bigsmiles = material["iden"].get("bigsmiles")
-            if bigsmiles:
-                query.update({"bigsmiles": bigsmiles})
-
-        # Check Query is not empty
-        if len(query) == 0:
-            identity_obj = None
-        else:
-            identity_search_result = api.search(C.Identity, query)
-            if identity_search_result["count"] > 0:
-                # Add Identity object to identity_urls dict
-                identity_url = identity_search_result["results"][0]["url"]
-                identity_obj = api.get(identity_url)
-                print(f"Identity node [{identity_obj.name}] already exists")
-            elif len(material["iden"]) > 0:
-                # Create Identity
-                identity_obj = C.Identity(
-                    group=group_obj,
-                    public=public_flag,
-                    **material["iden"],
-                )
-                # Save Identity
-                try:
-                    api.save(identity_obj)
-                    print(f"Identity node [{identity_obj.name}] created")
-                except Exception:
-                    print(
-                        f"[WARNING]Identity Save Failed."
-                        f"Identity: [{identity_obj.name}]"
-                    )
-                    print(traceback.format_exc())
-                    identity_obj = None
-            else:
-                identity_obj = None
-
-        # Update identity_objs
-        identity_objs[material_name] = identity_obj
+        material_dict = parsed_material[material_std_name]
+        material_name = parsed_material[material_std_name]["name"]
 
         # Search for Material Node
         material_search_result = api.search(
@@ -448,32 +403,42 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
         else:
             component_obj = None
             # Create Component object
-            if identity_objs.get(material_name) is not None:
-                component_obj = C.Component(identity=identity_objs.get(material_name))
+            if identity_objs.get(material_std_name) is not None:
+                component_obj = C.Component(
+                    identity=identity_objs.get(material_std_name)
+                )
             # Create Material object
             material_obj = C.Material(
                 group=group_obj,
                 components=[component_obj] if component_obj else None,
                 public=public_flag,
-                **material["base"],
+                **material_dict["base"],
             )
 
             # Add Prop objects
-            parsed_props = material["prop"]
+            parsed_props = material_dict["prop"]
             if len(parsed_props) > 0:
                 material_obj.properties = _create_prop_list(parsed_props, data_objs)
+
+            # Add Identifiers
+            parsed_idens = material_dict["iden"]
+            for key, value in parsed_idens.items():
+                identifier = C.Identifier(key=key, value=value)
+                material_obj.add_identifier(identifier)
 
             try:
                 # Save material to DB
                 api.save(material_obj)
-            except Exception:
+            except Exception as e:
                 print(
-                    f"[WARNING]Material Save Failed." f"Material:[{material_obj.name}]"
+                    f"[WARNING]Material Save Failed."
+                    f"Material:[{material_obj.name}]"
+                    f"reason:{e}"
                 )
                 material_obj = None
 
         # Add saved Material object to materials dict
-        material_objs[material_name] = material_obj
+        material_objs[material_std_name] = material_obj
 
     return material_objs
 
@@ -497,16 +462,17 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
     """
     process_objs = {}
     count = 0
-    for process_name in parsed_processes:
+    for process_std_name in parsed_processes:
         # process-track
         if count != 0 and count % 10 == 0:
             print(f"Process Uploaded: {count}/{len(parsed_processes)}")
         count = count + 1
 
-        parsed_process = parsed_processes[process_name]
-
+        parsed_process = parsed_processes[process_std_name]
+        process_name = parsed_process["name"]
         # Grab Experiment
-        experiment_obj = experiment_objs[parsed_process["experiment"]]
+        experiment_std_name = parsed_process["experiment"].replace(" ", "").lower()
+        experiment_obj = experiment_objs[experiment_std_name]
 
         process_search_result = api.search(
             C.Process,
@@ -535,7 +501,7 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
                 print(f"[WARNING]Process Save Failed." f"Process:[{process_obj.name}]")
                 process_obj = None
 
-        process_objs[process_name] = process_obj
+        process_objs[process_std_name] = process_obj
 
     return process_objs
 
@@ -561,19 +527,19 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
     """
     step_objs = {}
     count = 0
-    for process_name in parsed_steps:
+    for process_std_name in parsed_steps:
         # process-track
         if count != 0 and count % 10 == 0:
             print(f"Step Uploaded: {count}/{len(parsed_steps)}")
         count = count + 1
 
         # Grab Process
-        process_obj = process_objs[process_name]
+        process_obj = process_objs[process_std_name]
         if process_obj is None:
             continue
 
-        for step_id in parsed_steps[process_name]:
-            parsed_step = parsed_steps[process_name][step_id]
+        for step_id in parsed_steps[process_std_name]:
+            parsed_step = parsed_steps[process_std_name][step_id]
             step_search_result = api.search(
                 C.Step,
                 {
@@ -602,13 +568,13 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
 
                 # Add Prop objects
                 parsed_props = parsed_step["prop"]
-                # if len(parsed_props) > 0:
-                #    step_obj.properties = _create_prop_list(parsed_props, data_objs)
+                if len(parsed_props) > 0:
+                    step_obj.properties = _create_prop_list(parsed_props, data_objs)
 
                 # Add Cond objects
                 parsed_conds = parsed_step["cond"]
-                # if len(parsed_conds) > 0:
-                #    step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
+                if len(parsed_conds) > 0:
+                    step_obj.conditions = _create_cond_list(parsed_conds, data_objs)
 
                 # Save Process
                 try:
@@ -622,9 +588,9 @@ def upload_step(api, group_obj, process_objs, data_objs, parsed_steps, public_fl
                     print(traceback.format_exc())
                     step_obj = None
 
-            if process_name not in step_objs:
-                step_objs[process_name] = {}
-            step_objs[process_name][step_id] = step_obj
+            if process_std_name not in step_objs:
+                step_objs[process_std_name] = {}
+            step_objs[process_std_name][step_id] = step_obj
 
     return step_objs
 
@@ -649,24 +615,27 @@ def upload_stepIngredient(
     :rtype: dict
     """
     count = 0
-    for process_name in parsed_stepIngredients:
+    for process_std_name in parsed_stepIngredients:
         # process-track
         if count != 0 and count % 10 == 0:
             print(f"StepIngredient Uploaded: {count}/{len(parsed_stepIngredients)}")
         count = count + 1
 
         # Grab Process
-        process_obj = process_objs[process_name]
+        process_obj = process_objs[process_std_name]
+        process_name = process_obj.name
         if process_obj is None:
             continue
 
-        for step_id in parsed_stepIngredients[process_name]:
+        for step_id in parsed_stepIngredients[process_std_name]:
             # Grab Step
-            step_obj = step_objs[process_name][step_id]
+            step_obj = step_objs[process_std_name][step_id]
             if step_obj is None:
                 continue
             # print(parsed_stepIngredients[process_name])
-            for parsed_stepIngredient in parsed_stepIngredients[process_name][step_id]:
+            for parsed_stepIngredient in parsed_stepIngredients[process_std_name][
+                step_id
+            ]:
                 # Create stepIngredient
                 stepIngredient_obj = None
                 ingredient_name = parsed_stepIngredient.pop("ingredient")
