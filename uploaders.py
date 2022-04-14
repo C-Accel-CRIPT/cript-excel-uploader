@@ -536,7 +536,7 @@ def update_dependent_process(api, process_objs, parsed_dependent_processes):
 
 
 def upload_stepIngredient(
-    api, process_objs, step_objs, material_objs, parsed_stepIngredients
+    api, process_objs, step_objs, material_objs, parsed_processIngredients
 ):
     """
     upload step to the database and return a dict of name:step_url pair
@@ -549,87 +549,58 @@ def upload_stepIngredient(
     :type step_objs: dict
     :param material_objs: (name) : (object of material) pair
     :type material_objs: dict
-    :param parsed_stepIngredients:
+    :param parsed_processIngredients:
     :type dict
     :return: (name) : (step object) pair
     :rtype: dict
     """
     count = 0
-    for process_std_name in parsed_stepIngredients:
+    for process_std_name in parsed_processIngredients:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"StepIngredient Uploaded: {count}/{len(parsed_stepIngredients)}")
-        count = count + 1
+        _process_track(
+            "ProcessIngredient Uploaded", count, len(parsed_processIngredients)
+        )
 
         # Grab Process
         process_obj = process_objs[process_std_name]
-        process_name = process_obj.name
+
         if process_obj is None:
             continue
 
-        for step_id in parsed_stepIngredients[process_std_name]:
-            # Grab Step
-            step_obj = step_objs[process_std_name][step_id]
-            if step_obj is None:
+        for ingredient in parsed_processIngredients[process_std_name]:
+            # Grab Material
+            material_std_name = ingredient["material"]
+            material_obj = material_objs.get(material_std_name)
+            if material_obj is None:
                 continue
-            # print(parsed_stepIngredients[process_name])
-            for parsed_stepIngredient in parsed_stepIngredients[process_std_name][
-                step_id
-            ]:
-                # Create stepIngredient
-                stepIngredient_obj = None
-                ingredient_name = parsed_stepIngredient.pop("ingredient")
-                ingredient_name_list = ingredient_name.split(":")
-                ingredient_quantities = parsed_stepIngredient.pop("quantity")
-                if len(ingredient_name_list) == 1:
-                    material_obj = material_objs[ingredient_name]
-                    if material_obj is None:
-                        continue
-                    stepIngredient_obj = C.MaterialIngredient(
-                        ingredient=material_obj,
-                        quantities=_create_quantity_list(ingredient_quantities),
-                        **parsed_stepIngredient["base"],
-                    )
-                elif len(ingredient_name_list) == 2:
-                    from_process_name = ingredient_name_list[0]
-                    from_step_id = ingredient_name_list[1]
-                    from_step_obj = step_objs[from_process_name].get(from_step_id)
-                    if from_step_obj is None:
-                        continue
-                    stepIngredient_obj = C.IntermediateIngredient(
-                        ingredient=from_step_obj,
-                        quantities=_create_quantity_list(ingredient_quantities),
-                        **parsed_stepIngredient["base"],
-                    )
 
-                step_obj.add_ingredient(stepIngredient_obj)
-                print(
-                    f"StepIngredient [{stepIngredient_obj.ingredient.name}] "
-                    f"has been added to Step [{step_obj.step_id}] "
-                    f"for Process [{process_obj.name}]"
-                )
+            ingredient_obj = C.Ingredient(
+                ingredient=material_obj,
+                quantities=_create_quantity_list(ingredient["quantity"]),
+                **ingredient["base"],
+            )
 
-            # Save StepIngredient
-            try:
-                api.save(step_obj)
-                print(
-                    f"StepIngredients has been saved "
-                    f"to Step [{step_obj.step_id}] "
-                    f"for Process [{process_obj.name}]"
-                )
-            except Exception:
-                print(
-                    f"[WARNING]StepIngredient Save Failed. "
-                    f"Material:[{stepIngredient_obj.ingredient.name}],"
-                    f"Step:[{step_obj.step_id}],"
-                    f"Process:[{process_obj.name}]"
-                )
-                print(traceback.format_exc())
+            process_obj.add_ingredient(ingredient_obj)
+
+            print(
+                f"ProcessIngredient [{ingredient_obj.ingredient.name}] "
+                f"has been added to Process [{process_obj.name}]"
+            )
+
+        # Save StepIngredient
+        try:
+            api.save(process_obj)
+            print(
+                f"ProcessIngredient has been saved " f"for Process [{process_obj.name}]"
+            )
+        except Exception:
+            print(
+                f"[WARNING]StepIngredient Save Failed. " f"Process:[{process_obj.name}]"
+            )
+            print(traceback.format_exc())
 
 
-def upload_stepProduct(
-    api, process_objs, step_objs, material_objs, parsed_stepProducts
-):
+def upload_stepProduct(api, process_objs, material_objs, parsed_processProducts):
     """
     upload step to the database and return a dict of name:step_url pair
 
@@ -637,52 +608,41 @@ def upload_stepProduct(
     :type api: class:`cript.API`
     :param process_objs: (name) : (process object) pair
     :type process_objs: dict
-    :param step_objs: (step_id) : (step object) pair
-    :type step_objs: dict
     :param material_objs: (name) : (object of material) pair
     :type material_objs: dict
-    :param parsed_stepProducts:
+    :param parsed_processProducts:
     :type dict
     :return: (name) : (step object) pair
     :rtype: dict
     """
     count = 0
-    for process_name in parsed_stepProducts:
+    for process_std_name in parsed_processProducts:
         # process-track
-        if count != 0 and count % 10 == 0:
-            print(f"StepProduct Uploaded: {count}/{len(parsed_stepProducts)}")
-        count = count + 1
+        _process_track("ProcessProduct Uploaded", count, len(parsed_processProducts))
 
         # Grab Process
-        process_obj = process_objs.get(process_name)
+        process_obj = process_objs.get(process_std_name)
+        product_list = parsed_processProducts[process_std_name]
         if process_obj is None:
             continue
+        for parsed_product in product_list:
+            product_std_name = parsed_product["product"]
+            material_obj = material_objs.get(product_std_name)
+            process_obj.add_product(material_obj)
 
-        for step_id in parsed_stepProducts[process_name]:
-            # Grab Step
-            step_obj = step_objs[process_name].get(step_id)
-            if step_obj is None:
-                continue
-
-            for stepProduct in parsed_stepProducts[process_name][step_id]:
-                # Create stepProduct
-                stepProduct_obj = material_objs.get(stepProduct["product"])
-                if stepProduct_obj is None:
-                    continue
-                # Save StepProduct
-                try:
-                    step_obj.add_product(stepProduct_obj)
-                    api.save(step_obj)
-                    print(
-                        f"StepProduct [{stepProduct_obj.name}] "
-                        f"has been added to Step [{step_obj.step_id}] "
-                        f"for Process [{process_obj.name}]"
-                    )
-                except Exception:
-                    print(
-                        f"[WARNING]StepProduct Save Failed. "
-                        f"Material:[{stepProduct_obj.name}],"
-                        f"Step:[{step_obj.step_id}],"
-                        f"Process:[{process_obj.name}]"
-                    )
-                    print(traceback.format_exc())
+        # Save StepProduct
+        try:
+            api.save(process_obj)
+            # print(
+            #     f"StepProduct [{mater_obj.name}] "
+            #     f"has been added to Step [{step_obj.step_id}] "
+            #     f"for Process [{process_obj.name}]"
+            # )
+        except Exception:
+            # print(
+            #     f"[WARNING]StepProduct Save Failed. "
+            #     f"Material:[{stepProduct_obj.name}],"
+            #     f"Step:[{step_obj.step_id}],"
+            #     f"Process:[{process_obj.name}]"
+            # )
+            print(traceback.format_exc())

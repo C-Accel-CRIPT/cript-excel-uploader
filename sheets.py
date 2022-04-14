@@ -5,6 +5,9 @@ from errors import (
     DataAssignmentError,
     UnsupportedFieldName,
 )
+from util import (
+    standardize_name,
+)
 
 
 class Sheet:
@@ -545,8 +548,8 @@ class DependentProcessSheet(Sheet):
         return self.parsed
 
 
-class StepIngredientSheet(Sheet):
-    """StepIngredient Excel sheet."""
+class ProcessIngredientSheet(Sheet):
+    """ProcessIngredient Excel sheet."""
 
     def __init__(self, path, sheet_name, param):
         super().__init__(path, sheet_name, param)
@@ -564,23 +567,9 @@ class StepIngredientSheet(Sheet):
             _value = (
                 "".join(self.df.loc[index, "process"])
                 .join(":")
-                .join(str(self.df.loc[index, "step_id"]))
+                .join(str(self.df.loc[index, "material"]))
             )
-            self.df.loc[index, "process:step_id"] = _value
-
-            _value = _value.join(":").join(self.df.loc[index, "ingredient"])
-            self.df.loc[index, "process:step_id:ingredient"] = _value
-
-            self.df.loc[index, "ingredient-material"] = None
-            self.df.loc[index, "ingredient-step"] = None
-            _list = self.df.loc[index, "ingredient"].split(":")
-            # Data assign error check
-            if len(_list) == 1:
-                self.df.loc[index, "ingredient-material"] = _list[0]
-            if len(_list) == 2:
-                self.df.loc[index, "ingredient-step"] = (
-                    "".join(_list[0]).join(":").join(_list[1])
-                )
+            self.df.loc[index, "process+material"] = _value
 
     def parse(self):
         for index, row in self.df.iterrows():
@@ -588,8 +577,8 @@ class StepIngredientSheet(Sheet):
                 "base": {},
                 "quantity": {},
             }
-            process_std_name = row["process"].replace(" ", "").lower()
-            step_id = row["step_id"]
+
+            process_std_name = standardize_name(row["process"])
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
@@ -604,7 +593,7 @@ class StepIngredientSheet(Sheet):
                 if field in self.foreign_keys:
                     parsed_ingredient[field] = value
 
-                if col in configs.base_cols.get("materialIngredient"):
+                if self.col_type[col] == "base":
                     parsed_ingredient["base"][field] = value
 
                 # Handle process ingredient fields
@@ -617,16 +606,14 @@ class StepIngredientSheet(Sheet):
                     }
 
             if process_std_name not in self.parsed:
-                self.parsed[process_std_name] = {}
-            if step_id not in self.parsed[process_std_name]:
-                self.parsed[process_std_name][step_id] = []
-            self.parsed[process_std_name][step_id].append(parsed_ingredient)
+                self.parsed[process_std_name] = []
+            self.parsed[process_std_name].append(parsed_ingredient)
 
         return self.parsed
 
 
-class StepProductSheet(Sheet):
-    """StepProduct Excel sheet."""
+class ProcessProductSheet(Sheet):
+    """ProcessProduct Excel sheet."""
 
     def __init__(self, path, sheet_name, param):
         super().__init__(path, sheet_name, param)
@@ -644,36 +631,20 @@ class StepProductSheet(Sheet):
             _value = (
                 "".join(self.df.loc[index, "process"])
                 .join(":")
-                .join(str(self.df.loc[index, "step_id"]))
+                .join(str(self.df.loc[index, "product"]))
             )
-            self.df.loc[index, "process:step_id"] = _value
-
-            _value = _value.join(":").join(self.df.loc[index, "product"])
-            self.df.loc[index, "process:step_id:product"] = _value
+            self.df.loc[index, "process+product"] = _value
 
     def parse(self):
         for index, row in self.df.iterrows():
-            parsed_product = {}
-            process_std_name = row["process"].replace(" ", "").lower()
-            step_id = row["step_id"]
-            for col in self.cols:
-                # Define value and field
-                field = self.col_lists_dict[col][-1]
-                value = row[col]
-                if pd.isna(value):
-                    continue
-
-                if col in configs.list_fields[self.sheet_name]:
-                    value = value.split(",")
-
-                # Handle foreign keys
-                if field in self.foreign_keys:
-                    parsed_product[field] = value
+            parsed_product = {
+                "index": index + 2,
+                "product": standardize_name(row["product"]),
+            }
+            process_std_name = standardize_name(row["process"])
 
             if process_std_name not in self.parsed:
-                self.parsed[process_std_name] = {}
-            if step_id not in self.parsed[process_std_name]:
-                self.parsed[process_std_name][step_id] = []
-            self.parsed[process_std_name][step_id].append(parsed_product)
+                self.parsed[process_std_name] = []
+            self.parsed[process_std_name].append(parsed_product)
 
         return self.parsed

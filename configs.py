@@ -68,7 +68,7 @@ foreign_keys = {
     "mixture components": ["material", "component"],
     "process": ["experiment"],
     "dependent processes": ["process", "dependent_process"],
-    "process ingredients": ["process", "material"],
+    "process ingredients": ["process", "ingredient"],
     "process products": ["process", "product"],
 }
 
@@ -77,10 +77,11 @@ list_fields = {
     "data": [],
     "file": [],
     "material": ["names"],
+    "mixture components": [],
     "process": ["keywords"],
-    "step": ["equipment"],
-    "step_ingredients": [],
-    "step_products": [],
+    "dependent processes": [],
+    "process ingredients": [],
+    "process products": [],
 }
 
 base_cols = {}
@@ -89,16 +90,20 @@ base_cols["material"] = inspect.signature(C.Material.__init__).parameters
 base_cols["data"] = inspect.signature(C.Data.__init__).parameters
 base_cols["file"] = inspect.signature(C.File.__init__).parameters
 base_cols["process"] = inspect.signature(C.Process.__init__).parameters
+base_cols["ingredient"] = inspect.signature(C.Ingredient.__init__).parameters
+
 
 # sheet_nodes
 base_nodes = {
     "experiment": {"experiment"},
-    "data": {"data", "file"},
+    "data": {"data"},
+    "file": {"file"},
     "material": {"material"},
+    "mixture components": {},
     "process": {"process"},
-    "step": {"step"},
-    "step_ingredients": {"materialIngredient"},
-    "step_products": {},
+    "dependent processes": {},
+    "process ingredients": {"ingredient"},
+    "process products": {},
 }
 
 sheet_name_to_prop_key = {
