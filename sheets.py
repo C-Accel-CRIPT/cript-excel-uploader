@@ -316,13 +316,13 @@ class MixtureComponentSheet(Sheet):
     def parse(self):
         for index, row in self.df.iterrows():
             material_std_name = standardize_name(row["material"])
-            component_std_name = standardize_name(row["components"])
+            component_std_name = standardize_name(row["component"])
             parsed_mixture = {
                 "index": index + 2,
                 "component": component_std_name,
             }
             if material_std_name not in self.parsed:
-                self.parsed[material_std_name] = {}
+                self.parsed[material_std_name] = []
             self.parsed[material_std_name].append(parsed_mixture)
 
         return self.parsed
@@ -439,7 +439,6 @@ class MaterialSheet(Sheet):
             }
             material_std_name = standardize_name(row["name"])
             for col in self.cols:
-                print(parsed_material)
                 # Define value and field
                 col_list = self.col_lists_dict[col]
                 field = self.col_lists_dict[col][-1]
@@ -492,6 +491,7 @@ class ProcessSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
+            name = row["experiment"]
             experiment_std_name = standardize_name(row["experiment"])
             for col in self.cols:
                 # Define value and field
@@ -509,7 +509,7 @@ class ProcessSheet(Sheet):
 
                 # Handle base process fields
                 if col in configs.base_cols.get("process"):
-                    parsed_process["process-base"][field] = value
+                    parsed_process["base"][field] = value
             if experiment_std_name not in self.parsed:
                 self.parsed[experiment_std_name] = []
             self.parsed[experiment_std_name].append(parsed_process)
