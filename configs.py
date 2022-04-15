@@ -6,11 +6,11 @@ required_cols = {
     "data": ["experiment", "name", "type"],
     "file": ["data", "source", "type"],
     "material": ["name"],
-    "mixture components": ["material", "component"],
+    "mixture component": ["material", "component"],
     "process": ["experiment", "name", "keywords"],
-    "dependent processes": ["process", "dependent_process"],
-    "process ingredients": ["process", "material", "keyword"],
-    "process products": ["process", "product"],
+    "dependent process": ["process", "dependent_process"],
+    "process ingredient": ["process", "material", "keyword"],
+    "process product": ["process", "product"],
 }
 
 either_or_cols = {
@@ -18,12 +18,12 @@ either_or_cols = {
     "data": [],
     "file": [],
     "material": [],
-    "mixture components": [],
+    "mixture component": [],
     "process": [],
-    "dependent processes": [],
+    "dependent process": [],
     "step": [],
-    "process ingredients": ["mole", "mass", "volume"],
-    "process products": [],
+    "process ingredient": ["mole", "mass", "volume"],
+    "process product": [],
 }
 
 # integer_cols = {
@@ -53,11 +53,11 @@ unique_keys = {
     "data": ["name"],
     "file": ["source"],
     "material": ["name"],
-    "mixture components": ["material+component"],
+    "mixture component": ["material+component"],
     "process": ["name"],
-    "dependent processes": ["process+dependent_process"],
-    "process ingredients": ["process+material"],
-    "process products": ["process+product"],
+    "dependent process": ["process+dependent_process"],
+    "process ingredient": ["process+material"],
+    "process product": ["process+product"],
 }
 
 foreign_keys = {
@@ -65,11 +65,11 @@ foreign_keys = {
     "data": ["experiment"],
     "file": ["data"],
     "material": [],
-    "mixture components": ["material", "component"],
+    "mixture component": ["material", "component"],
     "process": ["experiment"],
-    "dependent processes": ["process", "dependent_process"],
-    "process ingredients": ["process", "ingredient"],
-    "process products": ["process", "product"],
+    "dependent process": ["process", "dependent_process"],
+    "process ingredient": ["process", "ingredient"],
+    "process product": ["process", "product"],
 }
 
 list_fields = {
@@ -77,11 +77,11 @@ list_fields = {
     "data": [],
     "file": [],
     "material": ["names"],
-    "mixture components": [],
+    "mixture component": [],
     "process": ["keywords"],
-    "dependent processes": [],
-    "process ingredients": [],
-    "process products": [],
+    "dependent process": [],
+    "process ingredient": [],
+    "process product": [],
 }
 
 base_cols = {}
@@ -99,11 +99,11 @@ base_nodes = {
     "data": {"data"},
     "file": {"file"},
     "material": {"material"},
-    "mixture components": {},
+    "mixture component": {},
     "process": {"process"},
-    "dependent processes": {},
-    "process ingredients": {"ingredient"},
-    "process products": {},
+    "dependent process": {},
+    "process ingredient": {"ingredient"},
+    "process product": {},
 }
 
 sheet_name_to_prop_key = {
@@ -114,62 +114,62 @@ sheet_name_to_prop_key = {
 foreign_key_validation_pairs = [
     {
         "from_field": "experiment",
-        "from_sheet_obj": "data_sheet",
+        "from_sheet_obj": "data",
         "to_field": "name",
-        "to_sheet_obj": "experiment_sheet",
+        "to_sheet_obj": "experiment",
     },
     {
         "from_field": "data",
-        "from_sheet_obj": "file_sheet",
+        "from_sheet_obj": "file",
         "to_field": "name",
-        "to_sheet_obj": "data_sheet",
+        "to_sheet_obj": "data",
     },
     {
         "from_field": "experiment",
-        "from_sheet_obj": "process_sheet",
+        "from_sheet_obj": "process",
         "to_field": "name",
-        "to_sheet_obj": "experiment_sheet",
+        "to_sheet_obj": "experiment",
     },
     {
         "from_field": "process",
-        "from_sheet_obj": "processIngredients_sheet",
+        "from_sheet_obj": "process ingredient",
         "to_field": "name",
-        "to_sheet_obj": "process_sheet",
+        "to_sheet_obj": "process",
     },
     {
         "from_field": "process",
-        "from_sheet_obj": "dependentProcess_sheet",
+        "from_sheet_obj": "dependent process",
         "to_field": "name",
-        "to_sheet_obj": "process_sheet",
+        "to_sheet_obj": "process",
     },
     {
         "from_field": "dependent_process",
-        "from_sheet_obj": "dependentProcess_sheet",
+        "from_sheet_obj": "dependent process",
         "to_field": "name",
-        "to_sheet_obj": "process_sheet",
+        "to_sheet_obj": "process",
     },
     {
         "from_field": "material",
-        "from_sheet_obj": "stepIngredients_sheet",
+        "from_sheet_obj": "process ingredient",
         "to_field": "name",
-        "to_sheet_obj": "material_sheet",
+        "to_sheet_obj": "material",
     },
     {
         "from_field": "product",
-        "from_sheet_obj": "stepProducts_sheet",
+        "from_sheet_obj": "process product",
         "to_field": "name",
-        "to_sheet_obj": "material_sheet",
+        "to_sheet_obj": "material",
     },
     {
         "from_field": "material",
-        "from_sheet_obj": "mixtureComponent_sheet",
+        "from_sheet_obj": "mixture component",
         "to_field": "name",
-        "to_sheet_obj": "material_sheet",
+        "to_sheet_obj": "material",
     },
     {
         "from_field": "component",
-        "from_sheet_obj": "mixtureComponent_sheet",
+        "from_sheet_obj": "mixture component",
         "to_field": "name",
-        "to_sheet_obj": "material_sheet",
+        "to_sheet_obj": "material",
     },
 ]

@@ -6,8 +6,15 @@ import ascii_art
 import sheets
 import uploaders
 import validators
+import configs
 
 from errors import GroupRelatedError
+
+script_directory = os.path.dirname(os.path.abspath(__file__))
+activate_this = os.path.join(script_directory, "./venv/Scripts/activate_this.py")
+code = compile(open(activate_this).read(), activate_this, "exec")
+exec(code, dict(__file__=activate_this))
+
 
 # Display title
 print(ascii_art.title.template)
@@ -59,63 +66,44 @@ while True:
 
         bug_count = 1
         while bug_count > 0:
+            # Get parameters
+            param = db.keys
+
             # Instantiate Sheet objects
-            #
-            material_sheet = sheets.MaterialSheet(path, "material")
-            experiment_sheet = sheets.ExperimentSheet(path, "experiment")
-            process_sheet = sheets.ProcessSheet(path, "process")
-            step_sheet = sheets.StepSheet(path, "step")
-            stepIngredients_sheet = sheets.StepIngredientSheet(path, "step_ingredients")
-            stepProducts_sheet = sheets.StepProductSheet(path, "step_products")
-            data_sheet = sheets.DataSheet(path, "data")
-            file_sheet = sheets.FileSheet(path, "file")
+            material_sheet = sheets.MaterialSheet(path, "Define materials", param)
+            experiment_sheet = sheets.ExperimentSheet(path, "Define experiments", param)
+            process_sheet = sheets.ProcessSheet(path, "Define processes", param)
+            processIngredient_sheet = sheets.StepIngredientSheet(
+                path, "Define process ingredients", param
+            )
+            data_sheet = sheets.DataSheet(path, "Define raw data", param)
 
             # Validate Excel Sheets
             #
-            sheet_list = [
-                material_sheet,
-                experiment_sheet,
-                process_sheet,
-                step_sheet,
-                stepIngredients_sheet,
-                stepProducts_sheet,
-                data_sheet,
-                file_sheet,
-            ]
+            sheet_dict = {
+                "material_sheet": material_sheet,
+                "experiment_sheet": experiment_sheet,
+                "process_sheet": process_sheet,
+                "processIngredient_sheet": processIngredient_sheet,
+                "data_sheet": data_sheet,
+            }
+            # Check for reading data template
+
             # Validate unique key and not null value
-            for sheet in sheet_list:
+            for sheet in sheet_dict.values():
+                validators.validate_required_cols(sheet)
+                validators.validate_either_or_cols(sheet)
                 validators.validate_unique_key(sheet)
                 validators.validate_not_null_value(sheet)
+                # validators.validate_unit(sheet) # to be discussed
+
             # Validate foreign key
-            validators.validate_foreign_key(
-                "experiment", data_sheet, "name", experiment_sheet
-            )
-            validators.validate_foreign_key("data", file_sheet, "name", data_sheet)
-            validators.validate_foreign_key(
-                "experiment", process_sheet, "name", experiment_sheet
-            )
-            validators.validate_foreign_key(
-                "process", step_sheet, "name", process_sheet
-            )
-            validators.validate_foreign_key(
-                "process", stepIngredients_sheet, "name", process_sheet
-            )
-            validators.validate_foreign_key(
-                "process:step_id", stepIngredients_sheet, "process:step_id", step_sheet
-            )
-            validators.validate_foreign_key(
-                "process:step_id", stepProducts_sheet, "process:step_id", step_sheet
-            )
-            validators.validate_foreign_key(
-                "ingredient-material", stepIngredients_sheet, "name", material_sheet
-            )
-            validators.validate_foreign_key(
-                "ingredient-step", stepIngredients_sheet, "process+step_id", step_sheet
-            )
-            validators.validate_foreign_key(
-                "product", stepProducts_sheet, "name", material_sheet
-            )
-            for sheet in sheet_list:
+            for pair in configs.foreign_key_validation_pairs:
+                pair["from_sheet_obj"] = sheet_dict[pair["from_sheet_obj"]]
+                pair["to_sheet_obj"] = sheet_dict[pair["to_sheet_obj"]]
+                validators.validate_foreign_key(**pair)
+
+            for sheet in sheet_dict.values():
                 for field in sheet.col_lists_dict:
                     col_list = sheet.col_lists_dict[field]
                     if len(col_list) == 2 and col_list[-1] == "data":
@@ -125,11 +113,11 @@ while True:
 
             # Parse Excel Sheets
             #
-            for sheet in sheet_list:
+            for sheet in sheet_dict.values():
                 sheet.parse()
 
             bug_count = 0
-            for sheet in sheet_list:
+            for sheet in sheet_dict.values():
                 for exception_message in sheet.errors:
                     print(exception_message)
                     bug_count = bug_count + 1

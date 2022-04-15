@@ -83,14 +83,7 @@ class Sheet:
         # Drop NaN Rows
         self.df.dropna(axis=0, how="all", inplace=True)
 
-        # Convert id to Integer
-        for col in self.cols:
-            if col[-3:] == "_id":
-                self.df = self.df.astype({col: "int"})
-            if col in configs.float_cols[self.sheet_name]:
-                self.df = self.df.astype({col: "float"})
-
-        # Remove Space, Convert id to Integer, Handle List Fields
+        # Remove Space
         for index, row in self.df.iterrows():
             for col in self.cols:
                 value = row[col]
@@ -140,7 +133,7 @@ class Sheet:
             return field
 
         # Identifier Keys
-        iden_key = "material-identifier"
+        iden_key = "material-identifier-key"
         for iden in self.param[iden_key]:
             if field == iden["name"]:
                 self.col_type.update({iden["name"]: "iden"})
@@ -437,7 +430,7 @@ class MaterialSheet(Sheet):
     def parse(self):
         for index, row in self.df.iterrows():
             parsed_material = {
-                "material-base": {},
+                "base": {},
                 "iden": {},
                 "prop": {},
                 "cond": {},
@@ -446,6 +439,7 @@ class MaterialSheet(Sheet):
             }
             material_std_name = row["name"].replace(" ", "").lower()
             for col in self.cols:
+                print(parsed_material)
                 # Define value and field
                 col_list = self.col_lists_dict[col]
                 field = self.col_lists_dict[col][-1]
@@ -461,8 +455,8 @@ class MaterialSheet(Sheet):
                     self._parse_data(col_list, parsed_material, value)
 
                 # Handle material base fields
-                if self.col_type.get(field) == "material-base":
-                    parsed_material["material-base"][field] = value
+                if self.col_type.get(field) == "base":
+                    parsed_material["base"][field] = value
 
                 # Handle identity base fields
                 if self.col_type.get(field) == "iden":
@@ -567,9 +561,9 @@ class ProcessIngredientSheet(Sheet):
             _value = (
                 "".join(self.df.loc[index, "process"])
                 .join(":")
-                .join(str(self.df.loc[index, "material"]))
+                .join(str(self.df.loc[index, "ingredient"]))
             )
-            self.df.loc[index, "process+material"] = _value
+            self.df.loc[index, "process+ingredient"] = _value
 
     def parse(self):
         for index, row in self.df.iterrows():
