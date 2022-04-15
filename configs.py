@@ -9,7 +9,7 @@ required_cols = {
     "mixture component": ["material", "component"],
     "process": ["experiment", "name", "keywords"],
     "dependent process": ["process", "dependent_process"],
-    "process ingredient": ["process", "material", "keyword"],
+    "process ingredient": ["process", "ingredient", "keyword"],
     "process product": ["process", "product"],
 }
 
