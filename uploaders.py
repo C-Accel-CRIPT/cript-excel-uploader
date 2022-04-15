@@ -65,7 +65,7 @@ def upload_collection(api, group_obj, coll_name, public_flag):
     collection_search_result = api.search(
         C.Collection,
         {
-            "group": _get_id_from_url(group_obj.url),
+            "group": group_obj.uid,
             "name": coll_name,
         },
     )
@@ -119,8 +119,8 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
         experiment_search_result = api.search(
             C.Experiment,
             {
-                "group": _get_id_from_url(group_obj.url),
-                "collection": _get_id_from_url(collection_obj.url),
+                "group": group_obj.uid,
+                "collection": collection_obj.uid,
                 "name": experiment_name,
             },
         )
@@ -226,11 +226,6 @@ def _replace_field(parsed_object, raw_key, replace_key):
         parsed_object.pop(raw_key)
 
 
-def _get_id_from_url(url: str):
-    _id = url.rstrip("/").split("/")[-1]
-    return str(_id)
-
-
 def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     """
     upload data to the database and return a dict of name:data_url pair
@@ -262,8 +257,8 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
         data_search_result = api.search(
             C.Data,
             {
-                "group": _get_id_from_url(group_obj.url),
-                "experiment": _get_id_from_url(experiment_obj.url),
+                "group": group_obj.uid,
+                "experiment": experiment_obj.uid,
                 "name": data_name,
             },
         )
@@ -322,8 +317,8 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
             file_search_result = api.search(
                 C.File,
                 {
-                    "group": _get_id_from_url(group_obj.url),
-                    "data": _get_id_from_url(data_obj.url),
+                    "group": group_obj.uid,
+                    "data": data_obj.uid,
                     "name": os.path.basename(file["base"]["source"]),
                 },
             )
@@ -382,7 +377,7 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
         material_search_result = api.search(
             C.Material,
             {
-                "group": _get_id_from_url(group_obj.url),
+                "group": group_obj.uid,
                 "name": material_name,
             },
         )
@@ -483,8 +478,8 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
             process_search_result = api.search(
                 C.Process,
                 {
-                    "group": _get_id_from_url(group_obj.url),
-                    "experiment": _get_id_from_url(experiment_obj.url),
+                    "group": group_obj.uid,
+                    "experiment": experiment_obj.uid,
                     "name": process_name,
                 },
             )
