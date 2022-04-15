@@ -75,13 +75,8 @@ def upload_collection(api, group_obj, coll_name, public_flag):
         collection_obj = api.get(url)
         print(f"get_time:{time.time() - start_time}")
     else:
-        # Create Collection if it doesn't exist
-        collection_obj = C.Collection(
-            group=group_obj,
-            name=coll_name,
-            public=public_flag,
-        )
-        api.save(collection_obj)
+        collection_obj = None
+        print("Error: You must enter an existing CRIPT collection. Try again.")
 
     return collection_obj
 
