@@ -287,7 +287,7 @@ class ExperimentSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            experiment_std_name = row["name"].replace(" ", "").lower()
+            experiment_std_name = standardize_name(row["name"])
             for col in self.cols:
                 # Define value and field
                 value = row[col]
@@ -315,8 +315,8 @@ class MixtureComponentSheet(Sheet):
 
     def parse(self):
         for index, row in self.df.iterrows():
-            material_std_name = row["material"].replace(" ", "").lower()
-            component_std_name = row["components"].replace(" ", "").lower()
+            material_std_name = standardize_name(row["material"])
+            component_std_name = standardize_name(row["components"])
             parsed_mixture = {
                 "index": index + 2,
                 "component": component_std_name,
@@ -349,7 +349,7 @@ class DataSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            data_std_name = row["name"].replace(" ", "").lower()
+            data_std_name = standardize_name(row["name"])
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
@@ -409,7 +409,7 @@ class FileSheet(Sheet):
                 if col in configs.base_cols.get("file"):
                     parsed_file["base"][field] = value
 
-            data_std_name = row["data"].replace(" ", "").lower()
+            data_std_name = standardize_name(row["data"])
             if data_std_name not in self.parsed:
                 self.parsed[data_std_name] = []
             self.parsed[data_std_name].append(parsed_file)
@@ -437,7 +437,7 @@ class MaterialSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            material_std_name = row["name"].replace(" ", "").lower()
+            material_std_name = standardize_name(row["name"])
             for col in self.cols:
                 print(parsed_material)
                 # Define value and field
@@ -492,7 +492,7 @@ class ProcessSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            experiment_std_name = row["experiment"].replace(" ", "").lower()
+            experiment_std_name = standardize_name(row["experiment"])
             for col in self.cols:
                 # Define value and field
                 field = self.col_lists_dict[col][-1]
@@ -534,7 +534,7 @@ class DependentProcessSheet(Sheet):
                 "dependent_process": row["dependent_processes"],
             }
 
-            process_std_name = row["process"].replace(" ", "").lower()
+            process_std_name = standardize_name(row["process"])
             if process_std_name not in self.parsed:
                 self.parsed[process_std_name] = {}
             self.parsed[process_std_name].append(parsed_dependency)
