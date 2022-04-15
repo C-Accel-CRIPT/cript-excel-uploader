@@ -5,6 +5,7 @@ import traceback
 import cript as C
 from config import BASE_URL
 from errors import GroupRelatedError
+from util import process_track
 
 
 def connect(token):
@@ -15,12 +16,6 @@ def connect(token):
     :rtype: class:`cript.API`
     """
     return C.API(BASE_URL, token)
-
-
-def _process_track(msg, count, total_count):
-    count = count + 1
-    if count != 0 and count % 10 == 0:
-        print(f"{msg}: {count}/{total_count}")
 
 
 def upload_group(api, group_name):
@@ -116,7 +111,7 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
     count = 0
     for experiment_std_name in parsed_experiments:
         # process-track
-        _process_track("Experiment Uploaded", count, len(parsed_experiments))
+        process_track("Experiment Uploaded", count, len(parsed_experiments))
 
         experiment_name = parsed_experiments[experiment_std_name]["name"]
 
@@ -255,7 +250,7 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     count = 0
     for data_std_name in parsed_data:
         # process-track
-        _process_track("Data Uploaded", count, len(parsed_data))
+        process_track("Data Uploaded", count, len(parsed_data))
 
         parsed_datum = parsed_data[data_std_name]
         data_name = parsed_data[data_std_name]["name"]
@@ -314,7 +309,7 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
     count = 0
     for key in parsed_file:
         # process-track
-        _process_track("File Uploaded", count, len(parsed_file))
+        process_track("File Uploaded", count, len(parsed_file))
 
         file_dict = parsed_file[key]
         # Grab Data
@@ -378,7 +373,7 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     count = 0
     for material_std_name in parsed_material:
         # process-track
-        _process_track("Data Uploaded", count, len(parsed_material))
+        process_track("Data Uploaded", count, len(parsed_material))
 
         material_dict = parsed_material[material_std_name]
         material_name = parsed_material[material_std_name]["name"]
@@ -474,7 +469,7 @@ def upload_process(api, group_obj, experiment_objs, parsed_processes, public_fla
     count = 0
     for experiment_std_name in parsed_processes:
         # process-track
-        _process_track("Process Uploaded", count, len(parsed_processes))
+        process_track("Process Uploaded", count, len(parsed_processes))
 
         # Grab Experiment
         experiment_obj = experiment_objs.get(experiment_std_name)
@@ -557,7 +552,7 @@ def upload_stepIngredient(
     count = 0
     for process_std_name in parsed_processIngredients:
         # process-track
-        _process_track(
+        process_track(
             "ProcessIngredient Uploaded", count, len(parsed_processIngredients)
         )
 
@@ -618,7 +613,7 @@ def upload_stepProduct(api, process_objs, material_objs, parsed_processProducts)
     count = 0
     for process_std_name in parsed_processProducts:
         # process-track
-        _process_track("ProcessProduct Uploaded", count, len(parsed_processProducts))
+        process_track("ProcessProduct Uploaded", count, len(parsed_processProducts))
 
         # Grab Process
         process_obj = process_objs.get(process_std_name)
