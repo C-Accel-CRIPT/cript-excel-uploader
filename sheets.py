@@ -112,6 +112,7 @@ class Sheet:
         :rtype: str
         """
         field = col_list[i]
+        print(f"field:{field},sheet:{self.sheet_name}")
         # If field has already existed
         if field in self.col_type:
             return field
@@ -160,7 +161,7 @@ class Sheet:
                 self.col_type.update({quan["name"]: "quantity"})
                 return quan["name"]
 
-        # print(f"error:{field},sheet:{self.sheet_name}")
+        print(f"error:{field},sheet:{self.sheet_name}")
         exception = UnsupportedFieldName(field, col_list, self.sheet_name)
         self.errors.append(exception.__str__())
 
@@ -491,7 +492,6 @@ class ProcessSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            name = row["experiment"]
             experiment_std_name = standardize_name(row["experiment"])
             for col in self.cols:
                 # Define value and field

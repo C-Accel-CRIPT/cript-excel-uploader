@@ -45,7 +45,7 @@ class UnsupportedFieldName(Exception):
         else:
             col = ""
             for _field in self.col_list:
-                col = col.join(_field).join(":")
+                col = col + _field + ":"
             col = col[:-1]
             return (
                 f"UnsupportedFieldName: "
