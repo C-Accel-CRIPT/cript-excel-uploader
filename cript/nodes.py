@@ -1,20 +1,26 @@
 import os
 import json
 import copy
+from abc import ABCMeta
 from typing import Union
-
-from beartype import beartype
 from weakref import WeakSet
 
-from .errors import AddNodeError, RemoveNodeError, UnsavedNodeError
-from .validators import validate_key, validate_value, validate_unit
-from .utils import sha256_hash
+from beartype import beartype
+
+from cript.exceptions import AddNodeError
+from cript.exceptions import RemoveNodeError
+from cript.exceptions import UnsavedNodeError
+from cript.validators import validate_key
+from cript.validators import validate_value
+from cript.validators import validate_unit
+from cript.utils import sha256_hash
 
 
-class Base:
+class Base(metaclass=ABCMeta):
     """
-    The base CRIPT class node.
-    All nodes inherit from this class.
+    The base abstract class for a CRIPT node.
+    All nodes inherit from this class (note that this class cannot be directly
+    instantiated).
     """
 
     __refs__ = WeakSet()  # Stores all node instances in memory
@@ -34,12 +40,7 @@ class Base:
 
         :return: The cleaned dictionary.
         """
-        custom_dict = {}
-        for key, value in self.__dict__.items():
-            if "_" == key[0]:
-                key = key.lstrip("_")
-            custom_dict[key] = value
-        return custom_dict
+        return {k.lstrip("_"): self.__getattribute__(k) for k in vars(self)}
 
     def print_json(self):
         print(self._to_json())
@@ -149,6 +150,8 @@ class Group(Base):
         public: bool = False,
         url: Union[str, None] = None,
         uid: str = None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -158,6 +161,8 @@ class Group(Base):
         self.name = name
         self.users = users
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -174,6 +179,7 @@ class Reference(Base):
     node_type = "primary"
     node_name = "Reference"
     slug = "reference"
+    unique_together = ["doi"]
 
     @beartype
     def __init__(
@@ -196,6 +202,8 @@ class Reference(Base):
         public: bool = False,
         url: Union[str, None] = None,
         uid: str = None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -218,8 +226,10 @@ class Reference(Base):
         self.website = website
         self.notes = notes
         self.public = public
-        self.created_at = None
-        self.updated_at = None
+        self.created_by = created_by
+        self.updated_by = updated_by
+        self.created_at = created_at
+        self.updated_at = updated_at
 
 
 class Citation(Base):
@@ -240,7 +250,7 @@ class Collection(Base):
     node_type = "primary"
     node_name = "Collection"
     slug = "collection"
-    unique_together = ["group", "name"]
+    unique_together = ["created_by", "name"]
 
     @beartype
     def __init__(
@@ -254,6 +264,8 @@ class Collection(Base):
         uid: str = None,
         experiments=None,
         inventories=None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -267,6 +279,8 @@ class Collection(Base):
         self.inventories = inventories if inventories else []
         self.citations = citations if citations else []
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -299,6 +313,8 @@ class Experiment(Base):
         uid: str = None,
         processes=None,
         data=None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -314,6 +330,8 @@ class Experiment(Base):
         self.processes = processes if processes else []
         self.data = data if data else []
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -343,6 +361,8 @@ class Data(Base):
         files=None,
         materials=None,
         processes=None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -362,6 +382,8 @@ class Data(Base):
         self.processes = processes if processes else []
         self.citations = citations if citations else []
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -403,6 +425,8 @@ class File(Base):
         url: Union[str, None] = None,
         uid: str = None,
         name=None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -419,6 +443,8 @@ class File(Base):
         self.external_source = external_source
         self.type = type
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -726,7 +752,7 @@ class Material(Base):
     node_name = "Material"
     slug = "material"
     list_name = "materials"
-    unique_together = ["group", "name"]
+    unique_together = ["created_by", "name"]
 
     @beartype
     def __init__(
@@ -746,6 +772,8 @@ class Material(Base):
         public: bool = False,
         url: Union[str, None] = None,
         uid: str = None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -765,6 +793,8 @@ class Material(Base):
         self.citations = citations if citations else []
         self.notes = notes
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -829,6 +859,8 @@ class Inventory(Base):
         public: bool = False,
         url: Union[str, None] = None,
         uid: str = None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -841,6 +873,8 @@ class Inventory(Base):
         self.description = description
         self.materials = materials
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -916,6 +950,8 @@ class Process(Base):
         public: bool = False,
         url: Union[str, None] = None,
         uid: str = None,
+        created_by=None,
+        updated_by=None,
         created_at=None,
         updated_at=None,
     ):
@@ -939,6 +975,8 @@ class Process(Base):
         self.citations = citations if citations else []
         self.notes = notes
         self.public = public
+        self.created_by = created_by
+        self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
 
