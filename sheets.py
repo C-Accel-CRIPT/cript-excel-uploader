@@ -1,9 +1,7 @@
 import pandas as pd
 
 import configs
-import util
 from errors import (
-    DataAssignmentError,
     UnsupportedColumnName,
     ColumnParseError,
 )

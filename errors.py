@@ -1,33 +1,3 @@
-class DataAssignmentError(Exception):
-    def __init__(self, col_list, sheet, type):
-        self.sheet = sheet
-        self.col_list = col_list
-        self.field = None
-        if len(col_list) == 1:
-            self.field = col_list[-1]
-        elif len(col_list) == 2:
-            self.field = col_list[-2] + ":" + col_list[-1]
-        self.type = type
-
-    def __str__(self):
-        if type == 1:
-            return (
-                f"DataAssignmentError: "
-                f"Sheet [{self.sheet}], "
-                f"Field [{self.field}], "
-                f"You need to apply [{self.col_list[0]}] to something. "
-                f"Eg. (property):data, (condition):data"
-            )
-        elif type == 2:
-            return {
-                f"DataAssignmentError: "
-                f"Sheet [{self.sheet}], "
-                f"Field [{self.field}], "
-                f"{self.col_list[-2]} is neither a property "
-                f"nor a condition of {self.col_list[-1]}."
-            }
-
-
 class UnsupportedColumnName(Exception):
     def __init__(self, col, sheet, field=None, message=None):
         self.sheet = sheet
