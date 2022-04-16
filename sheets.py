@@ -4,11 +4,12 @@ import configs
 import util
 from errors import (
     DataAssignmentError,
-    UnsupportedFieldName,
+    UnsupportedColumnName,
     ColumnParseError,
 )
 from util import (
     standardize_name,
+    parse_col_name,
 )
 
 
@@ -27,7 +28,6 @@ class Sheet:
         self.not_null_cols = configs.required_cols[self.sheet_name]
         self.list_fields = configs.list_fields[self.sheet_name]
         self.col_parsed = {}
-        self.col_type = {}
 
         self.unique_keys = configs.unique_keys[self.sheet_name]
         self.unique_keys_dict = {}
@@ -64,9 +64,9 @@ class Sheet:
         # Parse Column Name
         for col in self.cols:
             try:
-                self.col_parsed[col] = util.parse_col_name(col)
+                self.col_parsed[col] = parse_col_name(col)
             except ColumnParseError as e:
-                exception = UnsupportedFieldName(
+                exception = UnsupportedColumnName(
                     col=col,
                     sheet=self.sheet_name,
                     message=e.__str__(),
@@ -75,9 +75,20 @@ class Sheet:
 
         # Standardize and Categorize Field
         for col in self.col_parsed:
-            col_list = self.col_parsed[col]
-            col_list[0] = self._standardize_and_categorize_field(col_list, 0)
-            col_list[1] = self._standardize_and_categorize_field(col_list, 1)
+            parsed_col_name_obj = self.col_parsed[col]
+            field, field_type = self._standardize_and_categorize_field(
+                parsed_col_name_obj.field,
+                parsed_col_name_obj.origin_col,
+            )
+            field_nested, field_nested_type = self._standardize_and_categorize_field(
+                parsed_col_name_obj.field_nested,
+                parsed_col_name_obj.origin_col,
+                field_type,
+            )
+            parsed_col_name_obj.field = field
+            parsed_col_name_obj.field_type = field_type
+            parsed_col_name_obj.field_nested = field_nested
+            parsed_col_name_obj.field_nested_type = field_nested_type
 
         # Create Unit Dict
         for col in self.cols:
@@ -112,106 +123,71 @@ class Sheet:
                     _value = str(value).replace(" ", "").lower()
                 self.foreign_keys_dict[col].update({_value: [value, index]})
 
-    def _standardize_and_categorize_field(self, field, col):
+    def _standardize_and_categorize_field(
+        self, field, origin_col, prev_field_type=None
+    ):
         """
         Convert a field to the standardized version
 
         :return: standardized param name
         :rtype: str
         """
-        # If field has already existed
-        if field in self.col_type:
-            return field
+        if field is None:
+            return None, None
 
         # Foreign keys
         if field in self.foreign_keys:
-            self.col_type.update({field: "foreign_key"})
-            return field
+            return field, "foreign_key"
 
         # Base cols
         for base_node in configs.base_nodes.get(self.sheet_name):
             if field in configs.base_cols.get(base_node):
-                self.col_type.update({field: "base"})
-                return field
+                return field, "base"
 
         # Data keys
         if field == "data":
-            self.col_type.update({field: "data"})
-            return field
+            return field, "data"
 
         # Identifier Keys
         iden_key = "material-identifier-key"
         for iden in self.param[iden_key]:
             if field == iden["name"]:
-                self.col_type.update({iden["name"]: "iden"})
-                return iden["name"]
+                return iden["name"], "iden"
 
         # Property Keys
         prop_key = configs.sheet_name_to_prop_key.get(self.sheet_name)
         if prop_key is not None:
             for prop in self.param[prop_key]:
                 if field == prop["name"]:
-                    self.col_type.update({prop["name"]: "prop"})
-                    return prop["name"]
+                    return prop["name"], "prop"
 
         # Condition Keys
         cond_key = "condition-key"
         for cond in self.param[cond_key]:
             if field == cond["name"]:
-                self.col_type.update({cond["name"]: "cond"})
-                return cond["name"]
+                return cond["name"], "cond"
 
         quan_key = "quantity-key"
         for quan in self.param[quan_key]:
             if field == quan["name"]:
-                self.col_type.update({quan["name"]: "quantity"})
-                return quan["name"]
+                return quan["name"], "quan"
 
-        exception = UnsupportedFieldName(
-            col=col,
+        if prev_field_type == "prop":
+            for prop_attr in configs.base_cols["property"]:
+                if field == prop_attr:
+                    return field, "prop-attr"
+
+        if prev_field_type == "cond":
+            for cond_attr in configs.base_cols["condition"]:
+                if field == cond_attr:
+                    return field, "cond-attr"
+
+        exception = UnsupportedColumnName(
+            col=origin_col,
             field=field,
             sheet=self.sheet_name,
         )
         self.errors.append(exception.__str__())
-
-    def _parse_data(self, col_list, parsed_object, value):
-        """
-        Parse a data column and attach to it's appropriate parsed object.
-        Currently used in material sheet and process sheet
-
-        :param col_list: list generated by splitting column into separate fields (e.g., density:temp --> [density, temp])
-        :type col_list: list
-        :param parsed_object: the dict object the data is being applied to
-        :type parsed_object: dict
-        :param value: name of something in data sheet
-        :type value: str
-        :raises: ValueDoesNotExist: can't find the data of the material from data sheet according to input name.
-        :raises: DataAssignmentError: data is not applied to a prop or cond (e.g., molar_mass:data)
-        """
-        # Ensure the data is being applied to something
-        if len(col_list) == 1:
-            exception = DataAssignmentError(
-                col_list=col_list,
-                sheet=self.sheet_name,
-                type=1,
-            )
-            self.errors.append(exception.__str__())
-            return None
-
-        # Check if data should be applied to a property or condition
-        prev_field = col_list[-2]
-        _type = self.col_type.get(prev_field)
-        if _type == "prop" or _type == "cond":
-            parent = parsed_object[_type][prev_field]
-            parent["data"] = value.replace(" ", "").lower()
-        else:
-            exception = DataAssignmentError(
-                col_list=col_list,
-                sheet=self.sheet_name,
-                type=2,
-            )
-            self.errors.append(exception.__str__())
-            return None
 
     def _parse_prop(self, col, value, parsed_object):
         """
@@ -222,21 +198,41 @@ class Sheet:
         :type value: str
         :param parsed_object: the dict object the data is being applied to
         :type parsed_object: dict
+        [prop, prop:cond, prop:data, prop:attr]
         """
+        parsed_column_name_obj = self.col_parsed[col]
+        field = parsed_column_name_obj.field
+        field_nested = parsed_column_name_obj.field_nested
+        field_nested_type = parsed_column_name_obj.field_nested_type
+
         # Create property dict
-        field = self.col_lists_dict[col][-1]
-        if len(self.col_lists_dict[col]) == 1:
-            parsed_object["prop"].update(
-                {
-                    field: {
-                        "key": field,
-                        "value": value,
-                        "unit": self.unit_dict[col],
-                        "cond": {},
-                        "data": {},
-                    }
-                }
-            )
+        if field not in parsed_object["prop"]:
+            parsed_object["prop"][field] = {
+                "attr": {},
+                "cond": {},
+                "data": [],
+            }
+        # prop:None
+        if field_nested_type is None:
+            parsed_object["prop"][field]["attr"]["key"] = field
+            parsed_object["prop"][field]["attr"]["value"] = value
+            parsed_object["prop"][field]["attr"]["unit"] = self.unit_dict[col]
+        # prop:attr
+        elif field_nested_type == "prop-attr":
+            parsed_object["prop"][field]["attr"][field_nested] = value
+        # prop:data
+        elif field_nested_type == "data":
+            parsed_object["prop"][field]["data"].add(value)
+        # prop:cond
+        elif field_nested_type == "cond":
+            parsed_object["prop"][field]["cond"][field_nested] = {
+                "attr": {
+                    "key": field,
+                    "value": value,
+                    "unit": self.unit_dict[col],
+                },
+                "data": {},
+            }
 
     def _parse_cond(self, col, value, parsed_object):
         """
@@ -247,28 +243,30 @@ class Sheet:
         :type value: str
         :param parsed_object: the dict object the data is being applied to
         :type parsed_object: dict
+        [cond, cond:attr, cond:data]
         """
-        # Check whether it's a property condition
-        field = self.col_lists_dict[col][-1]
-        if len(self.col_lists_dict[col]) == 1:
-            # print("Meet a condition")
-            parent = parsed_object
-        else:
-            # print("Meet a prop condition")
-            prop_field = self.col_lists_dict[col][-2]
-            parent = parsed_object["prop"][prop_field]
+        parsed_column_name_obj = self.col_parsed[col]
+        field = parsed_column_name_obj.field
+        field_nested = parsed_column_name_obj.field_nested
+        field_nested_type = parsed_column_name_obj.field_nested_type
 
-        # Create condition dict
-        parent["cond"].update(
-            {
-                field: {
-                    "key": field,
-                    "value": value,
-                    "unit": self.unit_dict[col],
-                    "data": {},
-                }
+        # create condition dict
+        if field not in parsed_object["cond"]:
+            parsed_object["cond"] = {
+                "attr": {},
+                "data": [],
             }
-        )
+        # cond:None
+        if field_nested_type is None:
+            parsed_object["cond"][field]["attr"]["key"] = field
+            parsed_object["cond"][field]["attr"]["value"] = value
+            parsed_object["cond"][field]["attr"]["unit"] = field
+        # cond:attr
+        elif field_nested_type == "cond-attr":
+            parsed_object["cond"][field]["attr"][field_nested] = value
+        # cond:data
+        elif field_nested_type == "data":
+            parsed_object["cond"][field]["data"].append(value)
 
     def _replace_field(self, columns, raw_key, replace_key):
         output = []

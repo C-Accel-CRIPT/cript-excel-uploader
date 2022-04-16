@@ -84,14 +84,17 @@ list_fields = {
     "process product": [],
 }
 
-base_cols = {}
-base_cols["experiment"] = inspect.signature(C.Experiment.__init__).parameters
-base_cols["material"] = inspect.signature(C.Material.__init__).parameters
-base_cols["data"] = inspect.signature(C.Data.__init__).parameters
-base_cols["file"] = inspect.signature(C.File.__init__).parameters
-base_cols["process"] = inspect.signature(C.Process.__init__).parameters
-base_cols["ingredient"] = inspect.signature(C.Ingredient.__init__).parameters
 
+base_cols = {
+    "experiment": inspect.signature(C.Experiment.__init__).parameters,
+    "material": inspect.signature(C.Material.__init__).parameters,
+    "data": inspect.signature(C.Data.__init__).parameters,
+    "file": inspect.signature(C.File.__init__).parameters,
+    "process": inspect.signature(C.Process.__init__).parameters,
+    "ingredient": inspect.signature(C.Ingredient.__init__).parameters,
+    "property": inspect.signature(C.Property.__init__).parameters,
+    "condition": inspect.signature(C.Condition.__init__).parameters,
+}
 
 # sheet_nodes
 base_nodes = {

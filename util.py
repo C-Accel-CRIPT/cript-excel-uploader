@@ -12,7 +12,17 @@ def process_track(msg, count, total_count):
         print(f"{msg}: {count}/{total_count}")
 
 
-# [field,field_nested,identifier,is_new_col]
+class ParsedColumnName:
+    def __init__(self, origin_col, field, field_nested, identifier, is_new_col):
+        self.origin_col = origin_col
+        self.field = field
+        self.field_nested = field_nested
+        self.identifier = identifier
+        self.is_new_col = is_new_col
+        self.field_type = None
+        self.field_nested_type = None
+
+
 def parse_col_name(col):
     field = None
     field_nested = None
@@ -79,4 +89,4 @@ def parse_col_name(col):
         field = col_list[0]
         field_nested = col_list[1]
 
-    return [field, field_nested, identifier, is_new_field]
+    return ParsedColumnName(col, field, field_nested, identifier, is_new_field)
