@@ -71,6 +71,9 @@ def parse_col_name(col):
                 p1 = i
                 break
 
+    if identifier is None:
+        identifier = 1
+
     nest_count = 0
     for i in range(p1, len(col)):
         if col[i] == ":":

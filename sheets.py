@@ -204,28 +204,34 @@ class Sheet:
         field = parsed_column_name_obj.field
         field_nested = parsed_column_name_obj.field_nested
         field_nested_type = parsed_column_name_obj.field_nested_type
+        identifier = parsed_column_name_obj.identifier
 
         # Create property dict
         if field not in parsed_object["prop"]:
-            parsed_object["prop"][field] = {
+            parsed_object["prop"][field] = {}
+        if identifier not in parsed_object["prop"][field]:
+            parsed_object["prop"][field][identifier] = {
                 "attr": {},
                 "cond": {},
                 "data": [],
             }
+
+        parent = parsed_object["prop"][field][identifier]
+
         # prop:None
         if field_nested_type is None:
-            parsed_object["prop"][field]["attr"]["key"] = field
-            parsed_object["prop"][field]["attr"]["value"] = value
-            parsed_object["prop"][field]["attr"]["unit"] = self.unit_dict[col]
+            parent["attr"]["key"] = field
+            parent["attr"]["value"] = value
+            parent["attr"]["unit"] = self.unit_dict[col]
         # prop:attr
         elif field_nested_type == "prop-attr":
-            parsed_object["prop"][field]["attr"][field_nested] = value
+            parent["attr"][field_nested] = value
         # prop:data
         elif field_nested_type == "data":
-            parsed_object["prop"][field]["data"].add(value)
+            parent["data"].add(value)
         # prop:cond
         elif field_nested_type == "cond":
-            parsed_object["prop"][field]["cond"][field_nested] = {
+            parent["cond"][field_nested] = {
                 "attr": {
                     "key": field,
                     "value": value,
@@ -249,24 +255,30 @@ class Sheet:
         field = parsed_column_name_obj.field
         field_nested = parsed_column_name_obj.field_nested
         field_nested_type = parsed_column_name_obj.field_nested_type
+        identifier = parsed_column_name_obj.identifier
 
         # create condition dict
         if field not in parsed_object["cond"]:
-            parsed_object["cond"] = {
+            parsed_object["cond"][field] = {}
+        if identifier not in parsed_object["cond"][field]:
+            parsed_object["cond"][field][identifier] = {
                 "attr": {},
                 "data": [],
             }
+
+        parent = parsed_object["cond"][field][identifier]
+
         # cond:None
         if field_nested_type is None:
-            parsed_object["cond"][field]["attr"]["key"] = field
-            parsed_object["cond"][field]["attr"]["value"] = value
-            parsed_object["cond"][field]["attr"]["unit"] = field
+            parent["attr"]["key"] = field
+            parent["attr"]["value"] = value
+            parent["attr"]["unit"] = field
         # cond:attr
         elif field_nested_type == "cond-attr":
-            parsed_object["cond"][field]["attr"][field_nested] = value
+            parent["attr"][field_nested] = value
         # cond:data
         elif field_nested_type == "data":
-            parsed_object["cond"][field]["data"].append(value)
+            parent["data"].append(value)
 
     def _replace_field(self, columns, raw_key, replace_key):
         output = []
