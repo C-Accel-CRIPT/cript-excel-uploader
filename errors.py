@@ -28,30 +28,36 @@ class DataAssignmentError(Exception):
             }
 
 
-class UnsupportedFieldName(Exception):
-    def __init__(self, field, col_list, sheet):
+class UnsupportedColumnName(Exception):
+    def __init__(self, col, sheet, field=None, message=None):
         self.sheet = sheet
-        self.col_list = col_list
+        self.col = col
+        self.message = message
         self.field = field
 
     def __str__(self):
-        if len(self.col_list) == 1:
+        if self.message:
             return (
-                f"UnsupportedFieldName: "
+                f"UnsupportedColumnName: "
                 f"Sheet [{self.sheet}], "
+                f"Column [{self.col}], "
+                f"Input Column name is not supported."
+                f"Message: {self.message}"
+            )
+        elif self.field:
+            return (
+                f"UnsupportedColumnName: "
+                f"Sheet [{self.sheet}], "
+                f"Column [{self.col}],"
                 f"Field [{self.field}], "
-                f"Input field is not supported."
+                f"Input field in the column name is not supported."
             )
         else:
-            col = ""
-            for _field in self.col_list:
-                col = col + _field + ":"
-            col = col[:-1]
             return (
                 f"UnsupportedFieldName: "
                 f"Sheet [{self.sheet}], "
-                f"Field [{col}], "
-                f"Input field is not supported."
+                f"Column [{self.col}], "
+                f"Input Column Name is not supported."
             )
 
 
@@ -172,3 +178,12 @@ class GroupRelatedError(Exception):
 
     def __str__(self):
         return f"{self.message}"
+
+
+class ColumnParseError(Exception):
+    def __init__(self, message, curr_string):
+        self.message = message
+        self.curr_string = curr_string
+
+    def __str__(self):
+        return f"{self.message} : {self.curr_string}<--"

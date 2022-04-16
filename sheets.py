@@ -1,9 +1,11 @@
 import pandas as pd
 
 import configs
+import util
 from errors import (
     DataAssignmentError,
     UnsupportedFieldName,
+    ColumnParseError,
 )
 from util import (
     standardize_name,
@@ -24,7 +26,7 @@ class Sheet:
         self.either_or_cols = configs.either_or_cols[self.sheet_name]
         self.not_null_cols = configs.required_cols[self.sheet_name]
         self.list_fields = configs.list_fields[self.sheet_name]
-        self.col_lists_dict = {}
+        self.col_parsed = {}
         self.col_type = {}
 
         self.unique_keys = configs.unique_keys[self.sheet_name]
@@ -55,21 +57,27 @@ class Sheet:
             if col[0] == "#":
                 self.df = self.df.drop(col, axis=1)
 
-        # Clean Col Name
+        # Clean Column Name
         self.cols = [col.replace("*", "") for col in self.df.columns]
         self.df.columns = self.cols
 
-        # Create Col List
+        # Parse Column Name
         for col in self.cols:
-            self.col_lists_dict[col] = col.split(":")
+            try:
+                self.col_parsed[col] = util.parse_col_name(col)
+            except ColumnParseError as e:
+                exception = UnsupportedFieldName(
+                    col=col,
+                    sheet=self.sheet_name,
+                    message=e.__str__(),
+                )
+                self.errors.append(exception.__str__())
 
         # Standardize and Categorize Field
-        for col in self.col_lists_dict:
-            col_list = self.col_lists_dict[col]
-            for i in range(len(col_list)):
-                col_list[i] = self._standardize_and_categorize_field(col_list, i)
-
-            self.col_lists_dict[col] = col_list
+        for col in self.col_parsed:
+            col_list = self.col_parsed[col]
+            col_list[0] = self._standardize_and_categorize_field(col_list, 0)
+            col_list[1] = self._standardize_and_categorize_field(col_list, 1)
 
         # Create Unit Dict
         for col in self.cols:
@@ -104,15 +112,13 @@ class Sheet:
                     _value = str(value).replace(" ", "").lower()
                 self.foreign_keys_dict[col].update({_value: [value, index]})
 
-    def _standardize_and_categorize_field(self, col_list, i):
+    def _standardize_and_categorize_field(self, field, col):
         """
         Convert a field to the standardized version
 
         :return: standardized param name
         :rtype: str
         """
-        field = col_list[i]
-        print(f"field:{field},sheet:{self.sheet_name}")
         # If field has already existed
         if field in self.col_type:
             return field
@@ -124,8 +130,8 @@ class Sheet:
 
         # Base cols
         for base_node in configs.base_nodes.get(self.sheet_name):
-            if field.replace(base_node + "-", "") in configs.base_cols.get(base_node):
-                self.col_type.update({field: base_node + "-base"})
+            if field in configs.base_cols.get(base_node):
+                self.col_type.update({field: "base"})
                 return field
 
         # Data keys
@@ -161,8 +167,11 @@ class Sheet:
                 self.col_type.update({quan["name"]: "quantity"})
                 return quan["name"]
 
-        print(f"error:{field},sheet:{self.sheet_name}")
-        exception = UnsupportedFieldName(field, col_list, self.sheet_name)
+        exception = UnsupportedFieldName(
+            col=col,
+            field=field,
+            sheet=self.sheet_name,
+        )
         self.errors.append(exception.__str__())
 
     def _parse_data(self, col_list, parsed_object, value):
