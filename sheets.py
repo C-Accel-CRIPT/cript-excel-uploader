@@ -7,6 +7,8 @@ from errors import (
 )
 from util import (
     standardize_name,
+)
+from parser import (
     parse_col_name,
 )
 
