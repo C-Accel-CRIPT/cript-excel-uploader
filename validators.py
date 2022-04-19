@@ -1,9 +1,11 @@
+import configs
 from errors import (
     ValueDoesNotExist,
     DuplicatedValueError,
     NullValueError,
     MissingRequiredField,
     UnsupportedUnitName,
+    UnsupportedColumnName,
 )
 
 
@@ -143,5 +145,19 @@ def validate_not_null_value(sheet_obj):
                     sheet_obj.errors.append(exception.__str__())
 
 
-# def validate_data_assignments(sheet_obj):
-#
+def validate_data_assignment(sheet_obj):
+    for parsed_column_name_obj in sheet_obj.parsed_cols.values():
+        field_type = parsed_column_name_obj.field_type
+        field_nested_type = parsed_column_name_obj.field_nested_type
+        if field_nested_type not in configs.allowed_data_assignment[field_type]:
+            message = f"[{field_nested_type}] cannot be nested to [{field_type}]"
+            exception = UnsupportedColumnName(
+                col=parsed_column_name_obj.origin_col,
+                sheet=sheet_obj.sheet_name,
+                message=message,
+            )
+            sheet_obj.errors.append(exception.__str__())
+
+
+# def validate_property(sheet_obj):
+#     for
