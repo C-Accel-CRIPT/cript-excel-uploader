@@ -176,3 +176,12 @@ foreign_key_validation_pairs = [
         "to_sheet_obj": "material",
     },
 ]
+
+allowed_data_assignment = {
+    "base": {None, "prop", "cond", "data"},
+    "prop": {None, "prop-attr", "cond", "data"},
+    "cond": {None, "cond-attr", "data"},
+    "foreign-key": {None},
+    "data": {None},
+    "quan": {None},
+}
