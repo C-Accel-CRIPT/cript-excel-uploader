@@ -3,6 +3,7 @@ import os
 import traceback
 
 import cript as C
+from cript.exceptions import DuplicateNodeError
 from config import BASE_URL
 from errors import GroupRelatedError
 from util import process_track
@@ -61,20 +62,15 @@ def upload_collection(api, group_obj, coll_name, public_flag):
     :rtype: `cript.nodes.Group`
     """
     # Check if Collection exists
-    start_time = time.time()
-    collection_search_result = api.search(
-        C.Collection,
-        {
-            "group": group_obj.uid,
-            "name": coll_name,
-        },
-    )
-    print(f"search_time:{time.time() - start_time}")
-    if collection_search_result["count"] > 0:
-        url = collection_search_result["results"][0]["url"]
-        collection_obj = api.get(url)
-        print(f"get_time:{time.time() - start_time}")
-    else:
+    try:
+        collection_obj = api.get(
+            C.Collection,
+            {
+                "group": group_obj.uid,
+                "name": coll_name,
+            },
+        )
+    except DuplicateNodeError:
         collection_obj = None
         print("Error: You must enter an existing CRIPT collection. Try again.")
 
@@ -110,27 +106,27 @@ def upload_experiment(api, group_obj, collection_obj, parsed_experiments, public
 
         experiment_name = parsed_experiments[experiment_std_name]["name"]
 
-        # Search for Duplicates
-        experiment_search_result = api.search(
-            C.Experiment,
-            {
-                "group": group_obj.uid,
-                "collection": collection_obj.uid,
-                "name": experiment_name,
-            },
+        # Create Experiment
+        experiment_obj = C.Experiment(
+            group=group_obj,
+            collection=collection_obj,
+            public=public_flag,
+            **parsed_experiments[experiment_std_name]["base"],
         )
-        if experiment_search_result["count"] > 0:
-            experiment_url = experiment_search_result["results"][0]["url"]
-            experiment_obj = api.get(experiment_url)
-            print(f"Expriment node [{experiment_obj.name}] already exists")
-        else:
-            # Create Experiment
-            experiment_obj = C.Experiment(
-                group=group_obj,
-                collection=collection_obj,
-                public=public_flag,
-                **parsed_experiments[experiment_std_name]["base"],
-            )
+
+        # Save Experiment
+        try:
+            api.save(experiment_obj)
+        except DuplicateNodeError:
+            url = api.get(
+                C.Experiment,
+                {
+                    "group": group_obj.uid,
+                    "collection": collection_obj.uid,
+                    "name": experiment_name,
+                },
+            ).url
+            experiment_obj.url = url
             api.save(experiment_obj)
 
         experiment_objs[experiment_std_name] = experiment_obj
@@ -152,6 +148,7 @@ def _create_cond_list(parsed_conds, data_objs=None):
     """
     conds = []
     for cond_key in parsed_conds:
+
         # Create Cond object
         cond = C.Condition(
             key=cond_key,
@@ -221,7 +218,7 @@ def _replace_field(parsed_object, raw_key, replace_key):
         parsed_object.pop(raw_key)
 
 
-def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
+def upload_data(api, group_obj, experiment_objs, parsed_datas, public_flag):
     """
     upload data to the database and return a dict of name:data_url pair
 
@@ -229,8 +226,8 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     :type api: class:`cript.API`
     :param experiment_objs: (name) : (object of experiment) pair
     :type experiment_objs: dict
-    :param parsed_data: parsed data of data_sheet.parsed (data_sheet.parsed)
-    :type parsed_data: dict
+    :param parsed_datas: parsed data of data_sheet.parsed (data_sheet.parsed)
+    :type parsed_datas: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
     :return: (name) : (object of data) pair
@@ -238,42 +235,39 @@ def upload_data(api, group_obj, experiment_objs, parsed_data, public_flag):
     """
     data_objs = {}
     count = 0
-    for data_std_name in parsed_data:
+    for data_std_name in parsed_datas:
         # process-track
-        process_track("Data Uploaded", count, len(parsed_data))
+        process_track("Data Uploaded", count, len(parsed_datas))
 
-        parsed_datum = parsed_data[data_std_name]
-        data_name = parsed_data[data_std_name]["name"]
+        parsed_data = parsed_datas[data_std_name]
+        data_name = parsed_datas[data_std_name]["name"]
         # Grab Experiment
-        experiment_std_name = parsed_datum["experiment"].replace(" ", "").lower()
+        experiment_std_name = parsed_data["experiment"].replace(" ", "").lower()
         experiment_obj = experiment_objs[experiment_std_name]
 
-        # Search for Duplicates
-        data_search_result = api.search(
-            C.Data,
-            {
-                "group": group_obj.uid,
-                "experiment": experiment_obj.uid,
-                "name": data_name,
-            },
+        # Create Data
+        data_obj = C.Data(
+            group=group_obj,
+            experiment=experiment_obj,
+            public=public_flag,
+            **parsed_data["base"],
         )
-        if data_search_result["count"] > 0:
-            url = data_search_result["results"][0]["url"]
-            datum_obj = api.get(url)
-            print(f"Data node [{datum_obj.name}] already exists")
-        else:
-            # Create Data
-            datum_obj = C.Data(
-                group=group_obj,
-                experiment=experiment_obj,
-                public=public_flag,
-                **parsed_datum["base"],
-            )
-            # Save Data
-            api.save(datum_obj)
-            api.refresh(experiment_obj)
+        # Save Data
+        try:
+            api.save(data_obj)
+        except DuplicateNodeError:
+            url = api.get(
+                C.Data,
+                {
+                    "group": group_obj.uid,
+                    "experiment": experiment_obj.uid,
+                    "name": data_name,
+                },
+            ).url
+            data_obj.url = url
+            api.save(data_obj)
 
-        data_objs[data_std_name] = datum_obj
+        data_objs[data_std_name] = data_obj
 
     return data_objs
 
@@ -285,7 +279,7 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
     :param api: api connection object
     :type api: class:`cript.API`
     :param group_obj: object of group
-    :type group_obj: string
+    :type group_obj: `cript.Group`
     :param data_objs: (name) : (obj of data) pair
     :type data_objs: dict
     :param parsed_file: parsed data of file_sheet.parsed
@@ -307,30 +301,27 @@ def upload_file(api, group_obj, data_objs, parsed_file, public_flag):
         for file in file_dict:
             # Replace field name
             _replace_field(file["base"], "path", "source")
-            file["base"]["source"] = file["base"]["source"]
-            # Search for Duplicates
-            file_search_result = api.search(
-                C.File,
-                {
-                    "group": group_obj.uid,
-                    "data": data_obj.uid,
-                    "name": os.path.basename(file["base"]["source"]),
-                },
-            )
 
-            if file_search_result["count"] > 0:
-                url = file_search_result["results"][0]["url"]
-                file_obj = api.get(url)
-                print(f"File node [{file_obj.name}] already exists")
-            else:
-                # Create File
-                file_obj = C.File(
-                    group=group_obj,
-                    data=data_obj,
-                    public=public_flag,
-                    **file["base"],
-                )
-                # Save Data
+            # Create File
+            file_obj = C.File(
+                group=group_obj,
+                data=data_obj,
+                public=public_flag,
+                **file["base"],
+            )
+            # Save File
+            try:
+                api.save(file_obj)
+            except DuplicateNodeError:
+                url = api.get(
+                    C.File,
+                    {
+                        "group": group_obj.uid,
+                        "data": data_obj.uid,
+                        "name": os.path.basename(file["base"]["source"]),
+                    },
+                ).url
+                file_obj.url = url
                 api.save(file_obj)
 
             # Update file_urls
@@ -358,64 +349,46 @@ def upload_material(api, group_obj, data_objs, parsed_material, public_flag):
     :return: (name) : (url of material) pair
     :rtype: dict
     """
-    identity_objs = {}
     material_objs = {}
     count = 0
     for material_std_name in parsed_material:
         # process-track
-        process_track("Data Uploaded", count, len(parsed_material))
+        process_track("Material Uploaded", count, len(parsed_material))
 
         material_dict = parsed_material[material_std_name]
         material_name = parsed_material[material_std_name]["name"]
 
-        # Search for Material Node
-        material_search_result = api.search(
-            C.Material,
-            {
-                "group": group_obj.uid,
-                "name": material_name,
-            },
+        # Create Material object
+        material_obj = C.Material(
+            group=group_obj,
+            components=None,
+            public=public_flag,
+            **material_dict["base"],
         )
-        if material_search_result["count"] > 0:
-            url = material_search_result["results"][0]["url"]
-            material_obj = api.get(url)
-            print(f"Material node [{material_obj.name}] already exists")
-        else:
-            component_obj = None
-            # Create Component object
-            if identity_objs.get(material_std_name) is not None:
-                component_obj = C.Component(
-                    identity=identity_objs.get(material_std_name)
-                )
-            # Create Material object
-            material_obj = C.Material(
-                group=group_obj,
-                components=[component_obj] if component_obj else None,
-                public=public_flag,
-                **material_dict["base"],
-            )
 
-            # Add Prop objects
-            parsed_props = material_dict["prop"]
-            if len(parsed_props) > 0:
-                material_obj.properties = _create_prop_list(parsed_props, data_objs)
+        # Add Prop objects
+        parsed_props = material_dict["prop"]
+        if len(parsed_props) > 0:
+            material_obj.properties = _create_prop_list(parsed_props, data_objs)
 
-            # Add Identifiers
-            parsed_idens = material_dict["iden"]
-            for key, value in parsed_idens.items():
-                identifier = C.Identifier(key=key, value=value)
-                material_obj.add_identifier(identifier)
-
-            try:
-                # Save material to DB
-                api.save(material_obj)
-            except Exception as e:
-                print(
-                    f"[WARNING]Material Save Failed."
-                    f"Material:[{material_obj.name}]"
-                    f"reason:{e}"
-                )
-                material_obj = None
+        # Add Identifiers
+        parsed_idens = material_dict["iden"]
+        for key, value in parsed_idens.items():
+            identifier = C.Identifier(key=key, value=value)
+            material_obj.add_identifier(identifier)
+        try:
+            # Save material to DB
+            api.save(material_obj)
+        except DuplicateNodeError:
+            url = api.get(
+                C.Material,
+                {
+                    "group": group_obj.uid,
+                    "name": material_name,
+                },
+            ).url
+            material_obj.url = url
+            api.save(material_obj)
 
         # Add saved Material object to materials dict
         material_objs[material_std_name] = material_obj
