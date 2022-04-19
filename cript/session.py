@@ -14,7 +14,7 @@ from globus_sdk.scopes import ScopeBuilder
 
 from cript import VERSION, NODE_CLASSES
 from cript.nodes import Base, User
-from cript.utils import convert_file_size
+from cript.utils import convert_file_size, display_errors
 from cript.exceptions import (
     APIAuthError,
     APIRefreshError,
@@ -58,25 +58,20 @@ class API:
         # Test API authentication by fetching session info and keys
         response = self.session.get(f"{self.url}/session-info/")
         if response.status_code == 200:
-            response_json = response.json()
-            self.latest_version = response_json["latest_version"]
-            self.user = User(**response_json["user_info"])
-            self.storage_info = response_json["storage_info"]
-            API.keys = response_json["keys"]  # For use by validators
+            self.latest_version = response.json()["latest_version"]
+            self.user = User(**response.json()["user_info"])
+            self.storage_info = response.json()["storage_info"]
+            API.keys = response.json()["keys"]  # For use by validators
         elif response.status_code == 404:
             raise APIAuthError("Please provide a correct base URL.")
-        elif response.status_code == 401:
-            raise APIAuthError(response_json["detail"])
         else:
-            raise APIAuthError(f"Status code: {response.status_code}")
+            raise APIAuthError(display_errors(response))
 
         print(f"Connection to the API was successful!")
 
         # Warn user if an update is required
         if self.version != self.latest_version:
-            warnings.warn(
-                response_json["version_warning"], DeprecationWarning, stacklevel=2
-            )
+            warnings.warn(response.json()["version_warning"], stacklevel=2)
 
     def __repr__(self):
         return f"Connected to {self.url}"
@@ -122,38 +117,35 @@ class API:
                 response = self.session.post(
                     url=f"{self.url}/{node.slug}/", data=node._to_json()
                 )
-
-            if response.status_code in (200, 201):
-                # Handle new file uploads
-                if node.slug == "file" and os.path.exists(node.source):
-                    file_uid = response.json()["uid"]  # Grab uid from JSON response
-                    self._upload_file(file_uid, node)
-
-                self._set_node_attributes(node, response.json())
-                self._generate_nodes(node)
-
-                # Update File node source field
-                if node.slug == "file":
-                    self.refresh(node)
-
-                print(f"{node.node_name} node has been saved to the database.")
-
-            elif response.status_code == 400:
-                try:
-                    response_dict = json.loads(response.content)
-                except json.decoder.JSONDecodeError:
-                    raise APISaveError(
-                        f"Failed saving {node.node_name} node to the database."
-                    )
-
-                # Raise error when duplicate node is found
-                if "duplicate" in response_dict:
-                    raise DuplicateNodeError(list(response_dict.values())[0][0])
-
         else:
             raise APISaveError(
                 f"The save() method cannot be called on secondary nodes such as {node.node_name}"
             )
+
+        if response.status_code in (200, 201):
+            # Handle new file uploads
+            if node.slug == "file" and os.path.exists(node.source):
+                file_uid = response.json()["uid"]  # Grab uid from JSON response
+                self._upload_file(file_uid, node)
+
+            self._set_node_attributes(node, response.json())
+            self._generate_nodes(node)
+
+            # Update File node source field
+            if node.slug == "file":
+                self.refresh(node)
+
+            print(f"{node.node_name} node has been saved to the database.")
+
+        else:
+            try:
+                # Raise error if duplicate node is found
+                response_dict = json.loads(response.content)
+                if "duplicate" in response_dict:
+                    raise DuplicateNodeError(display_errors(response))
+            except json.decoder.JSONDecodeError:
+                pass
+            raise APISaveError(display_errors(response))
 
     def _set_node_attributes(self, node, obj_json):
         """
@@ -400,10 +392,10 @@ class API:
                     node.created_at = None
                     node.updated_at = None
                 else:
-                    pprint(response.json())
+                    raise APIDeleteError(display_errors(response))
             else:
                 raise APIDeleteError(
-                    f"This {node.node_name} node doest not exist in the database."
+                    f"This {node.node_name} node does not exist in the database."
                 )
         else:
             raise APIDeleteError(
@@ -433,7 +425,7 @@ class API:
             raise APISearchError(f"'{query}' is not a valid query.")
 
         if response.status_code != 200:
-            raise APISearchError(f"Could not retrieve search results.")
+            raise APISearchError(display_errors(response))
 
         return JSONPaginator(self.session, response.content)
 
