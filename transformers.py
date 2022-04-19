@@ -203,7 +203,7 @@ def transform_process(group_obj, experiment_objs, parsed_processes, public_flag)
 
             if i > 0:
                 prev_process_obj = process_objs.get(prev_process_std_name)
-                process_obj.add_dependent_process(prev_process_obj)
+                process_obj.add_prerequisite_process(prev_process_obj)
 
             prev_process_std_name = process_std_name
             process_objs[process_std_name] = process_obj
@@ -211,10 +211,10 @@ def transform_process(group_obj, experiment_objs, parsed_processes, public_flag)
     return process_objs
 
 
-def transform_dependent_process(api, process_objs, parsed_dependent_processes):
-    for process_std_name in parsed_dependent_processes:
+def transform_prerequisite_process(api, process_objs, parsed_prerequisite_processes):
+    for process_std_name in parsed_prerequisite_processes:
         process_obj = process_objs.get(process_std_name)
-        dependent_process_list = parsed_dependent_processes.get(process_std_name)
+        dependent_process_list = parsed_prerequisite_processes.get(process_std_name)
         for i in range(len(dependent_process_list)):
             dependent_process_std_name = dependent_process_list[i]["dependent_process"]
             dependent_process_obj = process_objs.get(dependent_process_std_name)
@@ -361,9 +361,3 @@ def _transform_quantity_list(parsed_object):
         quantity_obj = C.Quantity(**parsed_object[key])
         quantity_list.append(quantity_obj)
     return quantity_list
-
-
-def _replace_field(parsed_object, raw_key, replace_key):
-    if raw_key in parsed_object:
-        parsed_object[replace_key] = parsed_object[raw_key]
-        parsed_object.pop(raw_key)
