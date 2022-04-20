@@ -52,8 +52,6 @@ def upload_collection(api, group_obj, coll_name):
     :type group_obj: `cript.nodes.Group`
     :param coll_name: collection name
     :type coll_name: str
-    :param public_flag: a boolean flag allow users to set whether the data to go public/private
-    :type public_flag: bool
     :return: object of collection
     :rtype: `cript.nodes.Group`
     """
@@ -73,9 +71,10 @@ def upload_collection(api, group_obj, coll_name):
     return collection_obj
 
 
-def upload(api, dict, auto_update=False):
+def upload(api, dict):
     """
     Save objects to database, update them if the object already exists
+    dict: (name): (C.Base)
     """
     count = 0
     for object in dict.values():
@@ -87,6 +86,8 @@ def upload(api, dict, auto_update=False):
         except DuplicateNodeError:
             url = api.get(object).url
             object.url = url
-            api.save(object, auto_update=auto_update)
+            api.save(
+                object,
+            )
         except Exception as e:
             print(e.with_traceback)
