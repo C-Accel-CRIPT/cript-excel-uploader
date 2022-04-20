@@ -189,7 +189,7 @@ class Sheet:
         )
         self.errors.append(exception.__str__())
 
-    def _parse_prop(self, col, value, parsed_object):
+    def _parse_prop(self, col, start_index, value, parsed_object):
         """
         Parse a property column with it's associated standard units and attributes.
         Currently used in material sheet and process sheet
@@ -201,10 +201,13 @@ class Sheet:
         [prop, prop:cond, prop:data, prop:attr]
         """
         parsed_column_name_obj = self.col_parsed[col]
-        field = parsed_column_name_obj.field
-        field_nested = parsed_column_name_obj.field_nested
-        field_nested_type = parsed_column_name_obj.field_nested_type
+        field_list = parsed_column_name_obj.field_list
+        field_type_list = parsed_column_name_obj.field_type_list
         identifier = parsed_column_name_obj.identifier
+
+        field = field_list[start_index]
+        field_nested = field_list[start_index + 1]
+        field_nested_type = field_type_list[start_index + 1]
 
         # Create property dict
         if field not in parsed_object["prop"]:
@@ -228,19 +231,12 @@ class Sheet:
             parent["attr"][field_nested] = value
         # prop:data
         elif field_nested_type == "data":
-            parent["data"].add(value)
+            parent["data"].append(value)
         # prop:cond
         elif field_nested_type == "cond":
-            parent["cond"][field_nested] = {
-                "attr": {
-                    "key": field,
-                    "value": value,
-                    "unit": self.unit_dict[col],
-                },
-                "data": {},
-            }
+            self._parse_cond(col, start_index + 1, value, parent)
 
-    def _parse_cond(self, col, value, parsed_object):
+    def _parse_cond(self, col, start_index, value, parsed_object):
         """
         Parse a condition column with it's associated standard units.
         Currently used in data sheet, material sheet and process sheet
@@ -252,10 +248,13 @@ class Sheet:
         [cond, cond:attr, cond:data]
         """
         parsed_column_name_obj = self.col_parsed[col]
-        field = parsed_column_name_obj.field
-        field_nested = parsed_column_name_obj.field_nested
-        field_nested_type = parsed_column_name_obj.field_nested_type
+        field_list = parsed_column_name_obj.field_list
+        field_type_list = parsed_column_name_obj.field_type_list
         identifier = parsed_column_name_obj.identifier
+
+        field = field_list[start_index]
+        field_nested = field_list[start_index + 1]
+        field_nested_type = field_type_list[start_index + 1]
 
         # create condition dict
         if field not in parsed_object["cond"]:
@@ -372,7 +371,8 @@ class DataSheet(Sheet):
             data_std_name = standardize_name(row["name"])
             for col in self.cols:
                 # Define value and field
-                field = self.col_lists_dict[col][-1]
+                parsed_column_name_obj = self.col_parsed[col]
+                field = parsed_column_name_obj.field_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
@@ -413,7 +413,8 @@ class FileSheet(Sheet):
             }
             for col in self.cols:
                 # Define value and field
-                field = self.col_lists_dict[col][-1]
+                parsed_column_name_obj = self.col_parsed[col]
+                field = parsed_column_name_obj.field_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
@@ -425,7 +426,7 @@ class FileSheet(Sheet):
                 if field in self.foreign_keys:
                     parsed_file.update({field: value})
 
-                # Populate parsed_datum dict
+                # Populate parsed_file dict
                 if col in configs.base_cols.get("file"):
                     parsed_file["base"][field] = value
 
@@ -460,8 +461,9 @@ class MaterialSheet(Sheet):
             material_std_name = standardize_name(row["name"])
             for col in self.cols:
                 # Define value and field
-                col_list = self.col_lists_dict[col]
-                field = self.col_lists_dict[col][-1]
+                parsed_column_name_obj = self.col_parsed[col]
+                field = parsed_column_name_obj.field_list[0]
+                field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
@@ -469,25 +471,21 @@ class MaterialSheet(Sheet):
                 if col in configs.list_fields[self.sheet_name]:
                     value = value.split(",")
 
-                # Handle data
-                if field == "data":
-                    self._parse_data(col_list, parsed_material, value)
-
                 # Handle material base fields
-                if self.col_type.get(field) == "base":
+                if field_type == "base":
                     parsed_material["base"][field] = value
 
                 # Handle identity base fields
-                if self.col_type.get(field) == "iden":
+                if field_type == "iden":
                     parsed_material["iden"][field] = value
 
                 # Handle properties
-                if self.col_type.get(field) == "prop":
-                    self._parse_prop(col, value, parsed_material)
+                if field_type == "prop":
+                    self._parse_prop(col, 0, value, parsed_material)
 
                 # Handle conditions
-                if self.col_type.get(field) == "cond":
-                    self._parse_cond(col, value, parsed_material)
+                if field_type == "cond":
+                    self._parse_cond(col, 0, value, parsed_material)
 
                 self.parsed[material_std_name] = parsed_material
 
@@ -514,7 +512,9 @@ class ProcessSheet(Sheet):
             experiment_std_name = standardize_name(row["experiment"])
             for col in self.cols:
                 # Define value and field
-                field = self.col_lists_dict[col][-1]
+                parsed_column_name_obj = self.col_parsed[col]
+                field = parsed_column_name_obj.field_list[0]
+                field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
@@ -529,6 +529,14 @@ class ProcessSheet(Sheet):
                 # Handle base process fields
                 if col in configs.base_cols.get("process"):
                     parsed_process["base"][field] = value
+
+                # Handle properties
+                if field_type == "prop":
+                    self._parse_prop(col, 0, value, parsed_process)
+
+                # Handle conditions
+                if field_type == "cond":
+                    self._parse_cond(col, 0, value, parsed_process)
             if experiment_std_name not in self.parsed:
                 self.parsed[experiment_std_name] = []
             self.parsed[experiment_std_name].append(parsed_process)
@@ -594,7 +602,9 @@ class ProcessIngredientSheet(Sheet):
             process_std_name = standardize_name(row["process"])
             for col in self.cols:
                 # Define value and field
-                field = self.col_lists_dict[col][-1]
+                parsed_column_name_obj = self.col_parsed[col]
+                field = parsed_column_name_obj.field_list[0]
+                field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
@@ -606,11 +616,11 @@ class ProcessIngredientSheet(Sheet):
                 if field in self.foreign_keys:
                     parsed_ingredient[field] = value
 
-                if self.col_type[col] == "base":
+                if field_type == "base":
                     parsed_ingredient["base"][field] = value
 
                 # Handle process ingredient fields
-                if self.col_type[col] == "quantity":
+                if field_type == "quantity":
                     # Add quantity field with units
                     parsed_ingredient["quantity"][field] = {
                         "key": field,

@@ -3,20 +3,15 @@ from errors import ColumnParseError
 
 
 class ParsedColumnName:
-    def __init__(self, origin_col, field, field_nested, identifier, is_new_col):
+    def __init__(self, origin_col, field_list, identifier, is_new_col):
         self.origin_col = origin_col
-        self.field = field
-        self.field_nested = field_nested
+        self.field_list = field_list
         self.identifier = identifier
         self.is_new_col = is_new_col
-        self.field_type = None
-        self.field_nested_type = None
+        self.field_type_list = []
 
 
 def parse_col_name(col):
-    field = None
-    field_nested = None
-    # field_nested_v2 =
     identifier = None
     is_new_field = False
 
@@ -76,11 +71,9 @@ def parse_col_name(col):
         elif col[i] == " ":
             raise ColumnParseError("Invalid space", col[: i + 1])
 
-    col_list = col[p1:].split(":")
-    if len(col_list) == 1:
-        field = col_list[0]
-    elif len(col_list) == 2:
-        field = col_list[0]
-        field_nested = col_list[1]
+    field_list = col[p1:].split(":")
 
-    return ParsedColumnName(col, field, field_nested, identifier, is_new_field)
+    while len(field_list) < 3:
+        field_list.append(None)
+
+    return ParsedColumnName(col, field_list, identifier, is_new_field)
