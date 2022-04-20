@@ -1,4 +1,3 @@
-import os
 import time
 import config
 from getpass import getpass
@@ -6,6 +5,7 @@ from getpass import getpass
 import ascii_art
 import configs
 import sheets
+import transformers
 import uploaders
 import validators
 
@@ -38,6 +38,7 @@ file_sheet = sheets.FileSheet(path, "file", param)
 material_sheet = sheets.MaterialSheet(path, "material", param)
 mixtureComponent_sheet = sheets.MixtureComponentSheet(path, "mixture component", param)
 process_sheet = sheets.ProcessSheet(path, "process", param)
+#! prerequist
 dependentProcess_sheet = sheets.DependentProcessSheet(path, "dependent process", param)
 processIngredient_sheet = sheets.ProcessIngredientSheet(
     path, "process ingredient", param
@@ -73,10 +74,11 @@ for pair in configs.foreign_key_validation_pairs:
     validators.validate_foreign_key(**pair)
 
 for sheet in sheet_dict.values():
-    for field in sheet.col_lists_dict:
-        col_list = sheet.col_lists_dict[field]
-        if len(col_list) == 2 and col_list[-1] == "data":
-            validators.validate_foreign_key(field, sheet.sheet_name, "name", data_sheet)
+    for col in sheet.col_parsed:
+        parsed_col_name_obj = sheet.col_parsed[col]
+        field_list = parsed_col_name_obj.field_list
+        if len(field_list) >= 2 and "data" in field_list:
+            validators.validate_foreign_key(col, sheet.sheet_name, "name", data_sheet)
 
 # Parse Excel sheets
 print(f"***********************")

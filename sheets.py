@@ -72,23 +72,12 @@ class Sheet:
                     message=e.__str__(),
                 )
                 self.errors.append(exception.__str__())
+                self.col_parsed[col] = None
 
         # Standardize and Categorize Field
         for col in self.col_parsed:
             parsed_col_name_obj = self.col_parsed[col]
-            field, field_type = self._standardize_and_categorize_field(
-                parsed_col_name_obj.field,
-                parsed_col_name_obj.origin_col,
-            )
-            field_nested, field_nested_type = self._standardize_and_categorize_field(
-                parsed_col_name_obj.field_nested,
-                parsed_col_name_obj.origin_col,
-                field_type,
-            )
-            parsed_col_name_obj.field = field
-            parsed_col_name_obj.field_type = field_type
-            parsed_col_name_obj.field_nested = field_nested
-            parsed_col_name_obj.field_nested_type = field_nested_type
+            self._standardize_and_categorize_field(parsed_col_name_obj)
 
         # Create Unit Dict
         for col in self.cols:
@@ -123,71 +112,88 @@ class Sheet:
                     _value = str(value).replace(" ", "").lower()
                 self.foreign_keys_dict[col].update({_value: [value, index]})
 
-    def _standardize_and_categorize_field(
-        self, field, origin_col, prev_field_type=None
-    ):
+    def _standardize_and_categorize_field(self, parsed_column_name_obj):
         """
         Convert a field to the standardized version
 
         :return: standardized param name
         :rtype: str
         """
-        if field is None:
-            return None, None
+        field_list = parsed_column_name_obj.field_list
+        field_type_list = parsed_column_name_obj.field_type_list
+        origin_col = parsed_column_name_obj.origin_col
+        for i in range(len(field_list)):
+            field = field_list[i]
+            prev_field_type = field_type_list[i - 1] if i > 0 else None
+            found_tag = False
 
-        # Foreign keys
-        if field in self.foreign_keys:
-            return field, "foreign_key"
+            if field is None:
+                field_type_list.append(None)
+                found_tag = True
 
-        # Base cols
-        for base_node in configs.base_nodes.get(self.sheet_name):
-            if field in configs.base_cols.get(base_node):
-                return field, "base"
+            # Foreign keys
+            if not found_tag and field in self.foreign_keys:
+                field_type_list.append("foreign_key")
+                found_tag = True
 
-        # Data keys
-        if field == "data":
-            return field, "data"
+            # Base cols
+            for base_node in configs.base_nodes.get(self.sheet_name):
+                if not found_tag and field in configs.base_cols.get(base_node):
+                    field_type_list.append("base")
+                    found_tag = True
 
-        # Identifier Keys
-        iden_key = "material-identifier-key"
-        for iden in self.param[iden_key]:
-            if field == iden["name"]:
-                return iden["name"], "iden"
+            # Data keys
+            if not found_tag and field == "data":
+                field_type_list.append("data")
+                found_tag = True
 
-        # Property Keys
-        prop_key = configs.sheet_name_to_prop_key.get(self.sheet_name)
-        if prop_key is not None:
-            for prop in self.param[prop_key]:
-                if field == prop["name"]:
-                    return prop["name"], "prop"
+            # Identifier Keys
+            iden_key = "material-identifier-key"
+            for iden in self.param[iden_key]:
+                if not found_tag and field == iden["name"]:
+                    field_type_list.append("iden")
+                    found_tag = True
 
-        # Condition Keys
-        cond_key = "condition-key"
-        for cond in self.param[cond_key]:
-            if field == cond["name"]:
-                return cond["name"], "cond"
+            # Property Keys
+            prop_key = configs.sheet_name_to_prop_key.get(self.sheet_name)
+            if prop_key is not None:
+                for prop in self.param[prop_key]:
+                    if not found_tag and field == prop["name"]:
+                        field_type_list.append("prop")
+                        found_tag = True
 
-        quan_key = "quantity-key"
-        for quan in self.param[quan_key]:
-            if field == quan["name"]:
-                return quan["name"], "quan"
+            # Condition Keys
+            cond_key = "condition-key"
+            for cond in self.param[cond_key]:
+                if not found_tag and field == cond["name"]:
+                    field_type_list.append("cond")
+                    found_tag = True
 
-        if prev_field_type == "prop":
-            for prop_attr in configs.base_cols["property"]:
-                if field == prop_attr:
-                    return field, "prop-attr"
+            quan_key = "quantity-key"
+            for quan in self.param[quan_key]:
+                if not found_tag and field == quan["name"]:
+                    field_type_list.append("quan")
+                    found_tag = True
 
-        if prev_field_type == "cond":
-            for cond_attr in configs.base_cols["condition"]:
-                if field == cond_attr:
-                    return field, "cond-attr"
+            if prev_field_type == "prop":
+                for prop_attr in configs.base_cols["property"]:
+                    if not found_tag and field == prop_attr:
+                        field_type_list.append("prop-attr")
+                        found_tag = True
 
-        exception = UnsupportedColumnName(
-            col=origin_col,
-            field=field,
-            sheet=self.sheet_name,
-        )
-        self.errors.append(exception.__str__())
+            if prev_field_type == "cond":
+                for cond_attr in configs.base_cols["condition"]:
+                    if not found_tag and field == cond_attr:
+                        field_type_list.append("cond-attr")
+                        found_tag = True
+
+            if not found_tag:
+                exception = UnsupportedColumnName(
+                    col=origin_col,
+                    field=field,
+                    sheet=self.sheet_name,
+                )
+                self.errors.append(exception.__str__())
 
     def _parse_prop(self, col, start_index, value, parsed_object):
         """
@@ -210,6 +216,8 @@ class Sheet:
         field_nested_type = field_type_list[start_index + 1]
 
         # Create property dict
+        if "prop" not in parsed_object:
+            parsed_object["prop"] = {}
         if field not in parsed_object["prop"]:
             parsed_object["prop"][field] = {}
         if identifier not in parsed_object["prop"][field]:
@@ -257,6 +265,8 @@ class Sheet:
         field_nested_type = field_type_list[start_index + 1]
 
         # create condition dict
+        if "cond" not in parsed_object:
+            parsed_object["cond"] = {}
         if field not in parsed_object["cond"]:
             parsed_object["cond"][field] = {}
         if identifier not in parsed_object["cond"][field]:
@@ -506,6 +516,8 @@ class ProcessSheet(Sheet):
         for index, row in self.df.iterrows():
             parsed_process = {
                 "base": {},
+                "prop": {},
+                "cond": {},
                 "index": index + 2,
                 "name": row["name"],
             }

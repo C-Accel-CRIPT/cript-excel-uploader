@@ -66,7 +66,7 @@ def parse_col_name(col):
             nest_count = nest_count + 1
             if nest_count > 2:
                 raise ColumnParseError("Too many nested fields", col[: i + 1])
-        elif col[i] in string.punctuation:
+        elif col[i] in string.punctuation and col[i] != "_":
             raise ColumnParseError("Invalid punctuation", col[: i + 1])
         elif col[i] == " ":
             raise ColumnParseError("Invalid space", col[: i + 1])
