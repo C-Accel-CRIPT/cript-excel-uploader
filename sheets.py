@@ -374,7 +374,6 @@ class DataSheet(Sheet):
         for index, row in self.df.iterrows():
             parsed_datum = {
                 "base": {},
-                "experiment": None,
                 "index": index + 2,
                 "name": row["name"],
             }
@@ -383,19 +382,17 @@ class DataSheet(Sheet):
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
                 field = parsed_column_name_obj.field_list[0]
+                field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
 
-                if col in configs.list_fields[self.sheet_name]:
-                    value = value.split(",")
-
                 # Handle foreign keys
-                if field in self.foreign_keys:
-                    parsed_datum[field] = value
+                if field_type == "foreign_key":
+                    parsed_datum[field] = standardize_name(value)
 
                 # Populate parsed_datum dict
-                if col in configs.base_cols.get("data"):
+                if field_type == "base":
                     parsed_datum["base"][field] = value
 
             self.parsed[data_std_name] = parsed_datum

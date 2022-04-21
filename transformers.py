@@ -54,7 +54,7 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
     for data_std_name in parsed_datas:
         parsed_data = parsed_datas[data_std_name]
         # Grab Experiment
-        experiment_std_name = parsed_data["experiment"].replace(" ", "").lower()
+        experiment_std_name = parsed_data["experiment"]
         experiment_obj = experiment_objs[experiment_std_name]
 
         # Create Data

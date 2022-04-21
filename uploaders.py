@@ -1,7 +1,11 @@
 import cript as C
+import string
 from config import BASE_URL
 from errors import GroupRelatedError
-from cript.exceptions import DuplicateNodeError
+from cript.exceptions import (
+    DuplicateNodeError,
+    APIGetError,
+)
 from util import process_track
 
 
@@ -24,22 +28,16 @@ def get_group(api, group_name):
     :param group_name: group name
     :type group_name: str
     :return: group object
-    :rtype: `cript.nodes.Group`
+    :rtype: `cript.Group`
     """
     # Check if Group exists
-    my_groups = api.search(C.Group)
-    if my_groups["count"] == 0:
-        raise GroupRelatedError(
-            "Error: You don't belong to any CRIPT group currently. Please contact with us."
-        )
-
-    group_search_result = api.search(C.Group, {"name": group_name})
-    if group_search_result["count"] == 0 or len(group_name) == 0:
+    try:
+        group_obj = api.get(C.Group, {"name": group_name})
+        return group_obj
+    except APIGetError:
         raise GroupRelatedError(
             "Error: You must enter an existing CRIPT group. Try again."
         )
-    else:
-        return api.get(group_search_result["results"][0]["url"])
 
 
 def get_collection(api, group_obj, coll_name):
@@ -64,11 +62,11 @@ def get_collection(api, group_obj, coll_name):
                 "name": coll_name,
             },
         )
-    except DuplicateNodeError:
-        collection_obj = None
-        print("Error: You must enter an existing CRIPT collection. Try again.")
-
-    return collection_obj
+        return collection_obj
+    except APIGetError:
+        raise GroupRelatedError(
+            "Error: You must enter an existing CRIPT collection. Try again."
+        )
 
 
 def upload(api, dict):
@@ -86,8 +84,13 @@ def upload(api, dict):
         except DuplicateNodeError:
             query = {}
             for field in object.unique_together:
-                query[field] = object.__dict__.get(field)
+                value = object.__dict__.get(field)
+                if type(value) == type("a"):
+                    query[field] = object.__dict__.get(field)
+                else:
+                    query[field] = object.__dict__.get(field).uid
 
+            print(query)
             url = api.get(object.__class__, query).url
 
             object.url = url
