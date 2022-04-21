@@ -42,18 +42,18 @@ def get_group(api, group_name):
         return api.get(group_search_result["results"][0]["url"])
 
 
-def upload_collection(api, group_obj, coll_name):
+def get_collection(api, group_obj, coll_name):
     """
     search for existing collection_url, create collection if not exists
 
     :param api: api connection object
     :type api: class:`cript.API`
     :param group_obj: object of group
-    :type group_obj: `cript.nodes.Group`
+    :type group_obj: `cript.Group`
     :param coll_name: collection name
     :type coll_name: str
     :return: object of collection
-    :rtype: `cript.nodes.Group`
+    :rtype: `cript.Collection`
     """
     # Check if Collection exists
     try:
@@ -84,10 +84,13 @@ def upload(api, dict):
         try:
             api.save(object)
         except DuplicateNodeError:
-            url = api.get(object).url
+            query = {}
+            for field in object.unique_together:
+                query[field] = object.__dict__.get(field)
+
+            url = api.get(object.__class__, query).url
+
             object.url = url
-            api.save(
-                object,
-            )
+            api.save(object)
         except Exception as e:
             print(e.with_traceback)
