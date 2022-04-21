@@ -28,8 +28,9 @@ public_flag = public_flag == "y"
 print(ascii_art.chem.template)
 time.sleep(1)
 
-# Get parameters
+# Get parameters and user uid
 param = db.keys
+user_uid = db.user.uid
 
 # Instantiate Sheet objects
 experiment_sheet = sheets.ExperimentSheet(path, "experiment", param)
@@ -151,7 +152,7 @@ experiment_objs = transformers.transform_experiment(
     experiment_sheet.parsed,
     public_flag,
 )
-uploaders.upload(db, experiment_objs)
+uploaders.upload(db, experiment_objs, user_uid)
 print(f"expt_objs:{experiment_objs}\n***********************")
 
 data_objs = transformers.transform_data(
@@ -160,7 +161,7 @@ data_objs = transformers.transform_data(
     data_sheet.parsed,
     public_flag,
 )
-uploaders.upload(db, data_objs)
+uploaders.upload(db, data_objs, user_uid)
 print(f"data_objs:{data_objs}\n***********************")
 
 file_objs = transformers.transform_file(
@@ -170,19 +171,20 @@ file_objs = transformers.transform_file(
     public_flag,
 )
 print(f"file_objs:{file_objs}\n***********************")
-# material_objs = transformers.transform_material(
-#     group_obj,
-#     data_objs,
-#     material_sheet.parsed,
-#     public_flag,
-# )
-# uploaders.upload(db, material_objs)
-# transformers.transform_components(
-#     material_objs,
-#     mixtureComponent_sheet.parsed,
-# )
-# uploaders.upload(db, material_objs)
-# print(f"material_objs:{material_objs}\n***********************")
+material_objs = transformers.transform_material(
+    group_obj,
+    data_objs,
+    material_sheet.parsed,
+    public_flag,
+    user_uid,
+)
+uploaders.upload(db, material_objs, user_uid)
+transformers.transform_components(
+    material_objs,
+    mixtureComponent_sheet.parsed,
+)
+uploaders.upload(db, material_objs, user_uid)
+print(f"material_objs:{material_objs}\n***********************")
 #
 # process_objs = transformers.transform_process(
 #     group_obj,
@@ -190,7 +192,7 @@ print(f"file_objs:{file_objs}\n***********************")
 #     process_sheet.parsed,
 #     public_flag,
 # )
-# uploaders.upload(db, process_objs)
+# uploaders.upload(db, process_objs, user_uid)
 # transformers.transform_prerequisite_process(
 #     process_objs,
 #     dependentProcess_sheet.parsed,
@@ -203,14 +205,14 @@ print(f"file_objs:{file_objs}\n***********************")
 #     material_objs,
 #     processIngredient_sheet.parsed,
 # )
-# uploaders.upload(db, process_objs)
+# uploaders.upload(db, process_objs, user_uid)
 # print(f"process_objs after adding ingredients:{process_objs}\n***********************")
 # transformers.transform_process_product(
 #     process_objs,
 #     material_objs,
 #     processProduct_sheet.parsed,
 # )
-# uploaders.upload(db, process_objs)
+# uploaders.upload(db, process_objs, user_uid)
 # print(f"process_objs after adding products:{process_objs}\n***********************")
 
 # End

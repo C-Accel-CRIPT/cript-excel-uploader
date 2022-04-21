@@ -95,18 +95,17 @@ def transform_file(group_obj, data_objs, parsed_file, public_flag):
             # Create File
             file_obj = C.File(
                 group=group_obj,
-                data=data_obj,
+                data=[data_obj],
                 public=public_flag,
                 **file["base"],
             )
-
             # Update file_urls
             file_objs[file_obj.checksum] = file_obj
 
     return file_objs
 
 
-def transform_material(group_obj, data_objs, parsed_material, public_flag):
+def transform_material(group_obj, data_objs, parsed_material, public_flag, user_uid):
     """
     upload material to the database and return a dict of name:material_url pair
 
@@ -129,7 +128,7 @@ def transform_material(group_obj, data_objs, parsed_material, public_flag):
         # Create Material object
         material_obj = C.Material(
             group=group_obj,
-            components=None,
+            components=[],
             public=public_flag,
             **material_dict["base"],
         )
@@ -141,9 +140,8 @@ def transform_material(group_obj, data_objs, parsed_material, public_flag):
 
         # Add Identifiers
         parsed_idens = material_dict["iden"]
-        for key, value in parsed_idens.items():
-            identifier = C.Identifier(key=key, value=value)
-            material_obj.add_identifier(identifier)
+        if len(parsed_idens) > 0:
+            material_obj.identifiers = _transform_identifier_list(parsed_idens)
 
         # Add saved Material object to materials dict
         material_objs[material_std_name] = material_obj
@@ -296,26 +294,22 @@ def _transform_cond_list(parsed_conds, data_objs=None):
     :return: list of `cript.nodes.Condition` objects
     :rtype: list
     """
-    conds = []
+    cond_list = []
     for cond_key in parsed_conds:
+        for identifier in parsed_conds[cond_key]:
+            # Create Cond object
+            parent = parsed_conds[cond_key][identifier]
+            cond = C.Condition(**parent["attr"])
 
-        # Create Cond object
-        cond = C.Condition(
-            key=cond_key,
-            value=parsed_conds[cond_key]["value"],
-            unit=parsed_conds[cond_key].get("unit"),
-        )
+            # Add Data object
+            if "data" in parent and len(parent["data"]) > 0:
+                for data_std_name in parent["data"]:
+                    data_obj = data_objs[data_std_name]
+                    cond.add_data(data_obj)
 
-        # Add Data object
-        parsed_data = parsed_conds[cond_key]["data"]
+            cond_list.append(cond)
 
-        if len(parsed_data) > 0:
-            data_obj = data_objs[parsed_data]
-            cond.data.append(data_obj)
-
-        conds.append(cond)
-
-    return conds
+    return cond_list
 
 
 def _transform_prop_list(parsed_props, data_objs=None):
@@ -329,29 +323,37 @@ def _transform_prop_list(parsed_props, data_objs=None):
     :return: a list of class: `cript.Prop` objects
     :rtype: list
     """
-    props = []
+    prop_list = []
     for prop_key in parsed_props:
-        # Create Prop object
-        prop = C.Property(
-            key=prop_key,
-            value=parsed_props[prop_key]["value"],
-            unit=parsed_props[prop_key].get("unit"),
-        )
+        for identifier in parsed_props[prop_key]:
+            parent = parsed_props[prop_key][identifier]
 
-        # Add Data object
-        parsed_data = parsed_props[prop_key]["data"]
-        if len(parsed_data) > 0:
-            data_obj = data_objs[parsed_data]
-            prop.data.append(data_obj)
+            # Create Prop object
+            prop = C.Property(**parent["attr"])
 
-        # Add Cond objects
-        if "cond" in parsed_props[prop_key]:
-            parsed_conds = parsed_props[prop_key]["cond"]
-            prop.cond = _transform_cond_list(parsed_conds, data_objs)
+            # Add Data object
+            if "data" in parent and len(parent["data"]) > 0:
+                for data_std_name in parent["data"]:
+                    data_obj = data_objs[data_std_name]
+                    prop.add_data(data_obj)
 
-        props.append(prop)
+            # Add Cond objects
+            if "cond" in parent and len(parent["cond"]) > 0:
+                parsed_conds = parent["cond"]
+                prop.cond = _transform_cond_list(parsed_conds, data_objs)
 
-    return props
+            prop_list.append(prop)
+
+    return prop_list
+
+
+def _transform_identifier_list(parsed_object):
+    iden_list = []
+    for key, value in parsed_object.items():
+        identifier = C.Identifier(key=key, value=value)
+        iden_list.append(identifier)
+
+    return iden_list
 
 
 def _transform_quantity_list(parsed_object):

@@ -239,7 +239,7 @@ class Sheet:
             parent["attr"][field_nested] = value
         # prop:data
         elif field_nested_type == "data":
-            parent["data"].append(value)
+            parent["data"].append(standardize_name(value))
         # prop:cond
         elif field_nested_type == "cond":
             self._parse_cond(col, start_index + 1, value, parent)
@@ -281,13 +281,13 @@ class Sheet:
         if field_nested_type is None:
             parent["attr"]["key"] = field
             parent["attr"]["value"] = value
-            parent["attr"]["unit"] = field
+            parent["attr"]["unit"] = self.unit_dict[col]
         # cond:attr
         elif field_nested_type == "cond-attr":
             parent["attr"][field_nested] = value
         # cond:data
         elif field_nested_type == "data":
-            parent["data"].append(value)
+            parent["data"].append(standardize_name(value))
 
     def _replace_field(self, columns, raw_key, replace_key):
         output = []
@@ -422,6 +422,7 @@ class FileSheet(Sheet):
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
                 field = parsed_column_name_obj.field_list[0]
+                field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
                 if pd.isna(value):
                     continue
@@ -430,11 +431,11 @@ class FileSheet(Sheet):
                     value = value.split(",")
 
                 # Handle foreign keys field
-                if field in self.foreign_keys:
+                if field_type == "foreign_keys":
                     parsed_file.update({field: value})
 
                 # Populate parsed_file dict
-                if col in configs.base_cols.get("file"):
+                if field_type == "base":
                     parsed_file["base"][field] = value
 
             data_std_name = standardize_name(row["data"])
@@ -622,7 +623,7 @@ class ProcessIngredientSheet(Sheet):
                     value = value.split(",")
 
                 # Handle foreign key
-                if field in self.foreign_keys:
+                if field_type == "foreign_key":
                     parsed_ingredient[field] = value
 
                 if field_type == "base":

@@ -159,5 +159,6 @@ def validate_data_assignment(sheet_obj):
             sheet_obj.errors.append(exception.__str__())
 
 
-# def validate_property(sheet_obj):
-#     for
+# def validate_property(dict):
+#     for parsed_object in dict.values:
+#         parsed_object

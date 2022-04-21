@@ -1,5 +1,5 @@
 import cript as C
-import string
+import traceback
 from config import BASE_URL
 from errors import GroupRelatedError
 from cript.exceptions import (
@@ -69,7 +69,7 @@ def get_collection(api, group_obj, coll_name):
         )
 
 
-def upload(api, dict):
+def upload(api, dict, user_uid):
     """
     Save objects to database, update them if the object already exists
     dict: (name): (C.Base)
@@ -84,16 +84,19 @@ def upload(api, dict):
         except DuplicateNodeError:
             query = {}
             for field in object.unique_together:
+                if field == "created_by":
+                    query[field] = user_uid
+                    continue
+
                 value = object.__dict__.get(field)
                 if type(value) == type("a"):
                     query[field] = object.__dict__.get(field)
                 else:
                     query[field] = object.__dict__.get(field).uid
-
             print(query)
             url = api.get(object.__class__, query).url
 
             object.url = url
             api.save(object)
-        except Exception as e:
-            print(e.with_traceback)
+        except Exception:
+            print(traceback.format_exc())
