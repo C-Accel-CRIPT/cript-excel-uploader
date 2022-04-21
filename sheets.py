@@ -485,7 +485,10 @@ class MaterialSheet(Sheet):
 
                 # Handle identity base fields
                 if field_type == "iden":
-                    parsed_material["iden"][field] = value
+                    parsed_material["iden"][field] = {
+                        "key": field,
+                        "value": value,
+                    }
 
                 # Handle properties
                 if field_type == "prop":
@@ -533,11 +536,11 @@ class ProcessSheet(Sheet):
                     value = value.split(",")
 
                 # Handle foreign keys
-                if field in self.foreign_keys:
+                if field_type == "foreign_key":
                     parsed_process[field] = value
 
                 # Handle base process fields
-                if col in configs.base_cols.get("process"):
+                if field_type == "base":
                     parsed_process["base"][field] = value
 
                 # Handle properties
@@ -568,12 +571,12 @@ class DependentProcessSheet(Sheet):
         for index, row in self.df.iterrows():
             parsed_dependency = {
                 "index": index + 2,
-                "dependent_process": row["dependent_processes"],
+                "dependent_process": standardize_name(row["dependent_process"]),
             }
 
             process_std_name = standardize_name(row["process"])
             if process_std_name not in self.parsed:
-                self.parsed[process_std_name] = {}
+                self.parsed[process_std_name] = []
             self.parsed[process_std_name].append(parsed_dependency)
 
         return self.parsed
@@ -603,10 +606,11 @@ class ProcessIngredientSheet(Sheet):
             self.df.loc[index, "process+ingredient"] = _value
 
     def parse(self):
+        print(self.col_parsed)
         for index, row in self.df.iterrows():
             parsed_ingredient = {
                 "base": {},
-                "quantity": {},
+                "quan": {},
             }
 
             process_std_name = standardize_name(row["process"])
@@ -630,9 +634,9 @@ class ProcessIngredientSheet(Sheet):
                     parsed_ingredient["base"][field] = value
 
                 # Handle process ingredient fields
-                if field_type == "quantity":
+                if field_type == "quan":
                     # Add quantity field with units
-                    parsed_ingredient["quantity"][field] = {
+                    parsed_ingredient["quan"][field] = {
                         "key": field,
                         "value": value,
                         "unit": self.unit_dict[col],

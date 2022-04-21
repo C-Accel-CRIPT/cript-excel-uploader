@@ -201,7 +201,7 @@ def transform_process(group_obj, experiment_objs, parsed_processes, public_flag)
 
             if i > 0:
                 prev_process_obj = process_objs.get(prev_process_std_name)
-                process_obj.add_prerequisite_process(prev_process_obj)
+                process_obj.prerequisite_processes.append(prev_process_obj)
 
             prev_process_std_name = process_std_name
             process_objs[process_std_name] = process_obj
@@ -216,7 +216,7 @@ def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
         for i in range(len(dependent_process_list)):
             dependent_process_std_name = dependent_process_list[i]["dependent_process"]
             dependent_process_obj = process_objs.get(dependent_process_std_name)
-            process_obj.add_dependent_process(dependent_process_obj)
+            process_obj.add_prerequisite_process(dependent_process_obj)
 
 
 def transform_process_ingredient(
@@ -243,14 +243,14 @@ def transform_process_ingredient(
 
         for ingredient in parsed_processIngredients[process_std_name]:
             # Grab Material
-            material_std_name = ingredient["material"]
+            material_std_name = ingredient["ingredient"]
             material_obj = material_objs.get(material_std_name)
             if material_obj is None:
                 continue
 
             ingredient_obj = C.Ingredient(
                 ingredient=material_obj,
-                quantities=_transform_quantity_list(ingredient["quantity"]),
+                quantities=_transform_quantity_list(ingredient["quan"]),
                 **ingredient["base"],
             )
 
@@ -349,16 +349,16 @@ def _transform_prop_list(parsed_props, data_objs=None):
 
 def _transform_identifier_list(parsed_object):
     iden_list = []
-    for key, value in parsed_object.items():
-        identifier = C.Identifier(key=key, value=value)
+    for key in parsed_object:
+        identifier = C.Identifier(**parsed_object[key])
         iden_list.append(identifier)
 
     return iden_list
 
 
 def _transform_quantity_list(parsed_object):
-    quantity_list = []
+    quan_list = []
     for key in parsed_object:
         quantity_obj = C.Quantity(**parsed_object[key])
-        quantity_list.append(quantity_obj)
-    return quantity_list
+        quan_list.append(quantity_obj)
+    return quan_list

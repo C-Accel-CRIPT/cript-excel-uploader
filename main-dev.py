@@ -1,6 +1,5 @@
 import time
 import config
-from getpass import getpass
 
 import ascii_art
 import configs
@@ -8,8 +7,6 @@ import sheets
 import transformers
 import uploaders
 import validators
-
-from errors import GroupRelatedError
 
 print(ascii_art.title.template)
 
@@ -108,6 +105,10 @@ process_sheet.parse()
 print(process_sheet.parsed)
 print(f"***********************")
 
+dependentProcess_sheet.parse()
+print(dependentProcess_sheet.parsed)
+print(f"***********************")
+
 processIngredient_sheet.parse()
 print(processIngredient_sheet.parsed)
 print(f"***********************")
@@ -185,35 +186,35 @@ transformers.transform_components(
 )
 uploaders.upload(db, material_objs, user_uid)
 print(f"material_objs:{material_objs}\n***********************")
-#
-# process_objs = transformers.transform_process(
-#     group_obj,
-#     experiment_objs,
-#     process_sheet.parsed,
-#     public_flag,
-# )
-# uploaders.upload(db, process_objs, user_uid)
-# transformers.transform_prerequisite_process(
-#     process_objs,
-#     dependentProcess_sheet.parsed,
-# )
-# uploaders.upload(db, process_objs)
-# print(f"process_objs:{process_objs}\n***********************")
-#
-# transformers.transform_process_ingredient(
-#     process_objs,
-#     material_objs,
-#     processIngredient_sheet.parsed,
-# )
-# uploaders.upload(db, process_objs, user_uid)
-# print(f"process_objs after adding ingredients:{process_objs}\n***********************")
-# transformers.transform_process_product(
-#     process_objs,
-#     material_objs,
-#     processProduct_sheet.parsed,
-# )
-# uploaders.upload(db, process_objs, user_uid)
-# print(f"process_objs after adding products:{process_objs}\n***********************")
+
+process_objs = transformers.transform_process(
+    group_obj,
+    experiment_objs,
+    process_sheet.parsed,
+    public_flag,
+)
+uploaders.upload(db, process_objs, user_uid)
+transformers.transform_prerequisite_process(
+    process_objs,
+    dependentProcess_sheet.parsed,
+)
+uploaders.upload(db, process_objs, user_uid)
+print(f"process_objs:{process_objs}\n***********************")
+
+transformers.transform_process_ingredient(
+    process_objs,
+    material_objs,
+    processIngredient_sheet.parsed,
+)
+uploaders.upload(db, process_objs, user_uid)
+print(f"process_objs after adding ingredients:{process_objs}\n***********************")
+transformers.transform_process_product(
+    process_objs,
+    material_objs,
+    processProduct_sheet.parsed,
+)
+uploaders.upload(db, process_objs, user_uid)
+print(f"process_objs after adding products:{process_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")

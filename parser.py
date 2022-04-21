@@ -10,6 +10,18 @@ class ParsedColumnName:
         self.is_new_col = is_new_col
         self.field_type_list = []
 
+    def __str__(self):
+        return (
+            f"origin_col:{self.origin_col}\n"
+            f"field_list:{self.field_list}\n"
+            f"field_type_list:{self.field_type_list}\n"
+            f"identifier:{self.identifier}\n"
+            f"is_new_col:{self.is_new_col}\n"
+        )
+
+    def __repr__(self):
+        return self.__str__()
+
 
 def parse_col_name(col):
     identifier = None
