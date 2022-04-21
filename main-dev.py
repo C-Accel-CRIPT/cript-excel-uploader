@@ -15,8 +15,8 @@ print(ascii_art.title.template)
 
 token = config.TOKEN
 db = uploaders.connect(token)
-group = config.GROUP
-collection = config.COLLECTION
+group_name = config.GROUP
+collection_name = config.COLLECTION
 path = config.EXCEL_TEMPLATE_FILE_PATH  # input("\nExcel file path: ")
 
 public_flag = None
@@ -140,85 +140,79 @@ print(f"***********************")
 if bug_count != 0:
     exit()
 
-# # # Upload parsed data
-# print(f"***********************")
-# group_obj = uploaders.upload_group(
-#     db,
-#     group,
-# )
-# print(f"group_obj:{group_obj}\n***********************")
-# coll_obj = uploaders.upload_collection(
-#     db,
+# Transform and Upload parsed data
+group_obj = uploaders.get_group(db, group_name)
+print(f"group_obj:{group_obj}\n***********************")
+collection_obj = uploaders.get_collection(db, group_obj, collection_name)
+print(f"coll_obj:{collection_obj}\n***********************")
+experiment_objs = transformers.transform_experiment(
+    group_obj,
+    collection_obj,
+    experiment_sheet.parsed,
+    public_flag,
+)
+uploaders.upload(db, experiment_objs)
+print(f"expt_objs:{experiment_objs}\n***********************")
+
+# data_objs = transformers.transform_data(
 #     group_obj,
-#     collection,
-#     public_flag,
-# )
-# print(f"coll_obj:{coll_obj}\n***********************")
-# expt_objs = uploaders.upload_experiment(
-#     db,
-#     group_obj,
-#     coll_obj,
-#     experiment_sheet.parsed,
-#     public_flag,
-# )
-# print(f"expt_objs:{expt_objs}\n***********************")
-# data_objs = uploaders.upload_data(
-#     db,
-#     group_obj,
-#     expt_objs,
+#     experiment_objs,
 #     data_sheet.parsed,
 #     public_flag,
 # )
+# uploaders.upload(db, data_objs)
 # print(f"data_objs:{data_objs}\n***********************")
-# file_objs = uploaders.upload_file(
-#     db,
+#
+#
+# file_objs = transformers.transform_file(
 #     group_obj,
 #     data_objs,
 #     file_sheet.parsed,
 #     public_flag,
 # )
 # print(f"file_objs:{file_objs}\n***********************")
-# material_objs = uploaders.upload_material(
-#     db,
+# material_objs = transformers.transform_material(
 #     group_obj,
 #     data_objs,
 #     material_sheet.parsed,
 #     public_flag,
 # )
+# uploaders.upload(db, material_objs)
+# transformers.transform_components(
+#     material_objs,
+#     mixtureComponent_sheet.parsed,
+# )
+# uploaders.upload(db, material_objs)
 # print(f"material_objs:{material_objs}\n***********************")
-# process_objs = uploaders.upload_process(
-#     db,
+#
+# process_objs = transformers.transform_process(
 #     group_obj,
-#     expt_objs,
+#     experiment_objs,
 #     process_sheet.parsed,
 #     public_flag,
 # )
+# uploaders.upload(db, process_objs)
+# transformers.transform_prerequisite_process(
+#     process_objs,
+#     dependentProcess_sheet.parsed,
+# )
+# uploaders.upload(db, process_objs)
 # print(f"process_objs:{process_objs}\n***********************")
-# step_objs = uploaders.upload_step(
-#     db,
-#     group_obj,
+#
+# transformers.transform_process_ingredient(
 #     process_objs,
-#     data_objs,
-#     step_sheet.parsed,
-#     public_flag,
-# )
-# print(f"step_objs:{step_objs}\n***********************")
-# uploaders.upload_stepIngredient(
-#     db,
-#     process_objs,
-#     step_objs,
 #     material_objs,
-#     stepIngredients_sheet.parsed,
+#     processIngredient_sheet.parsed,
 # )
-# print(f"step_objs after adding ingredients:{step_objs}\n***********************")
-# uploaders.upload_stepProduct(
-#     db,
+# uploaders.upload(db, process_objs)
+# print(f"process_objs after adding ingredients:{process_objs}\n***********************")
+# transformers.transform_process_product(
 #     process_objs,
-#     step_objs,
 #     material_objs,
-#     stepProducts_sheet.parsed,
+#     processProduct_sheet.parsed,
 # )
-# print(f"step_objs after adding products:{step_objs}\n***********************")
+# uploaders.upload(db, process_objs)
+# print(f"process_objs after adding products:{process_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")
