@@ -12,9 +12,9 @@ def transform_experiment(group_obj, collection_obj, parsed_experiments, public_f
     :param api: api connection object
     :type api: class:`cript.API`
     :param group_obj: object of group
-    :type group_obj: `cript.nodes.Group`
+    :type group_obj: `cript.Group`
     :param collection_obj: object of collection
-    :type collection_obj: `cript.nodes.Collection`
+    :type collection_obj: `cript.Collection`
     :param parsed_experiments: parsed data of experiments (experiment_sheet.parsed)
     :type parsed_experiments: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
@@ -211,7 +211,7 @@ def transform_process(group_obj, experiment_objs, parsed_processes, public_flag)
     return process_objs
 
 
-def transform_prerequisite_process(api, process_objs, parsed_prerequisite_processes):
+def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
     for process_std_name in parsed_prerequisite_processes:
         process_obj = process_objs.get(process_std_name)
         dependent_process_list = parsed_prerequisite_processes.get(process_std_name)
@@ -219,7 +219,6 @@ def transform_prerequisite_process(api, process_objs, parsed_prerequisite_proces
             dependent_process_std_name = dependent_process_list[i]["dependent_process"]
             dependent_process_obj = process_objs.get(dependent_process_std_name)
             process_obj.add_dependent_process(dependent_process_obj)
-        api.save(process_obj)
 
 
 def transform_process_ingredient(
