@@ -9,6 +9,7 @@ from util import (
     standardize_name,
 )
 from parser import (
+    ParsedColumnName,
     parse_col_name,
 )
 
@@ -72,7 +73,7 @@ class Sheet:
                     message=e.__str__(),
                 )
                 self.errors.append(exception.__str__())
-                self.col_parsed[col] = None
+                self.col_parsed[col] = ParsedColumnName(is_valid=False)
 
         # Standardize and Categorize Field
         for col in self.col_parsed:
@@ -201,6 +202,7 @@ class Sheet:
                     sheet=self.sheet_name,
                 )
                 self.errors.append(exception.__str__())
+                parsed_column_name_obj.is_valid = False
                 break
 
     def _parse_prop(self, col, start_index, value, parsed_object):
@@ -351,6 +353,9 @@ class MixtureComponentSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             material_std_name = standardize_name(row["material"])
             component_std_name = standardize_name(row["component"])
@@ -379,6 +384,9 @@ class DataSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_datum = {
                 "base": {},
@@ -389,6 +397,10 @@ class DataSheet(Sheet):
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
+                # Check whether current column name is valid
+                if not parsed_column_name_obj.is_valid:
+                    continue
+
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
@@ -421,6 +433,9 @@ class FileSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_file = {
                 "base": {},
@@ -429,6 +444,10 @@ class FileSheet(Sheet):
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
+                # Check whether current column name is valid
+                if not parsed_column_name_obj.is_valid:
+                    continue
+
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
@@ -465,6 +484,9 @@ class MaterialSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_material = {
                 "base": {},
@@ -478,6 +500,10 @@ class MaterialSheet(Sheet):
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
+                # Check whether current column name is valid
+                if not parsed_column_name_obj.is_valid:
+                    continue
+
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
@@ -506,7 +532,7 @@ class MaterialSheet(Sheet):
                 if field_type == "cond":
                     self._parse_cond(col, 0, value, parsed_material)
 
-                self.parsed[material_std_name] = parsed_material
+            self.parsed[material_std_name] = parsed_material
 
         return self.parsed
 
@@ -522,6 +548,9 @@ class ProcessSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_process = {
                 "base": {},
@@ -534,6 +563,10 @@ class ProcessSheet(Sheet):
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
+                # Check whether current column name is valid
+                if not parsed_column_name_obj.is_valid:
+                    continue
+
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
@@ -558,6 +591,7 @@ class ProcessSheet(Sheet):
                 # Handle conditions
                 if field_type == "cond":
                     self._parse_cond(col, 0, value, parsed_process)
+
             if experiment_std_name not in self.parsed:
                 self.parsed[experiment_std_name] = []
             self.parsed[experiment_std_name].append(parsed_process)
@@ -576,6 +610,9 @@ class DependentProcessSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_dependency = {
                 "index": index + 2,
@@ -614,7 +651,9 @@ class ProcessIngredientSheet(Sheet):
             self.df.loc[index, "process+ingredient"] = _value
 
     def parse(self):
-        print(self.col_parsed)
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_ingredient = {
                 "base": {},
@@ -625,6 +664,10 @@ class ProcessIngredientSheet(Sheet):
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
+                # Check whether current column name is valid
+                if not parsed_column_name_obj.is_valid:
+                    continue
+
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
                 value = row[col]
@@ -681,6 +724,9 @@ class ProcessProductSheet(Sheet):
             self.df.loc[index, "process+product"] = _value
 
     def parse(self):
+        if self.df is None:
+            return self.df
+
         for index, row in self.df.iterrows():
             parsed_product = {
                 "index": index + 2,
