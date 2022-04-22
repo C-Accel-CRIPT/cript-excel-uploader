@@ -124,11 +124,18 @@ class Sheet:
         origin_col = parsed_column_name_obj.origin_col
         for i in range(len(field_list)):
             field = field_list[i]
-            prev_field_type = field_type_list[i - 1] if i > 0 else None
+            prev_field_type = field_type_list[i - 1] if i >= 1 else None
             found_tag = False
 
             if field is None:
                 field_type_list.append(None)
+                found_tag = True
+
+            # Discussing with Dylan with this problem
+            # Duplicated "volume" field for both quantity and condition
+            # Cause errors in process ingredient sheet when categorizing
+            if not found_tag and field == "volume":
+                field_type_list.append("quan")
                 found_tag = True
 
             # Foreign keys
@@ -194,6 +201,7 @@ class Sheet:
                     sheet=self.sheet_name,
                 )
                 self.errors.append(exception.__str__())
+                break
 
     def _parse_prop(self, col, start_index, value, parsed_object):
         """

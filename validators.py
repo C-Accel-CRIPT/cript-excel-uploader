@@ -1,4 +1,11 @@
 import configs
+import cript as C
+from transformers import (
+    _transform_identifier_list,
+    _transform_prop_list,
+    _transform_cond_list,
+    _transform_quantity_list,
+)
 from errors import (
     ValueDoesNotExist,
     DuplicatedValueError,
@@ -9,96 +16,99 @@ from errors import (
 )
 
 
-def validate_required_cols(sheet):
+def validate_required_cols(sheet_obj):
     """
     Validate that all required columns are present.
     """
-    for required_col in sheet.required_cols:
-        if required_col not in sheet.cols:
-            exception = MissingRequiredField(
-                field=required_col,
-                sheet=sheet.sheet_name,
-                is_either_or_cols=False,
-            )
-            sheet.errors.append(exception.__str__())
+    if sheet_obj is not None:
+        for required_col in sheet_obj.required_cols:
+            if required_col not in sheet_obj.cols:
+                exception = MissingRequiredField(
+                    field=required_col,
+                    sheet=sheet_obj.sheet_name,
+                    is_either_or_cols=False,
+                )
+                sheet_obj.errors.append(exception.__str__())
 
 
-def validate_either_or_cols(sheet):
+def validate_either_or_cols(sheet_obj):
     """
     Validate that at least one of the either/or columns are present.
     Validation passes when we find one either_or_col name in cols
     """
-    exists = False
-    if len(sheet.either_or_cols) == 0:
-        exists = True
-
-    for either_or_col in sheet.either_or_cols:
-        if either_or_col in sheet.cols:
+    if sheet_obj is not None:
+        exists = False
+        if len(sheet_obj.either_or_cols) == 0:
             exists = True
-            break
 
-    if not exists:
-        exception = MissingRequiredField(
-            field=sheet.either_or_cols,
-            sheet=sheet.sheet_name,
-            is_either_or_cols=True,
-        )
-        sheet.errors.append(exception.__str__())
+        for either_or_col in sheet_obj.either_or_cols:
+            if either_or_col in sheet_obj.cols:
+                exists = True
+                break
+
+        if not exists:
+            exception = MissingRequiredField(
+                field=sheet_obj.either_or_cols,
+                sheet=sheet_obj.sheet_name,
+                is_either_or_cols=True,
+            )
+            sheet_obj.errors.append(exception.__str__())
 
 
-def validate_unit(sheet):
+def validate_unit(sheet_obj):
     """
     Validate that the input unit is supported
     """
-
-    for col in sheet.cols:
-        supported_unit = None
-        input_unit = sheet.unit_dict[col]
-        if (
-            supported_unit is not None
-            and input_unit is not None
-            and input_unit == supported_unit
-        ):
-            continue
-        elif supported_unit is None and input_unit is None:
-            continue
-        else:
-            exception = UnsupportedUnitName(
-                input_unit=input_unit,
-                supported_unit=supported_unit,
-                field=col,
-                sheet=sheet.sheet_name,
-            )
-            sheet.errors.append(exception.__str__())
-
-
-def validate_unique_key(sheet_obj):
-    # Check for unique keys
-    for col in sheet_obj.unique_keys:
-        _dict = sheet_obj.unique_keys_dict.get(col)
-
-        if _dict is None or col not in sheet_obj.cols:
-            continue
-
-        sheet_obj.unique_keys_dict[col] = {}
-
-        for index, row in sheet_obj.df.iterrows():
-            value = row[col]
-            if value is None:
+    if sheet_obj is not None:
+        for col in sheet_obj.cols:
+            supported_unit = None
+            input_unit = sheet_obj.unit_dict[col]
+            if (
+                supported_unit is not None
+                and input_unit is not None
+                and input_unit == supported_unit
+            ):
                 continue
-            _value = value.replace(" ", "").lower()
-            if _value in _dict:
-                exception = DuplicatedValueError(
-                    value1=value,
-                    index1=index,
-                    value2=sheet_obj.unique_keys_dict[col][_value][0],
-                    index2=sheet_obj.unique_keys_dict[col][_value][1],
+            elif supported_unit is None and input_unit is None:
+                continue
+            else:
+                exception = UnsupportedUnitName(
+                    input_unit=input_unit,
+                    supported_unit=supported_unit,
                     field=col,
                     sheet=sheet_obj.sheet_name,
                 )
                 sheet_obj.errors.append(exception.__str__())
-            else:
-                sheet_obj.unique_keys_dict[col].update({_value: [value, index]})
+
+
+def validate_unique_key(sheet_obj):
+    # Check for unique keys
+    if sheet_obj is not None:
+        for col in sheet_obj.unique_keys:
+            _dict = sheet_obj.unique_keys_dict.get(col)
+
+            if _dict is None or col not in sheet_obj.cols:
+                continue
+
+            sheet_obj.unique_keys_dict[col] = {}
+
+            for index, row in sheet_obj.df.iterrows():
+                value = row[col]
+                if value is None:
+                    continue
+                _value = value.replace(" ", "").lower()
+                if _value in _dict:
+                    exception = DuplicatedValueError(
+                        value1=value,
+                        index1=index,
+                        value2=sheet_obj.unique_keys_dict[col][_value][0],
+                        index2=sheet_obj.unique_keys_dict[col][_value][1],
+                        field=col,
+                        sheet=sheet_obj.sheet_name,
+                    )
+                    sheet_obj.errors.append(exception.__str__())
+                else:
+                    sheet_obj.unique_keys_dict[col].update({_value: [value, index]})
 
 
 def validate_foreign_key(
@@ -159,6 +169,16 @@ def validate_data_assignment(sheet_obj):
             sheet_obj.errors.append(exception.__str__())
 
 
-# def validate_property(dict):
-#     for parsed_object in dict.values:
+# def validate_property(sheet_obj):
+#     for parsed in sheet_obj.parsed:
 #         parsed_object
+
+# def validate_identity(sheet_obj):
+#     for material_std_name in sheet_obj.parsed:
+#         parsed_material = sheet_obj.parsed[material_std_name]
+#         parsed_idens = parsed_material["iden"]
+#         for key in parsed_idens:
+#             try:
+#                 C.Identifier(parsed_idens[key])
+#             except Exception:
+#                 sheet_obj.errors.append()

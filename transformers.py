@@ -105,7 +105,7 @@ def transform_file(group_obj, data_objs, parsed_file, public_flag):
     return file_objs
 
 
-def transform_material(group_obj, data_objs, parsed_material, public_flag, user_uid):
+def transform_material(group_obj, data_objs, parsed_materials, public_flag, user_uid):
     """
     upload material to the database and return a dict of name:material_url pair
 
@@ -113,33 +113,33 @@ def transform_material(group_obj, data_objs, parsed_material, public_flag, user_
     :type group_obj: `cript.nodes.Group`
     :param data_objs: (name) : (object of data) pair
     :type data_objs: dict
-    :param parsed_material: reagent_sheet.parsed or product_sheet.parsed
-    :type parsed_material: dict
+    :param parsed_materials: reagent_sheet.parsed or product_sheet.parsed
+    :type parsed_materials: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
     :return: (name) : (url of material) pair
     :rtype: dict
     """
     material_objs = {}
-    for material_std_name in parsed_material:
+    for material_std_name in parsed_materials:
 
-        material_dict = parsed_material[material_std_name]
+        parsed_material = parsed_materials[material_std_name]
 
         # Create Material object
         material_obj = C.Material(
             group=group_obj,
             components=[],
             public=public_flag,
-            **material_dict["base"],
+            **parsed_material["base"],
         )
 
         # Add Prop objects
-        parsed_props = material_dict["prop"]
+        parsed_props = parsed_material["prop"]
         if len(parsed_props) > 0:
             material_obj.properties = _transform_prop_list(parsed_props, data_objs)
 
         # Add Identifiers
-        parsed_idens = material_dict["iden"]
+        parsed_idens = parsed_material["iden"]
         if len(parsed_idens) > 0:
             material_obj.identifiers = _transform_identifier_list(parsed_idens)
 

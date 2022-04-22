@@ -165,13 +165,13 @@ data_objs = transformers.transform_data(
 uploaders.upload(db, data_objs, user_uid)
 print(f"data_objs:{data_objs}\n***********************")
 
-file_objs = transformers.transform_file(
-    group_obj,
-    data_objs,
-    file_sheet.parsed,
-    public_flag,
-)
-print(f"file_objs:{file_objs}\n***********************")
+# file_objs = transformers.transform_file(
+#     group_obj,
+#     data_objs,
+#     file_sheet.parsed,
+#     public_flag,
+# )
+# print(f"file_objs:{file_objs}\n***********************")
 material_objs = transformers.transform_material(
     group_obj,
     data_objs,
