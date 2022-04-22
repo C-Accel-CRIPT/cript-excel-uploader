@@ -20,7 +20,7 @@ def validate_required_cols(sheet_obj):
     """
     Validate that all required columns are present.
     """
-    if sheet_obj is not None:
+    if sheet_obj.df is not None:
         for required_col in sheet_obj.required_cols:
             if required_col not in sheet_obj.cols:
                 exception = MissingRequiredField(
@@ -36,7 +36,7 @@ def validate_either_or_cols(sheet_obj):
     Validate that at least one of the either/or columns are present.
     Validation passes when we find one either_or_col name in cols
     """
-    if sheet_obj is not None:
+    if sheet_obj.df is not None:
         exists = False
         if len(sheet_obj.either_or_cols) == 0:
             exists = True
@@ -59,7 +59,7 @@ def validate_unit(sheet_obj):
     """
     Validate that the input unit is supported
     """
-    if sheet_obj is not None:
+    if sheet_obj.df is not None:
         for col in sheet_obj.cols:
             supported_unit = None
             input_unit = sheet_obj.unit_dict[col]
@@ -83,7 +83,7 @@ def validate_unit(sheet_obj):
 
 def validate_unique_key(sheet_obj):
     # Check for unique keys
-    if sheet_obj is not None:
+    if sheet_obj.df is not None:
         for col in sheet_obj.unique_keys:
             _dict = sheet_obj.unique_keys_dict.get(col)
 
@@ -144,29 +144,31 @@ def validate_foreign_key(
 
 def validate_not_null_value(sheet_obj):
     # Check for not null value
-    for col in sheet_obj.not_null_cols:
-        if col in sheet_obj.cols:
-            for index, row in sheet_obj.df.iterrows():
-                value = row[col]
-                if value is None or len(str(value).strip()) == 0:
-                    exception = NullValueError(
-                        index=index, field=col, sheet=sheet_obj.sheet_name
-                    )
-                    sheet_obj.errors.append(exception.__str__())
+    if sheet_obj.df is not None:
+        for col in sheet_obj.not_null_cols:
+            if col in sheet_obj.cols:
+                for index, row in sheet_obj.df.iterrows():
+                    value = row[col]
+                    if value is None or len(str(value).strip()) == 0:
+                        exception = NullValueError(
+                            index=index, field=col, sheet=sheet_obj.sheet_name
+                        )
+                        sheet_obj.errors.append(exception.__str__())
 
 
 def validate_data_assignment(sheet_obj):
-    for parsed_column_name_obj in sheet_obj.parsed_cols.values():
-        field_type = parsed_column_name_obj.field_type
-        field_nested_type = parsed_column_name_obj.field_nested_type
-        if field_nested_type not in configs.allowed_data_assignment[field_type]:
-            message = f"[{field_nested_type}] cannot be nested to [{field_type}]"
-            exception = UnsupportedColumnName(
-                col=parsed_column_name_obj.origin_col,
-                sheet=sheet_obj.sheet_name,
-                message=message,
-            )
-            sheet_obj.errors.append(exception.__str__())
+    if sheet_obj.df is not None:
+        for parsed_column_name_obj in sheet_obj.parsed_cols.values():
+            field_type = parsed_column_name_obj.field_type
+            field_nested_type = parsed_column_name_obj.field_nested_type
+            if field_nested_type not in configs.allowed_data_assignment[field_type]:
+                message = f"[{field_nested_type}] cannot be nested to [{field_type}]"
+                exception = UnsupportedColumnName(
+                    col=parsed_column_name_obj.origin_col,
+                    sheet=sheet_obj.sheet_name,
+                    message=message,
+                )
+                sheet_obj.errors.append(exception.__str__())
 
 
 # def validate_property(sheet_obj):
