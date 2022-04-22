@@ -3,12 +3,20 @@ from errors import ColumnParseError
 
 
 class ParsedColumnName:
-    def __init__(self, origin_col, field_list, identifier, is_new_col):
+    def __init__(
+        self,
+        is_valid,
+        origin_col=None,
+        field_list=None,
+        identifier=None,
+        is_new=None,
+    ):
         self.origin_col = origin_col
         self.field_list = field_list
-        self.identifier = identifier
-        self.is_new_col = is_new_col
         self.field_type_list = []
+        self.identifier = identifier
+        self.is_new = is_new
+        self.is_valid = is_valid
 
     def __str__(self):
         return (
@@ -16,7 +24,7 @@ class ParsedColumnName:
             f"field_list:{self.field_list}\n"
             f"field_type_list:{self.field_type_list}\n"
             f"identifier:{self.identifier}\n"
-            f"is_new_col:{self.is_new_col}\n"
+            f"is_new_col:{self.is_new}\n"
         )
 
     def __repr__(self):
@@ -25,7 +33,7 @@ class ParsedColumnName:
 
 def parse_col_name(col):
     identifier = None
-    is_new_field = False
+    is_new = False
 
     p0 = 0
     p1 = 0
@@ -34,7 +42,7 @@ def parse_col_name(col):
     for i in range(len(col)):
         if col[i] == "+":
             if i == 0:
-                is_new_field = True
+                is_new = True
             else:
                 raise ColumnParseError("Invalid plus sign", col[: i + 1])
         elif col[i] == "(":
@@ -88,4 +96,10 @@ def parse_col_name(col):
     while len(field_list) < 3:
         field_list.append(None)
 
-    return ParsedColumnName(col, field_list, identifier, is_new_field)
+    return ParsedColumnName(
+        is_valid=True,
+        origin_col=col,
+        field_list=field_list,
+        identifier=identifier,
+        is_new=is_new,
+    )
