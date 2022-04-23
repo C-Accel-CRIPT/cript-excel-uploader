@@ -1,4 +1,5 @@
 import cript as C
+from tqdm import tqdm
 import traceback
 from config import BASE_URL
 from errors import GroupRelatedError
@@ -6,7 +7,6 @@ from cript.exceptions import (
     DuplicateNodeError,
     APIGetError,
 )
-from util import process_track
 
 
 def connect(token):
@@ -69,34 +69,40 @@ def get_collection(api, group_obj, coll_name):
         )
 
 
-def upload(api, dict, user_uid):
+def upload(api, dict_, user_uid):
     """
     Save objects to database, update them if the object already exists
     dict: (name): (C.Base)
     """
-    count = 0
-    for object in dict.values():
-        # process-track
-        process_track(f"{object.node_name} Uploaded", count, len(dict))
-
+    pbar = tqdm(
+        total=len(dict_),
+        mininterval=2,
+        dynamic_ncols=True,
+        bar_format="{l_bar}{bar}{r_bar}\n",
+        unit="item",
+        colour="GREEN",
+    )
+    for key, obj in dict_.items():
         try:
-            api.save(object)
+            api.save(obj)
         except DuplicateNodeError:
             query = {}
-            for field in object.unique_together:
+            for field in obj.unique_together:
                 if field == "created_by":
                     query[field] = user_uid
                     continue
 
-                value = object.__dict__.get(field)
+                value = obj.__dict__.get(field)
                 if type(value) == type("a"):
-                    query[field] = object.__dict__.get(field)
+                    query[field] = obj.__dict__.get(field)
                 else:
-                    query[field] = object.__dict__.get(field).uid
-            print(query)
-            url = api.get(object.__class__, query).url
+                    query[field] = obj.__dict__.get(field).uid
+            url = api.get(obj.__class__, query).url
 
-            object.url = url
-            api.save(object)
+            obj.url = url
+            api.save(obj)
         except Exception:
             print(traceback.format_exc())
+        finally:
+            pbar.update(1)
+    pbar.close()
