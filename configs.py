@@ -1,13 +1,14 @@
 import cript as C
 import inspect
+from util import filter_required_col
 
 required_cols = {
-    "experiment": ["name"],
-    "data": ["experiment", "name", "type"],
-    "file": ["data", "source", "type"],
-    "material": ["name"],
+    "experiment": filter_required_col(C.Experiment.required),
+    "data": filter_required_col(C.Data.required),
+    "file": filter_required_col(C.File.required),
+    "material": filter_required_col(C.Material.required),
     "mixture component": ["material", "component"],
-    "process": ["experiment", "name", "keywords"],
+    "process": filter_required_col(C.Process.required),
     "dependent process": ["process", "dependent_process"],
     "process ingredient": ["process", "ingredient", "keyword"],
     "process product": ["process", "product"],
@@ -26,32 +27,10 @@ either_or_cols = {
     "process product": [],
 }
 
-# integer_cols = {
-#     "experiment": [],
-#     "data": [],
-#     "file": [],
-#     "material": [],
-#     "process": [],
-#     "step": ["step_id"],
-#     "step_ingredients": ["step_id"],
-#     "step_products": ["step_id"],
-# }
-#
-# float_cols = {
-#     "experiment": [],
-#     "data": [],
-#     "file": [],
-#     "material": ["molar_mass", "temp_boil", "temp_melt"],
-#     "process": [],
-#     "step": [],
-#     "step_ingredients": ["mole", "mass", "volume"],
-#     "step_products": [],
-# }
-
 unique_keys = {
     "experiment": ["name"],
     "data": ["name"],
-    "file": ["source"],
+    "file": [],
     "material": ["name"],
     "mixture component": ["material+component"],
     "process": ["name"],
