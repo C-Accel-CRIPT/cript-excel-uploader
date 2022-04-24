@@ -1,18 +1,16 @@
 import configs
 import cript as C
-from transformers import (
-    _transform_identifier_list,
-    _transform_prop_list,
-    _transform_cond_list,
-    _transform_quantity_list,
-)
 from errors import (
     ValueDoesNotExist,
     DuplicatedValueError,
     NullValueError,
-    MissingRequiredField,
+    MissingRequiredColumn,
     UnsupportedUnitName,
     UnsupportedColumnName,
+    InvalidPropertyError,
+    InvalidConditionError,
+    InvalidQuantityError,
+    InvalidIdentifierError,
 )
 
 
@@ -23,8 +21,8 @@ def validate_required_cols(sheet_obj):
     if sheet_obj.df is not None:
         for required_col in sheet_obj.required_cols:
             if required_col not in sheet_obj.cols:
-                exception = MissingRequiredField(
-                    field=required_col,
+                exception = MissingRequiredColumn(
+                    col=required_col,
                     sheet=sheet_obj.sheet_name,
                     is_either_or_cols=False,
                 )
@@ -47,8 +45,8 @@ def validate_either_or_cols(sheet_obj):
                 break
 
         if not exists:
-            exception = MissingRequiredField(
-                field=sheet_obj.either_or_cols,
+            exception = MissingRequiredColumn(
+                col=sheet_obj.either_or_cols,
                 sheet=sheet_obj.sheet_name,
                 is_either_or_cols=True,
             )
@@ -75,7 +73,7 @@ def validate_unit(sheet_obj):
                 exception = UnsupportedUnitName(
                     input_unit=input_unit,
                     supported_unit=supported_unit,
-                    field=col,
+                    col=col,
                     sheet=sheet_obj.sheet_name,
                 )
                 sheet_obj.errors.append(exception.__str__())
@@ -103,7 +101,7 @@ def validate_unique_key(sheet_obj):
                         index1=index,
                         value2=sheet_obj.unique_keys_dict[col][_value][0],
                         index2=sheet_obj.unique_keys_dict[col][_value][1],
-                        field=col,
+                        col=col,
                         sheet=sheet_obj.sheet_name,
                     )
                     sheet_obj.errors.append(exception.__str__())
@@ -134,10 +132,10 @@ def validate_foreign_key(
             exception = ValueDoesNotExist(
                 value=value,
                 index=index,
-                field=from_field,
+                col=from_field,
                 sheet=from_sheet_obj.sheet_name,
                 sheet_to_check=to_sheet_obj.sheet_name,
-                field_to_check=to_field,
+                col_to_check=to_field,
             )
             from_sheet_obj.errors.append(exception.__str__())
 
@@ -151,7 +149,9 @@ def validate_not_null_value(sheet_obj):
                     value = row[col]
                     if value is None or len(str(value).strip()) == 0:
                         exception = NullValueError(
-                            index=index, field=col, sheet=sheet_obj.sheet_name
+                            index=index,
+                            col=col,
+                            sheet=sheet_obj.sheet_name,
                         )
                         sheet_obj.errors.append(exception.__str__())
 
@@ -171,16 +171,108 @@ def validate_data_assignment(sheet_obj):
                 sheet_obj.errors.append(exception.__str__())
 
 
-# def validate_property(sheet_obj):
-#     for parsed in sheet_obj.parsed:
-#         parsed_object
+def validate_property(sheet_obj):
+    for key, parsed_object in sheet_obj.parsed.items():
+        if type(parsed_object) != type({}):
+            continue
 
-# def validate_identity(sheet_obj):
-#     for material_std_name in sheet_obj.parsed:
-#         parsed_material = sheet_obj.parsed[material_std_name]
-#         parsed_idens = parsed_material["iden"]
-#         for key in parsed_idens:
-#             try:
-#                 C.Identifier(parsed_idens[key])
-#             except Exception:
-#                 sheet_obj.errors.append()
+        parsed_props = parsed_object.get("prop")
+        if parsed_props is not None and len(parsed_props) > 0:
+            for prop_key in parsed_props:
+                for identifier in parsed_props[prop_key]:
+                    parent = parsed_props[prop_key][identifier]
+                    try:
+                        C.Property(**parent["attr"])
+                    except Exception as e_raw:
+                        print(parent["attr"])
+                        exception = InvalidPropertyError(
+                            msg=e_raw.__str__(),
+                            idx=parsed_object["index"],
+                            col=prop_key,
+                            sheet=sheet_obj.sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())
+
+        parsed_conds = parsed_object.get("cond")
+        if parsed_conds is not None and len(parsed_conds) > 0:
+            for cond_key in parsed_conds:
+                for identifier in parsed_conds[cond_key]:
+                    parent = parsed_conds[cond_key][identifier]
+                    try:
+                        C.Condition(**parent["attr"])
+                    except Exception as e_raw:
+                        exception = InvalidConditionError(
+                            msg=e_raw.__str__(),
+                            idx=parsed_object["index"],
+                            col=cond_key,
+                            sheet=sheet_obj.sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())
+
+
+def validate_condition(sheet_obj):
+    for key, parsed_object in sheet_obj.parsed.items():
+        if type(parsed_object) != type({}):
+            continue
+
+        parsed_conds = parsed_object.get("cond")
+        if parsed_conds is not None and len(parsed_conds) > 0:
+            for cond_key in parsed_conds:
+                for identifier in parsed_conds[cond_key]:
+                    parent = parsed_conds[cond_key][identifier]
+                    try:
+                        C.Condition(**parent["attr"])
+                    except Exception as e_raw:
+                        exception = InvalidConditionError(
+                            msg=e_raw.__str__(),
+                            idx=parsed_object["index"],
+                            col=cond_key,
+                            sheet=sheet_obj.sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())
+
+
+def validate_identity(sheet_obj):
+    if sheet_obj.sheet_name != "material":
+        return 0
+
+    for key, parsed_object in sheet_obj.parsed.items():
+        if type(parsed_object) != type({}):
+            continue
+
+        parsed_idens = parsed_object.get("iden")
+        if parsed_idens is not None and len(parsed_idens) > 0:
+            for iden_key in parsed_idens:
+                try:
+                    C.Identifier(**parsed_idens[iden_key])
+                except Exception as e_raw:
+                    exception = InvalidIdentifierError(
+                        msg=e_raw.__str__(),
+                        idx=parsed_object["index"],
+                        col=iden_key,
+                        sheet=sheet_obj.sheet_name,
+                    )
+                    sheet_obj.errors.append(exception.__str__())
+
+
+def validate_quantity(sheet_obj):
+    if sheet_obj.sheet_name != "process ingredient":
+        return 0
+
+    for key, parsed_object in sheet_obj.parsed.items():
+        if type(parsed_object) != type({}):
+            continue
+
+        parsed_quans = parsed_object.get("quan")
+        if parsed_quans is not None and len(parsed_quans) > 0:
+            for quan_key in parsed_quans:
+                try:
+                    C.Identifier(**parsed_quans[quan_key])
+                except Exception as e_raw:
+                    exception = InvalidQuantityError(
+                        msg=e_raw.__str__(),
+                        idx=parsed_object["index"],
+                        col=quan_key,
+                        sheet=sheet_obj.sheet_name,
+                    )
+                    sheet_obj.errors.append(exception.__str__())

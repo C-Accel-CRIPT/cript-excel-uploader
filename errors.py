@@ -32,110 +32,178 @@ class UnsupportedColumnName(Exception):
 
 
 class UnsupportedValue(Exception):
-    def __init__(self, value, field):
+    def __init__(self, value, col):
         self.value = value
-        self.field = field
+        self.col = col
 
     def __str__(self):
-        return f"'{self.value}' is not a supported value for '{self.field}'"
+        return f"'{self.value}' is not a supported value for '{self.col}'"
 
 
 class ValueDoesNotExist(Exception):
-    def __init__(self, value, index, field, sheet, sheet_to_check, field_to_check):
+    def __init__(self, value, index, col, sheet, sheet_to_check, col_to_check):
         self.value = value
         self.index = index
-        self.field = field
+        self.col = col
         self.sheet = sheet
         self.sheet_to_check = sheet_to_check
-        self.field_to_check = field_to_check
+        self.col_to_check = col_to_check
 
-        self.field = self.field.strip("#")
-        self.field = self.field.split("-")[0]
+        self.col = self.col.strip("#")
+        self.col = self.col.split("-")[0]
 
     def __str__(self):
         return (
             f"ValueDoesNotExist: "
             f"Sheet [{self.sheet}], "
-            f"Field [{self.field}], "
+            f"Column [{self.col}], "
             f"Index [{self.index}], "
             f"Value [{self.value}] does not exist "
-            f"in the [{self.field_to_check}] field "
+            f"in the [{self.col_to_check}] column "
             f"of [{self.sheet_to_check}] sheet."
         )
 
 
 class DuplicatedValueError(Exception):
-    def __init__(self, value1, index1, value2, index2, field, sheet):
+    def __init__(self, value1, index1, value2, index2, col, sheet):
         self.value1 = value1
         self.index1 = index1
         self.value2 = value2
         self.index2 = index2
-        self.field = field
+        self.col = col
         self.sheet = sheet
 
     def __str__(self):
         return (
             f"DuplicatedValueError: "
             f"Sheet [{self.sheet}], "
-            f"Field [{self.field}], "
+            f"Column [{self.col}], "
             f"Index [{self.index1}], "
             f"Value [{self.value1}] is duplicated with"
             f"value [{self.value2}] at index [{self.index2}]. "
-            f"Every value should be unique in this field."
+            f"Every value should be unique in this column."
         )
 
 
 class NullValueError(Exception):
-    def __init__(self, index, field, sheet):
+    def __init__(self, index, col, sheet):
         self.index = index
-        self.field = field
+        self.col = col
         self.sheet = sheet
 
     def __str__(self):
         return (
             f"NullValueError: "
             f"Sheet [{self.sheet}], "
-            f"Field [{self.field}], "
+            f"Column [{self.col}], "
             f"Index [{self.index}], "
-            f"Null value is not allowed for this field."
+            f"Null value is not allowed for this column."
         )
 
 
-class MissingRequiredField(Exception):
-    def __init__(self, field, sheet, is_either_or_cols=False):
-        self.field = field
+class MissingRequiredColumn(Exception):
+    def __init__(self, col, sheet, is_either_or_cols=False):
+        self.col = col
         self.sheet = sheet
         self.is_either_or_cols = is_either_or_cols
 
     def __str__(self):
         if not self.is_either_or_cols:
             return (
-                f"MissingRequiredField: "
+                f"MissingRequiredColumn: "
                 f"Sheet [{self.sheet}], "
-                f"Field [{self.field}], "
-                f"Please add the missing required field to the sheet."
+                f"Column [{self.col}], "
+                f"Please add the missing required column to the sheet."
             )
         else:
             return (
-                f"MissingRequiredFieldError: "
+                f"MissingRequiredColumnError: "
                 f"Sheet [{self.sheet}], "
-                f"Field {self.field}, "
-                f"Must include at least one of the fields from the list."
+                f"Column {self.col}, "
+                f"Must include at least one of the columns from the list."
             )
 
 
+class InvalidIdentifierError(Exception):
+    def __init__(self, msg, idx, col, sheet):
+        self.msg = msg
+        self.idx = idx
+        self.col = col
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"InvalidIdentifierError: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Error Message: {self.msg}"
+        )
+
+
+class InvalidPropertyError(Exception):
+    def __init__(self, msg, idx, col, sheet):
+        self.msg = msg
+        self.idx = idx
+        self.col = col
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"InvalidPropertyError: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Error Message: {self.msg}"
+        )
+
+
+class InvalidConditionError(Exception):
+    def __init__(self, msg, idx, col, sheet):
+        self.msg = msg
+        self.idx = idx
+        self.col = col
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"InvalidConditionError: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Error Message: {self.msg}"
+        )
+
+
+class InvalidQuantityError(Exception):
+    def __init__(self, msg, idx, col, sheet):
+        self.msg = msg
+        self.idx = idx
+        self.col = col
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"InvalidQuantityError: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Error Message: {self.msg}"
+        )
+
+
 class UnsupportedUnitName(Exception):
-    def __init__(self, input_unit, supported_unit, field, sheet):
+    def __init__(self, input_unit, supported_unit, col, sheet):
         self.input_unit = input_unit
         self.supported_unit = supported_unit
-        self.field = field
+        self.col = col
         self.sheet = sheet
 
     def __str__(self):
         return (
             f"UnsupportedUnitName: "
             f"Sheet [{self.sheet}], "
-            f"Field [{self.field}], "
+            f"Column [{self.col}], "
             f"Unit [{self.input_unit}] "
             f"Input unit is not supported. "
             f"Supported unit: [{self.supported_unit}]."

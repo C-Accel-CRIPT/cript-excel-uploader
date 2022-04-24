@@ -62,8 +62,7 @@ for sheet in sheet_dict.values():
     validators.validate_either_or_cols(sheet)
     validators.validate_unique_key(sheet)
     validators.validate_not_null_value(sheet)
-    # validators.validate_unit(sheet) # to do
-    # validators.validate_keywords(sheet) # to do
+
 
 # Validate foreign key
 for pair in configs.foreign_key_validation_pairs:
@@ -116,6 +115,12 @@ print(f"***********************")
 processProduct_sheet.parse()
 print(processProduct_sheet.parsed)
 print(f"***********************")
+
+for sheet in sheet_dict.values():
+    validators.validate_property(sheet)
+    validators.validate_condition(sheet)
+    validators.validate_identity(sheet)
+    validators.validate_quantity(sheet)
 
 
 bug_count = 0
@@ -191,6 +196,7 @@ print(f"material_objs:{material_objs}\n***********************")
 process_objs = transformers.transform_process(
     group_obj,
     experiment_objs,
+    data_objs,
     process_sheet.parsed,
     public_flag,
 )

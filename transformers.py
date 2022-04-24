@@ -134,13 +134,13 @@ def transform_material(group_obj, data_objs, parsed_materials, public_flag, user
         )
 
         # Add Prop objects
-        parsed_props = parsed_material["prop"]
-        if len(parsed_props) > 0:
+        parsed_props = parsed_material.get("prop")
+        if parsed_props is not None and len(parsed_props) > 0:
             material_obj.properties = _transform_prop_list(parsed_props, data_objs)
 
         # Add Identifiers
-        parsed_idens = parsed_material["iden"]
-        if len(parsed_idens) > 0:
+        parsed_idens = parsed_material.get("iden")
+        if parsed_idens is not None and len(parsed_idens) > 0:
             material_obj.identifiers = _transform_identifier_list(parsed_idens)
 
         # Add saved Material object to materials dict
@@ -163,7 +163,9 @@ def transform_components(material_objs, parsed_components):
             uid = uid + 1
 
 
-def transform_process(group_obj, experiment_objs, parsed_processes, public_flag):
+def transform_process(
+    group_obj, experiment_objs, data_objs, parsed_processes, public_flag
+):
     """
     upload process to the database and return a dict of name:process_url pair
 
@@ -198,6 +200,15 @@ def transform_process(group_obj, experiment_objs, parsed_processes, public_flag)
                 public=public_flag,
                 **parsed_process["base"],
             )
+            # Add Prop objects
+            parsed_props = parsed_process.get("prop")
+            if parsed_props is not None and len(parsed_props) > 0:
+                process_obj.properties = _transform_prop_list(parsed_props, data_objs)
+
+            # Add Cond objects
+            parsed_conds = parsed_process.get("cond")
+            if parsed_conds is not None and len(parsed_conds) > 0:
+                process_obj.conditions = _transform_cond_list(parsed_conds, data_objs)
 
             if i > 0:
                 prev_process_obj = process_objs.get(prev_process_std_name)
@@ -282,7 +293,7 @@ def transform_process_product(process_objs, material_objs, parsed_processProduct
             process_obj.add_product(material_obj)
 
 
-def _transform_cond_list(parsed_conds, data_objs=None):
+def _transform_cond_list(parsed_conds, data_objs):
     """
     Create a list of Cond objects.
     Used in Material,Process and Data
@@ -312,7 +323,7 @@ def _transform_cond_list(parsed_conds, data_objs=None):
     return cond_list
 
 
-def _transform_prop_list(parsed_props, data_objs=None):
+def _transform_prop_list(parsed_props, data_objs):
     """
     Create a list of Prop objects.
 
