@@ -5,12 +5,12 @@ from errors import (
     DuplicatedValueError,
     NullValueError,
     MissingRequiredColumn,
-    UnsupportedUnitName,
     UnsupportedColumnName,
     InvalidPropertyError,
     InvalidConditionError,
     InvalidQuantityError,
     InvalidIdentifierError,
+    InvalidTypeOrKeywordError,
 )
 
 
@@ -51,32 +51,6 @@ def validate_either_or_cols(sheet_obj):
                 is_either_or_cols=True,
             )
             sheet_obj.errors.append(exception.__str__())
-
-
-def validate_unit(sheet_obj):
-    """
-    Validate that the input unit is supported
-    """
-    if sheet_obj.df is not None:
-        for col in sheet_obj.cols:
-            supported_unit = None
-            input_unit = sheet_obj.unit_dict[col]
-            if (
-                supported_unit is not None
-                and input_unit is not None
-                and input_unit == supported_unit
-            ):
-                continue
-            elif supported_unit is None and input_unit is None:
-                continue
-            else:
-                exception = UnsupportedUnitName(
-                    input_unit=input_unit,
-                    supported_unit=supported_unit,
-                    col=col,
-                    sheet=sheet_obj.sheet_name,
-                )
-                sheet_obj.errors.append(exception.__str__())
 
 
 def validate_unique_key(sheet_obj):
@@ -159,16 +133,73 @@ def validate_not_null_value(sheet_obj):
 def validate_data_assignment(sheet_obj):
     if sheet_obj.df is not None:
         for parsed_column_name_obj in sheet_obj.parsed_cols.values():
-            field_type = parsed_column_name_obj.field_type
-            field_nested_type = parsed_column_name_obj.field_nested_type
-            if field_nested_type not in configs.allowed_data_assignment[field_type]:
-                message = f"[{field_nested_type}] cannot be nested to [{field_type}]"
-                exception = UnsupportedColumnName(
-                    col=parsed_column_name_obj.origin_col,
-                    sheet=sheet_obj.sheet_name,
-                    message=message,
-                )
-                sheet_obj.errors.append(exception.__str__())
+            field_list = parsed_column_name_obj.field_list
+            field_type_list = parsed_column_name_obj.field_type_list
+            for i in range(2):
+                field_type = field_type_list[i]
+                nested_field_type = field_type_list[i + 1]
+                if field_type is None:
+                    continue
+                if nested_field_type not in configs.allowed_data_assignment[field_type]:
+                    message = (
+                        f"[{field_list[i+1]}] cannot be nested to [{field_list[i]}]"
+                    )
+                    exception = UnsupportedColumnName(
+                        col=parsed_column_name_obj.origin_col,
+                        sheet=sheet_obj.sheet_name,
+                        message=message,
+                    )
+                    sheet_obj.errors.append(exception.__str__())
+
+
+def validate_type_or_keyword(sheet_obj):
+    if sheet_obj.df is not None:
+        for parsed_column_name_obj in sheet_obj.parsed_cols.values():
+            field = parsed_column_name_obj.field_list[0]
+            field_type = parsed_column_name_obj.field_type_list[0]
+            if field == "type" and field_type == "base":
+                for index, row in sheet_obj.df.iterrows():
+                    sheet_name = sheet_obj.sheet_name
+                    col = parsed_column_name_obj.origin_col
+                    value = row[col]
+                    for supported_type_dict in sheet_obj.param.get(
+                        sheet_name + "-type"
+                    ):
+                        if value == supported_type_dict["name"]:
+                            return 0
+                    exception = InvalidTypeOrKeywordError(
+                        msg=f"{value} is not a supported type",
+                        idx=index + 2,
+                        col=col,
+                        sheet=sheet_name,
+                    )
+                    sheet_obj.errors.append(exception.__str__())
+
+            if field == "keywords" and field_type == "base":
+                for index, row in sheet_obj.df.iterrows():
+                    sheet_name = sheet_obj.sheet_name
+                    col = parsed_column_name_obj.origin_col
+                    value = row[col]
+                    value_list = value.split(",")
+                    invalid_value_list = []
+                    for keyword in value_list:
+                        found_tag = False
+                        for supported_keyword_dict in sheet_obj.param.get(
+                            sheet_name + "-keyword"
+                        ):
+                            if keyword == supported_keyword_dict["name"]:
+                                found_tag = True
+                        if not found_tag:
+                            invalid_value_list.append(keyword)
+
+                    for invalid_value in invalid_value_list:
+                        exception = InvalidTypeOrKeywordError(
+                            msg=f"{invalid_value} is not a supported keyword",
+                            idx=index + 2,
+                            col=col,
+                            sheet=sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())
 
 
 def validate_property(sheet_obj):

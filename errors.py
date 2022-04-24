@@ -192,6 +192,23 @@ class InvalidQuantityError(Exception):
         )
 
 
+class InvalidTypeOrKeywordError(Exception):
+    def __init__(self, msg, idx, col, sheet):
+        self.msg = msg
+        self.idx = idx
+        self.col = col
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"InvalidTypeOrKeywordError: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Error Message: {self.msg}"
+        )
+
+
 class UnsupportedUnitName(Exception):
     def __init__(self, input_unit, supported_unit, col, sheet):
         self.input_unit = input_unit
