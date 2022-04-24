@@ -69,18 +69,20 @@ def get_collection(api, group_obj, coll_name):
         )
 
 
-def upload(api, dict_, user_uid):
+def upload(api, node_type, dict_, user_uid):
     """
     Save objects to database, update them if the object already exists
     dict: (name): (C.Base)
     """
+    if len(dict_) == 0:
+        return 0
     pbar = tqdm(
         total=len(dict_),
-        mininterval=2,
+        mininterval=0.1,
         dynamic_ncols=True,
+        desc=f"Uploading {node_type}: ",
         bar_format="{l_bar}{bar}{r_bar}\n",
         unit="item",
-        colour="GREEN",
     )
     for key, obj in dict_.items():
         try:
