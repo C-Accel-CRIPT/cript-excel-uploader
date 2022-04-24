@@ -209,21 +209,20 @@ class InvalidTypeOrKeywordError(Exception):
         )
 
 
-class UnsupportedUnitName(Exception):
-    def __init__(self, input_unit, supported_unit, col, sheet):
-        self.input_unit = input_unit
-        self.supported_unit = supported_unit
-        self.col = col
+class CreatNodeError(Exception):
+    def __init__(self, msg, idx, node_type, sheet):
+        self.msg = msg
+        self.idx = idx
+        self.node_type = node_type
         self.sheet = sheet
 
     def __str__(self):
         return (
-            f"UnsupportedUnitName: "
-            f"Sheet [{self.sheet}], "
-            f"Column [{self.col}], "
-            f"Unit [{self.input_unit}] "
-            f"Input unit is not supported. "
-            f"Supported unit: [{self.supported_unit}]."
+            f"Failed to create node: "
+            f"Node type: [{self.node_type}], "
+            f"Sheet: [{self.sheet}]"
+            f"Index: [{self.idx}]"
+            f"Error Info: {self.msg}"
         )
 
 

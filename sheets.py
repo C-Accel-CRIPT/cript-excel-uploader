@@ -492,7 +492,6 @@ class MaterialSheet(Sheet):
                 "base": {},
                 "iden": {},
                 "prop": {},
-                "cond": {},
                 "index": index + 2,
                 "name": row["name"],
             }
@@ -658,6 +657,7 @@ class ProcessIngredientSheet(Sheet):
             parsed_ingredient = {
                 "base": {},
                 "quan": {},
+                "index": index + 2,
             }
 
             process_std_name = standardize_name(row["process"])
@@ -729,8 +729,8 @@ class ProcessProductSheet(Sheet):
 
         for index, row in self.df.iterrows():
             parsed_product = {
-                "index": index + 2,
                 "product": standardize_name(row["product"]),
+                "index": index + 2,
             }
             process_std_name = standardize_name(row["process"])
 

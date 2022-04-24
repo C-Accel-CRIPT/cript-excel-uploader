@@ -1,4 +1,5 @@
 import cript as C
+from errors import CreatNodeError
 
 
 def transform_experiment(group_obj, collection_obj, parsed_experiments, public_flag):
@@ -25,12 +26,26 @@ def transform_experiment(group_obj, collection_obj, parsed_experiments, public_f
     experiment_objs = {}
     for experiment_std_name in parsed_experiments:
         # Create Experiment
-        experiment_obj = C.Experiment(
-            group=group_obj,
-            collection=collection_obj,
-            public=public_flag,
-            **parsed_experiments[experiment_std_name]["base"],
-        )
+        try:
+            experiment_obj = C.Experiment(
+                group=group_obj,
+                collection=collection_obj,
+                public=public_flag,
+                **parsed_experiments[experiment_std_name]["base"],
+            )
+        except Exception as e:
+            node_type = "Experiment"
+            sheet = "Experiment"
+            idx = parsed_experiments[experiment_std_name]["index"]
+            print(
+                CreatNodeError(
+                    msg=e.__str__(),
+                    idx=idx,
+                    node_type=node_type,
+                    sheet=sheet,
+                ).__str__()
+            )
+            experiment_obj = None
         experiment_objs[experiment_std_name] = experiment_obj
 
     return experiment_objs
@@ -57,13 +72,28 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
         experiment_std_name = parsed_data["experiment"]
         experiment_obj = experiment_objs[experiment_std_name]
 
-        # Create Data
-        data_obj = C.Data(
-            group=group_obj,
-            experiment=experiment_obj,
-            public=public_flag,
-            **parsed_data["base"],
-        )
+        try:
+            # Create Data
+            data_obj = C.Data(
+                group=group_obj,
+                experiment=experiment_obj,
+                public=public_flag,
+                **parsed_data["base"],
+            )
+        except Exception as e:
+            node_type = "Data"
+            sheet = "Data"
+            idx = parsed_data["index"]
+            print(
+                CreatNodeError(
+                    msg=e.__str__(),
+                    idx=idx,
+                    node_type=node_type,
+                    sheet=sheet,
+                ).__str__()
+            )
+            data_obj = None
+
         data_objs[data_std_name] = data_obj
 
     return data_objs
@@ -93,19 +123,34 @@ def transform_file(group_obj, data_objs, parsed_file, public_flag):
         data_obj = data_objs[data_std_name]
         for file in file_dict:
             # Create File
-            file_obj = C.File(
-                group=group_obj,
-                data=[data_obj],
-                public=public_flag,
-                **file["base"],
-            )
+            try:
+                file_obj = C.File(
+                    group=group_obj,
+                    data=[data_obj],
+                    public=public_flag,
+                    **file["base"],
+                )
+            except Exception as e:
+                node_type = "File"
+                sheet = "File"
+                idx = file["index"]
+                print(
+                    CreatNodeError(
+                        msg=e.__str__(),
+                        idx=idx,
+                        node_type=node_type,
+                        sheet=sheet,
+                    ).__str__()
+                )
+                file_obj = None
+
             # Update file_urls
             file_objs[file_obj.checksum] = file_obj
 
     return file_objs
 
 
-def transform_material(group_obj, data_objs, parsed_materials, public_flag, user_uid):
+def transform_material(group_obj, data_objs, parsed_materials, public_flag):
     """
     upload material to the database and return a dict of name:material_url pair
 
@@ -125,24 +170,37 @@ def transform_material(group_obj, data_objs, parsed_materials, public_flag, user
 
         parsed_material = parsed_materials[material_std_name]
 
-        # Create Material object
-        material_obj = C.Material(
-            group=group_obj,
-            components=[],
-            public=public_flag,
-            **parsed_material["base"],
-        )
+        try:
+            # Create Material object
+            material_obj = C.Material(
+                group=group_obj,
+                components=[],
+                public=public_flag,
+                **parsed_material["base"],
+            )
 
-        # Add Prop objects
-        parsed_props = parsed_material.get("prop")
-        if parsed_props is not None and len(parsed_props) > 0:
-            material_obj.properties = _transform_prop_list(parsed_props, data_objs)
+            # Add Prop objects
+            parsed_props = parsed_material.get("prop")
+            if parsed_props is not None and len(parsed_props) > 0:
+                material_obj.properties = _transform_prop_list(parsed_props, data_objs)
 
-        # Add Identifiers
-        parsed_idens = parsed_material.get("iden")
-        if parsed_idens is not None and len(parsed_idens) > 0:
-            material_obj.identifiers = _transform_identifier_list(parsed_idens)
-
+            # Add Identifiers
+            parsed_idens = parsed_material.get("iden")
+            if parsed_idens is not None and len(parsed_idens) > 0:
+                material_obj.identifiers = _transform_identifier_list(parsed_idens)
+        except Exception as e:
+            node_type = "Material"
+            sheet = "Material"
+            idx = parsed_material["index"]
+            print(
+                CreatNodeError(
+                    msg=e.__str__(),
+                    idx=idx,
+                    node_type=node_type,
+                    sheet=sheet,
+                ).__str__()
+            )
+            material_obj = None
         # Add saved Material object to materials dict
         material_objs[material_std_name] = material_obj
 
@@ -155,12 +213,25 @@ def transform_components(material_objs, parsed_components):
         uid = 1
         for parsed_component in parsed_components[material_std_name]:
             component_std_name = parsed_component["component"]
-            component_obj = C.Component(
-                component=material_objs.get(component_std_name),
-                component_uid=uid,
-            )
-            material_obj.add_component(component_obj)
-            uid = uid + 1
+            try:
+                component_obj = C.Component(
+                    component=material_objs.get(component_std_name),
+                    component_uid=uid,
+                )
+                material_obj.add_component(component_obj)
+                uid = uid + 1
+            except Exception as e:
+                node_type = "Component"
+                sheet = "mixture component"
+                idx = parsed_component["index"]
+                print(
+                    CreatNodeError(
+                        msg=e.__str__(),
+                        idx=idx,
+                        node_type=node_type,
+                        sheet=sheet,
+                    ).__str__()
+                )
 
 
 def transform_process(
@@ -193,26 +264,44 @@ def transform_process(
             process_name = parsed_process["name"]
             process_std_name = process_name.replace(" ", "").lower()
 
-            # Create Process
-            process_obj = C.Process(
-                group=group_obj,
-                experiment=experiment_obj,
-                public=public_flag,
-                **parsed_process["base"],
-            )
-            # Add Prop objects
-            parsed_props = parsed_process.get("prop")
-            if parsed_props is not None and len(parsed_props) > 0:
-                process_obj.properties = _transform_prop_list(parsed_props, data_objs)
+            try:
+                # Create Process
+                process_obj = C.Process(
+                    group=group_obj,
+                    experiment=experiment_obj,
+                    public=public_flag,
+                    **parsed_process["base"],
+                )
+                # Add Prop objects
+                parsed_props = parsed_process.get("prop")
+                if parsed_props is not None and len(parsed_props) > 0:
+                    process_obj.properties = _transform_prop_list(
+                        parsed_props, data_objs
+                    )
 
-            # Add Cond objects
-            parsed_conds = parsed_process.get("cond")
-            if parsed_conds is not None and len(parsed_conds) > 0:
-                process_obj.conditions = _transform_cond_list(parsed_conds, data_objs)
+                # Add Cond objects
+                parsed_conds = parsed_process.get("cond")
+                if parsed_conds is not None and len(parsed_conds) > 0:
+                    process_obj.conditions = _transform_cond_list(
+                        parsed_conds, data_objs
+                    )
 
-            if i > 0:
-                prev_process_obj = process_objs.get(prev_process_std_name)
-                process_obj.prerequisite_processes.append(prev_process_obj)
+                if i > 0:
+                    prev_process_obj = process_objs.get(prev_process_std_name)
+                    process_obj.prerequisite_processes.append(prev_process_obj)
+            except Exception as e:
+                node_type = "Process"
+                sheet = "process"
+                idx = parsed_process["index"]
+                print(
+                    CreatNodeError(
+                        msg=e.__str__(),
+                        idx=idx,
+                        node_type=node_type,
+                        sheet=sheet,
+                    ).__str__()
+                )
+                process_obj = None
 
             prev_process_std_name = process_std_name
             process_objs[process_std_name] = process_obj
@@ -223,11 +312,26 @@ def transform_process(
 def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
     for process_std_name in parsed_prerequisite_processes:
         process_obj = process_objs.get(process_std_name)
-        dependent_process_list = parsed_prerequisite_processes.get(process_std_name)
-        for i in range(len(dependent_process_list)):
-            dependent_process_std_name = dependent_process_list[i]["dependent_process"]
-            dependent_process_obj = process_objs.get(dependent_process_std_name)
-            process_obj.add_prerequisite_process(dependent_process_obj)
+        prerequisite_process_list = parsed_prerequisite_processes.get(process_std_name)
+        for i in range(len(prerequisite_process_list)):
+            prerequisite_process_std_name = prerequisite_process_list[i][
+                "dependent_process"
+            ]
+            prerequisite_process_obj = process_objs.get(prerequisite_process_std_name)
+            try:
+                process_obj.add_prerequisite_process(prerequisite_process_obj)
+            except Exception as e:
+                node_type = "Process"
+                sheet = "prerequisite process"
+                idx = prerequisite_process_list[i]["index"]
+                print(
+                    CreatNodeError(
+                        msg=e.__str__(),
+                        idx=idx,
+                        node_type=node_type,
+                        sheet=sheet,
+                    ).__str__()
+                )
 
 
 def transform_process_ingredient(
@@ -258,14 +362,25 @@ def transform_process_ingredient(
             material_obj = material_objs.get(material_std_name)
             if material_obj is None:
                 continue
-
-            ingredient_obj = C.Ingredient(
-                ingredient=material_obj,
-                quantities=_transform_quantity_list(ingredient["quan"]),
-                **ingredient["base"],
-            )
-
-            process_obj.add_ingredient(ingredient_obj)
+            try:
+                ingredient_obj = C.Ingredient(
+                    ingredient=material_obj,
+                    quantities=_transform_quantity_list(ingredient["quan"]),
+                    **ingredient["base"],
+                )
+                process_obj.add_ingredient(ingredient_obj)
+            except Exception as e:
+                node_type = "Ingredient"
+                sheet = "process ingredient"
+                idx = ingredient["index"]
+                print(
+                    CreatNodeError(
+                        msg=e.__str__(),
+                        idx=idx,
+                        node_type=node_type,
+                        sheet=sheet,
+                    ).__str__()
+                )
 
 
 def transform_process_product(process_objs, material_objs, parsed_processProducts):
@@ -290,7 +405,20 @@ def transform_process_product(process_objs, material_objs, parsed_processProduct
         for parsed_product in product_list:
             product_std_name = parsed_product["product"]
             material_obj = material_objs.get(product_std_name)
-            process_obj.add_product(material_obj)
+            try:
+                process_obj.add_product(material_obj)
+            except Exception as e:
+                node_type = "Product"
+                sheet = "process product"
+                idx = parsed_product["index"]
+                print(
+                    CreatNodeError(
+                        msg=e.__str__(),
+                        idx=idx,
+                        node_type=node_type,
+                        sheet=sheet,
+                    ).__str__()
+                )
 
 
 def _transform_cond_list(parsed_conds, data_objs):
