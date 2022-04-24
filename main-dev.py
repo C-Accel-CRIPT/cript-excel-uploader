@@ -62,6 +62,7 @@ for sheet in sheet_dict.values():
     validators.validate_either_or_cols(sheet)
     validators.validate_unique_key(sheet)
     validators.validate_not_null_value(sheet)
+    validators.validate_type_or_keyword(sheet)
 
 
 # Validate foreign key
