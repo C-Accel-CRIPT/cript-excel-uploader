@@ -90,14 +90,14 @@ def upload(api, node_type, dict_, user_uid):
             query = {}
             for field in obj.unique_together:
                 if field == "created_by":
-                    query[field] = user_uid
+                    query["created_by"] = user_uid
                     continue
 
-                value = obj.__dict__.get(field)
-                if type(value) == type("a"):
-                    query[field] = obj.__dict__.get(field)
+                value = getattr(obj, field)
+                if isinstance(value, str):
+                    query[field] = value
                 else:
-                    query[field] = obj.__dict__.get(field).uid
+                    query[field] = value.uid
             try:
                 url = api.get(obj.__class__, query).url
 
