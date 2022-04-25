@@ -152,10 +152,15 @@ if bug_count != 0:
 
 # Transform and Upload parsed data
 print("Fetching data of your group and collection...")
+start_time = time.time()
 group_obj = uploaders.get_group(db, group_name)
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 
 # print(f"group_obj:{group_obj}\n***********************")
 collection_obj = uploaders.get_collection(db, group_obj, collection_name)
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 # print(f"coll_obj:{collection_obj}\n***********************")
 experiment_objs = transformers.transform_experiment(
     group_obj,
@@ -163,7 +168,11 @@ experiment_objs = transformers.transform_experiment(
     experiment_sheet.parsed,
     public_flag,
 )
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 uploaders.upload(db, "Experiment", experiment_objs, user_uid)
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 # print(f"expt_objs:{experiment_objs}\n***********************")
 
 data_objs = transformers.transform_data(
@@ -172,7 +181,11 @@ data_objs = transformers.transform_data(
     data_sheet.parsed,
     public_flag,
 )
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 uploaders.upload(db, "Data", data_objs, user_uid)
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 # print(f"data_objs:{data_objs}\n***********************")
 
 # file_objs = transformers.transform_file(
@@ -189,7 +202,11 @@ material_objs = transformers.transform_material(
     material_sheet.parsed,
     public_flag,
 )
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 uploaders.upload(db, "Material", material_objs, user_uid)
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 if len(mixtureComponent_sheet.parsed) > 0:
     transformers.transform_components(
         material_objs,
@@ -205,6 +222,8 @@ process_objs = transformers.transform_process(
     process_sheet.parsed,
     public_flag,
 )
+print(f"time_cost:{time.time()-start_time}")
+start_time = time.time()
 uploaders.upload(db, "Process", process_objs, user_uid)
 if len(dependentProcess_sheet.parsed) > 0:
     transformers.transform_prerequisite_process(

@@ -218,10 +218,10 @@ class CreatNodeError(Exception):
 
     def __str__(self):
         return (
-            f"Failed to create node: "
+            f"Failed to create/update node: "
             f"Node type: [{self.node_type}], "
-            f"Sheet: [{self.sheet}]"
-            f"Index: [{self.idx}] "
+            f"Sheet: [{self.sheet}], "
+            f"Index: [{self.idx}], "
             f"Error Info: {self.msg}"
         )
 
