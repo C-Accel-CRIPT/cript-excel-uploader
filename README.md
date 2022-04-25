@@ -10,7 +10,7 @@ All data is currently being uploaded to a test database, thus is at risk of bein
 ## Usage
 
 Executables are available for Windows and MacOS.  
-These can be downloaded and run without installing Python or any other dependency.
+These can be downloaded and run without installing Python or any other dependency.  
 
 * **Windows**
     * Download **cript_uploader.exe** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
@@ -21,9 +21,9 @@ These can be downloaded and run without installing Python or any other dependenc
         * Open a terminal and navigate the relevant folder  
         `cd <path_to_folder>`
         * Change the file permissions  
-        `chmod 755 ./cript_uploader`
+        `chmod 755 ./cript_excel_uploader`
         * Run it  
-        `./cript_uploader`
+        `./cript_excel_uploader`
 
 Alternatively, you can do things the hard way:
 
@@ -52,15 +52,18 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
 
 
 ### Guidelines For Modifying The Template
-
- - The sheet names cannot be renamed.
- - Columns marked with an asterisk (*) are required.
- - Columns marked with a hash (#) will be ignored.
- - Columns must only use approved key names (see **Column Keys**)
- - All keys are assumed to be using our chosen standard units (see **Key Tables**)
- - Condition keys can be associated with property keys by using a colon (e.g., density:temp)
- - Data can be associated with a property or condition key by using a colon (e.g., density:data)
- - For the **Process Ingredient** sheet, each ingredient must include one or more quantity defintion (see the **Ingredient Quantity** table)
+- **Sheet** 
+  - The required sheets are marked as orange.
+  - The optional sheets are marked as grey.
+  - The sheet names cannot be renamed.
+- **Column**
+  - Columns marked with an asterisk `*` are required.
+  - Columns marked with a hashtag `#` will be ignored.
+  - Columns must only use approved key names (see `Column Keys`)
+  - All keys are assumed to be using our chosen standard units (see `Key Tables`)
+  - Condition keys can be associated with property keys by using a colon (e.g., `density:temperature`)
+  - Data can be associated with a property or condition key by using a colon (e.g., `density:data`)
+  - For the `Process Ingredient` sheet, each ingredient must include one or more quantity defintion (see the `Ingredient Quantity` table)
  
 
 ### Key Tables
