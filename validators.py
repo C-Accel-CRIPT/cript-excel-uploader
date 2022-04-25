@@ -152,8 +152,9 @@ def validate_data_assignment(sheet_obj):
                     sheet_obj.errors.append(exception.__str__())
 
 
-def validate_type_or_keyword(sheet_obj):
-    if sheet_obj.df is not None:
+def validate_type(sheet_obj):
+    if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
+        param_key = configs.allowed_type.get(sheet_obj.sheet_name)
         for parsed_column_name_obj in sheet_obj.col_parsed.values():
             field = parsed_column_name_obj.field_list[0]
             field_type = parsed_column_name_obj.field_type_list[0]
@@ -162,20 +163,30 @@ def validate_type_or_keyword(sheet_obj):
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
                     value = str(row[col]).lower()
-                    for supported_type_dict in sheet_obj.param.get(
-                        sheet_name + "-type"
-                    ):
-                        if value == supported_type_dict["name"]:
-                            return 0
-                    exception = InvalidTypeOrKeywordError(
-                        msg=f"{value} is not a supported type",
-                        idx=index + 2,
-                        col=col,
-                        sheet=sheet_name,
-                    )
-                    sheet_obj.errors.append(exception.__str__())
 
-            if field == "keywords" and field_type == "base":
+                    found_tag = False
+                    for supported_type_dict in sheet_obj.param.get(param_key):
+                        if value == supported_type_dict["name"]:
+                            found_tag = True
+                            break
+
+                    if not found_tag:
+                        exception = InvalidTypeOrKeywordError(
+                            msg=f"{value} is not a supported type",
+                            idx=index + 2,
+                            col=col,
+                            sheet=sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())
+
+
+def validate_keyword(sheet_obj):
+    if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
+        param_key = configs.allowed_type.get(sheet_obj.sheet_name)
+        for parsed_column_name_obj in sheet_obj.col_parsed.values():
+            field = parsed_column_name_obj.field_list[0]
+            field_type = parsed_column_name_obj.field_type_list[0]
+            if field[:7] == "keyword" and field_type == "base":
                 for index, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
@@ -185,9 +196,7 @@ def validate_type_or_keyword(sheet_obj):
                     invalid_value_list = []
                     for keyword in value_list:
                         found_tag = False
-                        for supported_keyword_dict in sheet_obj.param.get(
-                            sheet_name + "-keyword"
-                        ):
+                        for supported_keyword_dict in sheet_obj.param.get(param_key):
                             if keyword == supported_keyword_dict["name"]:
                                 found_tag = True
                                 break

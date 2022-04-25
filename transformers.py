@@ -356,23 +356,23 @@ def transform_process_ingredient(
         if process_obj is None:
             continue
 
-        for ingredient in parsed_processIngredients[process_std_name]:
+        for parsed_ingredient in parsed_processIngredients[process_std_name]:
             # Grab Material
-            material_std_name = ingredient["ingredient"]
+            material_std_name = parsed_ingredient["ingredient"]
             material_obj = material_objs.get(material_std_name)
             if material_obj is None:
                 continue
             try:
                 ingredient_obj = C.Ingredient(
                     ingredient=material_obj,
-                    quantities=_transform_quantity_list(ingredient["quan"]),
-                    **ingredient["base"],
+                    quantities=_transform_quantity_list(parsed_ingredient["quan"]),
+                    **parsed_ingredient["base"],
                 )
                 process_obj.add_ingredient(ingredient_obj)
             except Exception as e:
                 node_type = "Ingredient"
                 sheet = "process ingredient"
-                idx = ingredient["index"]
+                idx = parsed_ingredient["index"]
                 print(
                     CreatNodeError(
                         msg=e.__str__(),

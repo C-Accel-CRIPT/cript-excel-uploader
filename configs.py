@@ -164,3 +164,13 @@ allowed_data_assignment = {
     "data": {None},
     "quan": {None},
 }
+
+allowed_type = {
+    "data": "data-type",
+    "file": "file-type",
+}
+
+allowed_keyword = {
+    "process": "process-keyword",
+    "process ingredient": "ingredient-keyword",
+}

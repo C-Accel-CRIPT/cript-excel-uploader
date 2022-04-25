@@ -63,7 +63,8 @@ for sheet in sheet_dict.values():
     validators.validate_either_or_cols(sheet)
     validators.validate_unique_key(sheet)
     validators.validate_not_null_value(sheet)
-    validators.validate_type_or_keyword(sheet)
+    validators.validate_type(sheet)
+    validators.validate_keyword(sheet)
 
 
 # Validate foreign key
@@ -195,7 +196,7 @@ if len(mixtureComponent_sheet.parsed) > 0:
         mixtureComponent_sheet.parsed,
     )
     uploaders.upload(db, "Material Component", material_objs, user_uid)
-    # print(f"material_objs:{material_objs}\n***********************")
+# print(f"material_objs:{material_objs}\n***********************")
 
 process_objs = transformers.transform_process(
     group_obj,
@@ -211,7 +212,7 @@ if len(dependentProcess_sheet.parsed) > 0:
         dependentProcess_sheet.parsed,
     )
     uploaders.upload(db, "Prerequisite Process", process_objs, user_uid)
-    # print(f"process_objs:{process_objs}\n***********************")
+# print(f"process_objs:{process_objs}\n***********************")
 
 transformers.transform_process_ingredient(
     process_objs,

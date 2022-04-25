@@ -458,8 +458,8 @@ class FileSheet(Sheet):
                     value = value.split(",")
 
                 # Handle foreign keys field
-                if field_type == "foreign_keys":
-                    parsed_file.update({field: value})
+                if field_type == "foreign_key":
+                    parsed_file[field] = standardize_name(value)
 
                 # Populate parsed_file dict
                 if field_type == "base":
@@ -577,7 +577,7 @@ class ProcessSheet(Sheet):
 
                 # Handle foreign keys
                 if field_type == "foreign_key":
-                    parsed_process[field] = value
+                    parsed_process[field] = standardize_name(value)
 
                 # Handle base process fields
                 if field_type == "base":
@@ -679,7 +679,7 @@ class ProcessIngredientSheet(Sheet):
 
                 # Handle foreign key
                 if field_type == "foreign_key":
-                    parsed_ingredient[field] = value
+                    parsed_ingredient[field] = standardize_name(value)
 
                 if field_type == "base":
                     parsed_ingredient["base"][field] = value
