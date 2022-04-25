@@ -221,7 +221,7 @@ class CreatNodeError(Exception):
             f"Failed to create node: "
             f"Node type: [{self.node_type}], "
             f"Sheet: [{self.sheet}]"
-            f"Index: [{self.idx}]"
+            f"Index: [{self.idx}] "
             f"Error Info: {self.msg}"
         )
 

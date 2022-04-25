@@ -154,14 +154,14 @@ def validate_data_assignment(sheet_obj):
 
 def validate_type_or_keyword(sheet_obj):
     if sheet_obj.df is not None:
-        for parsed_column_name_obj in sheet_obj.parsed_cols.values():
+        for parsed_column_name_obj in sheet_obj.col_parsed.values():
             field = parsed_column_name_obj.field_list[0]
             field_type = parsed_column_name_obj.field_type_list[0]
             if field == "type" and field_type == "base":
                 for index, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
-                    value = row[col]
+                    value = str(row[col]).lower()
                     for supported_type_dict in sheet_obj.param.get(
                         sheet_name + "-type"
                     ):
@@ -179,8 +179,9 @@ def validate_type_or_keyword(sheet_obj):
                 for index, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
-                    value = row[col]
+                    value = str(row[col]).lower()
                     value_list = value.split(",")
+                    value_list = [value.strip() for value in value_list]
                     invalid_value_list = []
                     for keyword in value_list:
                         found_tag = False
@@ -189,6 +190,8 @@ def validate_type_or_keyword(sheet_obj):
                         ):
                             if keyword == supported_keyword_dict["name"]:
                                 found_tag = True
+                                break
+
                         if not found_tag:
                             invalid_value_list.append(keyword)
 

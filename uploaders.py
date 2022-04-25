@@ -81,12 +81,11 @@ def upload(api, node_type, dict_, user_uid):
         mininterval=0.1,
         dynamic_ncols=True,
         desc=f"Uploading {node_type}: ",
-        bar_format="{l_bar}{bar}{r_bar}\n",
         unit="item",
     )
     for key, obj in dict_.items():
         try:
-            api.save(obj)
+            api.save(obj, print_success=False)
         except DuplicateNodeError:
             query = {}
             for field in obj.unique_together:
@@ -99,12 +98,15 @@ def upload(api, node_type, dict_, user_uid):
                     query[field] = obj.__dict__.get(field)
                 else:
                     query[field] = obj.__dict__.get(field).uid
-            url = api.get(obj.__class__, query).url
+            try:
+                url = api.get(obj.__class__, query).url
 
-            obj.url = url
-            api.save(obj)
+                obj.url = url
+                api.save(obj, print_success=False)
+            except Exception:
+                print(f"Save Failed, " f"Info: {traceback.format_exc()}")
         except Exception:
-            print(traceback.format_exc())
+            print(f"Save Failed, " f"Info: {traceback.format_exc()}")
         finally:
             pbar.update(1)
     pbar.close()

@@ -29,6 +29,7 @@ time.sleep(1)
 param = db.keys
 user_uid = db.user.uid
 
+
 # Instantiate Sheet objects
 experiment_sheet = sheets.ExperimentSheet(path, "experiment", param)
 data_sheet = sheets.DataSheet(path, "data", param)
@@ -149,10 +150,12 @@ if bug_count != 0:
     exit()
 
 # Transform and Upload parsed data
+print("Fetching data of your group and collection...")
 group_obj = uploaders.get_group(db, group_name)
-print(f"group_obj:{group_obj}\n***********************")
+
+# print(f"group_obj:{group_obj}\n***********************")
 collection_obj = uploaders.get_collection(db, group_obj, collection_name)
-print(f"coll_obj:{collection_obj}\n***********************")
+# print(f"coll_obj:{collection_obj}\n***********************")
 experiment_objs = transformers.transform_experiment(
     group_obj,
     collection_obj,
@@ -160,7 +163,7 @@ experiment_objs = transformers.transform_experiment(
     public_flag,
 )
 uploaders.upload(db, "Experiment", experiment_objs, user_uid)
-print(f"expt_objs:{experiment_objs}\n***********************")
+# print(f"expt_objs:{experiment_objs}\n***********************")
 
 data_objs = transformers.transform_data(
     group_obj,
@@ -169,7 +172,7 @@ data_objs = transformers.transform_data(
     public_flag,
 )
 uploaders.upload(db, "Data", data_objs, user_uid)
-print(f"data_objs:{data_objs}\n***********************")
+# print(f"data_objs:{data_objs}\n***********************")
 
 # file_objs = transformers.transform_file(
 #     group_obj,
@@ -184,15 +187,15 @@ material_objs = transformers.transform_material(
     data_objs,
     material_sheet.parsed,
     public_flag,
-    user_uid,
 )
 uploaders.upload(db, "Material", material_objs, user_uid)
-transformers.transform_components(
-    material_objs,
-    mixtureComponent_sheet.parsed,
-)
-uploaders.upload(db, "Material Component", material_objs, user_uid)
-print(f"material_objs:{material_objs}\n***********************")
+if len(mixtureComponent_sheet.parsed) > 0:
+    transformers.transform_components(
+        material_objs,
+        mixtureComponent_sheet.parsed,
+    )
+    uploaders.upload(db, "Material Component", material_objs, user_uid)
+    # print(f"material_objs:{material_objs}\n***********************")
 
 process_objs = transformers.transform_process(
     group_obj,
@@ -202,12 +205,13 @@ process_objs = transformers.transform_process(
     public_flag,
 )
 uploaders.upload(db, "Process", process_objs, user_uid)
-transformers.transform_prerequisite_process(
-    process_objs,
-    dependentProcess_sheet.parsed,
-)
-uploaders.upload(db, "Prerequisite Process", process_objs, user_uid)
-print(f"process_objs:{process_objs}\n***********************")
+if len(dependentProcess_sheet.parsed) > 0:
+    transformers.transform_prerequisite_process(
+        process_objs,
+        dependentProcess_sheet.parsed,
+    )
+    uploaders.upload(db, "Prerequisite Process", process_objs, user_uid)
+    # print(f"process_objs:{process_objs}\n***********************")
 
 transformers.transform_process_ingredient(
     process_objs,
@@ -215,14 +219,14 @@ transformers.transform_process_ingredient(
     processIngredient_sheet.parsed,
 )
 uploaders.upload(db, "Process Ingredient", process_objs, user_uid)
-print(f"process_objs after adding ingredients:{process_objs}\n***********************")
+# print(f"process_objs after adding ingredients:{process_objs}\n***********************")
 transformers.transform_process_product(
     process_objs,
     material_objs,
     processProduct_sheet.parsed,
 )
 uploaders.upload(db, "Process Product", process_objs, user_uid)
-print(f"process_objs after adding products:{process_objs}\n***********************")
+# print(f"process_objs after adding products:{process_objs}\n***********************")
 
 # End
 print("\n\nAll data was uploaded successfully!\n")
