@@ -315,7 +315,9 @@ while bug_count != 0:
     validate_and_parse_sheets(sheet_dict)
     bug_count = output_detected_error(sheet_dict)
     if bug_count != 0:
-        input("Press enter when you are ready to run parser again :P ")
+        input(
+            "Press enter when you have saved your changes and ready to run parser again :P "
+        )
 transform_and_upload(sheet_dict)
 
 # End

@@ -56,9 +56,6 @@ class Sheet:
         if self.df is None:
             return None
 
-        # Drop NaN Columns:
-        self.df.dropna(axis=1, how="all", inplace=True)
-
         # Drop Commented Columns
         for col in self.df.columns:
             if col[0] == "#":
@@ -67,6 +64,13 @@ class Sheet:
         # Clean Column Name
         self.cols = [col.replace("*", "") for col in self.df.columns]
         self.df.columns = self.cols
+
+        # Drop NaN Columns:
+        _subset = []
+        for col in self.df.columns:
+            if col not in configs.required_cols.get(self.sheet_name):
+                _subset.append(col)
+        self.df.dropna(axis=1, how="all", inplace=True, subset=_subset)
 
         # Parse Column Name
         for col in self.cols:
@@ -94,7 +98,8 @@ class Sheet:
                 self.unit_dict[col] = self.df.loc[0, col].strip()
 
         # Drop Unit Row
-        self.df.drop(labels=0, axis=0, inplace=True)
+        if 0 in self.df.index:
+            self.df.drop(labels=0, axis=0, inplace=True)
         # Drop NaN Rows
         self.df.dropna(axis=0, how="all", inplace=True)
 

@@ -156,8 +156,12 @@ def validate_file_source(sheet_obj):
 def validate_data_assignment(sheet_obj):
     if sheet_obj.df is not None:
         for parsed_column_name_obj in sheet_obj.parsed_cols.values():
+            if not parsed_column_name_obj.is_valid:
+                continue
+
             field_list = parsed_column_name_obj.field_list
             field_type_list = parsed_column_name_obj.field_type_list
+
             for i in range(2):
                 field_type = field_type_list[i]
                 nested_field_type = field_type_list[i + 1]
@@ -177,8 +181,12 @@ def validate_type(sheet_obj):
     if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
         param_key = configs.allowed_type.get(sheet_obj.sheet_name)
         for parsed_column_name_obj in sheet_obj.col_parsed.values():
+            if not parsed_column_name_obj.is_valid:
+                continue
+
             field = parsed_column_name_obj.field_list[0]
             field_type = parsed_column_name_obj.field_type_list[0]
+
             if field == "type" and field_type == "base":
                 for idx, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
@@ -205,8 +213,12 @@ def validate_keyword(sheet_obj):
     if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
         param_key = configs.allowed_type.get(sheet_obj.sheet_name)
         for parsed_column_name_obj in sheet_obj.col_parsed.values():
+            if not parsed_column_name_obj.is_valid:
+                continue
+
             field = parsed_column_name_obj.field_list[0]
             field_type = parsed_column_name_obj.field_type_list[0]
+
             if field[:7] == "keyword" and field_type == "base":
                 for idx, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
@@ -237,7 +249,7 @@ def validate_keyword(sheet_obj):
 
 def validate_property(sheet_obj):
     for key, parsed_object in sheet_obj.parsed.items():
-        if type(parsed_object) != type({}):
+        if not isinstance(parsed_object, dict):
             continue
 
         parsed_props = parsed_object.get("prop")
@@ -248,7 +260,6 @@ def validate_property(sheet_obj):
                     try:
                         C.Property(**parent["attr"])
                     except Exception as e_raw:
-                        print(parent["attr"])
                         exception = InvalidPropertyError(
                             msg=e_raw.__str__(),
                             idx=parsed_object["index"],
@@ -276,7 +287,7 @@ def validate_property(sheet_obj):
 
 def validate_condition(sheet_obj):
     for key, parsed_object in sheet_obj.parsed.items():
-        if type(parsed_object) != type({}):
+        if not isinstance(parsed_object, dict):
             continue
 
         parsed_conds = parsed_object.get("cond")
@@ -301,7 +312,7 @@ def validate_identity(sheet_obj):
         return 0
 
     for key, parsed_object in sheet_obj.parsed.items():
-        if type(parsed_object) != type({}):
+        if not isinstance(parsed_object, dict):
             continue
 
         parsed_idens = parsed_object.get("iden")
@@ -324,7 +335,7 @@ def validate_quantity(sheet_obj):
         return 0
 
     for key, parsed_object in sheet_obj.parsed.items():
-        if type(parsed_object) != type({}):
+        if not isinstance(parsed_object, dict):
             continue
 
         parsed_quans = parsed_object.get("quan")

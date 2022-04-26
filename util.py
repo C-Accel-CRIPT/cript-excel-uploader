@@ -28,7 +28,11 @@ def read_config():
                 return json.load(f), True
         except Exception as e:
             print(
-                f"An error happened when parsing config.json, " f"Info: {e.__str__()}"
+                f"An error happened when parsing config.json, "
+                f"Info: {e.__str__()}\n"
+                f"Note: If you have slash issues, "
+                f"you need to replace back slash[\] "
+                f"with forward slash[/] in file path."
             )
             return {}, False
     else:
