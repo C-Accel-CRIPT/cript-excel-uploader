@@ -191,15 +191,21 @@ def validate_type(sheet_obj):
                 for idx, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
-                    val = str(row.get(col)).lower()
+                    val = row.get(col)
+                    if val is None:
+                        continue
+                    val = str(val).lower()
 
+                    is_new = False
                     found_tag = False
+                    if len(val) > 1 and val[0] == "+":
+                        is_new = True
                     for supported_type_dict in sheet_obj.param.get(param_key):
                         if val == supported_type_dict["name"]:
                             found_tag = True
                             break
 
-                    if not found_tag:
+                    if not found_tag and not is_new:
                         exception = InvalidTypeOrKeywordError(
                             msg=f"{val} is not a supported type",
                             idx=idx + 2,
@@ -223,18 +229,24 @@ def validate_keyword(sheet_obj):
                 for idx, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
-                    val = str(row.get(col)).lower()
-                    val_list = val.split(",")
+                    val = row.get(col)
+                    if val is None:
+                        continue
+                    val_list = str(val).lower().split(",")
                     val_list = [val.strip() for val in val_list]
                     invalid_val_list = []
                     for keyword in val_list:
+
+                        is_new = False
                         found_tag = False
+                        if len(keyword) > 1 and keyword[0] == "+":
+                            is_new = True
                         for supported_keyword_dict in sheet_obj.param.get(param_key):
                             if keyword == supported_keyword_dict["name"]:
                                 found_tag = True
                                 break
 
-                        if not found_tag:
+                        if not found_tag and not is_new:
                             invalid_val_list.append(keyword)
 
                     for invalid_val in invalid_val_list:
