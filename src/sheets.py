@@ -56,17 +56,26 @@ class Sheet:
         if self.df is None:
             return None
 
-        # Drop NaN Columns:
-        self.df.dropna(axis=1, how="all", inplace=True)
-
         # Drop Commented Columns
         for col in self.df.columns:
             if col[0] == "#":
                 self.df = self.df.drop(col, axis=1)
 
         # Clean Column Name
-        self.cols = [col.replace("*", "") for col in self.df.columns]
-        self.df.columns = self.cols
+        self.df.columns = [col.replace("*", "") for col in self.df.columns]
+
+        # Drop NaN Columns:
+        _subset = []
+        for col in self.df.columns:
+            if col not in configs.required_cols.get(self.sheet_name):
+                _subset.append(col)
+        nan_number = self.df.isna().sum()
+        row_number = self.df.shape[0]
+        for col in _subset:
+            if nan_number.get(col) == row_number:
+                self.df.drop(columns=col, inplace=True)
+
+        self.cols = self.df.columns
 
         # Parse Column Name
         for col in self.cols:
@@ -88,14 +97,14 @@ class Sheet:
 
         # Create Unit Dict
         for col in self.cols:
-            if pd.isna(self.df.loc[0, col]):
+            if 0 not in self.df.index or pd.isna(self.df.loc[0, col]):
                 self.unit_dict[col] = None
             else:
                 self.unit_dict[col] = self.df.loc[0, col].strip()
 
         # Drop Unit Row
         if 0 in self.df.index:
-            self.df.drop(labels=0, axis=0, inplace=True)
+            self.df.drop(index=0, inplace=True)
         # Drop NaN Rows
         self.df.dropna(axis=0, how="all", inplace=True)
 
