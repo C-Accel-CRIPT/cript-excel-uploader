@@ -1,5 +1,5 @@
 import string
-from errors import ColumnParseError
+from src.errors import ColumnParseError
 
 
 class ParsedColumnName:

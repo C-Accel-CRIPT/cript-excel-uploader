@@ -1,22 +1,18 @@
 import time
 import os
 
-import ascii_art
-import configs
-import sheets
-import transformers
-import uploaders
-import util
-import validators
-
-# script_directory = os.path.dirname(os.path.abspath(__file__))
-# activate_this = os.path.join(script_directory, "./venv/Scripts/activate_this.py")
-# code = compile(open(activate_this).read(), activate_this, "exec")
-# exec(code, dict(__file__=activate_this))
+from src import ascii_art
+from src import configs
+from src import sheets
+from src import transformers
+from src import uploaders
+from src import util
+from src import validators
 
 print(ascii_art.title.template)
 _config_key_dict, _config_is_found = util.read_config()
 
+base_url = _config_key_dict.get("BASE_URL")
 token = _config_key_dict.get("TOKEN")
 group_name = _config_key_dict.get("GROUP")
 collection_name = _config_key_dict.get("COLLECTION")
@@ -27,11 +23,13 @@ public_flag = _config_key_dict.get("PUBLIC_FLAG")
 # API connection
 db = None
 while db is None:
-    if token is None:
+    if base_url is None:
+        base_url = input("\nBase URL: ")
+    if  token is None:
         token = input("\nAPI token: ")
     try:
         print("Checking token...")
-        db = uploaders.connect(token)
+        db = uploaders.connect(base_url, token)
         print("")
     except Exception as e:
         print(e.__str__())
@@ -94,13 +92,9 @@ print("Excel file found.\n")
 
 
 # Public flag
-if _config_is_found:
-    print("Checking public flag...")
 while public_flag != "y" and public_flag != "n":
     public_flag = input("\nDo you want your data to go public? y/n ---").lower()
-    print("Checking public flag...")
 public_flag = public_flag == "y"
-print("Public flag decided.\n")
 
 
 # Display chem art

@@ -1,9 +1,9 @@
 import os
 import pandas as pd
 
-import configs
+from src import configs
 import cript as C
-from errors import (
+from src.errors import (
     ValueDoesNotExist,
     DuplicatedValueError,
     NullValueError,
@@ -16,7 +16,7 @@ from errors import (
     InvalidIdentifierError,
     InvalidTypeOrKeywordError,
 )
-from util import standardize_name
+from src.util import standardize_name
 
 
 def validate_required_cols(sheet_obj):

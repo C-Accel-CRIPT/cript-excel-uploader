@@ -1,7 +1,7 @@
 {
-  "TOKEN": "",
-  "GROUP": "",
-  "COLLECTION": "",
-  "EXCEL_TEMPLATE_FILE_PATH": "",
-  "PUBLIC_FLAG": ""
+  "BASE_URL": "https://criptapp-staging.herokuapp.com",
+  "TOKEN": "Token 8c91546d6fb8259ff8d87d489c2787aee7e9b03b",
+  "GROUP": "test",
+  "COLLECTION": "test",
+  "EXCEL_TEMPLATE_FILE_PATH": "C:\\Users\\Reid\\OneDrive\\Documents\\Dev_Docs\\cript\\cript_uploader\\Excel spreadsheets\\example_template_full_04-26.xlsx"
 }

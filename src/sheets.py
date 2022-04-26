@@ -1,14 +1,14 @@
 import pandas as pd
 
-import configs
-from errors import (
+from src import configs
+from src.errors import (
     UnsupportedColumnName,
     ColumnParseError,
 )
-from util import (
+from src.util import (
     standardize_name,
 )
-from parser import (
+from src.parser import (
     ParsedColumnName,
     parse_col_name,
 )
@@ -56,6 +56,9 @@ class Sheet:
         if self.df is None:
             return None
 
+        # Drop NaN Columns:
+        self.df.dropna(axis=1, how="all", inplace=True)
+
         # Drop Commented Columns
         for col in self.df.columns:
             if col[0] == "#":
@@ -64,13 +67,6 @@ class Sheet:
         # Clean Column Name
         self.cols = [col.replace("*", "") for col in self.df.columns]
         self.df.columns = self.cols
-
-        # Drop NaN Columns:
-        _subset = []
-        for col in self.df.columns:
-            if col not in configs.required_cols.get(self.sheet_name):
-                _subset.append(col)
-        self.df.dropna(axis=1, how="all", inplace=True, subset=_subset)
 
         # Parse Column Name
         for col in self.cols:

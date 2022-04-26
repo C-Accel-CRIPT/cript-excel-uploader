@@ -1,21 +1,21 @@
 import cript as C
 from tqdm import tqdm
 import traceback
-from configs import BASE_URL
+
 from cript.exceptions import (
     DuplicateNodeError,
     APIGetError,
 )
 
 
-def connect(token):
+def connect(base_url, token):
     """
     connect with backend service
 
     :return: backend service connection object
     :rtype: class:`cript.API`
     """
-    return C.API(BASE_URL, token)
+    return C.API(base_url, token)
 
 
 def get_group(api, group_name):
@@ -89,7 +89,7 @@ def upload(api, node_type, dict_, user_uid):
     )
     for key, obj in dict_.items():
         try:
-            api.save(obj, print_success=False)
+            api.save(obj)
         except DuplicateNodeError:
             query = {}
             for field in obj.unique_together:
@@ -106,7 +106,7 @@ def upload(api, node_type, dict_, user_uid):
                 url = api.get(obj.__class__, query).url
 
                 obj.url = url
-                api.save(obj, print_success=False)
+                api.save(obj)
             except Exception as e:
                 print(
                     f"\nSave {obj.node_name} Failed, "

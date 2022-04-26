@@ -1,5 +1,5 @@
 import cript as C
-from errors import CreatOrUpdateNodeError
+from src.errors import CreatOrUpdateNodeError
 
 
 def transform_experiment(group_obj, collection_obj, parsed_experiments, public_flag):
