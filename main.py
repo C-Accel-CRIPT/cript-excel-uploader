@@ -15,7 +15,7 @@ import validators
 # exec(code, dict(__file__=activate_this))
 
 print(ascii_art.title.template)
-_config_key_dict = util.read_config()
+_config_key_dict, _config_is_found = util.read_config()
 
 token = _config_key_dict.get("TOKEN")
 group_name = _config_key_dict.get("GROUP")
@@ -23,6 +23,8 @@ collection_name = _config_key_dict.get("COLLECTION")
 path = _config_key_dict.get("EXCEL_TEMPLATE_FILE_PATH")
 public_flag = _config_key_dict.get("PUBLIC_FLAG")
 
+
+# API connection
 db = None
 while db is None:
     if token is None:
@@ -30,11 +32,13 @@ while db is None:
     try:
         print("Checking token...")
         db = uploaders.connect(token)
-        print("Valid token :>")
+        print("")
     except Exception as e:
         print(e.__str__())
         token = None
 
+
+# Group
 group_obj = None
 while group_obj is None:
     if group_name is None or len(group_name) == 0:
@@ -45,11 +49,13 @@ while group_obj is None:
             db,
             group_name,
         )
-        print("Valid group :)\n")
+        print("Valid group.\n")
     except Exception as e:
         print(e.__str__())
         group_name = None
 
+
+# Collection
 collection_obj = None
 while collection_obj is None:
     if collection_name is None or len(collection_name) == 0:
@@ -61,12 +67,15 @@ while collection_obj is None:
             group_obj,
             collection_name,
         )
-        print("Valid collection :O\n")
+        print("Valid collection.\n")
     except Exception as e:
         print(e.__str__())
         collection_name = None
 
-# Get Excel file path
+
+# Excel file path
+if _config_is_found:
+    print("Checking file path...")
 while (
     path is None
     or len(path) == 0
@@ -80,10 +89,19 @@ while (
     else:
         print("This is not an excel file. Try again.")
     path = input("\nExcel file path: ")
+    print("Checking file path...")
+print("Excel file found.\n")
 
+
+# Public flag
+if _config_is_found:
+    print("Checking public flag...")
 while public_flag != "y" and public_flag != "n":
     public_flag = input("\nDo you want your data to go public? y/n ---").lower()
+    print("Checking public flag...")
 public_flag = public_flag == "y"
+print("Public flag decided.\n")
+
 
 # Display chem art
 print(ascii_art.chem.template)
@@ -127,8 +145,8 @@ def construct_sheet_objs():
     return _sheet_dict
 
 
+# Validate required col, either or col, unique key, not null value, type and keyword
 def validate_and_parse_sheets(_sheet_dict):
-    # Validate required col, either or col, unique key, not null value, type and keyword
     for sheet in _sheet_dict.values():
         validators.validate_required_cols(sheet)
         validators.validate_either_or_cols(sheet)
@@ -284,6 +302,7 @@ def transform_and_upload(_sheet_dict):
     uploaders.upload(db, "Process Product", process_objs, user_uid)
 
 
+# Parse, Error Detection, Transform and Upload
 bug_count = -1
 sheet_dict = None
 while bug_count != 0:

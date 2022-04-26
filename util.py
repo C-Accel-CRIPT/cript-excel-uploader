@@ -20,10 +20,10 @@ def read_config():
     if os.path.exists(file_path):
         try:
             with open(file_path, "r") as f:
-                return json.load(f)
+                return json.load(f), True
         except Exception as e:
             print(
                 f"An error happened when parsing config.json, " f"Info: {e.__str__()}"
             )
     else:
-        return {}
+        return {}, False
