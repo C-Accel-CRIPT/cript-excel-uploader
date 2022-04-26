@@ -141,4 +141,4 @@ dmypy.json
 cython_debug/
 
 # Custom
-config.py
+LEGACY_config.py

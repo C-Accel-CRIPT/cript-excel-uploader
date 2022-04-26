@@ -2,6 +2,8 @@ import cript as C
 import inspect
 from util import filter_required_col
 
+BASE_URL = "https://criptapp-staging.herokuapp.com/"
+
 required_cols = {
     "experiment": filter_required_col(C.Experiment.required),
     "data": filter_required_col(C.Data.required),

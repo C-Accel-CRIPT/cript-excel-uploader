@@ -1,7 +1,7 @@
 import cript as C
 from tqdm import tqdm
 import traceback
-from config import BASE_URL
+from configs import BASE_URL
 from errors import GroupRelatedError
 from cript.exceptions import (
     DuplicateNodeError,
@@ -32,7 +32,11 @@ def get_group(api, group_name):
     """
     # Check if Group exists
     try:
-        group_obj = api.get(C.Group, {"name": group_name})
+        group_obj = api.get(
+            C.Group,
+            {"name": group_name},
+            max_level=0,
+        )
         return group_obj
     except APIGetError:
         raise GroupRelatedError(
@@ -40,7 +44,7 @@ def get_group(api, group_name):
         )
 
 
-def get_collection(api, group_obj, coll_name):
+def get_collection(api, group_obj, collection_name):
     """
     search for existing collection_url, create collection if not exists
 
@@ -48,8 +52,8 @@ def get_collection(api, group_obj, coll_name):
     :type api: class:`cript.API`
     :param group_obj: object of group
     :type group_obj: `cript.Group`
-    :param coll_name: collection name
-    :type coll_name: str
+    :param collection_name: collection name
+    :type collection_name: str
     :return: object of collection
     :rtype: `cript.Collection`
     """
@@ -59,8 +63,9 @@ def get_collection(api, group_obj, coll_name):
             C.Collection,
             {
                 "group": group_obj.uid,
-                "name": coll_name,
+                "name": collection_name,
             },
+            max_level=0,
         )
         return collection_obj
     except APIGetError:
