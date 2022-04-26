@@ -30,5 +30,6 @@ def read_config():
             print(
                 f"An error happened when parsing config.json, " f"Info: {e.__str__()}"
             )
+            return {}, False
     else:
         return {}, False
