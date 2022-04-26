@@ -17,7 +17,7 @@ token = _config_key_dict.get("TOKEN")
 group_name = _config_key_dict.get("GROUP")
 collection_name = _config_key_dict.get("COLLECTION")
 path = _config_key_dict.get("EXCEL_TEMPLATE_FILE_PATH")
-public_flag = _config_key_dict.get("PUBLIC_FLAG")
+public_flag = None
 
 
 # API connection
@@ -25,7 +25,7 @@ db = None
 while db is None:
     if base_url is None:
         base_url = input("\nBase URL: ")
-    if  token is None:
+    if token is None:
         token = input("\nAPI token: ")
     try:
         print("Checking token...")
