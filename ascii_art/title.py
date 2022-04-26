@@ -9,5 +9,4 @@ template = """
                                                                                                              
  A Community Resource for Innovation in Polymer Technology
 
-
 """
