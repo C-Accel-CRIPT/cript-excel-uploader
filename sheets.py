@@ -308,15 +308,6 @@ class Sheet:
         elif field_nested_type == "data":
             parent["data"].append(standardize_name(value))
 
-    def _replace_field(self, columns, raw_key, replace_key):
-        output = []
-        for i in range(len(columns)):
-            if raw_key == columns[i]:
-                output.append(replace_key)
-            else:
-                output.append(columns[i])
-        return output
-
 
 class ExperimentSheet(Sheet):
     """Experiment Excel sheet."""
@@ -329,6 +320,9 @@ class ExperimentSheet(Sheet):
         self.parsed = {}
 
     def parse(self):
+        if self.df is None:
+            return self.parsed
+
         for index, row in self.df.iterrows():
             parsed_experiment = {
                 "base": {},
@@ -358,9 +352,6 @@ class DataSheet(Sheet):
         super().__init__(path, sheet_name, param)
 
         self._read_file()
-        # will remove later
-        self.df.columns = self._replace_field(self.df.columns, "*data_type", "type")
-
         self._data_preprocess()
         self.parsed = {}
 
@@ -409,8 +400,6 @@ class FileSheet(Sheet):
         super().__init__(path, sheet_name, param)
 
         self._read_file()
-        # will remove later
-        self.df.columns = self._replace_field(self.df.columns, "*path", "source")
         self._data_preprocess()
         self.parsed = {}
 

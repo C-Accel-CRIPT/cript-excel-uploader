@@ -108,10 +108,18 @@ def upload(api, node_type, dict_, user_uid):
                 obj.url = url
                 api.save(obj, print_success=False)
             except Exception as e:
-                print(f"\nSave Failed, " f"Info: {e.__str__()}")
-                # print(traceback.format_exc())
+                print(
+                    f"\nSave {obj.node_name} Failed, "
+                    f"Node object: {obj}, "
+                    f"Error Info: {e.__str__()}."
+                )
+                print(traceback.format_exc())
         except Exception as e:
-            print(f"\nSave Failed, " f"Info: {e.__str__()}")
+            print(
+                f"\nSave {obj.node_name} Failed, "
+                f"Node object: {obj}, "
+                f"Error Info: {e.__str__()}."
+            )
             # print(traceback.format_exc())
         finally:
             pbar.update(1)

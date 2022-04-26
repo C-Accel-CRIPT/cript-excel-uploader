@@ -15,8 +15,6 @@ import validators
 # exec(code, dict(__file__=activate_this))
 
 print(ascii_art.title.template)
-print(ascii_art.chem.template)
-print(ascii_art.thank_you.template)
 _config_key_dict, _config_is_found = util.read_config()
 
 token = _config_key_dict.get("TOKEN")
