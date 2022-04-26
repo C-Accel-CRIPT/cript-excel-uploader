@@ -528,6 +528,7 @@ class MixtureComponentSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_helper_cols()
         self.parsed = {}
 
     def _create_helper_cols(self):
@@ -633,6 +634,7 @@ class PrerequisiteProcessSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_helper_cols()
         self.parsed = {}
 
     def _create_helper_cols(self):

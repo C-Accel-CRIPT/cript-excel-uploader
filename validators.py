@@ -143,7 +143,7 @@ def validate_file_source(sheet_obj):
         col = "source"
         for idx, row in sheet_obj.df.iterrows():
             val = row.get(col)
-            if val is None or os.path.exists(val):
+            if val is None or not os.path.exists(val):
                 exception = InvalidFileSource(
                     src=val,
                     idx=idx,

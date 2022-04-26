@@ -15,6 +15,8 @@ import validators
 # exec(code, dict(__file__=activate_this))
 
 print(ascii_art.title.template)
+print(ascii_art.chem.template)
+print(ascii_art.thank_you.template)
 _config_key_dict, _config_is_found = util.read_config()
 
 token = _config_key_dict.get("TOKEN")
@@ -152,14 +154,19 @@ def validate_and_parse_sheets(_sheet_dict):
         validators.validate_either_or_cols(sheet)
         validators.validate_unique_key(sheet)
         validators.validate_not_null_value(sheet)
+        validators.validate_file_source(sheet)
         validators.validate_type(sheet)
         validators.validate_keyword(sheet)
 
     # Validate foreign key
     for pair in configs.foreign_key_validation_pairs:
-        pair["from_sheet_obj"] = _sheet_dict[pair["from_sheet_obj"]]
-        pair["to_sheet_obj"] = _sheet_dict[pair["to_sheet_obj"]]
-        validators.validate_foreign_key(**pair)
+        _pair = {
+            "from_field": "experiment",
+            "from_sheet_obj": _sheet_dict[pair["from_sheet_obj"]],
+            "to_field": "name",
+            "to_sheet_obj": _sheet_dict[pair["to_sheet_obj"]],
+        }
+        validators.validate_foreign_key(**_pair)
 
     # Validate "data"
     data_sheet = _sheet_dict.get("data")
@@ -309,10 +316,14 @@ while bug_count != 0:
     sheet_dict = construct_sheet_objs()
     validate_and_parse_sheets(sheet_dict)
     bug_count = output_detected_error(sheet_dict)
+    if bug_count != 0:
+        input("Press enter when you are ready to run parser again :P ")
 transform_and_upload(sheet_dict)
 
 # End
 print("\n\nAll data was uploaded!\n")
-url = collection_obj.url.replace("/api", "")
+url = collection_obj.url.replace("/api", "").strip("/")
 print(f"Have a check: {url}")
-time.sleep(86400 * 365)
+
+print(ascii_art.thank_you.template)
+input("\nPress enter to exit...")
