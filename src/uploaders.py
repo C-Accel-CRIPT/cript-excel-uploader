@@ -103,9 +103,12 @@ def upload(api, node_type, dict_, user_uid):
                 else:
                     query[field] = value.uid
             try:
-                url = api.get(obj.__class__, query).url
+                raw_obj = api.get(obj.__class__, query)
+                if obj.node_name == "File":
+                    for data_obj in raw_obj.data:
+                        obj.data.append(data_obj)
 
-                obj.url = url
+                obj.url = raw_obj.url
                 api.save(obj)
             except Exception as e:
                 print(
