@@ -44,7 +44,13 @@ class Sheet:
         try:
             self.df = pd.read_excel(self.path, sheet_name=self.sheet_name)
         except ValueError:
-            print(f"Worksheet [{self.sheet_name}] not found in your excel file.")
+            if self.sheet_name not in ["mixture component", "prerequisite process"]:
+                print(f"Worksheet [{self.sheet_name}] not found in your excel file.")
+        except Exception as e:
+            print(
+                f"There's an issue when we are trying to ingest your excel file. "
+                f"Error info: {e.__str__()}"
+            )
 
     def _data_preprocess(self):
         if self.df is None:
@@ -68,9 +74,9 @@ class Sheet:
                 self.col_parsed[col] = parse_col_name(col)
             except ColumnParseError as e:
                 exception = UnsupportedColumnName(
+                    msg=e.__str__(),
                     col=col,
                     sheet=self.sheet_name,
-                    message=e.__str__(),
                 )
                 self.errors.append(exception.__str__())
                 self.col_parsed[col] = ParsedColumnName(is_valid=False)
@@ -95,7 +101,7 @@ class Sheet:
         # Remove Space
         for index, row in self.df.iterrows():
             for col in self.cols:
-                value = row[col]
+                value = row.get(col)
                 if not pd.isna(value):
                     # Remove Space
                     if isinstance(value, str):
@@ -106,9 +112,8 @@ class Sheet:
         # Create Foreign Key Dict
         for col in self.foreign_keys:
             self.foreign_keys_dict[col] = {}
-            #! display index as row_index/row_number
             for index, row in self.df.iterrows():
-                value = row[col]
+                value = row.get(col)
                 if value is not None:
                     _value = str(value).replace(" ", "").lower()
                 self.foreign_keys_dict[col].update({_value: [value, index]})
@@ -135,7 +140,11 @@ class Sheet:
             # Discussing with Dylan with this problem
             # Duplicated "volume" field for both quantity and condition
             # Cause errors in process ingredient sheet when categorizing
-            if not found_tag and field == "volume":
+            if (
+                not found_tag
+                and field == "volume"
+                and self.sheet_name == "process ingredient"
+            ):
                 field_type_list.append("quan")
                 found_tag = True
 
@@ -329,8 +338,8 @@ class ExperimentSheet(Sheet):
             experiment_std_name = standardize_name(row["name"])
             for col in self.cols:
                 # Define value and field
-                value = row[col]
-                if pd.isna(value):
+                value = row.get(col)
+                if value is None or pd.isna(value):
                     continue
 
                 # Populate parsed_experiment dict
@@ -338,34 +347,6 @@ class ExperimentSheet(Sheet):
                     parsed_experiment["base"][col] = value
 
             self.parsed[experiment_std_name] = parsed_experiment
-
-        return self.parsed
-
-
-class MixtureComponentSheet(Sheet):
-    """MixtureComponent Excel sheet."""
-
-    def __init__(self, path, sheet_name, param):
-        super().__init__(path, sheet_name, param)
-
-        self._read_file()
-        self._data_preprocess()
-        self.parsed = {}
-
-    def parse(self):
-        if self.df is None:
-            return self.parsed
-
-        for index, row in self.df.iterrows():
-            material_std_name = standardize_name(row["material"])
-            component_std_name = standardize_name(row["component"])
-            parsed_mixture = {
-                "index": index + 2,
-                "component": component_std_name,
-            }
-            if material_std_name not in self.parsed:
-                self.parsed[material_std_name] = []
-            self.parsed[material_std_name].append(parsed_mixture)
 
         return self.parsed
 
@@ -394,6 +375,7 @@ class DataSheet(Sheet):
                 "name": row["name"],
             }
             data_std_name = standardize_name(row["name"])
+
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
@@ -403,8 +385,8 @@ class DataSheet(Sheet):
 
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
-                value = row[col]
-                if pd.isna(value):
+                value = row.get(col)
+                if value is None or pd.isna(value):
                     continue
 
                 # Handle foreign keys
@@ -441,6 +423,8 @@ class FileSheet(Sheet):
                 "base": {},
                 "index": index + 2,
             }
+            data_std_name = standardize_name(row["data"])
+
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
@@ -450,8 +434,8 @@ class FileSheet(Sheet):
 
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
-                value = row[col]
-                if pd.isna(value):
+                value = row.get(col)
+                if value is None or pd.isna(value):
                     continue
 
                 if col in configs.list_fields[self.sheet_name]:
@@ -465,7 +449,6 @@ class FileSheet(Sheet):
                 if field_type == "base":
                     parsed_file["base"][field] = value
 
-            data_std_name = standardize_name(row["data"])
             if data_std_name not in self.parsed:
                 self.parsed[data_std_name] = []
             self.parsed[data_std_name].append(parsed_file)
@@ -495,7 +478,8 @@ class MaterialSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            material_std_name = standardize_name(row["name"])
+            material_std_name = standardize_name(row.get("name"))
+
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
@@ -505,8 +489,8 @@ class MaterialSheet(Sheet):
 
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
-                value = row[col]
-                if pd.isna(value):
+                value = row.get(col)
+                if value is None or pd.isna(value):
                     continue
 
                 if col in configs.list_fields[self.sheet_name]:
@@ -536,6 +520,49 @@ class MaterialSheet(Sheet):
         return self.parsed
 
 
+class MixtureComponentSheet(Sheet):
+    """MixtureComponent Excel sheet."""
+
+    def __init__(self, path, sheet_name, param):
+        super().__init__(path, sheet_name, param)
+
+        self._read_file()
+        self._data_preprocess()
+        self.parsed = {}
+
+    def _create_helper_cols(self):
+        if self.df is None:
+            return None
+
+        for index, row in self.df.iterrows():
+            try:
+                _value = (
+                    "".join(self.df.loc[index, "process"])
+                    .join("+")
+                    .join(str(self.df.loc[index, "component"]))
+                )
+            except Exception:
+                _value = None
+            self.df.loc[index, "process+component"] = _value
+
+    def parse(self):
+        if self.df is None:
+            return self.parsed
+
+        for index, row in self.df.iterrows():
+            material_std_name = standardize_name(row.get("material"))
+            component_std_name = standardize_name(row.get("component"))
+            parsed_mixture = {
+                "component": component_std_name,
+                "index": index + 2,
+            }
+            if material_std_name not in self.parsed:
+                self.parsed[material_std_name] = []
+            self.parsed[material_std_name].append(parsed_mixture)
+
+        return self.parsed
+
+
 class ProcessSheet(Sheet):
     """Process Excel sheet."""
 
@@ -558,7 +585,7 @@ class ProcessSheet(Sheet):
                 "index": index + 2,
                 "name": row["name"],
             }
-            experiment_std_name = standardize_name(row["experiment"])
+            experiment_std_name = standardize_name(row.get("experiment"))
             for col in self.cols:
                 # Define value and field
                 parsed_column_name_obj = self.col_parsed[col]
@@ -568,8 +595,8 @@ class ProcessSheet(Sheet):
 
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
-                value = row[col]
-                if pd.isna(value):
+                value = row.get(col)
+                if value is None or pd.isna(value):
                     continue
 
                 if col in configs.list_fields[self.sheet_name]:
@@ -598,8 +625,8 @@ class ProcessSheet(Sheet):
         return self.parsed
 
 
-class DependentProcessSheet(Sheet):
-    """MixtureComponent Excel sheet."""
+class PrerequisiteProcessSheet(Sheet):
+    """Prerequisite Excel sheet."""
 
     def __init__(self, path, sheet_name, param):
         super().__init__(path, sheet_name, param)
@@ -608,18 +635,33 @@ class DependentProcessSheet(Sheet):
         self._data_preprocess()
         self.parsed = {}
 
+    def _create_helper_cols(self):
+        if self.df is None:
+            return None
+
+        for index, row in self.df.iterrows():
+            try:
+                _value = (
+                    "".join(self.df.loc[index, "process"])
+                    .join("+")
+                    .join(str(self.df.loc[index, "prerequisite_process"]))
+                )
+            except Exception:
+                _value = None
+            self.df.loc[index, "process+prerequisite_process"] = _value
+
     def parse(self):
         if self.df is None:
             return self.parsed
 
         for index, row in self.df.iterrows():
             parsed_dependency = {
+                "prerequisite_process": standardize_name(row["prerequisite_process"]),
                 "index": index + 2,
-                "dependent_process": standardize_name(row["dependent_process"]),
             }
 
-            process_std_name = standardize_name(row["process"])
-            if process_std_name not in self.parsed:
+            process_std_name = standardize_name(row.get("process"))
+            if process_std_name is not None and process_std_name not in self.parsed:
                 self.parsed[process_std_name] = []
             self.parsed[process_std_name].append(parsed_dependency)
 
@@ -644,7 +686,7 @@ class ProcessIngredientSheet(Sheet):
         for index, row in self.df.iterrows():
             _value = (
                 "".join(self.df.loc[index, "process"])
-                .join(":")
+                .join("+")
                 .join(str(self.df.loc[index, "ingredient"]))
             )
             self.df.loc[index, "process+ingredient"] = _value
@@ -670,8 +712,8 @@ class ProcessIngredientSheet(Sheet):
 
                 field = parsed_column_name_obj.field_list[0]
                 field_type = parsed_column_name_obj.field_type_list[0]
-                value = row[col]
-                if pd.isna(value):
+                value = row.get(col)
+                if value is None or pd.isna(value):
                     continue
 
                 if col in configs.list_fields[self.sheet_name]:
@@ -716,11 +758,14 @@ class ProcessProductSheet(Sheet):
             return None
 
         for index, row in self.df.iterrows():
-            _value = (
-                "".join(self.df.loc[index, "process"])
-                .join(":")
-                .join(str(self.df.loc[index, "product"]))
-            )
+            try:
+                _value = (
+                    "".join(self.df.loc[index, "process"])
+                    .join("+")
+                    .join(str(self.df.loc[index, "product"]))
+                )
+            except Exception:
+                _value = None
             self.df.loc[index, "process+product"] = _value
 
     def parse(self):

@@ -1,3 +1,6 @@
+import os
+import pandas as pd
+
 import configs
 import cript as C
 from errors import (
@@ -6,12 +9,14 @@ from errors import (
     NullValueError,
     MissingRequiredColumn,
     UnsupportedColumnName,
+    InvalidFileSource,
     InvalidPropertyError,
     InvalidConditionError,
     InvalidQuantityError,
     InvalidIdentifierError,
     InvalidTypeOrKeywordError,
 )
+from util import standardize_name
 
 
 def validate_required_cols(sheet_obj):
@@ -64,23 +69,23 @@ def validate_unique_key(sheet_obj):
 
             sheet_obj.unique_keys_dict[col] = {}
 
-            for index, row in sheet_obj.df.iterrows():
-                value = row[col]
-                if value is None:
+            for idx, row in sheet_obj.df.iterrows():
+                val = row.get(col)
+                if val is None:
                     continue
-                _value = value.replace(" ", "").lower()
-                if _value in _dict:
+                _val = standardize_name(val)
+                if _val in _dict:
                     exception = DuplicatedValueError(
-                        value1=value,
-                        index1=index,
-                        value2=sheet_obj.unique_keys_dict[col][_value][0],
-                        index2=sheet_obj.unique_keys_dict[col][_value][1],
+                        val1=val,
+                        idx1=idx,
+                        val2=sheet_obj.unique_keys_dict[col][_val][0],
+                        idx2=sheet_obj.unique_keys_dict[col][_val][1],
                         col=col,
                         sheet=sheet_obj.sheet_name,
                     )
                     sheet_obj.errors.append(exception.__str__())
                 else:
-                    sheet_obj.unique_keys_dict[col].update({_value: [value, index]})
+                    sheet_obj.unique_keys_dict[col].update({_val: [val, idx]})
 
 
 def validate_foreign_key(
@@ -97,15 +102,15 @@ def validate_foreign_key(
     ):
         return None
 
-    for index, row in from_sheet_obj.df.iterrows():
-        value = row[from_field]
-        if value is None:
+    for idx, row in from_sheet_obj.df.iterrows():
+        val = row.get(from_field)
+        if val is None:
             continue
-        _value = value.replace(" ", "").lower()
-        if _value not in _dict:
+        _val = standardize_name(val)
+        if _val not in _dict:
             exception = ValueDoesNotExist(
-                value=value,
-                index=index,
+                val=val,
+                idx=idx,
                 col=from_field,
                 sheet=from_sheet_obj.sheet_name,
                 sheet_to_check=to_sheet_obj.sheet_name,
@@ -119,15 +124,33 @@ def validate_not_null_value(sheet_obj):
     if sheet_obj.df is not None:
         for col in sheet_obj.not_null_cols:
             if col in sheet_obj.cols:
-                for index, row in sheet_obj.df.iterrows():
-                    value = row[col]
-                    if value is None or len(str(value).strip()) == 0:
+                for idx, row in sheet_obj.df.iterrows():
+                    val = row.get(col)
+                    if val is None or pd.isna(val) or len(str(val).strip()) == 0:
                         exception = NullValueError(
-                            index=index,
+                            idx=idx,
                             col=col,
                             sheet=sheet_obj.sheet_name,
                         )
                         sheet_obj.errors.append(exception.__str__())
+
+
+def validate_file_source(sheet_obj):
+    if sheet_obj.sheet_name != "file":
+        return 0
+
+    if sheet_obj.df is not None:
+        col = "source"
+        for idx, row in sheet_obj.df.iterrows():
+            val = row.get(col)
+            if val is None or os.path.exists(val):
+                exception = InvalidFileSource(
+                    src=val,
+                    idx=idx,
+                    col=col,
+                    sheet=sheet_obj.sheet_name,
+                )
+                sheet_obj.errors.append(exception.__str__())
 
 
 def validate_data_assignment(sheet_obj):
@@ -141,13 +164,11 @@ def validate_data_assignment(sheet_obj):
                 if field_type is None:
                     continue
                 if nested_field_type not in configs.allowed_data_assignment[field_type]:
-                    message = (
-                        f"[{field_list[i+1]}] cannot be nested to [{field_list[i]}]"
-                    )
+                    msg = f"[{field_list[i+1]}] cannot be nested to [{field_list[i]}]"
                     exception = UnsupportedColumnName(
+                        msg=msg,
                         col=parsed_column_name_obj.origin_col,
                         sheet=sheet_obj.sheet_name,
-                        message=message,
                     )
                     sheet_obj.errors.append(exception.__str__())
 
@@ -159,21 +180,21 @@ def validate_type(sheet_obj):
             field = parsed_column_name_obj.field_list[0]
             field_type = parsed_column_name_obj.field_type_list[0]
             if field == "type" and field_type == "base":
-                for index, row in sheet_obj.df.iterrows():
+                for idx, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
-                    value = str(row[col]).lower()
+                    val = str(row.get(col)).lower()
 
                     found_tag = False
                     for supported_type_dict in sheet_obj.param.get(param_key):
-                        if value == supported_type_dict["name"]:
+                        if val == supported_type_dict["name"]:
                             found_tag = True
                             break
 
                     if not found_tag:
                         exception = InvalidTypeOrKeywordError(
-                            msg=f"{value} is not a supported type",
-                            idx=index + 2,
+                            msg=f"{val} is not a supported type",
+                            idx=idx + 2,
                             col=col,
                             sheet=sheet_name,
                         )
@@ -187,14 +208,14 @@ def validate_keyword(sheet_obj):
             field = parsed_column_name_obj.field_list[0]
             field_type = parsed_column_name_obj.field_type_list[0]
             if field[:7] == "keyword" and field_type == "base":
-                for index, row in sheet_obj.df.iterrows():
+                for idx, row in sheet_obj.df.iterrows():
                     sheet_name = sheet_obj.sheet_name
                     col = parsed_column_name_obj.origin_col
-                    value = str(row[col]).lower()
-                    value_list = value.split(",")
-                    value_list = [value.strip() for value in value_list]
-                    invalid_value_list = []
-                    for keyword in value_list:
+                    val = str(row.get(col)).lower()
+                    val_list = val.split(",")
+                    val_list = [val.strip() for val in val_list]
+                    invalid_val_list = []
+                    for keyword in val_list:
                         found_tag = False
                         for supported_keyword_dict in sheet_obj.param.get(param_key):
                             if keyword == supported_keyword_dict["name"]:
@@ -202,12 +223,12 @@ def validate_keyword(sheet_obj):
                                 break
 
                         if not found_tag:
-                            invalid_value_list.append(keyword)
+                            invalid_val_list.append(keyword)
 
-                    for invalid_value in invalid_value_list:
+                    for invalid_val in invalid_val_list:
                         exception = InvalidTypeOrKeywordError(
-                            msg=f"{invalid_value} is not a supported keyword",
-                            idx=index + 2,
+                            msg=f"{invalid_val} is not a supported keyword",
+                            idx=idx + 2,
                             col=col,
                             sheet=sheet_name,
                         )

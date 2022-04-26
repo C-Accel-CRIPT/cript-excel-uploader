@@ -2,7 +2,6 @@ import cript as C
 from tqdm import tqdm
 import traceback
 from configs import BASE_URL
-from errors import GroupRelatedError
 from cript.exceptions import (
     DuplicateNodeError,
     APIGetError,
@@ -39,8 +38,8 @@ def get_group(api, group_name):
         )
         return group_obj
     except APIGetError:
-        raise GroupRelatedError(
-            "Error: You must enter an existing CRIPT group. Try again."
+        raise Exception(
+            "Error: You must enter " "an existing CRIPT group. " "Try again."
         )
 
 
@@ -69,8 +68,8 @@ def get_collection(api, group_obj, collection_name):
         )
         return collection_obj
     except APIGetError:
-        raise GroupRelatedError(
-            "Error: You must enter an existing CRIPT collection. Try again."
+        raise Exception(
+            "Error: You must enter " "an existing CRIPT collection. " "Try again."
         )
 
 

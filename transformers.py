@@ -1,5 +1,5 @@
 import cript as C
-from errors import CreatNodeError
+from errors import CreatOrUpdateNodeError
 
 
 def transform_experiment(group_obj, collection_obj, parsed_experiments, public_flag):
@@ -38,7 +38,7 @@ def transform_experiment(group_obj, collection_obj, parsed_experiments, public_f
             sheet = "Experiment"
             idx = parsed_experiments[experiment_std_name]["index"]
             print(
-                CreatNodeError(
+                CreatOrUpdateNodeError(
                     msg=e.__str__(),
                     idx=idx,
                     node_type=node_type,
@@ -85,7 +85,7 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
             sheet = "Data"
             idx = parsed_data["index"]
             print(
-                CreatNodeError(
+                CreatOrUpdateNodeError(
                     msg=e.__str__(),
                     idx=idx,
                     node_type=node_type,
@@ -135,7 +135,7 @@ def transform_file(group_obj, data_objs, parsed_file, public_flag):
                 sheet = "File"
                 idx = file["index"]
                 print(
-                    CreatNodeError(
+                    CreatOrUpdateNodeError(
                         msg=e.__str__(),
                         idx=idx,
                         node_type=node_type,
@@ -193,7 +193,7 @@ def transform_material(group_obj, data_objs, parsed_materials, public_flag):
             sheet = "Material"
             idx = parsed_material["index"]
             print(
-                CreatNodeError(
+                CreatOrUpdateNodeError(
                     msg=e.__str__(),
                     idx=idx,
                     node_type=node_type,
@@ -225,7 +225,7 @@ def transform_components(material_objs, parsed_components):
                 sheet = "mixture component"
                 idx = parsed_component["index"]
                 print(
-                    CreatNodeError(
+                    CreatOrUpdateNodeError(
                         msg=e.__str__(),
                         idx=idx,
                         node_type=node_type,
@@ -294,7 +294,7 @@ def transform_process(
                 sheet = "process"
                 idx = parsed_process["index"]
                 print(
-                    CreatNodeError(
+                    CreatOrUpdateNodeError(
                         msg=e.__str__(),
                         idx=idx,
                         node_type=node_type,
@@ -315,7 +315,7 @@ def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
         prerequisite_process_list = parsed_prerequisite_processes.get(process_std_name)
         for i in range(len(prerequisite_process_list)):
             prerequisite_process_std_name = prerequisite_process_list[i][
-                "dependent_process"
+                "prerequisite_process"
             ]
             prerequisite_process_obj = process_objs.get(prerequisite_process_std_name)
             try:
@@ -325,7 +325,7 @@ def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
                 sheet = "prerequisite process"
                 idx = prerequisite_process_list[i]["index"]
                 print(
-                    CreatNodeError(
+                    CreatOrUpdateNodeError(
                         msg=e.__str__(),
                         idx=idx,
                         node_type=node_type,
@@ -374,7 +374,7 @@ def transform_process_ingredient(
                 sheet = "process ingredient"
                 idx = parsed_ingredient["index"]
                 print(
-                    CreatNodeError(
+                    CreatOrUpdateNodeError(
                         msg=e.__str__(),
                         idx=idx,
                         node_type=node_type,
@@ -412,7 +412,7 @@ def transform_process_product(process_objs, material_objs, parsed_processProduct
                 sheet = "process product"
                 idx = parsed_product["index"]
                 print(
-                    CreatNodeError(
+                    CreatOrUpdateNodeError(
                         msg=e.__str__(),
                         idx=idx,
                         node_type=node_type,

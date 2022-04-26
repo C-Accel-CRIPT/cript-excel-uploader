@@ -1,18 +1,18 @@
 class UnsupportedColumnName(Exception):
-    def __init__(self, col, sheet, field=None, message=None):
-        self.sheet = sheet
-        self.col = col
-        self.message = message
+    def __init__(self, col, sheet, field=None, msg=None):
+        self.msg = msg
         self.field = field
+        self.col = col
+        self.sheet = sheet
 
     def __str__(self):
-        if self.message:
+        if self.msg:
             return (
                 f"UnsupportedColumnName: "
                 f"Sheet [{self.sheet}], "
                 f"Column [{self.col}], "
                 f"Input Column name is not supported."
-                f"Message: {self.message}"
+                f"Message: {self.msg}"
             )
         elif self.field:
             return (
@@ -32,18 +32,18 @@ class UnsupportedColumnName(Exception):
 
 
 class UnsupportedValue(Exception):
-    def __init__(self, value, col):
-        self.value = value
+    def __init__(self, val, col):
+        self.val = val
         self.col = col
 
     def __str__(self):
-        return f"'{self.value}' is not a supported value for '{self.col}'"
+        return f"'{self.val}' is not a supported value for '{self.col}'"
 
 
 class ValueDoesNotExist(Exception):
-    def __init__(self, value, index, col, sheet, sheet_to_check, col_to_check):
-        self.value = value
-        self.index = index
+    def __init__(self, val, idx, col, sheet, sheet_to_check, col_to_check):
+        self.val = val
+        self.idx = idx
         self.col = col
         self.sheet = sheet
         self.sheet_to_check = sheet_to_check
@@ -57,19 +57,19 @@ class ValueDoesNotExist(Exception):
             f"ValueDoesNotExist: "
             f"Sheet [{self.sheet}], "
             f"Column [{self.col}], "
-            f"Index [{self.index}], "
-            f"Value [{self.value}] does not exist "
+            f"Index [{self.idx}], "
+            f"Value [{self.val}] does not exist "
             f"in the [{self.col_to_check}] column "
             f"of [{self.sheet_to_check}] sheet."
         )
 
 
 class DuplicatedValueError(Exception):
-    def __init__(self, value1, index1, value2, index2, col, sheet):
-        self.value1 = value1
-        self.index1 = index1
-        self.value2 = value2
-        self.index2 = index2
+    def __init__(self, val1, idx1, val2, idx2, col, sheet):
+        self.val1 = val1
+        self.idx1 = idx1
+        self.val2 = val2
+        self.idx2 = idx2
         self.col = col
         self.sheet = sheet
 
@@ -78,16 +78,16 @@ class DuplicatedValueError(Exception):
             f"DuplicatedValueError: "
             f"Sheet [{self.sheet}], "
             f"Column [{self.col}], "
-            f"Index [{self.index1}], "
-            f"Value [{self.value1}] is duplicated with"
-            f"value [{self.value2}] at index [{self.index2}]. "
-            f"Every value should be unique in this column."
+            f"Index [{self.idx1}], "
+            f"Value [{self.val1}] is duplicated with"
+            f"value [{self.val2}] at index [{self.idx2}]. "
+            f"Each value should be unique in this column."
         )
 
 
 class NullValueError(Exception):
-    def __init__(self, index, col, sheet):
-        self.index = index
+    def __init__(self, idx, col, sheet):
+        self.idx = idx
         self.col = col
         self.sheet = sheet
 
@@ -96,7 +96,7 @@ class NullValueError(Exception):
             f"NullValueError: "
             f"Sheet [{self.sheet}], "
             f"Column [{self.col}], "
-            f"Index [{self.index}], "
+            f"Index [{self.idx}], "
             f"Null value is not allowed for this column."
         )
 
@@ -122,6 +122,23 @@ class MissingRequiredColumn(Exception):
                 f"Column {self.col}, "
                 f"Must include at least one of the columns from the list."
             )
+
+
+class InvalidFileSource(Exception):
+    def __init__(self, src, idx, col, sheet):
+        self.src = src
+        self.idx = idx
+        self.col = col
+        self.sheet = sheet
+
+    def __str__(self):
+        return (
+            f"InvalidFileSourceError: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Invalid file source: [{self.src}]."
+        )
 
 
 class InvalidIdentifierError(Exception):
@@ -209,7 +226,7 @@ class InvalidTypeOrKeywordError(Exception):
         )
 
 
-class CreatNodeError(Exception):
+class CreatOrUpdateNodeError(Exception):
     def __init__(self, msg, idx, node_type, sheet):
         self.msg = msg
         self.idx = idx
@@ -226,18 +243,10 @@ class CreatNodeError(Exception):
         )
 
 
-class GroupRelatedError(Exception):
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return f"{self.message}"
-
-
 class ColumnParseError(Exception):
-    def __init__(self, message, curr_string):
-        self.message = message
+    def __init__(self, msg, curr_string):
+        self.msg = msg
         self.curr_string = curr_string
 
     def __str__(self):
-        return f"{self.message} : {self.curr_string}<--"
+        return f"{self.msg} : {self.curr_string}<--"

@@ -11,7 +11,7 @@ required_cols = {
     "material": filter_required_col(C.Material.required),
     "mixture component": ["material", "component"],
     "process": filter_required_col(C.Process.required),
-    "dependent process": ["process", "dependent_process"],
+    "prerequisite process": ["process", "prerequisite_process"],
     "process ingredient": ["process", "ingredient", "keyword"],
     "process product": ["process", "product"],
 }
@@ -23,7 +23,7 @@ either_or_cols = {
     "material": [],
     "mixture component": [],
     "process": [],
-    "dependent process": [],
+    "prerequisite process": [],
     "step": [],
     "process ingredient": ["mole", "mass", "volume"],
     "process product": [],
@@ -36,8 +36,8 @@ unique_keys = {
     "material": ["name"],
     "mixture component": ["material+component"],
     "process": ["name"],
-    "dependent process": ["process+dependent_process"],
-    "process ingredient": ["process+material"],
+    "prerequisite process": ["process+prerequisite_process"],
+    "process ingredient": ["process+ingredient"],
     "process product": ["process+product"],
 }
 
@@ -48,7 +48,7 @@ foreign_keys = {
     "material": [],
     "mixture component": ["material", "component"],
     "process": ["experiment"],
-    "dependent process": ["process", "dependent_process"],
+    "prerequisite process": ["process", "prerequisite_process"],
     "process ingredient": ["process", "ingredient"],
     "process product": ["process", "product"],
 }
@@ -60,7 +60,7 @@ list_fields = {
     "material": ["names"],
     "mixture component": [],
     "process": ["keywords"],
-    "dependent process": [],
+    "prerequisite process": [],
     "process ingredient": [],
     "process product": [],
 }
@@ -85,7 +85,7 @@ base_nodes = {
     "material": {"material"},
     "mixture component": {},
     "process": {"process"},
-    "dependent process": {},
+    "prerequisite process": {},
     "process ingredient": {"ingredient"},
     "process product": {},
 }
@@ -122,13 +122,13 @@ foreign_key_validation_pairs = [
     },
     {
         "from_field": "process",
-        "from_sheet_obj": "dependent process",
+        "from_sheet_obj": "prerequisite process",
         "to_field": "name",
         "to_sheet_obj": "process",
     },
     {
-        "from_field": "dependent_process",
-        "from_sheet_obj": "dependent process",
+        "from_field": "prerequisite_process",
+        "from_sheet_obj": "prerequisite process",
         "to_field": "name",
         "to_sheet_obj": "process",
     },

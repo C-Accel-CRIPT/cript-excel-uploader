@@ -122,8 +122,8 @@ def construct_sheet_objs():
         path, "mixture component", param
     )
     process_sheet = sheets.ProcessSheet(path, "process", param)
-    prerequisite_process_sheet = sheets.DependentProcessSheet(
-        path, "dependent process", param
+    prerequisite_process_sheet = sheets.PrerequisiteProcessSheet(
+        path, "prerequisite process", param
     )
     process_ingredient_sheet = sheets.ProcessIngredientSheet(
         path, "process ingredient", param
@@ -137,7 +137,7 @@ def construct_sheet_objs():
         "material": material_sheet,
         "mixture component": mixture_component_sheet,
         "process": process_sheet,
-        "dependent process": prerequisite_process_sheet,
+        "prerequisite process": prerequisite_process_sheet,
         "process ingredient": process_ingredient_sheet,
         "process product": process_product_sheet,
     }
@@ -173,7 +173,7 @@ def validate_and_parse_sheets(_sheet_dict):
                 )
 
     # Parse Excel sheets
-    for sheet in _sheet_dict:
+    for sheet in _sheet_dict.values():
         sheet.parse()
 
     # Validate property, condition, identity and quantity
@@ -219,7 +219,7 @@ def transform_and_upload(_sheet_dict):
     material_sheet = _sheet_dict.get("material")
     mixture_component_sheet = _sheet_dict.get("mixture component")
     process_sheet = _sheet_dict.get("process")
-    prerequisite_process_sheet = _sheet_dict.get("dependent process")
+    prerequisite_process_sheet = _sheet_dict.get("prerequisite process")
     process_ingredient_sheet = _sheet_dict.get("process ingredient")
     process_product_sheet = _sheet_dict.get("process product")
 
