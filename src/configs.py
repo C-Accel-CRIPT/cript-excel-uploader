@@ -40,12 +40,12 @@ unique_keys = {
 }
 
 foreign_keys = {
-    "experiment": [],
-    "data": ["experiment"],
+    "experiment": ["name"],
+    "data": ["experiment", "name"],
     "file": ["data"],
-    "material": [],
+    "material": ["name"],
     "mixture component": ["material", "component"],
-    "process": ["experiment"],
+    "process": ["experiment", "name"],
     "prerequisite process": ["process", "prerequisite_process"],
     "process ingredient": ["process", "ingredient"],
     "process product": ["process", "product"],

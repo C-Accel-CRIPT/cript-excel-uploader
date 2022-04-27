@@ -147,6 +147,9 @@ class Sheet:
                 field_type_list.append(None)
                 found_tag = True
 
+            if not found_tag and field == "name":
+                field_type_list.append("base")
+                found_tag = True
             # Discussing with Dylan with this problem
             # Duplicated "volume" field for both quantity and condition
             # Cause errors in process ingredient sheet when categorizing
@@ -368,6 +371,7 @@ class DataSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def parse(self):

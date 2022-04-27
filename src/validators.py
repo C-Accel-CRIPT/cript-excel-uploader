@@ -62,22 +62,23 @@ def validate_unique_key(sheet_obj):
     # Check for unique keys
     if sheet_obj.df is not None:
         for col in sheet_obj.unique_keys:
-            _dict = sheet_obj.unique_keys_dict.get(col)
-
-            if _dict is None or col not in sheet_obj.cols:
+            if col not in sheet_obj.cols:
                 continue
 
-            sheet_obj.unique_keys_dict[col] = {}
+            if col not in sheet_obj.unique_keys_dict:
+                sheet_obj.unique_keys_dict[col] = {}
+
+            _dict = sheet_obj.unique_keys_dict[col]
 
             for idx, row in sheet_obj.df.iterrows():
                 val = row.get(col)
-                if val is None:
+                if val is None or pd.isna(val):
                     continue
                 _val = standardize_name(val)
                 if _val in _dict:
                     exception = DuplicatedValueError(
                         val1=val,
-                        idx1=idx,
+                        idx1=idx + 2,
                         val2=sheet_obj.unique_keys_dict[col][_val][0],
                         idx2=sheet_obj.unique_keys_dict[col][_val][1],
                         col=col,
@@ -85,7 +86,7 @@ def validate_unique_key(sheet_obj):
                     )
                     sheet_obj.errors.append(exception.__str__())
                 else:
-                    sheet_obj.unique_keys_dict[col].update({_val: [val, idx]})
+                    sheet_obj.unique_keys_dict[col].update({_val: [val, idx + 2]})
 
 
 def validate_foreign_key(
@@ -104,13 +105,13 @@ def validate_foreign_key(
 
     for idx, row in from_sheet_obj.df.iterrows():
         val = row.get(from_field)
-        if val is None:
+        if val is None or pd.isna(val):
             continue
         _val = standardize_name(val)
         if _val not in _dict:
             exception = ValueDoesNotExist(
                 val=val,
-                idx=idx,
+                idx=idx + 2,
                 col=from_field,
                 sheet=from_sheet_obj.sheet_name,
                 sheet_to_check=to_sheet_obj.sheet_name,
@@ -128,7 +129,7 @@ def validate_not_null_value(sheet_obj):
                     val = row.get(col)
                     if val is None or pd.isna(val) or len(str(val).strip()) == 0:
                         exception = NullValueError(
-                            idx=idx,
+                            idx=idx + 2,
                             col=col,
                             sheet=sheet_obj.sheet_name,
                         )
@@ -146,7 +147,7 @@ def validate_file_source(sheet_obj):
             if val is None or not os.path.exists(val):
                 exception = InvalidFileSource(
                     src=val,
-                    idx=idx,
+                    idx=idx + 2,
                     col=col,
                     sheet=sheet_obj.sheet_name,
                 )

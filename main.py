@@ -165,11 +165,9 @@ def validate_and_parse_sheets(_sheet_dict):
     for sheet in _sheet_dict.values():
         for col in sheet.col_parsed:
             parsed_col_name_obj = sheet.col_parsed[col]
-            field_list = parsed_col_name_obj.field_list
-            if "data" in field_list:
-                validators.validate_foreign_key(
-                    col, sheet.sheet_name, "name", data_sheet
-                )
+            field_type_list = parsed_col_name_obj.field_type_list
+            if "data" in field_type_list:
+                validators.validate_foreign_key(col, sheet, "name", data_sheet)
 
     # Parse Excel sheets
     for sheet in _sheet_dict.values():
