@@ -1,5 +1,6 @@
 import time
 import os
+import sys
 
 from src import ascii_art
 from src import configs
@@ -9,8 +10,11 @@ from src import uploaders
 from src import util
 from src import validators
 
+
+executable_directory = os.path.realpath(os.path.dirname(sys.argv[0]))
+
 print(ascii_art.title.template)
-_config_key_dict, _config_is_found = util.read_config()
+_config_key_dict, _config_is_found = util.read_config(executable_directory)
 
 base_url = _config_key_dict.get("BASE_URL")
 token = _config_key_dict.get("TOKEN")
@@ -146,7 +150,7 @@ def validate_and_parse_sheets(_sheet_dict):
         validators.validate_either_or_cols(sheet)
         validators.validate_unique_key(sheet)
         validators.validate_not_null_value(sheet)
-        # validators.validate_file_source(sheet)
+        validators.validate_file_source(sheet)
         validators.validate_type(sheet)
         validators.validate_keyword(sheet)
 
@@ -239,13 +243,13 @@ def transform_and_upload(_sheet_dict):
     uploaders.upload(db, "Data", data_objs, user_uid)
 
     # file
-    # file_objs = transformers.transform_file(
-    #     group_obj,
-    #     data_objs,
-    #     file_sheet.parsed,
-    #     public_flag,
-    # )
-    # uploaders.upload(db, "File", file_objs, user_uid)
+    file_objs = transformers.transform_file(
+        group_obj,
+        data_objs,
+        file_sheet.parsed,
+        public_flag,
+    )
+    uploaders.upload(db, "File", file_objs, user_uid)
 
     # material
     material_objs = transformers.transform_material(

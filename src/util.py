@@ -20,8 +20,8 @@ def filter_required_col(required_col_list):
     return new_list
 
 
-def read_config():
-    file_path = "config.json"
+def read_config(executable_directory):
+    file_path = os.path.join(executable_directory, "./config.json")
     if os.path.exists(file_path):
         try:
             with open(file_path, "r") as f:
