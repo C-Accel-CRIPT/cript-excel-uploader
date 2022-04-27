@@ -224,7 +224,7 @@ class Sheet:
                 parsed_column_name_obj.is_valid = False
                 break
 
-    def _parse_prop(self, col, start_index, value, parsed_object):
+    def _parse_prop(self, col, idx, start_index, value, parsed_object):
         """
         Parse a property column with it's associated standard units and attributes.
         Currently used in material sheet and process sheet
@@ -254,6 +254,8 @@ class Sheet:
                 "attr": {},
                 "cond": {},
                 "data": [],
+                "col": col,
+                "idx": idx,
             }
 
         parent = parsed_object["prop"][field][identifier]
@@ -271,9 +273,9 @@ class Sheet:
             parent["data"].append(standardize_name(value))
         # prop:cond
         elif field_nested_type == "cond":
-            self._parse_cond(col, start_index + 1, value, parent)
+            self._parse_cond(col, idx, start_index + 1, value, parent)
 
-    def _parse_cond(self, col, start_index, value, parsed_object):
+    def _parse_cond(self, col, idx, start_index, value, parsed_object):
         """
         Parse a condition column with it's associated standard units.
         Currently used in data sheet, material sheet and process sheet
@@ -302,6 +304,8 @@ class Sheet:
             parsed_object["cond"][field][identifier] = {
                 "attr": {},
                 "data": [],
+                "col": col,
+                "idx": idx,
             }
 
         parent = parsed_object["cond"][field][identifier]
@@ -508,11 +512,11 @@ class MaterialSheet(Sheet):
 
                 # Handle properties
                 if field_type == "prop":
-                    self._parse_prop(col, 0, value, parsed_material)
+                    self._parse_prop(col, index + 2, 0, value, parsed_material)
 
                 # Handle conditions
                 if field_type == "cond":
-                    self._parse_cond(col, 0, value, parsed_material)
+                    self._parse_cond(col, index + 2, 0, value, parsed_material)
 
             self.parsed[material_std_name] = parsed_material
 
@@ -612,11 +616,11 @@ class ProcessSheet(Sheet):
 
                 # Handle properties
                 if field_type == "prop":
-                    self._parse_prop(col, 0, value, parsed_process)
+                    self._parse_prop(col, index + 2, 0, value, parsed_process)
 
                 # Handle conditions
                 if field_type == "cond":
-                    self._parse_cond(col, 0, value, parsed_process)
+                    self._parse_cond(col, index + 2, 0, value, parsed_process)
 
             if experiment_std_name not in self.parsed:
                 self.parsed[experiment_std_name] = []

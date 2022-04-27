@@ -260,63 +260,62 @@ def validate_keyword(sheet_obj):
 
 
 def validate_property(sheet_obj):
+    print(sheet_obj.sheet_name)
     for key, parsed_object in sheet_obj.parsed.items():
-        if not isinstance(parsed_object, dict):
-            continue
+        if isinstance(parsed_object, dict):
+            _validate_property(sheet_obj, parsed_object)
+        elif isinstance(parsed_object, list):
+            for parsed_object_nested in parsed_object:
+                _validate_property(sheet_obj, parsed_object_nested)
 
-        parsed_props = parsed_object.get("prop")
-        if parsed_props is not None and len(parsed_props) > 0:
-            for prop_key in parsed_props:
-                for identifier in parsed_props[prop_key]:
-                    parent = parsed_props[prop_key][identifier]
-                    try:
-                        C.Property(**parent["attr"])
-                    except Exception as e_raw:
-                        exception = InvalidPropertyError(
-                            msg=e_raw.__str__(),
-                            idx=parsed_object["index"],
-                            col=prop_key,
-                            sheet=sheet_obj.sheet_name,
-                        )
-                        sheet_obj.errors.append(exception.__str__())
 
-        parsed_conds = parsed_object.get("cond")
-        if parsed_conds is not None and len(parsed_conds) > 0:
-            for cond_key in parsed_conds:
-                for identifier in parsed_conds[cond_key]:
-                    parent = parsed_conds[cond_key][identifier]
-                    try:
-                        C.Condition(**parent["attr"])
-                    except Exception as e_raw:
-                        exception = InvalidConditionError(
-                            msg=e_raw.__str__(),
-                            idx=parsed_object["index"],
-                            col=cond_key,
-                            sheet=sheet_obj.sheet_name,
-                        )
-                        sheet_obj.errors.append(exception.__str__())
+def _validate_property(sheet_obj, parsed_object):
+    parsed_props = parsed_object.get("prop")
+    if parsed_props is not None and len(parsed_props) > 0:
+        for prop_key in parsed_props:
+            for identifier in parsed_props[prop_key]:
+                parent = parsed_props[prop_key][identifier]
+                try:
+                    print(C.Property(**parent["attr"]))
+                except Exception as e_raw:
+                    exception = InvalidPropertyError(
+                        msg=e_raw.__str__(),
+                        idx=parent["idx"],
+                        col=parent["col"],
+                        sheet=sheet_obj.sheet_name,
+                    )
+                    sheet_obj.errors.append(exception.__str__())
+                finally:
+                    # property:condition
+                    print(parsed_object)
+                    _validate_condition(sheet_obj, parent)
 
 
 def validate_condition(sheet_obj):
     for key, parsed_object in sheet_obj.parsed.items():
-        if not isinstance(parsed_object, dict):
-            continue
+        if isinstance(parsed_object, dict):
+            _validate_condition(sheet_obj, parsed_object)
+        elif isinstance(parsed_object, list):
+            for parsed_object_nested in parsed_object:
+                _validate_condition(sheet_obj, parsed_object_nested)
 
-        parsed_conds = parsed_object.get("cond")
-        if parsed_conds is not None and len(parsed_conds) > 0:
-            for cond_key in parsed_conds:
-                for identifier in parsed_conds[cond_key]:
-                    parent = parsed_conds[cond_key][identifier]
-                    try:
-                        C.Condition(**parent["attr"])
-                    except Exception as e_raw:
-                        exception = InvalidConditionError(
-                            msg=e_raw.__str__(),
-                            idx=parsed_object["index"],
-                            col=cond_key,
-                            sheet=sheet_obj.sheet_name,
-                        )
-                        sheet_obj.errors.append(exception.__str__())
+
+def _validate_condition(sheet_obj, parsed_object):
+    parsed_conds = parsed_object.get("cond")
+    if parsed_conds is not None and len(parsed_conds) > 0:
+        for cond_key in parsed_conds:
+            for identifier in parsed_conds[cond_key]:
+                parent = parsed_conds[cond_key][identifier]
+                try:
+                    C.Condition(**parent["attr"])
+                except Exception as e_raw:
+                    exception = InvalidConditionError(
+                        msg=e_raw.__str__(),
+                        idx=parent["idx"],
+                        col=parent["col"],
+                        sheet=sheet_obj.sheet_name,
+                    )
+                    sheet_obj.errors.append(exception.__str__())
 
 
 def validate_identity(sheet_obj):
