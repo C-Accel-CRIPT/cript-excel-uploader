@@ -98,6 +98,8 @@ def validate_foreign_key(
     _dict = to_sheet_obj.foreign_keys_dict.get(to_field)
     if (
         _dict is None
+        or from_sheet_obj.cols is None
+        or to_sheet_obj.cols is None
         or from_field not in from_sheet_obj.cols
         or to_field not in to_sheet_obj.cols
     ):

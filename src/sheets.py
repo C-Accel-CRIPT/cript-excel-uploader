@@ -121,6 +121,8 @@ class Sheet:
 
     def _create_foreign_key_dict(self):
         # Create Foreign Key Dict
+        if self.df is None:
+            return 0
         for col in self.foreign_keys:
             self.foreign_keys_dict[col] = {}
             for index, row in self.df.iterrows():
