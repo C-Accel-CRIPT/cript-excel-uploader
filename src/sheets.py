@@ -119,13 +119,13 @@ class Sheet:
                         value = value.strip("\u202a")
                 self.df.loc[index, col] = value
 
+    def _create_foreign_key_dict(self):
         # Create Foreign Key Dict
         for col in self.foreign_keys:
             self.foreign_keys_dict[col] = {}
             for index, row in self.df.iterrows():
                 value = row.get(col)
-                if value is not None:
-                    _value = str(value).replace(" ", "").lower()
+                _value = standardize_name(value)
                 self.foreign_keys_dict[col].update({_value: [value, index]})
 
     def _standardize_and_categorize_field(self, parsed_column_name_obj):
@@ -331,6 +331,7 @@ class ExperimentSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def parse(self):
@@ -415,6 +416,7 @@ class FileSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def parse(self):
@@ -467,6 +469,7 @@ class MaterialSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def parse(self):
@@ -532,6 +535,7 @@ class MixtureComponentSheet(Sheet):
         self._read_file()
         self._data_preprocess()
         self._create_helper_cols()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def _create_helper_cols(self):
@@ -575,6 +579,7 @@ class ProcessSheet(Sheet):
 
         self._read_file()
         self._data_preprocess()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def parse(self):
@@ -638,6 +643,7 @@ class PrerequisiteProcessSheet(Sheet):
         self._read_file()
         self._data_preprocess()
         self._create_helper_cols()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def _create_helper_cols(self):
@@ -682,6 +688,7 @@ class ProcessIngredientSheet(Sheet):
         self._read_file()
         self._data_preprocess()
         self._create_helper_cols()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def _create_helper_cols(self):
@@ -756,6 +763,7 @@ class ProcessProductSheet(Sheet):
         self._read_file()
         self._data_preprocess()
         self._create_helper_cols()
+        self._create_foreign_key_dict()
         self.parsed = {}
 
     def _create_helper_cols(self):
