@@ -260,7 +260,6 @@ def validate_keyword(sheet_obj):
 
 
 def validate_property(sheet_obj):
-    print(sheet_obj.sheet_name)
     for key, parsed_object in sheet_obj.parsed.items():
         if isinstance(parsed_object, dict):
             _validate_property(sheet_obj, parsed_object)
@@ -276,7 +275,7 @@ def _validate_property(sheet_obj, parsed_object):
             for identifier in parsed_props[prop_key]:
                 parent = parsed_props[prop_key][identifier]
                 try:
-                    print(C.Property(**parent["attr"]))
+                    C.Property(**parent["attr"])
                 except Exception as e_raw:
                     exception = InvalidPropertyError(
                         msg=e_raw.__str__(),
@@ -287,7 +286,6 @@ def _validate_property(sheet_obj, parsed_object):
                     sheet_obj.errors.append(exception.__str__())
                 finally:
                     # property:condition
-                    print(parsed_object)
                     _validate_condition(sheet_obj, parent)
 
 
