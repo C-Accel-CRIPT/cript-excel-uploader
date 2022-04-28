@@ -89,9 +89,13 @@ while (
     if path is None or len(path) == 0:
         pass
     elif not os.path.exists(path):
-        print("File not found. Try again.")
+        print(
+            "File not found. Make sure you type in a valid path with file extension. Try again."
+        )
     else:
-        print("This is not an excel file. Try again.")
+        print(
+            "Sorry, the file you want to put in is not an xlsx file. Only xlsx file is supported."
+        )
     path = input("\nExcel file path: ")
     print("Checking file path...")
 print("Excel file found.\n")
