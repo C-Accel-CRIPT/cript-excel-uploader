@@ -38,6 +38,7 @@ while db is None:
         print("")
     except Exception as e:
         print(e.__str__())
+        base_url = None
         token = None
 
 
