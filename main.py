@@ -1,6 +1,7 @@
 import time
 import os
 import sys
+from getpass import getpass
 
 from src import ascii_art
 from src import configs
@@ -30,7 +31,7 @@ while db is None:
     if base_url is None:
         base_url = input("\nBase URL: ")
     if token is None:
-        token = input("\nAPI token: ")
+        token = getpass("API Token: ")
     try:
         print("Checking token...")
         db = uploaders.connect(base_url, token)
