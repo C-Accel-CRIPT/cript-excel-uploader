@@ -1,24 +1,34 @@
 # CRIPT Excel Uploader
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)  
 
-This repository contains scripts to upload data from a standard Excel template to the CRIPT database.
+This repository contains scripts to upload data from a standard Excel template to the CRIPT database.  
 
-## Download executable file
+Feedbacks welcomed! Click the **Share a thought** button in left behind of our [website](https://www.criptapp.org/). 
 
-Executables are available for Windows and MacOS.
-
-* **Windows**
-    * Download **cript_uploader.exe** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-
-* **MacOS** 
-    * Download **cript_uploader** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-    * Having issues running the file?
-        * Open a terminal and navigate the relevant folder  
-        `cd <path_to_folder>`
-        * Change the file permissions  
-        `chmod 755 ./cript_excel_uploader`
-        * Run it  
-        `./cript_excel_uploader`
+## Download files
+Go to the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+1. Download executable file  
+   *Executable files are available for Windows and MacOS.*
+   * Windows
+      * Download **cript_uploader.exe** 
+   * MacOS 
+      * Download **cript_uploader** 
+      * Having issues running the file?
+          * Open a terminal and navigate the relevant folder  
+          `cd <path_to_folder>`
+          * Change the file permissions  
+          `chmod 755 ./cript_excel_uploader`
+          * Run it  
+          `./cript_excel_uploader`
+2. Download configuration file (optional, but more convenient)
+   * Download **config.json**
+   * **Put config.json in the same directory as executable file**
+   * Open the configuration file using notepad
+   * Fill the values for the parameters and the excel uploader will read them automatically.
+   * Validate your json file in this [website](https://codebeautify.org/jsonvalidator). Make sure it's a valid json.  
+     *If you have trouble writing a valid json, see known issues below*
+   * Save the **config.json** before you start uploading.
+          
 
 ## Excel Template
 
@@ -88,37 +98,38 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
   - Theoretically you can try any unit you want, If the unit is not support, we will let you know in error detection.
   - The value with the given unit will be standardized after being uploaded.
 - **Value**
-  - cross validation
-  - not null
-  - unique
-  - 
-  - controlled vocabulary for type and keywords
-  - list value , separate by ","
-  - Issue with int/string conversion(known issue)
+  - Cross validation is required for the name categorized as "foreign-key".
+    Cross validation check tries to match the names in two columns after removing all the space 
+    and making every character lower case.
+  - The fields in `node.required` should be not null.
+  - The fields in `node.unique_together` should be unique in combination.  
+    *ignore if there's group or collection since it's predefined*
+  - Controlled vocabulary is preferred for type and keyword. 
+    You can also customize your own type/keyword by having a `+` sign before them  
+    *see: [data-type](), [ingredient-keyword](), [process-keyword]()*
+  - For list value, you are allowed to type in multiple values separated by ","
+  - Empty rows will be skipped.
+  - There's a known issue for string/integer or string/float conversion.
 - **We Recommend**
   - Have less than 200 experiments in a single spreadsheet.  
     Or you may have to spend a long time fixing the bugs and uploading.
   - Make backups for your excel spreadsheet and keep them in a safe place.
-  - 
-  
-
-### Frequently questions
-  - **I want to update my data, what should I do**
-  - base_url, group, collection, token, excel spreadsheet path, public_flag
-  - **Type/keywords does not exist in controlled vocabulary table**   
-    add "+" sign before the keyword/type you would like. 
-  - **Json config doesn't work**
-  - **An unexpected bug happened**
-  - **I want to write feedback**
 
 ### Known Issues
-- **I want to update my data, what should I do**
-  - base_url, group, collection, token, excel spreadsheet path, public_flag
-- **Type/keywords does not exist in controlled vocabulary table**   
-  add "+" sign before the keyword/type you would like.
-- **Json config doesn't work**
-- **An unexpected bug happened**
-- **I want to write feedback**
+- **I have trouble writing a valid json**  
+  In most cases which causing an invalid json, have a check whether:
+  - Your file path has single backslash```
+    \
+    ```, if so, replace them with forward slash`/` or double backslash`\\`
+  - Your json ends with coma after the value for the last field, remove the coma you should be good.
+- **What happened if I run the excel uploader twice**  
+  It will do updating stuff in the second time. Old data will be replaced with new one.
+- **It looks I type in correct value but still gives me an error**  
+  The issue is caused by having a wrong value type for the given cell.
+  Make sure the type for the given cell in the spreadsheet is what it's expected.  
+  eg. turn the type for value `5` from `text` to `number` to make sure our excel uploader
+  can read it as a number instead of string.
+
 ### Controlled Vocabulary Tables
 * Column Keys
     * [Reaction Properties](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/property_keys_reaction.html)
