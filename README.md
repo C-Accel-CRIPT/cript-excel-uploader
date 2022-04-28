@@ -3,7 +3,8 @@
 
 This repository contains scripts to upload data from a standard Excel template to the CRIPT database.  
 
-Feedbacks welcomed! Click the **Share a thought** button in left behind of our [website](https://www.criptapp.org/). 
+### Feedbacks and bug reports welcomed!
+###Click the **Share a thought** button in left behind of our [website](https://www.criptapp.org/).
 
 ## Download files
 Go to the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
