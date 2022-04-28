@@ -30,9 +30,9 @@ def read_config(executable_directory):
             print(
                 f"An error happened when parsing config.json, "
                 f"Info: {e.__str__()}\n"
-                f"Note: If you have slash issues, "
-                f"you need to replace back slash[\] "
-                f"with forward slash[/] in file path."
+                f"Read known issues in our github readme page"
+                f"(https://github.com/C-Accel-CRIPT/cript-excel-uploader/tree/yisheng-restapi-binding) "
+                f"to fix the problem."
             )
             return {}, False
     else:

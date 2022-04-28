@@ -39,7 +39,10 @@ def get_group(api, group_name):
         return group_obj
     except APIGetError:
         raise Exception(
-            "Error: You must enter " "an existing CRIPT group. " "Try again."
+            f"Error: You are not in group [{group_name}].\n"
+            f"You may enter a wrong group name "
+            f"or you are not a member of the group. "
+            f"Have a check."
         )
 
 
@@ -69,7 +72,10 @@ def get_collection(api, group_obj, collection_name):
         return collection_obj
     except APIGetError:
         raise Exception(
-            "Error: You must enter " "an existing CRIPT collection. " "Try again."
+            f"Error: You don't have collection [{collection_name}].\n"
+            f"You may enter a wrong collection name "
+            f"or you forget to create the collection. "
+            f"Have a check."
         )
 
 
