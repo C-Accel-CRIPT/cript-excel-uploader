@@ -109,6 +109,7 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
     *see: [data-type](), [ingredient-keyword](), [process-keyword]()*
   - For list value, you are allowed to type in multiple values separated by ","
   - Empty rows will be skipped.
+  - Processes in the same experiment will be linked together(set as prerequisite process) in order.
   - There's a known issue for string/integer or string/float conversion.
 - **We Recommend**
   - Have less than 200 experiments in a single spreadsheet.  
@@ -124,7 +125,7 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
   - Your json ends with coma after the value for the last field, remove the coma you should be good.
 - **What happened if I run the excel uploader twice**  
   It will do updating stuff in the second time. Old data will be replaced with new one.
-- **It looks I type in correct value but still gives me an error**  
+- **It looks that I type in a number but the parser gives me an error saying that it reads the number as a string**  
   The issue is caused by having a wrong value type for the given cell.
   Make sure the type for the given cell in the spreadsheet is what it's expected.  
   eg. turn the type for value `5` from `text` to `number` to make sure our excel uploader
