@@ -3,14 +3,9 @@
 
 This repository contains scripts to upload data from a standard Excel template to the CRIPT database.
 
-**IMPORTANT!**  
-DO NOT delete your Excel documents after running the uploader!  
-All data is currently being uploaded to a test database, thus is at risk of being deleted.
+## Download executable file
 
-## Usage
-
-Executables are available for Windows and MacOS.  
-These can be downloaded and run without installing Python or any other dependency.  
+Executables are available for Windows and MacOS.
 
 * **Windows**
     * Download **cript_uploader.exe** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
@@ -25,49 +20,106 @@ These can be downloaded and run without installing Python or any other dependenc
         * Run it  
         `./cript_excel_uploader`
 
-Alternatively, you can do things the hard way:
-
-1. [Download Python(>=3.10)](https://www.python.org/)
-2. [Download Git](https://git-scm.com/downloads)
-3. Open a terminal
-4. Install **virtualenv**  
-`pip3 install virtualenv`
-5. Create a virtual environment  
-`virtualenv cript-uploader`
-6. Activate the virtual environment  
-**Windows:** `cript-uploader\Scripts\activate`  
-**Mac or Linux:** `source cript-uploader\bin\activate`
-7. Clone the repository  
-`git clone git@github.com:C-Accel-CRIPT/cript-excel-uploader.git`
-8. Change to the project directory  
-`cd cript-excel-uploader`
-9. Download requirements  
-`pip install -r requirements.txt`
-10. Run the **main.py** file  
-`python main.py`
-
 ## Excel Template
 
 Download **example_template.xlsx** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
 
-
 ### Guidelines For Modifying The Template
+- **Before we started**
+  - Every spreadsheet is a collection.   
+    All the data in the single spreadsheet will be saved to the same collection.
+  - Ideas behind group, collection, experiment, process is [here]()
+  - Make sure you have already been a member of a group, and created a collection where the data will be uploaded.
+
 - **Sheet** 
-  - The required sheets are marked as orange.
-  - The optional sheets are marked as grey.
-  - The sheet names cannot be renamed.
+  - The required sheets are marked as **orange**.
+  - The optional sheets are marked as **grey**.   
+    *You can either keep for future use or remove to simplify if you don't need them*
+  - The sheet names **cannot be renamed**, new sheet with other names will be ignored.
+  - sheet structure: first row is *column name*, second row is *unit*, others are *values*
 - **Column**
-  - Columns marked with an asterisk `*` are required.
-  - Columns marked with a hashtag `#` will be ignored.
-  - Columns must only use approved key names (see `Column Keys`)
-  - All keys are assumed to be using our chosen standard units (see `Key Tables`)
-  - Condition keys can be associated with property keys by using a colon (e.g., `density:temperature`)
-  - Data can be associated with a property or condition key by using a colon (e.g., `density:data`)
-  - For the `Process Ingredient` sheet, each ingredient must include one or more quantity defintion (see the `Ingredient Quantity` table)
- 
+  - Columns follow a format like this : \(sign\)(\[identifier\])field1(:field2)(:field3)
+    - Sign
+      - Columns marked with an asterisk `*` are required (eg. `*name`).
+      - Columns marked with a hashtag `#` will be ignored (eg. `#storage`).
+    - Identifier
+      - Identifier can be a number with square brackets (eg. `[1]`)
+      - Identifier is used to allow you to add same property/condition for multiple times.  
+      eg. Property `density` is measured multiple times under different temperature. 
+        In this case, we can use `[1]density`, `[1]density:temperature`, `[2]density`, `[2]density:temperature`, etc.
+    - Field  
+      1. Fields can be categorized into following type: 
+      - base: defined as parameters in `node.__init__()` function.  
+        *Different node has different base nodes*
+      - foreign-key: special kind of "base" columns, linked to another nested node  
+        *see:* `experiment` *in process sheet (linked to experiment node)*  
+        `ingredient` *in process product sheet (linked to material node)*  
+        `product` *in process product sheet (linked to material node)*  
+        `data` *in file sheet (linked to data node)*  
+        `material` *in mixture component sheet (linked to material node)*  
+        `component` *in mixture component sheet (linked to material node)*  
+        `process` *in prerequisite process sheet (linked to process node)*  
+        `prerequisite_process` *in prerequisite process sheet (linked to process node)*  
+      - property: defined in property key tables.  
+        *Different node has different property key tables.*  
+        *see: [material-property-key](), [process-property-key]()*
+      - condition: defined in condition key table.  
+        *see: [condition-key]()*
+      - attribute: defined as parameters in `Property.__init__()` and `Condition.__init__()` function except for `key` and `value`.  
+        *see: [property-attribute](), [condition-attribute]()*
+      - quantity: defined in quantity key table used in *process ingredient* sheet.  
+        *see: [quantity-key]()*
+      - identifier: defined in identity key tables used in *material* sheet  
+        *see: [material-identifier-key]()*
+      2. allowed nesting rules  
+        nesting is supported for property, condition, attribute and data
+      - property:property-attribute eg.`density:method_description`
+      - property:condition eg.`density:temperature`
+      - property:condition:condition-attribute eg.`density:temperature:uncertainty`
+      - property:condition:data eg.`density:temperature:uncertainty`
+      - property:data eg.`density:data`
+      - condition:condition-attribute eg.`temperature:uncertainty`
+      - condition:data eg.`temperature:data`
+    - Other rules
+      - For `process ingredient` sheet, each ingredient must include one or more quantity defintion.
+- **Unit**
+  - The value in the second row will be recognized as unit.
+  - Supported units are provided in property/condition/quantity key tables.
+  - Theoretically you can try any unit you want, If the unit is not support, we will let you know in error detection.
+  - The value with the given unit will be standardized after being uploaded.
+- **Value**
+  - cross validation
+  - not null
+  - unique
+  - 
+  - controlled vocabulary for type and keywords
+  - list value , separate by ","
+  - Issue with int/string conversion(known issue)
+- **We Recommend**
+  - Have less than 200 experiments in a single spreadsheet.  
+    Or you may have to spend a long time fixing the bugs and uploading.
+  - Make backups for your excel spreadsheet and keep them in a safe place.
+  - 
+  
 
-### Key Tables
+### Frequently questions
+  - **I want to update my data, what should I do**
+  - base_url, group, collection, token, excel spreadsheet path, public_flag
+  - **Type/keywords does not exist in controlled vocabulary table**   
+    add "+" sign before the keyword/type you would like. 
+  - **Json config doesn't work**
+  - **An unexpected bug happened**
+  - **I want to write feedback**
 
+### Known Issues
+- **I want to update my data, what should I do**
+  - base_url, group, collection, token, excel spreadsheet path, public_flag
+- **Type/keywords does not exist in controlled vocabulary table**   
+  add "+" sign before the keyword/type you would like.
+- **Json config doesn't work**
+- **An unexpected bug happened**
+- **I want to write feedback**
+### Controlled Vocabulary Tables
 * Column Keys
     * [Reaction Properties](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/property_keys_reaction.html)
     * [Material Properties](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/property_keys_materials.html)
@@ -79,3 +131,29 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
     * [Ingredient Keywords](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/ingredient_keys.html)
     * [Process Keywords](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/process_keys.html)
 
+### Customize your excel uploader
+
+**Follow the steps below to clone the source code:**
+1. [Download Python(>=3.10)](https://www.python.org/)
+2. [Download Git](https://git-scm.com/downloads)
+3. Open a terminal
+4. Install **virtualenv**  
+   `pip3 install virtualenv`
+5. Create a virtual environment  
+   `virtualenv cript-uploader`
+6. Activate the virtual environment  
+   **Windows:** `cript-uploader\Scripts\activate`  
+   **Mac or Linux:** `source cript-uploader\bin\activate`
+7. Clone the repository  
+   `git clone git@github.com:C-Accel-CRIPT/cript-excel-uploader.git`
+8. Change to the project directory  
+   `cd cript-excel-uploader`
+9. Download requirements  
+   `pip install -r requirements.txt`
+10. Run the **main.py** file  
+    `python main.py`
+
+**Project Structure**  
+sheets(data preprocessing and parser) -> validator -> transformer -> uploader 
+
+**Start customize your code now!**
