@@ -39,7 +39,7 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
 - **Before we started**
   - Every spreadsheet is a collection.   
     All the data in the single spreadsheet will be saved to the same collection.
-  - Ideas behind group, collection, experiment, process is [here]()
+  - Ideas behind group, collection, experiment, process is [here](https://criptapp-staging.herokuapp.com/docs/datamodel/)
   - Make sure you have already been a member of a group, and created a collection where the data will be uploaded.
 
 - **Sheet** 
@@ -73,15 +73,15 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
         `prerequisite_process` *in prerequisite process sheet (linked to process node)*  
       - property: defined in property key tables.  
         *Different node has different property key tables.*  
-        *see: [material-property-key](), [process-property-key]()*
+        *see: [material-property-key](https://criptapp-staging.herokuapp.com/docs/datamodel/), [process-property-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
       - condition: defined in condition key table.  
-        *see: [condition-key]()*
+        *see: [condition-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
       - attribute: defined as parameters in `Property.__init__()` and `Condition.__init__()` function except for `key` and `value`.  
-        *see: [property-attribute](), [condition-attribute]()*
+        *see: [property-attribute](https://criptapp-staging.herokuapp.com/docs/datamodel/), [condition-attribute](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
       - quantity: defined in quantity key table used in *process ingredient* sheet.  
-        *see: [quantity-key]()*
+        *see: [quantity-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
       - identifier: defined in identity key tables used in *material* sheet  
-        *see: [material-identifier-key]()*
+        *see: [material-identifier-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
       2. allowed nesting rules  
         nesting is supported for property, condition, attribute and data
       - property:property-attribute eg.`density:method_description`
@@ -107,7 +107,7 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
     *ignore if there's group or collection since it's predefined*
   - Controlled vocabulary is preferred for type and keyword. 
     You can also customize your own type/keyword by having a `+` sign before them  
-    *see: [data-type](), [ingredient-keyword](), [process-keyword]()*
+    *see: [data-type](https://criptapp-staging.herokuapp.com/docs/datamodel/), [ingredient-keyword](https://criptapp-staging.herokuapp.com/docs/datamodel/), [process-keyword](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
   - For list value, you are allowed to type in multiple values separated by ","
   - Empty rows will be skipped.
   - Processes in the same experiment will be linked together(set as prerequisite process) in order.
@@ -131,20 +131,9 @@ Download **example_template.xlsx** from the [latest release](https://github.com/
   Make sure the type for the given cell in the spreadsheet is what it's expected.  
   eg. turn the type for value `5` from `text` to `number` to make sure our excel uploader
   can read it as a number instead of string.
+  
 
-### Controlled Vocabulary Tables
-* Column Keys
-    * [Reaction Properties](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/property_keys_reaction.html)
-    * [Material Properties](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/property_keys_materials.html)
-    * [Conditions](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/condition_keys.html)
-    * [Ingredient Quantity](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/quantity_keys.html)
-* Value Keys
-    * [Methods](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/method_keys.html)    
-    * [Data Types](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/data_keys.html)
-    * [Ingredient Keywords](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/ingredient_keys.html)
-    * [Process Keywords](http://htmlpreview.github.io/?https://github.com/C-Accel-CRIPT/cript_tutorials/blob/master/key_tables/process_keys.html)
-
-### Customize your excel uploader
+## Customize your excel uploader
 
 **Follow the steps below to clone the source code:**
 1. [Download Python(>=3.10)](https://www.python.org/)
