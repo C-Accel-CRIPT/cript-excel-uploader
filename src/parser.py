@@ -3,6 +3,10 @@ from src.errors import ColumnParseError
 
 
 class ParsedColumnName:
+    """
+    parsed_column_name object
+    """
+
     def __init__(
         self,
         is_valid,
@@ -32,12 +36,19 @@ class ParsedColumnName:
 
 
 def parse_col_name(col):
+    """
+    parse column name
+    (+)--([identifier])--field1(:field2)(field3)
+    :param col:
+    :return:
+    """
     identifier = None
     is_new = False
 
     p0 = 0
     p1 = 0
 
+    # Check for plus sign and identifier
     tag = False
     for i in range(len(col)):
         if col[i] == "+":
@@ -80,6 +91,7 @@ def parse_col_name(col):
     if identifier is None:
         identifier = 1
 
+    # Check for nested fields
     nest_count = 0
     for i in range(p1, len(col)):
         if col[i] == ":":

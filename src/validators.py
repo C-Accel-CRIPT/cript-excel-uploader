@@ -59,6 +59,9 @@ def validate_either_or_cols(sheet_obj):
 
 
 def validate_unique_key(sheet_obj):
+    """
+    validate unique keys
+    """
     # Check for unique keys
     if sheet_obj.df is not None:
         for col in sheet_obj.unique_keys:
@@ -95,6 +98,10 @@ def validate_foreign_key(
     to_field,
     to_sheet_obj,
 ):
+    """
+    Validate foreign keys
+    Foreign key pairs to validate are defined in configs.py
+    """
     _dict = to_sheet_obj.foreign_keys_dict.get(to_field)
     if (
         _dict is None
@@ -123,6 +130,10 @@ def validate_foreign_key(
 
 
 def validate_not_null_value(sheet_obj):
+    """
+    Validate not null value
+    Not null cols are defined in configs.py
+    """
     # Check for not null value
     if sheet_obj.df is not None:
         for col in sheet_obj.not_null_cols:
@@ -139,6 +150,9 @@ def validate_not_null_value(sheet_obj):
 
 
 def validate_file_source(sheet_obj):
+    """
+    Validate file source in file sheet
+    """
     if sheet_obj.sheet_name != "file":
         return 0
 
@@ -156,7 +170,10 @@ def validate_file_source(sheet_obj):
                 sheet_obj.errors.append(exception.__str__())
 
 
-def validate_data_assignment(sheet_obj):
+def validate_field_nesting(sheet_obj):
+    """
+    Validate field nesting
+    """
     if sheet_obj.df is not None:
         for parsed_column_name_obj in sheet_obj.parsed_cols.values():
             if not parsed_column_name_obj.is_valid:
@@ -170,7 +187,7 @@ def validate_data_assignment(sheet_obj):
                 nested_field_type = field_type_list[i + 1]
                 if field_type is None:
                     continue
-                if nested_field_type not in configs.allowed_data_assignment[field_type]:
+                if nested_field_type not in configs.allowed_field_nesting[field_type]:
                     msg = f"[{field_list[i+1]}] cannot be nested to [{field_list[i]}]"
                     exception = UnsupportedColumnName(
                         msg=msg,
@@ -181,6 +198,9 @@ def validate_data_assignment(sheet_obj):
 
 
 def validate_type(sheet_obj):
+    """
+    Validate "type" field
+    """
     if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
         param_key = configs.allowed_type.get(sheet_obj.sheet_name)
         for parsed_column_name_obj in sheet_obj.col_parsed.values():
@@ -219,6 +239,9 @@ def validate_type(sheet_obj):
 
 
 def validate_keyword(sheet_obj):
+    """
+    Validate "keyword" or "keywords" field
+    """
     if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
         param_key = configs.allowed_type.get(sheet_obj.sheet_name)
         for parsed_column_name_obj in sheet_obj.col_parsed.values():
@@ -263,6 +286,9 @@ def validate_keyword(sheet_obj):
 
 
 def validate_property(sheet_obj):
+    """
+    Validate property fields
+    """
     for key, parsed_object in sheet_obj.parsed.items():
         if isinstance(parsed_object, dict):
             _validate_property(sheet_obj, parsed_object)
@@ -272,6 +298,9 @@ def validate_property(sheet_obj):
 
 
 def _validate_property(sheet_obj, parsed_object):
+    """
+    helper function to validate property fields
+    """
     parsed_props = parsed_object.get("prop")
     if parsed_props is not None and len(parsed_props) > 0:
         for prop_key in parsed_props:
@@ -293,6 +322,9 @@ def _validate_property(sheet_obj, parsed_object):
 
 
 def validate_condition(sheet_obj):
+    """
+    Validate condition
+    """
     for key, parsed_object in sheet_obj.parsed.items():
         if isinstance(parsed_object, dict):
             _validate_condition(sheet_obj, parsed_object)
@@ -302,6 +334,9 @@ def validate_condition(sheet_obj):
 
 
 def _validate_condition(sheet_obj, parsed_object):
+    """
+    helper function to validate condition
+    """
     parsed_conds = parsed_object.get("cond")
     if parsed_conds is not None and len(parsed_conds) > 0:
         for cond_key in parsed_conds:
@@ -320,6 +355,9 @@ def _validate_condition(sheet_obj, parsed_object):
 
 
 def validate_identity(sheet_obj):
+    """
+    Validate identity
+    """
     if sheet_obj.sheet_name != "material":
         return 0
 
@@ -343,6 +381,9 @@ def validate_identity(sheet_obj):
 
 
 def validate_quantity(sheet_obj):
+    """
+    Validate quantity
+    """
     if sheet_obj.sheet_name != "process ingredient":
         return 0
 

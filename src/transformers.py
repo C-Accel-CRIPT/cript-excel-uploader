@@ -4,14 +4,8 @@ from src.errors import CreatOrUpdateNodeError
 
 def transform_experiment(group_obj, collection_obj, parsed_experiments, public_flag):
     """
-    upload the experiment data and return url of experiment
-    (WARNING: db.view() is taking all of the data in the collection out.
-    It also has a default return limit of 50)
-    (WARNING: currently only add supported, so there'll be duplicated data)
-    (TBC: make an update on last_modified_date once update is supported)
+    create experiment objects locally and return a dict of name: experiment object pair
 
-    :param api: api connection object
-    :type api: class:`cript.API`
     :param group_obj: object of group
     :type group_obj: `cript.Group`
     :param collection_obj: object of collection
@@ -53,9 +47,10 @@ def transform_experiment(group_obj, collection_obj, parsed_experiments, public_f
 
 def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
     """
-    upload data to the database and return a dict of name:data_url pair
+    create data object locally and return a dict of name:data object pair
 
-    :param group_obj:
+    :param group_obj: object of group
+    :type group_obj: `cript.Group`
     :param experiment_objs: (name) : (object of experiment) pair
     :type experiment_objs: dict
     :param parsed_datas: parsed data of data_sheet.parsed (data_sheet.parsed)
@@ -101,19 +96,17 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
 
 def transform_file(group_obj, data_objs, parsed_file, public_flag):
     """
-    upload data to the database and return a dict of name:file_url pair
+    create file objects and return a dict of name:file object pair
 
-    :param api: api connection object
-    :type api: class:`cript.API`
     :param group_obj: object of group
     :type group_obj: `cript.Group`
-    :param data_objs: (name) : (obj of data) pair
+    :param data_objs: (name) : (object of data) pair
     :type data_objs: dict
     :param parsed_file: parsed data of file_sheet.parsed
     :type parsed_file: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
-    :return: (name) : (obj of file) pair
+    :return: (checksum) : (object of file) pair
     :rtype: dict
     """
     file_objs = {}
@@ -152,17 +145,17 @@ def transform_file(group_obj, data_objs, parsed_file, public_flag):
 
 def transform_material(group_obj, data_objs, parsed_materials, public_flag):
     """
-    upload material to the database and return a dict of name:material_url pair
+    create material objects locally and return a dict of name:material_object pair
 
-    :param group_obj: obj of group
-    :type group_obj: `cript.nodes.Group`
+    :param group_obj: object of group
+    :type group_obj: `cript.Group`
     :param data_objs: (name) : (object of data) pair
     :type data_objs: dict
-    :param parsed_materials: reagent_sheet.parsed or product_sheet.parsed
+    :param parsed_materials: material_sheet.parsed
     :type parsed_materials: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
-    :return: (name) : (url of material) pair
+    :return: (name) : (object of material) pair
     :rtype: dict
     """
     material_objs = {}
@@ -208,6 +201,13 @@ def transform_material(group_obj, data_objs, parsed_materials, public_flag):
 
 
 def transform_components(material_objs, parsed_components):
+    """
+    update components for material objects
+    :param material_objs: (name) : (object of material) pair
+    :type material_objs: dict
+    :param parsed_components: component_sheet.parsed
+    :type parsed_components: dict
+    """
     for material_std_name in parsed_components:
         material_obj = material_objs.get(material_std_name)
         uid = 1
@@ -238,16 +238,16 @@ def transform_process(
     group_obj, experiment_objs, data_objs, parsed_processes, public_flag
 ):
     """
-    upload process to the database and return a dict of name:process_url pair
+    create process objects locally and return a dict of name:process object pair
 
-    :param api: api connection object
-    :type api: class:`cript.API`
-    :param group_obj: obj of group
-    :type group_obj: `cript.nodes.Group`
-    :param experiment_objs: (name) : (experiment object) pair
+    :param group_obj: object of group
+    :type group_obj: `cript.Group`
+    :param experiment_objs: (name): (experiment object) pair
     :type experiment_objs: dict
-    :param parsed_processes:
-    :type dict
+    :param parsed_processes: process_sheet.parsed
+    :type parsed_processes: dict
+    :param data_objs: (name): (data object) pair
+    :type data_objs: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
     :return: (name) : (url of process) pair
@@ -286,6 +286,7 @@ def transform_process(
                         parsed_conds, data_objs
                     )
 
+                # Set prerequisite process
                 if i > 0:
                     prev_process_obj = process_objs.get(prev_process_std_name)
                     process_obj.prerequisite_processes.append(prev_process_obj)
@@ -310,6 +311,13 @@ def transform_process(
 
 
 def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
+    """
+    Update prerequisite process for process objects
+    :param process_objs: (name): (process object) pair
+    :type process_objs: dict
+    :param parsed_prerequisite_processes: prerequisite_process_sheet.parsed
+    """
+
     for process_std_name in parsed_prerequisite_processes:
         process_obj = process_objs.get(process_std_name)
         prerequisite_process_list = parsed_prerequisite_processes.get(process_std_name)
@@ -335,28 +343,28 @@ def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
 
 
 def transform_process_ingredient(
-    process_objs, material_objs, parsed_processIngredients
+    process_objs, material_objs, parsed_process_ingredients
 ):
     """
-    upload step to the database and return a dict of name:step_url pair
+    upload ingre to the database and return a dict of name:step_url pair
 
     :param process_objs: (name) : (process object) pair
     :type process_objs: dict
     :param material_objs: (name) : (object of material) pair
     :type material_objs: dict
-    :param parsed_processIngredients:
-    :type dict
+    :param parsed_process_ingredients:
+    :type parsed_process_ingredients: dict
     :return: (name) : (step object) pair
     :rtype: dict
     """
-    for process_std_name in parsed_processIngredients:
+    for process_std_name in parsed_process_ingredients:
         # Grab Process
         process_obj = process_objs[process_std_name]
 
         if process_obj is None:
             continue
 
-        for parsed_ingredient in parsed_processIngredients[process_std_name]:
+        for parsed_ingredient in parsed_process_ingredients[process_std_name]:
             # Grab Material
             material_std_name = parsed_ingredient["ingredient"]
             material_obj = material_objs.get(material_std_name)
@@ -383,23 +391,23 @@ def transform_process_ingredient(
                 )
 
 
-def transform_process_product(process_objs, material_objs, parsed_processProducts):
+def transform_process_product(process_objs, material_objs, parsed_process_products):
     """
-    upload step to the database and return a dict of name:step_url pair
+    update product object to
 
     :param process_objs: (name) : (process object) pair
     :type process_objs: dict
     :param material_objs: (name) : (object of material) pair
     :type material_objs: dict
-    :param parsed_processProducts:
-    :type dict
+    :param parsed_process_products: process_product_sheet.parsed
+    :type parsed_process_products: dict
     :return: (name) : (step object) pair
     :rtype: dict
     """
-    for process_std_name in parsed_processProducts:
+    for process_std_name in parsed_process_products:
         # Grab Process
         process_obj = process_objs.get(process_std_name)
-        product_list = parsed_processProducts[process_std_name]
+        product_list = parsed_process_products[process_std_name]
         if process_obj is None:
             continue
         for parsed_product in product_list:

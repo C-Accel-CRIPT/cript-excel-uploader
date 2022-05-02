@@ -41,6 +41,9 @@ class Sheet:
         self.has_error = False
 
     def _read_file(self):
+        """
+        Try to read excel file
+        """
         try:
             self.df = pd.read_excel(self.path, sheet_name=self.sheet_name)
         except ValueError:
@@ -53,6 +56,17 @@ class Sheet:
             )
 
     def _data_preprocess(self):
+        """
+        Do everything for data preprocess
+        column:
+        - parse column name
+        - standardize column name
+        - drop unnecessary columns
+        unit:
+        - create unit dictionary
+        value:
+        - remove space in values
+        """
         if self.df is None:
             return None
 
@@ -120,7 +134,11 @@ class Sheet:
                 self.df.loc[index, col] = value
 
     def _create_foreign_key_dict(self):
-        # Create Foreign Key Dict
+        """
+        create foreign key dictionary for cross validation
+        key: standardized name
+        value: [origin name, row index]
+        """
         if self.df is None:
             return 0
         for col in self.foreign_keys:
@@ -133,13 +151,15 @@ class Sheet:
     def _standardize_and_categorize_field(self, parsed_column_name_obj):
         """
         Convert a field to the standardized version
-
-        :return: standardized param name
-        :rtype: str
+        And try to categorize the field
+        foreign-key, base, data, iden, prop, cond, quan, attr
         """
+        if not parsed_column_name_obj.is_valid:
+            return 0
         field_list = parsed_column_name_obj.field_list
         field_type_list = parsed_column_name_obj.field_type_list
         origin_col = parsed_column_name_obj.origin_col
+
         for i in range(len(field_list)):
             field = field_list[i]
             prev_field_type = field_type_list[i - 1] if i >= 1 else None
@@ -233,11 +253,6 @@ class Sheet:
         """
         Parse a property column with it's associated standard units and attributes.
         Currently used in material sheet and process sheet
-
-        :param value: value of the reagent/material's property
-        :type value: str
-        :param parsed_object: the dict object the data is being applied to
-        :type parsed_object: dict
         [prop, prop:cond, prop:data, prop:attr]
         """
         parsed_column_name_obj = self.col_parsed[col]
@@ -284,11 +299,6 @@ class Sheet:
         """
         Parse a condition column with it's associated standard units.
         Currently used in data sheet, material sheet and process sheet
-
-        :param value: value of the reagent/material's condition
-        :type value: str
-        :param parsed_object: the dict object the data is being applied to
-        :type parsed_object: dict
         [cond, cond:attr, cond:data]
         """
         parsed_column_name_obj = self.col_parsed[col]
@@ -702,11 +712,14 @@ class ProcessIngredientSheet(Sheet):
             return None
 
         for index, row in self.df.iterrows():
-            _value = (
-                "".join(self.df.loc[index, "process"])
-                .join("+")
-                .join(str(self.df.loc[index, "ingredient"]))
-            )
+            try:
+                _value = (
+                    "".join(self.df.loc[index, "process"])
+                    .join("+")
+                    .join(str(self.df.loc[index, "ingredient"]))
+                )
+            except Exception:
+                _value = None
             self.df.loc[index, "process+ingredient"] = _value
 
     def parse(self):

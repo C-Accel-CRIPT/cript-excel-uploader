@@ -11,7 +11,8 @@ from cript.exceptions import (
 def connect(base_url, token):
     """
     connect with backend service
-
+    :param base_url: host domain
+    :param token: authentication token
     :return: backend service connection object
     :rtype: class:`cript.API`
     """
@@ -20,7 +21,8 @@ def connect(base_url, token):
 
 def get_group(api, group_name):
     """
-    search for existing group_url
+    Search for group with same group_name in db
+    Create group object if exists
 
     :param api: api connection object
     :type api: class:`cript.API`
@@ -48,7 +50,8 @@ def get_group(api, group_name):
 
 def get_collection(api, group_obj, collection_name):
     """
-    search for existing collection_url, create collection if not exists
+    Search for collection with same collection_name in the group
+    Create collection object if exists
 
     :param api: api connection object
     :type api: class:`cript.API`

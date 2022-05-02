@@ -156,7 +156,7 @@ foreign_key_validation_pairs = [
     },
 ]
 
-allowed_data_assignment = {
+allowed_field_nesting = {
     "base": {None, "prop", "cond", "data"},
     "prop": {None, "prop-attr", "cond", "data"},
     "cond": {None, "cond-attr", "data"},
