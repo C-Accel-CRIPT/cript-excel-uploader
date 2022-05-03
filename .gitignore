@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+cript/
 build/
 develop-eggs/
 dist/
@@ -104,6 +105,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+#Intellj stuff
+.idea
+
 # Environments
 .env
 .venv
@@ -138,3 +142,4 @@ dmypy.json
 cython_debug/
 
 # Custom
+LEGACY_config.py
