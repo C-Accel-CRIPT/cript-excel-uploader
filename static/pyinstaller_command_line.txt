@@ -1,8 +1,10 @@
-Make sure you add these 4 files when doing packaging
+Make sure you add these 4 files when doing packaging using pyinstaller
+(these static files used by dependency Lib will not be packaged automatically)
+
 pint\default_en.txt;pint
 pint\constants_en.txt;pint
 certifi\cacert.pem;certifi
 cript\VERSION.txt;cript
 
-Command line I used: (depends on your dependency path)
+Command line I used: (may be modified depending on where your dependency located)
 pyinstaller ../main.py --add-data "C:\Users\Orange Meow\cript-uploader-test\Lib\site-packages\pint\default_en.txt;pint"  --add-data "C:\Users\Orange Meow\cript-uploader-test\Lib\site-packages\pint\constants_en.txt;pint" --add-data "C:\Users\Orange Meow\cript-uploader-test\Lib\site-packages\certifi\cacert.pem;certifi" --add-data "C:\Users\Orange Meow\cript-uploader-test\Lib\site-packages\cript\VERSION.txt;cript" --onefile --icon=..static/cript_uploader_icon.ico
