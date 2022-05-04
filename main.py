@@ -156,16 +156,16 @@ def validate_and_parse_sheets(_sheet_dict):
         validators.validate_either_or_cols(sheet)
         validators.validate_unique_key(sheet)
         validators.validate_not_null_value(sheet)
-        validators.validate_file_source(sheet)
+        # validators.validate_file_source(sheet)
         validators.validate_type(sheet)
         validators.validate_keyword(sheet)
 
     # Validate foreign key
     for pair in configs.foreign_key_validation_pairs:
         _pair = {
-            "from_field": "experiment",
+            "from_field": pair["from_field"],
             "from_sheet_obj": _sheet_dict[pair["from_sheet_obj"]],
-            "to_field": "name",
+            "to_field": pair["to_field"],
             "to_sheet_obj": _sheet_dict[pair["to_sheet_obj"]],
         }
         validators.validate_foreign_key(**_pair)
