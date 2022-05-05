@@ -1,5 +1,13 @@
+import os
 import requests
 import cript as C
+from src.util import read_config
+
+# Config
+dir_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+file_name = "config-test.json"
+_config_key_dict, _config_is_found = read_config(dir_path, file_name)
+TOKEN = _config_key_dict.get("TOKEN") if "TOKEN" in _config_key_dict else ""
 
 """
 test case for connect(), always false
@@ -40,16 +48,55 @@ case_connect_false = [
         "Token xxxxxxxx",
         C.exceptions.APIAuthError,
     ),
+    (
+        "http://criptapp-staging.herokuapp.com/",
+        TOKEN.replace("Token", ""),
+        C.exceptions.APIAuthError,
+    ),
+    (
+        "http://criptapp-staging.herokuapp.com/",
+        TOKEN.replace("Token ", ""),
+        C.exceptions.APIAuthError,
+    ),
+    (
+        "http://criptapp-staging.herokuapp.com/",
+        TOKEN.replace("Token", "token"),
+        C.exceptions.APIAuthError,
+    ),
+    (
+        "http://criptapp-staging.herokuapp.com/",
+        TOKEN.replace(" ", ""),
+        C.exceptions.APIAuthError,
+    ),
+    (
+        "http://criptapp-staging.herokuapp.com/",
+        TOKEN.replace("Token", "Toekn"),
+        C.exceptions.APIAuthError,
+    ),
 ]
 
 """
 test case for get_group(), always false
 [group_name, expected_error]
 """
-case_get_group_false = [("wrong group", Exception)]
+case_get_group_false = [
+    ("wrong group", Exception),
+    (1234, Exception),
+    (None, Exception),
+    ([1, 2, 3, 4], Exception),
+    ({1, 2, 3, 4}, Exception),
+    ((1, 2, 3, 4), Exception),
+]
 
 """
 test case for get_collection(), always false
 [group_name, expected_error]
 """
-case_get_collection_false = [("wrong collection", Exception)]
+case_get_collection_false = [
+    ("wrong collection", Exception),
+    (1234, Exception),
+    (None, Exception),
+    ([1, 2, 3, 4], Exception),
+    ({1, 2, 3, 4}, Exception),
+    ((1, 2, 3, 4), Exception),
+]
