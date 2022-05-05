@@ -65,5 +65,6 @@ case_read_config = [
     (case_config_dir_path, "case_config_6_false.json", 0, False),
     (case_config_dir_path, "case_config_7_false.json", 0, False),
     (case_config_dir_path, "case_config_8_false.txt", 0, False),
+    (case_config_dir_path, "case_config_9_false.json", 0, False),
     (case_config_dir_path, "case_config_not_exist_false.json", 0, False),
 ]
