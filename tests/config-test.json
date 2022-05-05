@@ -1,7 +1,7 @@
 {
   "BASE_URL": "https://criptapp-staging.herokuapp.com/",
-  "TOKEN": "Token 1c3b6ce0547a8e15b70496cca0b3a6061a4cc48f",
-  "GROUP": "unit_test",
-  "COLLECTION": "excel_uploader_unit_test",
+  "TOKEN": "",
+  "GROUP": "",
+  "COLLECTION": "",
   "EXCEL_TEMPLATE_FILE_PATH": ""
 }
