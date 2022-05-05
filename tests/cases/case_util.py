@@ -35,7 +35,7 @@ case_standardize_name = [
 
 """
 test case for filter_required_col()
-[value, expected]
+[value(list), expected(list)]
 """
 case_filter_required_col = [
     (["a", "b", "c"], ["a", "b", "c"]),
