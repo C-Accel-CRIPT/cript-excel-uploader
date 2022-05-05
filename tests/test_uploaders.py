@@ -42,16 +42,13 @@ def fixture_get_collection(fixture_read_config, fixture_connect, fixture_get_gro
 
 class TestUploaders:
     def test_connect_true(self, fixture_read_config):
-        actual = None
         _config_key_dict = fixture_read_config
         BASE_URL = _config_key_dict.get("BASE_URL")
         TOKEN = _config_key_dict.get("TOKEN")
         try:
             actual = C.API(BASE_URL, TOKEN)
         except Exception:
-            pass
-        finally:
-            self.db = actual
+            actual = None
         assert (
             actual is not None
         ), "Fail to connect to database, have a check on config.json"
