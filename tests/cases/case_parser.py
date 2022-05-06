@@ -86,7 +86,7 @@ case_parse_col_name_true = [
         "[2]name:name_2:name_3",
         ParsedColumnName(
             is_valid=True,
-            origin_col="name:name_2:name_3",
+            origin_col="[2]name:name_2:name_3",
             field_list=["name", "name_2", "name_3"],
             identifier=2,
             is_new=False,
@@ -96,7 +96,7 @@ case_parse_col_name_true = [
         "+[2]name:name_2:name_3",
         ParsedColumnName(
             is_valid=True,
-            origin_col="name:name_2:name_3",
+            origin_col="+[2]name:name_2:name_3",
             field_list=["name", "name_2", "name_3"],
             identifier=2,
             is_new=True,
