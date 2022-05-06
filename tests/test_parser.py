@@ -12,7 +12,7 @@ def test_parse_col_name_true(column_name, expected):
 
 
 @pytest.mark.parametrize("column_name, expected_error", case_parse_col_name_false)
-def test_parse_col_name_true(column_name, expected_error):
+def test_parse_col_name_false(column_name, expected_error):
     with pytest.raises(ColumnParseError) as excinfo:
         parse_col_name(column_name)
     assert (
