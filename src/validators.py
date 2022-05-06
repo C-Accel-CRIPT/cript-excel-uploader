@@ -242,8 +242,8 @@ def validate_keyword(sheet_obj):
     """
     Validate "keyword" or "keywords" field
     """
-    if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_type:
-        param_key = configs.allowed_type.get(sheet_obj.sheet_name)
+    if sheet_obj.df is not None and sheet_obj.sheet_name in configs.allowed_keyword:
+        param_key = configs.allowed_keyword.get(sheet_obj.sheet_name)
         for parsed_column_name_obj in sheet_obj.col_parsed.values():
             if not parsed_column_name_obj.is_valid:
                 continue
@@ -262,7 +262,6 @@ def validate_keyword(sheet_obj):
                     val_list = [val.strip() for val in val_list]
                     invalid_val_list = []
                     for keyword in val_list:
-
                         is_new = False
                         found_tag = False
                         if len(keyword) > 1 and keyword[0] == "+":

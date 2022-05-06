@@ -263,7 +263,6 @@ def transform_process(
             parsed_process = process_list[i]
             process_name = parsed_process["name"]
             process_std_name = process_name.replace(" ", "").lower()
-
             try:
                 # Create Process
                 process_obj = C.Process(

@@ -461,6 +461,7 @@ class FileSheet(Sheet):
 
                 if col in configs.list_fields[self.sheet_name]:
                     value = value.split(",")
+                    value = [val.strip() for val in value]
 
                 # Handle foreign keys field
                 if field_type == "foreign_key":
@@ -517,6 +518,7 @@ class MaterialSheet(Sheet):
 
                 if col in configs.list_fields[self.sheet_name]:
                     value = value.split(",")
+                    value = [val.strip() for val in value]
 
                 # Handle material base fields
                 if field_type == "base":
@@ -626,6 +628,7 @@ class ProcessSheet(Sheet):
 
                 if col in configs.list_fields[self.sheet_name]:
                     value = value.split(",")
+                    value = [val.strip() for val in value]
 
                 # Handle foreign keys
                 if field_type == "foreign_key":
@@ -749,6 +752,7 @@ class ProcessIngredientSheet(Sheet):
 
                 if col in configs.list_fields[self.sheet_name]:
                     value = value.split(",")
+                    value = [val.strip() for val in value]
 
                 # Handle foreign key
                 if field_type == "foreign_key":

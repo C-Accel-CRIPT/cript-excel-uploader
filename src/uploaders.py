@@ -121,18 +121,19 @@ def upload(api, node_type, dict_, user_uid):
                 api.save(obj)
             except Exception as e:
                 print(
-                    f"\nSave {obj.node_name} Failed, "
+                    f"\nSave [{node_type}] Failed, "
                     f"Node object: {obj}, "
-                    f"Error Info: {e.__str__()}."
+                    f"Error Info: {e.__str__()}.",
+                    end="",
                 )
                 print(traceback.format_exc())
         except Exception as e:
             print(
-                f"\nSave {obj.node_name} Failed, "
+                f"\nSave [{node_type}] Failed, "
                 f"Node object: {obj}, "
-                f"Error Info: {e.__str__()}."
+                f"Error Info: {e.__str__()}.",
+                end="",
             )
-            # print(traceback.format_exc())
         finally:
             pbar.update(1)
     pbar.close()

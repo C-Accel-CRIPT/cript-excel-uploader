@@ -156,7 +156,7 @@ def validate_and_parse_sheets(_sheet_dict):
         validators.validate_either_or_cols(sheet)
         validators.validate_unique_key(sheet)
         validators.validate_not_null_value(sheet)
-        # validators.validate_file_source(sheet)
+        validators.validate_file_source(sheet)
         validators.validate_type(sheet)
         validators.validate_keyword(sheet)
 
