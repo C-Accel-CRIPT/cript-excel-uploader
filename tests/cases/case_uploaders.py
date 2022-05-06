@@ -1,13 +1,17 @@
 import os
 import requests
 import cript as C
-from src.util import read_config
+from tests.fixtures import *
 
 # Config
-dir_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-file_name = "config-test.json"
-_config_key_dict, _config_is_found = read_config(dir_path, file_name)
-TOKEN = _config_key_dict.get("TOKEN") if "TOKEN" in _config_key_dict else ""
+_config_key_dict = fixture_read_config()
+BASE_URL = _config_key_dict.get("BASE_URL")
+TOKEN = _config_key_dict.get("TOKEN")
+GROUP = _config_key_dict.get("GROUP")
+COLLECTION = _config_key_dict.get("COLLECTION")
+db = fixture_connect()
+group_obj = fixture_get_group()
+collection_obj = fixture_get_collection()
 
 """
 test case for connect(), always false
