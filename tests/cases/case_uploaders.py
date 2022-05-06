@@ -20,6 +20,11 @@ test case for connect(), always false
 case_connect_false = [
     ("", "", requests.exceptions.MissingSchema),
     ("www.google.com", "", requests.exceptions.MissingSchema),
+    ("https://www.google.com", "", C.exceptions.APIAuthError),
+    ("https://www.google.com", None, C.exceptions.APIAuthError),
+    ("https://www.youtube.com", "", C.exceptions.APIAuthError),
+    ("https://www.youtube.com", None, C.exceptions.APIAuthError),
+    ("https://www.youtube.com", "Token xxxxxxx", C.exceptions.APIAuthError),
     (None, None, OSError),
     (None, "Token xxxxxxxx", OSError),
     (
@@ -28,14 +33,27 @@ case_connect_false = [
         C.exceptions.APIAuthError,
     ),
     ("https://criptapp-staging.herokuapp.com/", "xxxxxxxx", C.exceptions.APIAuthError),
+    (
+        "https://criptapp-staging.https://.herokuapp.com/",
+        "xxxxxxxx",
+        C.exceptions.APIAuthError,
+    ),
     ("https://criptapp-staging.herokuapp.com/", None, OSError),
     (
         "https://criptapp-staging.herokuapp.com",
         "Token xxxxxxxx",
         C.exceptions.APIAuthError,
     ),
-    ("criptapp-staging.herokuapp.com/", "Token xxxxxxxx", C.exceptions.APIAuthError),
-    ("criptapp-staging.herokuapp.com", "Token xxxxxxxx", C.exceptions.APIAuthError),
+    (
+        "criptapp-staging.herokuapp.com/",
+        "Token xxxxxxxx",
+        requests.exceptions.MissingSchema,
+    ),
+    (
+        "criptapp-staging.herokuapp.com",
+        "Token xxxxxxxx",
+        requests.exceptions.MissingSchema,
+    ),
     ("www.criptapp-staging.herokuapp.com", "Token xxxxxxxx", C.exceptions.APIAuthError),
     (
         "https://criptapp-staging.herokuapp.com/api",
@@ -60,11 +78,6 @@ case_connect_false = [
     (
         "http://criptapp-staging.herokuapp.com/",
         TOKEN.replace("Token ", ""),
-        C.exceptions.APIAuthError,
-    ),
-    (
-        "http://criptapp-staging.herokuapp.com/",
-        TOKEN.replace("Token", "token"),
         C.exceptions.APIAuthError,
     ),
     (
