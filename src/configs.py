@@ -2,6 +2,11 @@ import cript as C
 import inspect
 from src.util import filter_required_col
 
+"""
+This file is for configs of validation check
+"""
+
+# Required columns in every sheet
 required_cols = {
     "experiment": filter_required_col(C.Experiment.required),
     "data": filter_required_col(C.Data.required),
@@ -14,6 +19,7 @@ required_cols = {
     "process product": ["process", "product"],
 }
 
+# Either-or columns in every sheet
 either_or_cols = {
     "experiment": [],
     "data": [],
@@ -27,6 +33,7 @@ either_or_cols = {
     "process product": [],
 }
 
+# Columns with unique keys should be supported
 unique_keys = {
     "experiment": ["name"],
     "data": ["name"],
@@ -39,6 +46,7 @@ unique_keys = {
     "process product": ["process+product"],
 }
 
+# Foreign keys, for validation check
 foreign_keys = {
     "experiment": ["name"],
     "data": ["experiment", "name"],
@@ -51,6 +59,7 @@ foreign_keys = {
     "process product": ["process", "product"],
 }
 
+# List fields, value in following column is treated as a list separated by coma(",")
 list_fields = {
     "experiment": [],
     "data": [],
@@ -63,7 +72,8 @@ list_fields = {
     "process product": [],
 }
 
-
+# Base fields of every node defined in cript sdk
+# "node_name": "field"
 base_cols = {
     "experiment": inspect.signature(C.Experiment.__init__).parameters,
     "material": inspect.signature(C.Material.__init__).parameters,
@@ -75,7 +85,8 @@ base_cols = {
     "condition": inspect.signature(C.Condition.__init__).parameters,
 }
 
-# sheet_nodes
+# Base node allowed in every sheet
+# "sheet_name": "base_node_name"
 base_nodes = {
     "experiment": {"experiment"},
     "data": {"data"},
@@ -88,11 +99,13 @@ base_nodes = {
     "process product": {},
 }
 
+# Allowed property key in every sheet
 sheet_name_to_prop_key = {
     "material": "material-property-key",
     "process": "process-property-key",
 }
 
+# Cross validation pair
 foreign_key_validation_pairs = [
     {
         "from_field": "experiment",
@@ -156,6 +169,7 @@ foreign_key_validation_pairs = [
     },
 ]
 
+# Column name, allowed nesting type
 allowed_field_nesting = {
     "base": {None, "prop", "cond", "data"},
     "prop": {None, "prop-attr", "cond", "data"},
@@ -165,11 +179,13 @@ allowed_field_nesting = {
     "quan": {None},
 }
 
+# allowed type, defined in controlled vocabulary
 allowed_type = {
     "data": "data-type",
     "file": "file-type",
 }
 
+# allowed keyword, defined in controlled vocabulary
 allowed_keyword = {
     "process": "process-keyword",
     "process ingredient": "ingredient-keyword",
