@@ -172,6 +172,7 @@ class Sheet:
             if not found_tag and field == "name":
                 field_type_list.append("base")
                 found_tag = True
+
             # Discussing with Dylan with this problem
             # Duplicated "volume" field for both quantity and condition
             # Cause errors in process ingredient sheet when categorizing
@@ -253,6 +254,18 @@ class Sheet:
         """
         Parse a property column with it's associated standard units and attributes.
         Currently used in material sheet and process sheet
+        :param col: origin column name
+        :type col: str
+        :param idx: index of the cell you want to parse in the excel sheet
+        :type idx: int
+        :param value: the value of current cell
+        :type value: Union[str, int, float]
+        :param start_index: start_index of nested field (because the field type list has multiple values,
+        we need to know which field we are dealing with.)(eg. density: temperature, the start index will be set to 0,
+        indicating that the field we want to parse is density, not temperature)
+        :type start_index: int
+        :param parsed_object: the dictionary object we will add the parsed property object to
+        :type parsed_object: dict
         [prop, prop:cond, prop:data, prop:attr]
         """
         parsed_column_name_obj = self.col_parsed[col]
@@ -299,6 +312,18 @@ class Sheet:
         """
         Parse a condition column with it's associated standard units.
         Currently used in data sheet, material sheet and process sheet
+        :param col: origin column name
+        :type col: str
+        :param idx: index of the cell you want to parse in the excel sheet
+        :type idx: int
+        :param value: the value of current cell
+        :type value: Union[str, int, float]
+        :param start_index: start_index of nested field (because the field type list has multiple values,
+        we need to know which field we are dealing with.)(eg. density: temperature, the start index will be set to 1,
+        indicating that the field we want to parse is temperature, not density)
+        :type start_index: int
+        :param parsed_object: the dictionary object we will add the parsed property object to
+        :type parsed_object: dict
         [cond, cond:attr, cond:data]
         """
         parsed_column_name_obj = self.col_parsed[col]
@@ -557,6 +582,9 @@ class MixtureComponentSheet(Sheet):
         self.parsed = {}
 
     def _create_helper_cols(self):
+        """
+        Create helper columns: process+component
+        """
         if self.df is None:
             return None
 
@@ -666,6 +694,9 @@ class PrerequisiteProcessSheet(Sheet):
         self.parsed = {}
 
     def _create_helper_cols(self):
+        """
+        Create helper columns: process+prerequisite_process
+        """
         if self.df is None:
             return None
 
@@ -711,6 +742,9 @@ class ProcessIngredientSheet(Sheet):
         self.parsed = {}
 
     def _create_helper_cols(self):
+        """
+        Create helper columns: process+ingredient
+        """
         if self.df is None:
             return None
 
@@ -790,6 +824,9 @@ class ProcessProductSheet(Sheet):
         self.parsed = {}
 
     def _create_helper_cols(self):
+        """
+        Create helper columns: process+product
+        """
         if self.df is None:
             return None
 
