@@ -34,6 +34,9 @@ class ParsedColumnName:
     def __repr__(self):
         return self.__str__()
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
 
 def parse_col_name(col):
     """
@@ -56,7 +59,7 @@ def parse_col_name(col):
                 is_new = True
             else:
                 raise ColumnParseError("Invalid plus sign", col[: i + 1])
-        elif col[i] == "(":
+        elif col[i] == "[":
             if identifier is None and not tag:
                 tag = True
                 p0 = i + 1
@@ -69,13 +72,19 @@ def parse_col_name(col):
                 raise ColumnParseError(
                     "Numbers are not allowed outside the identifier", col[: i + 1]
                 )
-        elif col[i] == ")":
+        elif col[i] == "]":
             if tag:
+                if i <= p0:
+                    raise ColumnParseError("Empty Identifier", col[: i + 1])
                 identifier = int(col[p0:i])
+                if identifier < 1:
+                    raise ColumnParseError(
+                        "Identifier must be larger than or equal to 1", col[: i + 1]
+                    )
                 tag = False
             else:
                 raise ColumnParseError("Invalid right parenthesis", col[: i + 1])
-        elif col[i] in string.punctuation and col[i] not in ["+", "(", ")"]:
+        elif col[i] in string.punctuation and col[i] not in ["+", "[", "]"]:
             raise ColumnParseError("Invalid punctuation", col[: i + 1])
         elif col[i] == " ":
             raise ColumnParseError("Invalid space", col[: i + 1])
@@ -89,7 +98,7 @@ def parse_col_name(col):
                 break
 
     if identifier is None:
-        identifier = 1
+        identifier = 0
 
     # Check for nested fields
     nest_count = 0

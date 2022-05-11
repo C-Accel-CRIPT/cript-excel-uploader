@@ -2,7 +2,12 @@ import cript as C
 from src.errors import CreatOrUpdateNodeError
 
 
-def transform_experiment(group_obj, collection_obj, parsed_experiments, public_flag):
+def transform_experiment(
+    group_obj,
+    collection_obj,
+    parsed_experiments,
+    public_flag,
+):
     """
     create experiment objects locally and return a dict of name: experiment object pair
 
@@ -45,7 +50,13 @@ def transform_experiment(group_obj, collection_obj, parsed_experiments, public_f
     return experiment_objs
 
 
-def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
+def transform_data(
+    group_obj,
+    experiment_objs,
+    citation_objs,
+    parsed_datas,
+    public_flag,
+):
     """
     create data object locally and return a dict of name:data object pair
 
@@ -53,6 +64,8 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
     :type group_obj: `cript.Group`
     :param experiment_objs: (name) : (object of experiment) pair
     :type experiment_objs: dict
+    :param citation_objs: (name) : (object of citation) pair
+    :type citation_objs: dict
     :param parsed_datas: parsed data of data_sheet.parsed (data_sheet.parsed)
     :type parsed_datas: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
@@ -64,14 +77,18 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
     for data_std_name in parsed_datas:
         parsed_data = parsed_datas[data_std_name]
         # Grab Experiment
-        experiment_std_name = parsed_data["experiment"]
-        experiment_obj = experiment_objs[experiment_std_name]
+        experiment_std_name = parsed_data.get("experiment")
+        experiment_obj = experiment_objs.get(experiment_std_name)
+        # Grab Citation
+        citation_std_name = parsed_data.get("citations")
+        citation_obj = citation_objs.get(citation_std_name)
 
         try:
             # Create Data
             data_obj = C.Data(
                 group=group_obj,
                 experiment=experiment_obj,
+                citations=[citation_obj] if citation_obj else [],
                 public=public_flag,
                 **parsed_data["base"],
             )
@@ -94,7 +111,12 @@ def transform_data(group_obj, experiment_objs, parsed_datas, public_flag):
     return data_objs
 
 
-def transform_file(group_obj, data_objs, parsed_file, public_flag):
+def transform_file(
+    group_obj,
+    data_objs,
+    parsed_file,
+    public_flag,
+):
     """
     create file objects and return a dict of name:file object pair
 
@@ -143,12 +165,20 @@ def transform_file(group_obj, data_objs, parsed_file, public_flag):
     return file_objs
 
 
-def transform_material(group_obj, data_objs, parsed_materials, public_flag):
+def transform_material(
+    group_obj,
+    citation_objs,
+    data_objs,
+    parsed_materials,
+    public_flag,
+):
     """
     create material objects locally and return a dict of name:material_object pair
 
     :param group_obj: object of group
     :type group_obj: `cript.Group`
+    :param citation_objs: (name) : (object of citation) pair
+    :type citation_objs: dict
     :param data_objs: (name) : (object of data) pair
     :type data_objs: dict
     :param parsed_materials: material_sheet.parsed
@@ -175,12 +205,17 @@ def transform_material(group_obj, data_objs, parsed_materials, public_flag):
             # Add Prop objects
             parsed_props = parsed_material.get("prop")
             if parsed_props is not None and len(parsed_props) > 0:
-                material_obj.properties = _transform_prop_list(parsed_props, data_objs)
+                material_obj.properties = _transform_prop_list(
+                    citation_objs,
+                    data_objs,
+                    parsed_props,
+                )
 
             # Add Identifiers
             parsed_idens = parsed_material.get("iden")
             if parsed_idens is not None and len(parsed_idens) > 0:
                 material_obj.identifiers = _transform_identifier_list(parsed_idens)
+
         except Exception as e:
             node_type = "Material"
             sheet = "Material"
@@ -200,7 +235,10 @@ def transform_material(group_obj, data_objs, parsed_materials, public_flag):
     return material_objs
 
 
-def transform_components(material_objs, parsed_components):
+def transform_components(
+    material_objs,
+    parsed_components,
+):
     """
     update components for material objects
     :param material_objs: (name) : (object of material) pair
@@ -235,7 +273,12 @@ def transform_components(material_objs, parsed_components):
 
 
 def transform_process(
-    group_obj, experiment_objs, data_objs, parsed_processes, public_flag
+    group_obj,
+    experiment_objs,
+    citation_objs,
+    data_objs,
+    parsed_processes,
+    public_flag,
 ):
     """
     create process objects locally and return a dict of name:process object pair
@@ -244,10 +287,12 @@ def transform_process(
     :type group_obj: `cript.Group`
     :param experiment_objs: (name): (experiment object) pair
     :type experiment_objs: dict
-    :param parsed_processes: process_sheet.parsed
-    :type parsed_processes: dict
+    :param citation_objs: (name): (citation object) pair
+    :type citation_objs: dict
     :param data_objs: (name): (data object) pair
     :type data_objs: dict
+    :param parsed_processes: process_sheet.parsed
+    :type parsed_processes: dict
     :param public_flag: a boolean flag allow users to set whether the data to go public/private
     :type public_flag: bool
     :return: (name) : (url of process) pair
@@ -261,14 +306,17 @@ def transform_process(
         prev_process_std_name = None
         for i in range(len(process_list)):
             parsed_process = process_list[i]
-            process_name = parsed_process["name"]
+            process_name = parsed_process.get("name")
             process_std_name = process_name.replace(" ", "").lower()
-
+            # Grab Citation
+            citation_std_name = parsed_process.get("citations")
+            citation_obj = citation_objs.get(citation_std_name)
             try:
                 # Create Process
                 process_obj = C.Process(
                     group=group_obj,
                     experiment=experiment_obj,
+                    citations=[citation_obj] if citation_obj else [],
                     public=public_flag,
                     **parsed_process["base"],
                 )
@@ -276,7 +324,9 @@ def transform_process(
                 parsed_props = parsed_process.get("prop")
                 if parsed_props is not None and len(parsed_props) > 0:
                     process_obj.properties = _transform_prop_list(
-                        parsed_props, data_objs
+                        citation_objs,
+                        data_objs,
+                        parsed_props,
                     )
 
                 # Add Cond objects
@@ -310,7 +360,10 @@ def transform_process(
     return process_objs
 
 
-def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
+def transform_prerequisite_process(
+    process_objs,
+    parsed_prerequisite_processes,
+):
     """
     Update prerequisite process for process objects
     :param process_objs: (name): (process object) pair
@@ -343,7 +396,9 @@ def transform_prerequisite_process(process_objs, parsed_prerequisite_processes):
 
 
 def transform_process_ingredient(
-    process_objs, material_objs, parsed_process_ingredients
+    process_objs,
+    material_objs,
+    parsed_process_ingredients,
 ):
     """
     upload ingre to the database and return a dict of name:step_url pair
@@ -429,7 +484,61 @@ def transform_process_product(process_objs, material_objs, parsed_process_produc
                 )
 
 
-def _transform_cond_list(parsed_conds, data_objs):
+def transform_citation(
+    group_obj,
+    parsed_citations,
+    public_flag,
+):
+    """
+    create experiment objects locally and return a dict of name: experiment object pair
+
+    :param group_obj: object of group
+    :type group_obj: `cript.Group`
+    :param parsed_citations: parsed data of experiments (experiment_sheet.parsed)
+    :type parsed_citations: dict
+    :param public_flag: a boolean flag allow users to set whether the data to go public/private
+    :type public_flag: bool
+    :return: a dict contains (experiment name) : (experiment object) pair
+    :rtype: dict
+    """
+    reference_objs = {}
+    citation_objs = {}
+    for citation_std_name in parsed_citations:
+        # Create Citation
+        try:
+            reference_obj = C.Reference(
+                group=group_obj,
+                public=public_flag,
+                **parsed_citations[citation_std_name]["base"],
+            )
+            citation_obj = C.Citation(
+                reference=reference_obj,
+            )
+        except Exception as e:
+            node_type = "Citation"
+            sheet = "Citation"
+            idx = parsed_citations[citation_std_name]["index"]
+            print(
+                CreatOrUpdateNodeError(
+                    msg=e.__str__(),
+                    idx=idx,
+                    node_type=node_type,
+                    sheet=sheet,
+                ).__str__()
+            )
+            reference_obj = None
+            citation_obj = None
+
+        reference_objs[citation_std_name] = reference_obj
+        citation_objs[citation_std_name] = citation_obj
+
+    return reference_objs, citation_objs
+
+
+def _transform_cond_list(
+    parsed_conds,
+    data_objs,
+):
     """
     Create a list of Cond objects.
     Used in Material,Process and Data
@@ -459,10 +568,15 @@ def _transform_cond_list(parsed_conds, data_objs):
     return cond_list
 
 
-def _transform_prop_list(parsed_props, data_objs):
+def _transform_prop_list(
+    citation_objs,
+    data_objs,
+    parsed_props,
+):
     """
     Create a list of Prop objects.
-
+    :param citation_objs: (name) : (object of citation) pair
+    :type citation_objs: dict
     :param parsed_props: a dict contains parsed properties
     :type parsed_props: dict
     :param data_objs: dict contains (name) : (data_object) pair
@@ -483,6 +597,11 @@ def _transform_prop_list(parsed_props, data_objs):
                 for data_std_name in parent["data"]:
                     data_obj = data_objs[data_std_name]
                     prop.add_data(data_obj)
+            # Add Citation object
+            if "cita" in parent and len(parent["cita"]) > 0:
+                for citation_std_name in parent["cita"]:
+                    citation_obj = citation_objs[citation_std_name]
+                    prop.add_citation(citation_obj)
 
             # Add Cond objects
             if "cond" in parent and len(parent["cond"]) > 0:

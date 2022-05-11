@@ -85,7 +85,14 @@ def get_collection(api, group_obj, collection_name):
 def upload(api, node_type, dict_, user_uid):
     """
     Save objects to database, update them if the object already exists
-    dict: (name): (C.Base)
+    :param api: cript api connection
+    :type api: cript.API
+    :param node_type: the type of current nodes to be uploaded
+    :type node_type: str
+    :param dict_: a dictionary of nodes, (name): (C.Base)
+    :type dict_: dict
+    :param user_uid: uid of current user
+    :type user_uid: str
     """
     if len(dict_) == 0:
         return 0
@@ -121,18 +128,19 @@ def upload(api, node_type, dict_, user_uid):
                 api.save(obj)
             except Exception as e:
                 print(
-                    f"\nSave {obj.node_name} Failed, "
+                    f"\nSave [{node_type}] Failed, "
                     f"Node object: {obj}, "
-                    f"Error Info: {e.__str__()}."
+                    f"Error Info: {e.__str__()}.",
+                    end="",
                 )
                 print(traceback.format_exc())
         except Exception as e:
             print(
-                f"\nSave {obj.node_name} Failed, "
+                f"\nSave [{node_type}] Failed, "
                 f"Node object: {obj}, "
-                f"Error Info: {e.__str__()}."
+                f"Error Info: {e.__str__()}.",
+                end="",
             )
-            # print(traceback.format_exc())
         finally:
             pbar.update(1)
     pbar.close()
