@@ -19,8 +19,16 @@ from tests.cases.case_transformers import (
 
 
 @pytest.mark.parametrize("parsed_experiments, expected", case_transform_experiment_true)
-def test_transform_experiment(parsed_experiments, expected):
+def test_transform_experiment_true(parsed_experiments, expected):
     actual = transform_experiment(
         group_obj, collection_obj, parsed_experiments, public_flag
     )
     assert all([a == b for a, b in zip(actual, expected)])
+
+
+# @pytest.mark.parametrize("parsed_experiments, expected", case_transform_experiment_false)
+# def test_transform_experiment_false(parsed_experiments, expected):
+#     actual = transform_experiment(
+#         group_obj, collection_obj, parsed_experiments, public_flag
+#     )
+#     assert all([a == b for a, b in zip(actual, expected)])
