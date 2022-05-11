@@ -133,6 +133,7 @@ def construct_sheet_objs():
         path, "process ingredient", param
     )
     process_product_sheet = sheets.ProcessProductSheet(path, "process product", param)
+    citation_sheet = sheets.CitationSheet(path, "citation", param)
 
     _sheet_dict = {
         "experiment": experiment_sheet,
@@ -144,6 +145,7 @@ def construct_sheet_objs():
         "prerequisite process": prerequisite_process_sheet,
         "process ingredient": process_ingredient_sheet,
         "process product": process_product_sheet,
+        "citation": citation_sheet,
     }
 
     return _sheet_dict
@@ -159,6 +161,7 @@ def validate_and_parse_sheets(_sheet_dict):
         validators.validate_file_source(sheet)
         validators.validate_type(sheet)
         validators.validate_keyword(sheet)
+        validators.validate_integer_value(sheet)
 
     # Validate foreign key
     for pair in configs.foreign_key_validation_pairs:
@@ -170,18 +173,22 @@ def validate_and_parse_sheets(_sheet_dict):
         }
         validators.validate_foreign_key(**_pair)
 
-    # Validate "data"
+    # Validate "data" and "citation"
     data_sheet = _sheet_dict.get("data")
+    citation_sheet = _sheet_dict.get("citation")
     for sheet in _sheet_dict.values():
         for col in sheet.col_parsed:
             parsed_col_name_obj = sheet.col_parsed[col]
             field_type_list = parsed_col_name_obj.field_type_list
             if "data" in field_type_list:
                 validators.validate_foreign_key(col, sheet, "name", data_sheet)
+            if "citations" in field_type_list:
+                validators.validate_foreign_key(col, sheet, "title", citation_sheet)
 
     # Parse Excel sheets
     for sheet in _sheet_dict.values():
         sheet.parse()
+        print(sheet.parsed)
 
     # Validate property, condition, identity and quantity
     for sheet in _sheet_dict.values():
@@ -229,6 +236,7 @@ def transform_and_upload(_sheet_dict):
     prerequisite_process_sheet = _sheet_dict.get("prerequisite process")
     process_ingredient_sheet = _sheet_dict.get("process ingredient")
     process_product_sheet = _sheet_dict.get("process product")
+    citiation_sheet = _sheet_dict.get("citation")
 
     # experiment
     experiment_objs = transformers.transform_experiment(
@@ -239,10 +247,19 @@ def transform_and_upload(_sheet_dict):
     )
     uploaders.upload(db, "Experiment", experiment_objs, user_uid)
 
+    # citation
+    reference_objs, citation_objs = transformers.transform_citation(
+        group_obj,
+        citiation_sheet.parsed,
+        public_flag,
+    )
+    uploaders.upload(db, "Reference", reference_objs, user_uid)
+
     # data
     data_objs = transformers.transform_data(
         group_obj,
         experiment_objs,
+        citation_objs,
         data_sheet.parsed,
         public_flag,
     )
@@ -260,6 +277,7 @@ def transform_and_upload(_sheet_dict):
     # material
     material_objs = transformers.transform_material(
         group_obj,
+        citation_objs,
         data_objs,
         material_sheet.parsed,
         public_flag,
@@ -278,6 +296,7 @@ def transform_and_upload(_sheet_dict):
     process_objs = transformers.transform_process(
         group_obj,
         experiment_objs,
+        citation_objs,
         data_objs,
         process_sheet.parsed,
         public_flag,

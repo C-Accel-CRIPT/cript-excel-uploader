@@ -195,9 +195,14 @@ class Sheet:
                     field_type_list.append("base")
                     found_tag = True
 
-            # Data keys
+            # Data key
             if not found_tag and field == "data":
                 field_type_list.append("data")
+                found_tag = True
+
+            # Citation key
+            if not found_tag and field == "citations":
+                field_type_list.append("cita")
                 found_tag = True
 
             # Identifier Keys
@@ -287,6 +292,7 @@ class Sheet:
                 "attr": {},
                 "cond": {},
                 "data": [],
+                "cita": [],
                 "col": col,
                 "idx": idx,
             }
@@ -304,6 +310,9 @@ class Sheet:
         # prop:data
         elif field_nested_type == "data":
             parent["data"].append(standardize_name(value))
+        # prop:cita
+        elif field_nested_type == "cita":
+            parent["cita"].append(standardize_name(value))
         # prop:cond
         elif field_nested_type == "cond":
             self._parse_cond(col, idx, start_index + 1, value, parent)
@@ -855,5 +864,68 @@ class ProcessProductSheet(Sheet):
             if process_std_name not in self.parsed:
                 self.parsed[process_std_name] = []
             self.parsed[process_std_name].append(parsed_product)
+
+        return self.parsed
+
+
+class CitationSheet(Sheet):
+    """Citation Excel sheet."""
+
+    def __init__(self, path, sheet_name, param):
+        super().__init__(path, sheet_name, param)
+
+        self._read_file()
+        self._data_preprocess()
+        self._create_foreign_key_dict()
+        self.parsed = {}
+
+    def parse(self):
+        if self.df is None:
+            return self.df
+
+        for index, row in self.df.iterrows():
+            parsed_citation = {
+                "base": {},
+                "index": index + 2,
+                "name": row["title"],
+            }
+            citation_std_name = standardize_name(row["title"])
+            for col in self.cols:
+                # Define value and field
+                parsed_column_name_obj = self.col_parsed[col]
+                # Check whether current column name is valid
+                if not parsed_column_name_obj.is_valid:
+                    continue
+
+                field = parsed_column_name_obj.field_list[0]
+                field_type = parsed_column_name_obj.field_type_list[0]
+                value = row.get(col)
+                if value is None or pd.isna(value):
+                    continue
+
+                if col in configs.list_fields[self.sheet_name]:
+                    value = value.split(",")
+                    if col == "pages":
+                        _value = []
+                        for val in value:
+                            try:
+                                _value.append(int(val))
+                            except Exception:
+                                pass
+                        value = _value
+                    else:
+                        value = [val.strip() for val in value]
+
+                # Handle base fields
+                if field_type == "base":
+                    if field in ["year", "volume", "issue", "pmid"]:
+                        try:
+                            parsed_citation["base"][field] = int(value)
+                        except Exception:
+                            pass
+                    else:
+                        parsed_citation["base"][field] = value
+
+            self.parsed[citation_std_name] = parsed_citation
 
         return self.parsed

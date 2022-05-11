@@ -5,6 +5,7 @@ from src import configs
 import cript as C
 from src.errors import (
     ValueDoesNotExist,
+    UnsupportedValue,
     DuplicatedValueError,
     NullValueError,
     MissingRequiredColumn,
@@ -403,3 +404,44 @@ def validate_quantity(sheet_obj):
                         sheet=sheet_obj.sheet_name,
                     )
                     sheet_obj.errors.append(exception.__str__())
+
+
+def validate_integer_value(sheet_obj):
+    """
+    Customized validator for "pages", "year", "volume", "issue" field in citation sheet
+    """
+    if sheet_obj.sheet_name != "citation":
+        return 0
+    if sheet_obj.df is not None:
+        list_col = "pages"
+        single_col = ["year", "volume", "issue", "pmid"]
+        for idx, row in sheet_obj.df.iterrows():
+            # list value
+            list_val = row.get(list_col)
+            if list_val is not None:
+                val_list = list_val.split(",")
+                for _val in val_list:
+                    try:
+                        int(_val)
+                    except Exception:
+                        exception = UnsupportedValue(
+                            val=_val,
+                            idx=idx + 2,
+                            col=list_col,
+                            sheet=sheet_obj.sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())
+            # single value
+            for col in single_col:
+                single_val = row.get(col)
+                if single_val is not None:
+                    try:
+                        int(single_val)
+                    except Exception:
+                        exception = UnsupportedValue(
+                            val=single_val,
+                            idx=idx + 2,
+                            col=list_col,
+                            sheet=sheet_obj.sheet_name,
+                        )
+                        sheet_obj.errors.append(exception.__str__())

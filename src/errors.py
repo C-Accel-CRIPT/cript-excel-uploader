@@ -32,12 +32,21 @@ class UnsupportedColumnName(Exception):
 
 
 class UnsupportedValue(Exception):
-    def __init__(self, val, col):
+    def __init__(self, val, idx, col, sheet):
         self.val = val
+        self.idx = idx
         self.col = col
+        self.sheet = sheet
 
     def __str__(self):
-        return f"'{self.val}' is not a supported value for '{self.col}'"
+        return (
+            f"UnsupportedValue: "
+            f"Sheet [{self.sheet}], "
+            f"Column [{self.col}], "
+            f"Index [{self.idx}], "
+            f"Value [{self.val}], "
+            f"Input Value does not supported."
+        )
 
 
 class ValueDoesNotExist(Exception):

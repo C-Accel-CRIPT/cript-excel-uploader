@@ -17,6 +17,7 @@ required_cols = {
     "prerequisite process": ["process", "prerequisite_process"],
     "process ingredient": ["process", "ingredient", "keyword"],
     "process product": ["process", "product"],
+    "citation": filter_required_col(C.Reference.required),
 }
 
 # Either-or columns in every sheet
@@ -31,6 +32,7 @@ either_or_cols = {
     "step": [],
     "process ingredient": ["mole", "mass", "volume"],
     "process product": [],
+    "citation": [],
 }
 
 # Columns with unique keys should be supported
@@ -44,19 +46,21 @@ unique_keys = {
     "prerequisite process": ["process+prerequisite_process"],
     "process ingredient": ["process+ingredient"],
     "process product": ["process+product"],
+    "citation": ["title"],
 }
 
 # Foreign keys, for validation check
 foreign_keys = {
     "experiment": ["name"],
-    "data": ["experiment", "name"],
+    "data": ["experiment", "name", "citations"],
     "file": ["data"],
     "material": ["name"],
     "mixture component": ["material", "component"],
-    "process": ["experiment", "name"],
+    "process": ["experiment", "name", "citations"],
     "prerequisite process": ["process", "prerequisite_process"],
     "process ingredient": ["process", "ingredient"],
     "process product": ["process", "product"],
+    "citation": [],
 }
 
 # List fields, value in following column is treated as a list separated by coma(",")
@@ -70,6 +74,7 @@ list_fields = {
     "prerequisite process": [],
     "process ingredient": [],
     "process product": [],
+    "citation": ["authors", "pages"],
 }
 
 # Base fields of every node defined in cript sdk
@@ -83,6 +88,7 @@ base_cols = {
     "ingredient": inspect.signature(C.Ingredient.__init__).parameters,
     "property": inspect.signature(C.Property.__init__).parameters,
     "condition": inspect.signature(C.Condition.__init__).parameters,
+    "reference": inspect.signature(C.Reference.__init__).parameters,
 }
 
 # Base node allowed in every sheet
@@ -97,6 +103,7 @@ base_nodes = {
     "prerequisite process": {},
     "process ingredient": {"ingredient"},
     "process product": {},
+    "citation": {"reference"},
 }
 
 # Allowed property key in every sheet
@@ -114,6 +121,12 @@ foreign_key_validation_pairs = [
         "to_sheet_obj": "experiment",
     },
     {
+        "from_field": "citation",
+        "from_sheet_obj": "data",
+        "to_field": "title",
+        "to_sheet_obj": "citation",
+    },
+    {
         "from_field": "data",
         "from_sheet_obj": "file",
         "to_field": "name",
@@ -124,6 +137,12 @@ foreign_key_validation_pairs = [
         "from_sheet_obj": "process",
         "to_field": "name",
         "to_sheet_obj": "experiment",
+    },
+    {
+        "from_field": "citation",
+        "from_sheet_obj": "process",
+        "to_field": "title",
+        "to_sheet_obj": "citation",
     },
     {
         "from_field": "process",
@@ -172,7 +191,7 @@ foreign_key_validation_pairs = [
 # Column name, allowed nesting type
 allowed_field_nesting = {
     "base": {None, "prop", "cond", "data"},
-    "prop": {None, "prop-attr", "cond", "data"},
+    "prop": {None, "prop-attr", "cond", "data", "cita"},
     "cond": {None, "cond-attr", "data"},
     "foreign-key": {None},
     "data": {None},
