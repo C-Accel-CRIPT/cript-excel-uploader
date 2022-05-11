@@ -188,7 +188,6 @@ def validate_and_parse_sheets(_sheet_dict):
     # Parse Excel sheets
     for sheet in _sheet_dict.values():
         sheet.parse()
-        print(sheet.parsed)
 
     # Validate property, condition, identity and quantity
     for sheet in _sheet_dict.values():
