@@ -17,7 +17,7 @@ executable_directory = os.path.realpath(os.path.dirname(sys.argv[0]))
 print(ascii_art.title.template)
 _config_key_dict, _config_is_found = util.read_config(executable_directory)
 
-base_url = _config_key_dict.get("BASE_URL")
+host = _config_key_dict.get("HOST")
 token = _config_key_dict.get("TOKEN")
 group_name = _config_key_dict.get("GROUP")
 collection_name = _config_key_dict.get("COLLECTION")
@@ -28,17 +28,17 @@ public_flag = None
 # API connection
 db = None
 while db is None:
-    if base_url is None:
-        base_url = input("\nBase URL: ")
+    if host is None:
+        host = input("\nHost: ")
     if token is None:
         token = input("API Token: ")
     try:
         print("Checking token...")
-        db = uploaders.connect(base_url, token)
+        db = uploaders.connect(host, token)
         print("")
     except Exception as e:
         print(e.__str__())
-        base_url = None
+        host = None
         token = None
 
 

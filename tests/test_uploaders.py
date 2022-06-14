@@ -31,10 +31,10 @@ def test_connect_true():
     ), "Fail to connect to database, have a check on config.json"
 
 
-@pytest.mark.parametrize("base_url, token, expected", case_connect_false)
-def test_connect_false(base_url, token, expected):
+@pytest.mark.parametrize("host, token, expected", case_connect_false)
+def test_connect_false(host, token, expected):
     with pytest.raises(expected) as excinfo:
-        connect(base_url, token)
+        connect(host, token)
     assert (
         excinfo.type == expected
     ), f"Expected Error: {expected}, Actual Value: {excinfo.type}"

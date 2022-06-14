@@ -15,7 +15,7 @@ collection_obj = fixture_get_collection()
 
 """
 test case for connect(), always false
-[base_url, token, expected]
+[host, token, expected]
 """
 case_connect_false = [
     ("", "", requests.exceptions.MissingSchema),

@@ -8,15 +8,15 @@ from cript.exceptions import (
 )
 
 
-def connect(base_url, token):
+def connect(host, token):
     """
     connect with backend service
-    :param base_url: host domain
+    :param host: host domain
     :param token: authentication token
     :return: backend service connection object
     :rtype: class:`cript.API`
     """
-    return C.API(base_url, token)
+    return C.API(host, token)
 
 
 def get_group(api, group_name):
