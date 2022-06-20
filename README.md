@@ -1,161 +1,191 @@
 # CRIPT Excel Uploader
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)  
 
-This repository contains scripts to upload data from a standard Excel template to the CRIPT database.  
+This code is used to upload a semi-dynamic Excel template to the [CRIPT platform](https://www.criptapp.org/).
 
-### Feedbacks and bug reports welcomed!
-### Click the **Share a thought** button in left behind of our [website](https://www.criptapp.org/).
 
-## Download files
-Go to the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-1. Download executable file  
-   *Executable files are available for Windows and MacOS.*
-   * Windows
-      * Download **cript_uploader.exe** 
-   * MacOS 
-      * Download **cript_uploader** 
-      * Having issues running the file?
-          * Open a terminal and navigate the relevant folder  
-          `cd <path_to_folder>`
-          * Change the file permissions  
-          `chmod 755 ./cript_excel_uploader`
-          * Run it  
-          `./cript_excel_uploader`
-2. Download configuration file (optional, but more convenient)
-   * Download **config.json**
-   * **Put config.json in the same directory as executable file**
-   * Open the configuration file using notepad
-   * Fill the values for the parameters and the excel uploader will read them automatically.
-   * Validate your json file in this [website](https://codebeautify.org/jsonvalidator). Make sure it's a valid json.  
-     *If you have trouble writing a valid json, see known issues below*
-   * Save the **config.json** before you start uploading.
-          
+## Download
 
-## Excel Template
+### Template
+Download **example_template_vX.X.X.xlsx** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
 
-Download **example_template.xlsx** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+### Uploader
+> Executables are available for Windows and MacOS.  
+> These can be downloaded and run without installing Python or any other dependency.
 
-### Guidelines For Modifying The Template
-- **Before we started**
-  - Every spreadsheet is a collection.   
-    All the data in the single spreadsheet will be saved to the same collection.
-  - Ideas behind group, collection, experiment, process is [here](https://criptapp-staging.herokuapp.com/docs/datamodel/)
-  - Make sure you have already been a member of a group, and created a collection where the data will be uploaded.
+- **Windows**
+    - Download **cript_uploader.exe** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
 
-- **Sheet** 
-  - The required sheets are marked as **orange**.
-  - The optional sheets are marked as **grey**.   
-    *You can either keep for future use or remove to simplify if you don't need them*
-  - The sheet names **cannot be renamed**, new sheet with other names will be ignored.
-  - sheet structure: first row is *column name*, second row is *unit*, others are *values*
-- **Column**
-  - Columns follow a format like this : \(sign\)(\[identifier\])field1(:field2)(:field3)
-    - Sign
-      - Columns marked with an asterisk `*` are required (eg. `*name`).
-      - Columns marked with a hashtag `#` will be ignored (eg. `#storage`).
-    - Identifier
-      - Identifier can be a number with square brackets (eg. `[1]`)
-      - Identifier is used to allow you to add same property/condition for multiple times.  
-      eg. Property `density` is measured multiple times under different temperature. 
-        In this case, we can use `[1]density`, `[1]density:temperature`, `[2]density`, `[2]density:temperature`, etc.
-    - Field  
-      1. Fields can be categorized into following type: 
-      - base: defined as parameters in `node.__init__()` function.  
-        *Different node has different base nodes*
-      - foreign-key: special kind of "base" columns, linked to another nested node  
-        *see:* `experiment` *in process sheet (linked to experiment node)*  
-        `ingredient` *in process product sheet (linked to material node)*  
-        `product` *in process product sheet (linked to material node)*  
-        `data` *in file sheet (linked to data node)*  
-        `material` *in mixture component sheet (linked to material node)*  
-        `component` *in mixture component sheet (linked to material node)*  
-        `process` *in prerequisite process sheet (linked to process node)*  
-        `prerequisite_process` *in prerequisite process sheet (linked to process node)*  
-      - property: defined in property key tables.  
-        *Different node has different property key tables.*  
-        *see: [material-property-key](https://criptapp-staging.herokuapp.com/docs/datamodel/), [process-property-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
-      - condition: defined in condition key table.  
-        *see: [condition-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
-      - attribute: defined as parameters in `Property.__init__()` and `Condition.__init__()` function except for `key` and `value`.  
-        *see: [property-attribute](https://criptapp-staging.herokuapp.com/docs/datamodel/), [condition-attribute](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
-      - quantity: defined in quantity key table used in *process ingredient* sheet.  
-        *see: [quantity-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
-      - identifier: defined in identity key tables used in *material* sheet  
-        *see: [material-identifier-key](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
-      2. allowed nesting rules  
-        nesting is supported for property, condition, attribute and data
-      - property:property-attribute eg.`density:method_description`
-      - property:condition eg.`density:temperature`
-      - property:condition:condition-attribute eg.`density:temperature:uncertainty`
-      - property:condition:data eg.`density:temperature:uncertainty`
-      - property:data eg.`density:data`
-      - condition:condition-attribute eg.`temperature:uncertainty`
-      - condition:data eg.`temperature:data`
-    - Other rules
-      - For `process ingredient` sheet, each ingredient must include one or more quantity defintion.
-- **Unit**
-  - The value in the second row will be recognized as unit.
-  - Supported units are provided in property/condition/quantity key tables.
-  - Theoretically you can try any unit you want, If the unit is not support, we will let you know in error detection.
-  - The value with the given unit will be standardized after being uploaded.
-- **Value**
-  - Cross validation is required for the name categorized as "foreign-key".
-    Cross validation check tries to match the names in two columns after removing all the space 
-    and making every character lower case.
-  - The fields in `node.required` should be not null.
-  - The fields in `node.unique_together` should be unique in combination.  
-    *ignore if there's group or collection since it's predefined*
-  - Controlled vocabulary is preferred for type and keyword. 
-    You can also customize your own type/keyword by having a `+` sign before them  
-    *see: [data-type](https://criptapp-staging.herokuapp.com/docs/datamodel/), [ingredient-keyword](https://criptapp-staging.herokuapp.com/docs/datamodel/), [process-keyword](https://criptapp-staging.herokuapp.com/docs/datamodel/)*
-  - For list value, you are allowed to type in multiple values separated by ","
-  - Empty rows will be skipped.
-  - Processes in the same experiment will be linked together(set as prerequisite process) in order.
-  - There's a known issue for string/integer or string/float conversion.
-- **We Recommend**
-  - Have less than 200 experiments in a single spreadsheet.  
-    Or you may have to spend a long time fixing the bugs and uploading.
-  - Make backups for your excel spreadsheet and keep them in a safe place.
+- **MacOS** 
+    - Download **cript_uploader** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+    - Having issues running the file?
+        - Open a terminal and navigate the relevant folder  
+        `cd <path_to_folder>`
+        - Change the file permissions  
+        `chmod 755 ./cript_uploader`
+        - Run it  
+        `./cript_uploader`
 
-### Known Issues
-- **I have trouble writing a valid json**  
-  In most cases which causing an invalid json, have a check whether:
-  - Your file path has single backslash```
-    \
-    ```, if so, replace them with forward slash`/` or double backslash`\\`
-  - Your json ends with coma after the value for the last field, remove the coma you should be good.
-- **What happened if I run the excel uploader twice**  
-  It will do updating stuff in the second time. Old data will be replaced with new one.
-- **It looks that I type in a number but the parser gives me an error saying that it reads the number as a string**  
-  The issue is caused by having a wrong value type for the given cell.
-  Make sure the type for the given cell in the spreadsheet is what it's expected.  
-  eg. turn the type for value `5` from `text` to `number` to make sure our excel uploader
-  can read it as a number instead of string.
-  
+Alternatively, you can do things the hard way:
 
-## Customize your excel uploader
-
-**Follow the steps below to clone the source code:**
 1. [Download Python(>=3.10)](https://www.python.org/)
 2. [Download Git](https://git-scm.com/downloads)
 3. Open a terminal
 4. Install **virtualenv**  
-   `pip3 install virtualenv`
+`pip install virtualenv`
 5. Create a virtual environment  
-   `virtualenv cript-uploader`
+`virtualenv cript-uploader`
 6. Activate the virtual environment  
-   **Windows:** `cript-uploader\Scripts\activate`  
-   **Mac or Linux:** `source cript-uploader\bin\activate`
+**Windows:** `cript-uploader\Scripts\activate`  
+**Mac or Linux:** `source cript-uploader\bin\activate`
 7. Clone the repository  
-   `git clone git@github.com:C-Accel-CRIPT/cript-excel-uploader.git`
+`git clone git@github.com:C-Accel-CRIPT/cript-excel-uploader.git`
 8. Change to the project directory  
-   `cd cript-excel-uploader`
+`cd cript-excel-uploader`
 9. Download requirements  
-   `pip install -r requirements.txt`
+`pip install -r requirements.txt`
 10. Run the **main.py** file  
-    `python main.py`
+`python main.py`
 
-**Project Structure**  
-sheets(data preprocessing and parser) -> validator -> transformer -> uploader 
 
-**Start customize your code now!**
+## Modify Excel Template
+### General
+- A `Group` and `Collection` must be created in the [CRIPT platform](https://www.criptapp.org/) before running the uploader.
+- Each Excel document corresponds to a single `Collection`.
+
+### Column Header Format
+[`Id`]`Field`:`Field`:`Field`
+> Columns beginning with `*` are required (eg. `*name`).  
+> Columns beginning with `#` will be ignored (eg. `#storage`).  
+
+`Id` - *optional*
+- Integer used to identify distinct properties/conditions of the same type.
+- e.g., To identify two density measurements at two different temperatures, we could create the following column headers: `[1]density`, `[1]density:temperature`, `[2]density`, `[2]density:temperature`
+
+`Field` - *at least one is required*
+- See the **Sheets** section for valid values.
+- Nested fields can be indicated by placing `:` between the parent and child fields.
+    - Examples
+        - Define a material property method: `density:method`
+        - Associate data with a process condition `temperature:data`
+        - Associate a citation with a material property: `density:citation`
+        - Define material property condition: `density:temperature`
+        - Define the uncertainty of a material property condition: `density:temperature:uncertainty`
+        > `<field>:data` column values should derive from the `*name` column of the `Data` sheet.  
+        > `<field>:citation` column values should derive from the `*name` column of the `Citation` sheet.
+
+### Sheets
+- Required sheets are colored orange.
+- Optional sheets are colored grey (can be removed).
+- Sheets **cannot be renamed**.
+- First row of every sheet is used for column headers.
+- Second row of every sheet is used for unit definitions (leave blank if N/A).
+
+#### `Material` sheet
+Define all materials that will be referenced throughout the document.
+| Name | Required | Expected Value
+| --- | --- | --- |
+| *name | yes | unique string |
+| any [identifier key](https://criptapp.org/docs/datamodel) | no | refer to key table |
+| any [material property key](https://criptapp.org/docs/datamodel) | no | refer to key table |
+| notes | no | string |
+
+#### `Mixture Component` sheet -- *optional*
+Define the components of mixture materials.   
+> The mixture and all component materials must first be defined in the `Material` sheet.
+
+| Name | Required | Expected Value
+| --- | --- | --- |
+| *material | yes | string from `*name` column of `Material` sheet |
+| *component | yes | string from `*name` column of `Material` sheet | 
+
+#### `Experiment` sheet
+Define the experiments.
+| Name | Required | Value Type
+| --- | --- | --- |
+| *name | yes | unique string |
+| funding | no | list of strings (e.g, `str1, str2, str3`)
+| notes | no | string |
+
+#### `Process` sheet
+Define the processes of each experiment.
+| Name | Required | Expected Value |
+| --- | --- | --- |
+| *experiment | yes | string from `*name` column of `Experiment` sheet |
+| *name | yes | unique string | unique |
+| keywords | no | list of [keyword key](https://criptapp.org/docs/datamodel) names (e.g, `str1, str2, str3`)
+| description | no | string |
+| equipment | no | list of [equipment key](https://criptapp.org/docs/datamodel) names (e.g, `str1, str2, str3`) |
+| any [process property key](https://criptapp.org/docs/datamodel) | no | refer to key table |
+| any [condition key](https://criptapp.org/docs/datamodel) | no | refer to key table |
+| notes | no | string |
+
+#### `Prerequisite Process` sheet -- *optional*
+Define the immediate prerequisites for each process.
+> e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).  
+
+| Name | Required | Value Type
+| --- | --- | --- |
+| *process | yes | string from `*name` column of `Process` sheet |
+| *prerequisite_process | yes | string from `*name` column of `Process` sheet |
+
+#### `Process Ingredient` sheet
+Define the ingredients for each process and their respective quantities.
+| Name | Required | Value Type
+| --- | --- | --- |
+| *process | yes | string from `*name` column of `Process` sheet |
+| *material | yes | string from `*name` column of `Material` sheet |
+| *keyword | yes | any [ingredient keyword](https://criptapp.org/docs/datamodel)
+| any [quantity key](https://criptapp.org/docs/datamodel) | yes | refer to key table |
+
+#### `Process Product` sheet
+Define the material products of each process.
+| Name | Required | Value Type
+| --- | --- | --- |
+| *process | yes | string from `*name` column of `Process` sheet |
+| *product | yes | string from `*name` column of `Material` sheet |
+
+#### `Data` sheet
+Define the data sets you will be associating with properties, etc.
+| Name | Required | Value Type
+| --- | --- | --- |
+| *experiment | yes | string from `*name` column of `Experiment` sheet |
+| *name | yes | unique string | unique |
+| *type | yes | any [data type](https://criptapp.org/docs/datamodel)
+| sample_prep | no | string
+| citation | no | string from `*name` column of `Citation` sheet
+| notes | no | string | |
+
+#### `File` sheet
+Define the raw files you will be associating with each data set.
+| Name | Required | Value Type
+| --- | --- | --- |
+| *data | yes | string from `*name` column of `Data` sheet |
+| *source | yes | local file path string |
+| type | no | any [file type](https://criptapp.org/docs/datamodel)
+
+#### `Citation` sheet
+Define references to be associated with properties, etc. as citations.
+| Name | Required | Value Type
+| --- | --- | --- |
+| *title | yes | unique string |
+| doi | no | string |
+| authors | no | string |
+| journal | no | string |
+| publisher | no | string |
+| year | no | string |
+| volume | no | string |
+| issue | no | string |
+| pages | no | string |
+| issn | no | string |
+| arxiv_id | no | string |
+| pmid | no | string |
+| website | no | string |
+| notes | no | string |
+
+### FAQ
+- ***What happens if I run the uploader more than once?***  
+  If the name of an object has not been changed, the existing object will be updated in the database. If the name has been changed, a new object will be created and the old will remain.
+
+- ***I entered a number into a cell but the uploader says the value is a string. What gives?***  
+  This is likely caused by the wrong value type being set for the given cell in the Excel document.
