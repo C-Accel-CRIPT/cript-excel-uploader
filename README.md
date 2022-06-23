@@ -3,6 +3,7 @@
 
 This code is used to upload a semi-dynamic Excel template to the [CRIPT platform](https://www.criptapp.org/).
 
+<br><br>
 
 ## Download
 
@@ -47,6 +48,7 @@ Alternatively, you can do things the hard way:
 10. Run the **main.py** file  
 `python main.py`
 
+<br><br>
 
 ## Modify Excel Template
 ### General
@@ -86,8 +88,8 @@ Define all materials that will be referenced throughout the document.
 | Name | Required | Expected Value
 | --- | --- | --- |
 | *name | yes | unique string |
-| any [identifier key](https://criptapp.org/docs/datamodel) | no | refer to key table |
-| any [material property key](https://criptapp.org/docs/datamodel) | no | refer to key table |
+| any [identifier key](https://criptapp.org/keys/material-identifier-key/) | no | refer to key table |
+| any [material property key](https://criptapp.org/keys/material-property-key/) | no | refer to key table |
 | notes | no | string |
 
 #### `Mixture Component` sheet -- *optional*
@@ -113,11 +115,11 @@ Define the processes of each experiment.
 | --- | --- | --- |
 | *experiment | yes | string from `*name` column of `Experiment` sheet |
 | *name | yes | unique string | unique |
-| keywords | no | list of [keyword key](https://criptapp.org/docs/datamodel) names (e.g, `str1, str2, str3`)
+| keywords | no | list of [keyword key](https://criptapp.org/keys/process-keyword/) names (e.g, `str1, str2, str3`)
 | description | no | string |
-| equipment | no | list of [equipment key](https://criptapp.org/docs/datamodel) names (e.g, `str1, str2, str3`) |
-| any [process property key](https://criptapp.org/docs/datamodel) | no | refer to key table |
-| any [condition key](https://criptapp.org/docs/datamodel) | no | refer to key table |
+| equipment | no | list of [equipment key](https://criptapp.org/keys/equipment/) names (e.g, `str1, str2, str3`) |
+| any [process property key](https://criptapp.org/keys/process-property-key/) | no | refer to key table |
+| any [condition key](https://criptapp.org/keys/condition-key/) | no | refer to key table |
 | notes | no | string |
 
 #### `Prerequisite Process` sheet -- *optional*
@@ -135,8 +137,8 @@ Define the ingredients for each process and their respective quantities.
 | --- | --- | --- |
 | *process | yes | string from `*name` column of `Process` sheet |
 | *material | yes | string from `*name` column of `Material` sheet |
-| *keyword | yes | any [ingredient keyword](https://criptapp.org/docs/datamodel)
-| any [quantity key](https://criptapp.org/docs/datamodel) | yes | refer to key table |
+| *keyword | yes | any [ingredient keyword](https://criptapp.org/keys/ingredient-keyword/)
+| any [quantity key](https://criptapp.org/keys/quantity-key/) | yes | refer to key table |
 
 #### `Process Product` sheet
 Define the material products of each process.
@@ -151,7 +153,7 @@ Define the data sets you will be associating with properties, etc.
 | --- | --- | --- |
 | *experiment | yes | string from `*name` column of `Experiment` sheet |
 | *name | yes | unique string | unique |
-| *type | yes | any [data type](https://criptapp.org/docs/datamodel)
+| *type | yes | any [data type](https://criptapp.org/keys/data-type/)
 | sample_prep | no | string
 | citation | no | string from `*name` column of `Citation` sheet
 | notes | no | string | |
@@ -162,7 +164,7 @@ Define the raw files you will be associating with each data set.
 | --- | --- | --- |
 | *data | yes | string from `*name` column of `Data` sheet |
 | *source | yes | local file path string |
-| type | no | any [file type](https://criptapp.org/docs/datamodel)
+| type | no | any [file type](https://criptapp.org/keys/file-type/)
 
 #### `Citation` sheet
 Define references to be associated with properties, etc. as citations.
@@ -182,6 +184,8 @@ Define references to be associated with properties, etc. as citations.
 | pmid | no | string |
 | website | no | string |
 | notes | no | string |
+
+<br><br>
 
 ### FAQ
 - ***What happens if I run the uploader more than once?***  
