@@ -1,14 +1,17 @@
 # CRIPT Excel Uploader
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)  
 
-This code is used to upload a semi-dynamic Excel template to the [CRIPT platform](https://www.criptapp.org/).
+This code is used to upload a dynamic Excel template to the [CRIPT platform](https://www.criptapp.org/).
 
-<br><br>
+<br>
+<br>
 
-## Download
+## Installation
 
 ### Template
 Download **example_template_vX.X.X.xlsx** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+
+<br>
 
 ### Uploader
 > Executables are available for Windows and MacOS.  
@@ -48,12 +51,45 @@ Alternatively, you can do things the hard way:
 10. Run the **main.py** file  
 `python main.py`
 
-<br><br>
+<br>
+<br>
 
 ## Modify Excel Template
+
 ### General
 - A `Group` and `Collection` must be created in the [CRIPT platform](https://www.criptapp.org/) before running the uploader.
 - Each Excel document corresponds to a single `Collection`.
+
+<br>
+
+### Column Headers
+
+#### **Row 1 - Meta**
+The first header row defines the column type and mirrors the key headers (row 2).  
+e.g., `property:relation` --> `density:data`
+
+- `relation`
+  - Column that reference other sheets in the template.
+- `attribute`
+  - Column with simple key-value pairs.
+- `property`
+  - Column with key, value, and unit combinations for properties.
+- `condition`
+  - Column with key, value, and unit combinations for conditions.
+- `identifier`
+  - Column with key-value pairs for material identifiers.
+- `quantity`
+  - Column with key, value and unit combinations for quantities.
+
+#### **Row 2 - Key**
+The second row defines the key for a column.  
+e.g., `name`, `density`, `bigsmiles`  
+
+#### **Row 3 - Unit**
+The third row defines the unit for a column.  
+e.g., `celsius`, `g/ml`  
+
+<br>
 
 ### Column Header Format
 [`Id`]`Field`:`Field`:`Field`
@@ -76,114 +112,116 @@ Alternatively, you can do things the hard way:
         > `<field>:data` column values should derive from the `*name` column of the `Data` sheet.  
         > `<field>:citation` column values should derive from the `*name` column of the `Citation` sheet.
 
+<br>
+
 ### Sheets
 - Required sheets are colored orange.
 - Optional sheets are colored grey (can be removed).
 - Sheets **cannot be renamed**.
-- First row of every sheet is used for column headers.
-- Second row of every sheet is used for unit definitions (leave blank if N/A).
+> List values must use a semicolon (`;`) as a separator.  
+> e.g., `styrene; vinylbenzene; phenylethylene; ethenylbenzene`
 
-#### `Material` sheet
+#### `material` sheet
 Define all materials that will be referenced throughout the document.
-| Name | Required | Expected Value
-| --- | --- | --- |
-| *name | yes | unique string |
-| any [identifier key](https://criptapp.org/keys/material-identifier-key/) | no | refer to key table |
-| any [material property key](https://criptapp.org/keys/material-property-key/) | no | refer to key table |
-| notes | no | string |
+| Key | Key Type | Required | Expected Value
+| --- | --- | --- | --- |
+| *name | attribute | yes | unique string |
+| any [identifier key](https://criptapp.org/keys/material-identifier-key/) | identifier | no | refer to key table |
+| any [material property key](https://criptapp.org/keys/material-property-key/) | property | no | refer to key table |
+| notes | attribute | no | string |
 
-#### `Mixture Component` sheet -- *optional*
+#### `mixture component` sheet -- *optional*
 Define the components of mixture materials.   
-> The mixture and all component materials must first be defined in the `Material` sheet.
+> The mixture and all component materials must first be defined in the `material` sheet.
 
-| Name | Required | Expected Value
-| --- | --- | --- |
-| *material | yes | string from `*name` column of `Material` sheet |
-| *component | yes | string from `*name` column of `Material` sheet | 
+| Key | Key Type | Required | Expected Value
+| --- | --- | --- | --- |
+| *mixture | relation | yes | string from `*name` column of `material` sheet |
+| *material | relation | yes | string from `*name` column of `material` sheet | 
 
-#### `Experiment` sheet
+#### `experiment` sheet
 Define the experiments.
-| Name | Required | Value Type
-| --- | --- | --- |
-| *name | yes | unique string |
-| funding | no | list of strings (e.g, `str1, str2, str3`)
-| notes | no | string |
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *name | attribute | yes | unique string |
+| funding | attribute | no | list of strings (e.g, `str1; str2; str3`)
+| notes | attribute | no | string |
 
-#### `Process` sheet
+#### `process` sheet
 Define the processes of each experiment.
-| Name | Required | Expected Value |
-| --- | --- | --- |
-| *experiment | yes | string from `*name` column of `Experiment` sheet |
-| *name | yes | unique string | unique |
-| keywords | no | list of [keyword key](https://criptapp.org/keys/process-keyword/) names (e.g, `str1, str2, str3`)
-| description | no | string |
-| equipment | no | list of [equipment key](https://criptapp.org/keys/equipment/) names (e.g, `str1, str2, str3`) |
-| any [process property key](https://criptapp.org/keys/process-property-key/) | no | refer to key table |
-| any [condition key](https://criptapp.org/keys/condition-key/) | no | refer to key table |
-| notes | no | string |
+| Key | Key Type | Required | Expected Value |
+| --- | --- | --- | --- |
+| *experiment | relation | yes | string from `*name` column of `experiment` sheet |
+| *name | attribute | yes | unique string | unique |
+| keywords | attribute | no | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g, `str1; str2; str3`)
+| description | attribute | no | string |
+| equipment | attribute | no | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`) |
+| any [process property key](https://criptapp.org/keys/process-property-key/) | property | no | refer to key table |
+| any [condition key](https://criptapp.org/keys/condition-key/) | condition | no | refer to key table |
+| notes | attribute | no | string |
 
-#### `Prerequisite Process` sheet -- *optional*
+#### `prerequisite process` sheet -- *optional*
 Define the immediate prerequisites for each process.
 > e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).  
 
-| Name | Required | Value Type
-| --- | --- | --- |
-| *process | yes | string from `*name` column of `Process` sheet |
-| *prerequisite_process | yes | string from `*name` column of `Process` sheet |
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *process | relation | yes | string from `*name` column of `process` sheet |
+| *prerequisite | relation | yes | string from `*name` column of `process` sheet |
 
-#### `Process Ingredient` sheet
+#### `process ingredient` sheet
 Define the ingredients for each process and their respective quantities.
-| Name | Required | Value Type
-| --- | --- | --- |
-| *process | yes | string from `*name` column of `Process` sheet |
-| *material | yes | string from `*name` column of `Material` sheet |
-| *keyword | yes | any [ingredient keyword](https://criptapp.org/keys/ingredient-keyword/)
-| any [quantity key](https://criptapp.org/keys/quantity-key/) | yes | refer to key table |
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *process | relation | yes | string from `*name` column of `process` sheet |
+| *material | relation | yes | string from `*name` column of `material` sheet |
+| *keyword | attribute | yes | any [ingredient keyword](https://criptapp.org/keys/ingredient-keyword/)
+| any [quantity key](https://criptapp.org/keys/quantity-key/) | quantity | yes | refer to key table |
 
-#### `Process Product` sheet
+#### `process product` sheet
 Define the material products of each process.
-| Name | Required | Value Type
-| --- | --- | --- |
-| *process | yes | string from `*name` column of `Process` sheet |
-| *product | yes | string from `*name` column of `Material` sheet |
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *process | relation | yes | string from `*name` column of `process` sheet |
+| *material | relation | yes | string from `*name` column of `material` sheet |
 
-#### `Data` sheet
+#### `data` sheet
 Define the data sets you will be associating with properties, etc.
-| Name | Required | Value Type
-| --- | --- | --- |
-| *experiment | yes | string from `*name` column of `Experiment` sheet |
-| *name | yes | unique string | unique |
-| *type | yes | any [data type](https://criptapp.org/keys/data-type/)
-| sample_prep | no | string
-| citation | no | string from `*name` column of `Citation` sheet
-| notes | no | string | |
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *experiment | relation | yes | string from `*name` column of `experiment` sheet |
+| *name | attribute | yes | unique string | unique |
+| *type | attribute | yes | any [data type](https://criptapp.org/keys/data-type/)
+| sample_prep | attribute | no | string
+| citation | relation | no | string from `*name` column of `citation` sheet
+| notes | attribute | no | string | |
 
-#### `File` sheet
+#### `file` sheet
 Define the raw files you will be associating with each data set.
-| Name | Required | Value Type
-| --- | --- | --- |
-| *data | yes | string from `*name` column of `Data` sheet |
-| *source | yes | local file path string |
-| type | no | any [file type](https://criptapp.org/keys/file-type/)
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *data | relation | yes | string from `*name` column of `data` sheet |
+| *source | attribute | yes | local file path string |
+| type | attribute | no | any [file type](https://criptapp.org/keys/file-type/)
 
-#### `Citation` sheet
+#### `citation` sheet
 Define references to be associated with properties, etc. as citations.
-| Name | Required | Value Type
-| --- | --- | --- |
-| *title | yes | unique string |
-| doi | no | string |
-| authors | no | string |
-| journal | no | string |
-| publisher | no | string |
-| year | no | string |
-| volume | no | string |
-| issue | no | string |
-| pages | no | string |
-| issn | no | string |
-| arxiv_id | no | string |
-| pmid | no | string |
-| website | no | string |
-| notes | no | string |
+| Key | Key Type | Required | Value Type
+| --- | --- | --- | --- |
+| *title | attribute | yes | unique string |
+| doi | attribute | no | string |
+| authors | attribute | no | string |
+| journal | attribute | no | string |
+| publisher | attribute | no | string |
+| year | attribute | no | attribute | string |
+| volume | attribute | no | string |
+| issue | attribute | no | string |
+| pages | attribute | no | string |
+| issn | attribute | no | string |
+| arxiv_id | attribute | no | string |
+| pmid | attribute | no | string |
+| website | attribute | no | string |
+| notes | attribute | no | string |
 
 <br><br>
 

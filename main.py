@@ -1,349 +1,197 @@
-import time
 import os
 import sys
+import time
+import warnings
+from getpass import getpass
+from pprint import pprint
+
+import cript
+import yaml
+import requests
+
+import ascii_art
+import parse
+import create
+from create import error_list
+import upload
 
 
-from src import ascii_art
-from src import configs
-from src import sheets
-from src import transformers
-from src import uploaders
-from src import util
-from src import validators
+###
+# Setup
+###
 
 
-executable_directory = os.path.realpath(os.path.dirname(sys.argv[0]))
+# Suppress warnings
+warnings.filterwarnings("ignore")
 
+
+# Display title
 print(ascii_art.title.template)
-_config_key_dict, _config_is_found = util.read_config(executable_directory)
-
-host = _config_key_dict.get("HOST")
-token = _config_key_dict.get("TOKEN")
-group_name = _config_key_dict.get("GROUP")
-collection_name = _config_key_dict.get("COLLECTION")
-path = _config_key_dict.get("EXCEL_TEMPLATE_FILE_PATH")
-public_flag = None
+time.sleep(1)
 
 
-# API connection
-db = None
-while db is None:
-    if host is None:
-        host = input("\nHost: ")
-    if token is None:
-        token = input("API Token: ")
+# Load config file
+try:
+    with open("config.yaml", "r") as f:
+        config = yaml.safe_load(f)
+except FileNotFoundError:
+    config = {}
+
+
+# Establish API connection
+connected = False
+while connected == False:
     try:
-        print("Checking token...")
-        db = uploaders.connect(host, token)
-        print("")
-    except Exception as e:
-        print(e.__str__())
-        host = None
-        token = None
+        api = cript.API(config["host"], config["token"], tls=False)
+        connected = True
+    except (cript.exceptions.APIAuthError, requests.exceptions.RequestException) as e:
+        print(f"~ API connection failed. Try again.\n")
+        config["host"] = input("Host (e.g., criptapp.org): ")
+        config["token"] = getpass("API Token: ")
 
 
-# Group
-group_obj = None
-while group_obj is None:
-    if group_name is None or len(group_name) == 0:
-        group_name = input("\nCRIPT Group (must be an existing group): ")
+# Get Excel file path
+while not os.path.exists(config["path"]):
+    print("~ Could not find the file. Try again.\n")
+    config["path"] = input("Path to Excel file: ").strip('"')
+
+
+# Get Group
+group = None
+while group is None:
     try:
-        print("Checking group...")
-        group_obj = uploaders.get_group(
-            db,
-            group_name,
+        group = api.get(
+            cript.Group, {"name": config["group"], "created_by": api.user.uid}
         )
-        print("Valid group.\n")
-    except Exception as e:
-        print(e.__str__())
-        group_name = None
+    except cript.exceptions.APIGetError:
+        print("~ Could not find the specified group. Try again.\n")
+        config["group"] = input("Group name: ")
 
 
-# Collection
-collection_obj = None
-while collection_obj is None:
-    if collection_name is None or len(collection_name) == 0:
-        collection_name = input("\nCRIPT Collection (must be an existing collection): ")
+# Get Collection
+collection = None
+while collection is None:
     try:
-        print("Checking collection...")
-        collection_obj = uploaders.get_collection(
-            db,
-            group_obj,
-            collection_name,
+        collection = api.get(
+            cript.Collection, {"name": config["collection"], "created_by": api.user.uid}
         )
-        print("Valid collection.\n")
-    except Exception as e:
-        print(e.__str__())
-        collection_name = None
-
-
-# Excel file path
-if _config_is_found:
-    print("Checking file path...")
-while (
-    path is None
-    or len(path) == 0
-    or not os.path.exists(path)
-    or os.path.splitext(path)[-1] != ".xlsx"
-):
-    if path is None or len(path) == 0:
-        pass
-    elif not os.path.exists(path):
-        print(
-            "File not found. Make sure you type in a valid path with file extension. Try again."
-        )
-    else:
-        print(
-            "Sorry, the file you want to put in is not an xlsx file. Only xlsx file is supported."
-        )
-    path = input("\nExcel file path: ")
-    print("Checking file path...")
-print("Excel file found.\n")
-
-
-# Public flag
-while public_flag != "y" and public_flag != "n":
-    public_flag = input("\nDo you want your data to go public? y/n ---").lower()
-public_flag = public_flag == "y"
+    except cript.exceptions.APIGetError:
+        print("~ Could not find the specified collection. Try again.\n")
+        config["collection"] = input("Collection name: ")
 
 
 # Display chem art
 print(ascii_art.chem.template)
-time.sleep(1)
-
-# Get parameters and user uid
-param = db.keys
-user_uid = db.user.uid
 
 
-# Instantiate Sheet objects
-def construct_sheet_objs():
-    experiment_sheet = sheets.ExperimentSheet(path, "experiment", param)
-    data_sheet = sheets.DataSheet(path, "data", param)
-    file_sheet = sheets.FileSheet(path, "file", param)
-    material_sheet = sheets.MaterialSheet(path, "material", param)
-    mixture_component_sheet = sheets.MixtureComponentSheet(
-        path, "mixture component", param
-    )
-    process_sheet = sheets.ProcessSheet(path, "process", param)
-    prerequisite_process_sheet = sheets.PrerequisiteProcessSheet(
-        path, "prerequisite process", param
-    )
-    process_ingredient_sheet = sheets.ProcessIngredientSheet(
-        path, "process ingredient", param
-    )
-    process_product_sheet = sheets.ProcessProductSheet(path, "process product", param)
-    citation_sheet = sheets.CitationSheet(path, "citation", param)
-
-    _sheet_dict = {
-        "experiment": experiment_sheet,
-        "data": data_sheet,
-        "file": file_sheet,
-        "material": material_sheet,
-        "mixture component": mixture_component_sheet,
-        "process": process_sheet,
-        "prerequisite process": prerequisite_process_sheet,
-        "process ingredient": process_ingredient_sheet,
-        "process product": process_product_sheet,
-        "citation": citation_sheet,
-    }
-
-    return _sheet_dict
-
-
-# Validate required col, either or col, unique key, not null value, type and keyword
-def validate_and_parse_sheets(_sheet_dict):
-    for sheet in _sheet_dict.values():
-        validators.validate_required_cols(sheet)
-        validators.validate_either_or_cols(sheet)
-        validators.validate_unique_key(sheet)
-        validators.validate_not_null_value(sheet)
-        validators.validate_file_source(sheet)
-        validators.validate_type(sheet)
-        validators.validate_keyword(sheet)
-        validators.validate_integer_value(sheet)
-
-    # Validate foreign key
-    for pair in configs.foreign_key_validation_pairs:
-        _pair = {
-            "from_field": pair["from_field"],
-            "from_sheet_obj": _sheet_dict[pair["from_sheet_obj"]],
-            "to_field": pair["to_field"],
-            "to_sheet_obj": _sheet_dict[pair["to_sheet_obj"]],
-        }
-        validators.validate_foreign_key(**_pair)
-
-    # Validate "data" and "citation"
-    data_sheet = _sheet_dict.get("data")
-    citation_sheet = _sheet_dict.get("citation")
-    for sheet in _sheet_dict.values():
-        for col in sheet.col_parsed:
-            parsed_col_name_obj = sheet.col_parsed[col]
-            field_type_list = parsed_col_name_obj.field_type_list
-            if "data" in field_type_list:
-                validators.validate_foreign_key(col, sheet, "name", data_sheet)
-            if "citations" in field_type_list:
-                validators.validate_foreign_key(col, sheet, "title", citation_sheet)
-
-    # Parse Excel sheets
-    for sheet in _sheet_dict.values():
-        sheet.parse()
-
-    # Validate property, condition, identity and quantity
-    for sheet in _sheet_dict.values():
-        validators.validate_property(sheet)
-        validators.validate_condition(sheet)
-        validators.validate_identity(sheet)
-        validators.validate_quantity(sheet)
+# Define sheet parameters
+sheet_parameters = [
+    {
+        "name": "experiment",
+        "required_columns": ("name",),
+        "unique_columns": ("name",),
+    },
+    {
+        "name": "citation",
+        "required_columns": ("title",),
+        "unique_columns": ("title",),
+    },
+    {
+        "name": "data",
+        "required_columns": ("experiment", "name", "type", "path"),
+        "unique_columns": ("name",),
+    },
+    {
+        "name": "material",
+        "required_columns": ("name",),
+        "unique_columns": ("name",),
+    },
+    {
+        "name": "mixture component",
+        "required_columns": ("mixture", "material"),
+        "unique_columns": ("mixture", "material"),
+    },
+    {
+        "name": "process",
+        "required_columns": ("experiment", "name"),
+        "unique_columns": ("name",),
+    },
+    {
+        "name": "prerequisite process",
+        "required_columns": ("process", "prerequisite"),
+        "unique_columns": ("process", "prerequisite"),
+    },
+    {
+        "name": "process ingredient",
+        "required_columns": ("process", "materials", "keyword"),
+        "unique_columns": ("process", "material", "keyword"),
+    },
+    {
+        "name": "process product",
+        "required_columns": ("process", "material"),
+        "unique_columns": ("process", "material"),
+    },
+]
 
 
-# Error detection output
-def output_detected_error(_sheet_dict):
-    _bug_count = 0
-    print(f"***********************")
-    for sheet in _sheet_dict.values():
-        for exception_message in sheet.errors:
-            print(exception_message)
-            _bug_count = _bug_count + 1
-            if _bug_count >= 500:
-                break
-        if _bug_count >= 500:
-            break
-
-    if _bug_count == 0:
-        print(f"No bugs here! Your excel sheet looks good. Start uploading now.")
-    elif _bug_count < 500:
-        print(f"\nYou have {_bug_count} bugs to fix.")
-    elif _bug_count >= 500:
-        print(
-            f"\nYou have too many bugs. "
-            f"Fix the 500 bugs above first and have a check again."
-        )
-    print(f"***********************")
-    return _bug_count
+###
+# Parse
+###
 
 
-# Transform and Upload parsed data
-def transform_and_upload(_sheet_dict):
-    # Define sheets
-    experiment_sheet = _sheet_dict.get("experiment")
-    data_sheet = _sheet_dict.get("data")
-    file_sheet = _sheet_dict.get("file")
-    material_sheet = _sheet_dict.get("material")
-    mixture_component_sheet = _sheet_dict.get("mixture component")
-    process_sheet = _sheet_dict.get("process")
-    prerequisite_process_sheet = _sheet_dict.get("prerequisite process")
-    process_ingredient_sheet = _sheet_dict.get("process ingredient")
-    process_product_sheet = _sheet_dict.get("process product")
-    citiation_sheet = _sheet_dict.get("citation")
-
-    # experiment
-    experiment_objs = transformers.transform_experiment(
-        group_obj,
-        collection_obj,
-        experiment_sheet.parsed,
-        public_flag,
-    )
-    uploaders.upload(db, "Experiment", experiment_objs, user_uid)
-
-    # citation
-    reference_objs, citation_objs = transformers.transform_citation(
-        group_obj,
-        citiation_sheet.parsed,
-        public_flag,
-    )
-    uploaders.upload(db, "Reference", reference_objs, user_uid)
-
-    # data
-    data_objs = transformers.transform_data(
-        group_obj,
-        experiment_objs,
-        citation_objs,
-        data_sheet.parsed,
-        public_flag,
-    )
-    uploaders.upload(db, "Data", data_objs, user_uid)
-
-    # file
-    file_objs = transformers.transform_file(
-        group_obj,
-        data_objs,
-        file_sheet.parsed,
-        public_flag,
-    )
-    uploaders.upload(db, "File", file_objs, user_uid)
-
-    # material
-    material_objs = transformers.transform_material(
-        group_obj,
-        citation_objs,
-        data_objs,
-        material_sheet.parsed,
-        public_flag,
-    )
-    uploaders.upload(db, "Material", material_objs, user_uid)
-
-    # mixture component
-    if len(mixture_component_sheet.parsed) > 0:
-        transformers.transform_components(
-            material_objs,
-            mixture_component_sheet.parsed,
-        )
-        uploaders.upload(db, "Material Component", material_objs, user_uid)
-
-    # process
-    process_objs = transformers.transform_process(
-        group_obj,
-        experiment_objs,
-        citation_objs,
-        data_objs,
-        process_sheet.parsed,
-        public_flag,
-    )
-    uploaders.upload(db, "Process", process_objs, user_uid)
-
-    # prerequisite process
-    if len(prerequisite_process_sheet.parsed) > 0:
-        transformers.transform_prerequisite_process(
-            process_objs,
-            prerequisite_process_sheet.parsed,
-        )
-        uploaders.upload(db, "Prerequisite Process", process_objs, user_uid)
-
-    # process ingredient
-    transformers.transform_process_ingredient(
-        process_objs,
-        material_objs,
-        process_ingredient_sheet.parsed,
-    )
-    uploaders.upload(db, "Process Ingredient", process_objs, user_uid)
-
-    # process product
-    transformers.transform_process_product(
-        process_objs,
-        material_objs,
-        process_product_sheet.parsed,
-    )
-    uploaders.upload(db, "Process Product", process_objs, user_uid)
+parsed_sheets = {}
+for parameter in sheet_parameters:
+    parsed_sheets[parameter["name"]] = parse.Sheet(
+        config["path"],
+        parameter["name"],
+        parameter["required_columns"],
+        unique_columns=parameter["unique_columns"],
+    ).parse()
 
 
-# Parse, Error Detection, Transform and Upload
-bug_count = -1
-sheet_dict = None
-while bug_count != 0:
-    sheet_dict = construct_sheet_objs()
-    validate_and_parse_sheets(sheet_dict)
-    bug_count = output_detected_error(sheet_dict)
-    if bug_count != 0:
-        input(
-            "Press enter when you have saved your changes and ready to run parser again :P "
-        )
-transform_and_upload(sheet_dict)
+###
+# Create and validate
+###
 
-# End
-print("\n\nAll data was uploaded!\n")
-url = collection_obj.url.replace("/api", "").strip("/")
-print(f"Have a check: {url}")
+experiments = create.create_experiments(parsed_sheets["experiment"], group, collection)
+references, citations = create.create_citations(parsed_sheets["citation"], group)
+data, files = create.create_data(parsed_sheets["data"], group, experiments, citations)
+materials = create.create_materials(parsed_sheets["material"], group, data, citations)
+materials = create.create_mixtures(parsed_sheets["mixture component"], materials)
+processes = create.create_processes(
+    parsed_sheets["process"], group, experiments, data, citations
+)
+create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)
+create.create_products(parsed_sheets["process product"], processes, materials)
+create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
 
-print(ascii_art.thank_you.template)
-input("\nPress enter to exit...")
+
+# Print errors
+if error_list:
+    print("-- ERRORS --")
+    for error in error_list:
+        print(error)
+    sys.exit(1)
+
+
+###
+# Upload
+###
+
+
+upload.upload(api, experiments, "Experiment")
+upload.upload(api, references, "Reference")
+upload.upload(api, data, "Data")
+upload.upload(api, materials, "Material")
+upload.upload(api, processes, "Process")
+upload.upload(api, files, "File")
+
+
+###
+# Finish
+###
+
+
+# Print message
+print("\n\nAll data was uploaded successfully.\n")
+time.sleep(5)
