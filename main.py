@@ -141,6 +141,7 @@ sheet_parameters = [
 
 parsed_sheets = {}
 for parameter in sheet_parameters:
+    #Creates a Sheet object to be parsed for each sheet
     parsed_sheets[parameter["name"]] = parse.Sheet(
         config["path"],
         parameter["name"],

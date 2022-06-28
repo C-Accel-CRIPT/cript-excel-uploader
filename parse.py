@@ -11,11 +11,17 @@ class Sheet:
         self.required_columns = required_columns
         self.unique_columns = unique_columns
 
+        #Converts excel sheet into pandas DataFrame
         self.df = pd.read_excel(self.path, sheet_name=self.sheet_name, header=[0, 1, 2])
+        #Gets rid of any completely exmpty rows
         self.df.dropna(how="all", inplace=True)
         self.columns = self.df.columns
 
     def parse(self):
+        """Parses a DataFrame conversion of an excel sheet and returns parsed information as a
+        dictionary of dictionaries. Each dictionary within the main dictionary contains relevant cell
+        information from the excel sheet.
+        """
         parsed_objects = {}
 
         for index, row in self.df.iterrows():
@@ -51,13 +57,17 @@ class Sheet:
                     cell_info["value"] = (cell_info["value"].strip(),)
 
                 self._parse_cell(parent, cell_info)
-
+            #Adds the parsed information to the parsed objects dictionary using the unique_together key(s)
+            #as the key value
             parsed_objects[row_key] = parsed_object
 
         return parsed_objects
 
     def _skip_column(self, key, value):
-        """Check if a column should be skipped."""
+        """Check if a column should be skipped.
+        key-DataSeries
+        value-any
+        return-boolean"""
         # Check if col starts with '#'
         if key[0] == "#":
             return True
@@ -69,6 +79,10 @@ class Sheet:
         return False
 
     def _get_cell_info(self, index, row, column):
+        """Collects relevant cell information into a dictionary and returns the dictionary.
+        index-int
+        row-DataSeries
+        column-DataSeries"""
         nested_types = column[0].split(":")
         nested_keys = column[1].split(":")
         return {
@@ -83,12 +97,20 @@ class Sheet:
         }
 
     def _get_parent(self, parsed_object, column_type_list, column_key_list):
+        """Finds parent of a nested field, i.e. determines temperature is the parent in
+        temperature:data.
+        parsed_object-dictionary
+        column_type_list-list
+        column_key_list-list
+        return-dictionary"""
         column_len = len(column_type_list)
+        #Checks if there is no nesting
         if column_len == 1:
             return parsed_object
 
         current_parent = parsed_object
         i = 1
+        #Walks through nested values
         while i < column_len:
             current_parent = current_parent[column_key_list[i - 1]]
             i += 1
@@ -96,6 +118,11 @@ class Sheet:
         return current_parent
 
     def _parse_cell(self, parent, cell_info):
+        """Updates parsed parent object with new cell information. Updates are deliberatly made to the 
+        parent due to working with nested/children fields. Nothing is returned, the parent object is mutated.
+        parent-dict
+        cell_info-dict
+        returns-None, mutates parent dictionary"""
         parent.update(
             {
                 cell_info["unique_key"]: {
@@ -110,6 +137,9 @@ class Sheet:
         )
 
     def _get_unique_row_key(self, row):
+        """Gathers unique_together key(s) for a sheet and returns the key(s).
+        row-DataSeries
+        return-tuple of strings"""
         row_key = ()
         for column in self.columns:
             key = self._clean_key(column[1])
@@ -119,4 +149,8 @@ class Sheet:
         return row_key
 
     def _clean_key(self, raw_key):
+        """Cleans inputted raw_key so it is just a normal word and returns the cleaned value.
+        For example, *name -> name or [3]temperature-> temperature
+        raw_key-string
+        return-string"""
         return re.sub("\[.*\]", "", raw_key.strip("*"))
