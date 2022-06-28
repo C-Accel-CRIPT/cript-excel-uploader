@@ -168,9 +168,9 @@ create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
 
 # Print errors
 if error_list:
-    print("-- ERRORS --")
+    print("-- ERRORS --\n")
     for error in error_list:
-        print(error)
+        print(f"{error}\n")
     sys.exit(1)
 
 
