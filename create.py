@@ -10,7 +10,11 @@ error_list = []
 
 def create_experiments(parsed_experiments, group, collection):
     """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
-    into an Experiment object it is added to an experiments dictionary and that dictionary is returned. """
+    into an Experiment object it is added to an experiments dictionary and that dictionary is returned.
+    parsed_...-dict of dicts
+    group-object
+    collection-object
+    returns- dict of objects"""
     experiments = {}
 
     for key, parsed_experiment in parsed_experiments.items():
@@ -37,6 +41,12 @@ def create_experiments(parsed_experiments, group, collection):
 
 
 def create_citations(parsed_citations, group):
+    """Compiles dictionaries with Data and File cript objects.
+    parsed_...-dict of dicts
+    group-obj
+    returns-tuple of dicts of objs
+    """
+
     references = {}
     citations = {}
 
@@ -62,7 +72,12 @@ def create_citations(parsed_citations, group):
 
 
 def create_data(parsed_data, group, experiments, citations):
-    """Compiles dictionaries with Data and File cript objects."""
+    """Compiles dictionaries with Data and File cript objects.
+    parsed_...-dict of dicts
+    group-obj
+    experiments-dict of objs
+    returns-tuple of dicts of objs
+    """
     data = {}
     files = {}
 
@@ -110,7 +125,12 @@ def create_data(parsed_data, group, experiments, citations):
 
 def create_materials(parsed_materials, group, data, citations):
     """Creates Material objects and adds them to a dictionary of Material objects if possible.
-    Returns dictionary of Material objects"""
+    Returns dictionary of Material objects
+    parsed_..-dict of dicts
+    group-obj
+    data-obj
+    citations-list
+    return-dict of obj"""
     materials = {}
 
     for key, parsed_material in parsed_materials.items():
@@ -144,6 +164,9 @@ def create_materials(parsed_materials, group, data, citations):
 
 
 def create_mixtures(parsed_components, materials):
+    """Creates component objects for mixtures to be added to a material object
+    parsed_..-dict of dicts
+    materials-dict of objs"""
     for key, parsed_component in parsed_components.items():
         component_dict = {}
 
@@ -179,7 +202,13 @@ def create_mixtures(parsed_components, materials):
 
 
 def create_processes(parsed_processes, group, experiments, data, citations):
-    """Creates a dictionary of Process objects to be returned."""
+    """Creates a dictionary of Process objects to be returned.
+    parsed_...-dict of objects
+    group-obj
+    experiments-dict of objects
+    data-obj
+    citations-list
+    returns dict of objects"""
     processes = {}
 
     for key, parsed_process in parsed_processes.items():
@@ -219,7 +248,11 @@ def create_processes(parsed_processes, group, experiments, data, citations):
 
 
 def create_ingredients(parsed_ingredients, processes, materials):
-    """Creates a dictionary of Ingredient objects to be returned."""
+    """Creates a dictionary of Ingredient objects to be returned.
+    parsed_...-dict of dicts
+    processes-dict of objs
+    materials-dict of objs
+    """
     for key, parsed_ingredient in parsed_ingredients.items():
         ingredient_dict = {
             "quantities": [],
@@ -261,7 +294,10 @@ def create_ingredients(parsed_ingredients, processes, materials):
 
 
 def create_products(parsed_products, processes, materials):
-    """Attaches material product to its related process"""
+    """Attaches material product to its related process
+    parsed_...-dict of dicts
+    processes-dict of objs
+    materials-dict of objs"""
     for key, parsed_product in parsed_products.items():
         for parsed_cell in parsed_product.values():
             cell_type = parsed_cell["type"]
@@ -280,7 +316,9 @@ def create_products(parsed_products, processes, materials):
 
 
 def create_prerequisites(parsed_prerequisites, processes):
-    """Attaches prerequisite process information to a Process node."""
+    """Attaches prerequisite process information to a Process node.
+    parsed_...-dict of dicts
+    processes-dict of objs"""
     for key, parsed_prerequisite in parsed_prerequisites.items():
         for parsed_cell in parsed_prerequisite.values():
             cell_type = parsed_cell["type"]
@@ -300,7 +338,12 @@ def create_prerequisites(parsed_prerequisites, processes):
 
 def _create_property(parsed_property, data, citations):
     """Tries to create a Property object that contains plain attributes as well as other
-    objects within. Returns Property object or None"""
+    objects within. Returns Property object or None.
+    parsed_...-dict
+    data-obj
+    citations-list
+    returns-object or None
+    """
     property_dict = {
         "key": parsed_property["key"],
         "value": parsed_property["value"],
@@ -337,7 +380,11 @@ def _create_property(parsed_property, data, citations):
 
 
 def _create_condition(parsed_condition, data, citations=[]):
-    """Creates a condition node and returns if possible."""
+    """Creates a condition node and returns if possible.
+    parsed_...-dict
+    data-obj
+    citations-list
+    returns-object or None"""
     condition_dict = {
         "key": parsed_condition["key"],
         "value": parsed_condition["value"],
@@ -368,7 +415,11 @@ def _create_condition(parsed_condition, data, citations=[]):
 
 
 def _create_object(obj_class, obj_dict, parsed_cell):
-    """Tries to create and return a cript object."""
+    """Tries to create and return a cript object.
+    obj_class-class
+    obj_dict-dict
+    parsed_cell-dict
+    return-object or None"""
     try:
         #Returns a succesfully created cript object
         return obj_class(**obj_dict)
@@ -384,7 +435,12 @@ def _create_object(obj_class, obj_dict, parsed_cell):
 
 def _get_relation(related_objs, cell_value, parsed_cell):
     """Tries to get and return an object created from another sheet by
-    indexing into the dictionary where the object is stored."""
+    indexing into the dictionary where the object is stored.
+    related_objs-dict of dicts,
+    cell_value-str
+    parsed_cell-dict
+    return-object or None
+    """
     try:
         #returns related object if possible
         return related_objs[cell_value]

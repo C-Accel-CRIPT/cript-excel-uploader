@@ -64,7 +64,10 @@ class Sheet:
         return parsed_objects
 
     def _skip_column(self, key, value):
-        """Check if a column should be skipped."""
+        """Check if a column should be skipped.
+        key-DataSeries
+        value-any
+        return-boolean"""
         # Check if col starts with '#'
         if key[0] == "#":
             return True
@@ -76,7 +79,10 @@ class Sheet:
         return False
 
     def _get_cell_info(self, index, row, column):
-        """Collects relevant cell information into a dictionary and returns the dictionary."""
+        """Collects relevant cell information into a dictionary and returns the dictionary.
+        index-int
+        row-DataSeries
+        column-DataSeries"""
         nested_types = column[0].split(":")
         nested_keys = column[1].split(":")
         return {
@@ -92,7 +98,11 @@ class Sheet:
 
     def _get_parent(self, parsed_object, column_type_list, column_key_list):
         """Finds parent of a nested field, i.e. determines temperature is the parent in
-        temperature:data."""
+        temperature:data.
+        parsed_object-dictionary
+        column_type_list-list
+        column_key_list-list
+        return-dictionary"""
         column_len = len(column_type_list)
         #Checks if there is no nesting
         if column_len == 1:
@@ -109,7 +119,10 @@ class Sheet:
 
     def _parse_cell(self, parent, cell_info):
         """Updates parsed parent object with new cell information. Updates are deliberatly made to the 
-        parent due to working with nested/children fields. Nothing is returned, the parent object is mutated."""
+        parent due to working with nested/children fields. Nothing is returned, the parent object is mutated.
+        parent-dict
+        cell_info-dict
+        returns-None, mutates parent dictionary"""
         parent.update(
             {
                 cell_info["unique_key"]: {
@@ -124,7 +137,9 @@ class Sheet:
         )
 
     def _get_unique_row_key(self, row):
-        """Gathers unique_together key(s) for a sheet and returns the key(s)."""
+        """Gathers unique_together key(s) for a sheet and returns the key(s).
+        row-DataSeries
+        return-tuple of strings"""
         row_key = ()
         for column in self.columns:
             key = self._clean_key(column[1])
@@ -135,5 +150,7 @@ class Sheet:
 
     def _clean_key(self, raw_key):
         """Cleans inputted raw_key so it is just a normal word and returns the cleaned value.
-        For example, *name -> name or [3]temperature-> temperature"""
+        For example, *name -> name or [3]temperature-> temperature
+        raw_key-string
+        return-string"""
         return re.sub("\[.*\]", "", raw_key.strip("*"))
