@@ -9,6 +9,8 @@ error_list = []
 
 
 def create_experiments(parsed_experiments, group, collection):
+    """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
+    into an Experiment object it is added to an experiments dictionary and that dictionary is returned. """
     experiments = {}
 
     for key, parsed_experiment in parsed_experiments.items():
@@ -22,11 +24,12 @@ def create_experiments(parsed_experiments, group, collection):
                 cell_type = parsed_cell["type"]
                 cell_key = parsed_cell["key"]
                 cell_value = parsed_cell["value"]
-
+                #Only attribute types should be in Experiment
                 if cell_type == "attribute":
                     experiment_dict[cell_key] = cell_value
 
         experiment = _create_object(cript.Experiment, experiment_dict, parsed_cell)
+        #Only adds Experiment objects
         if experiment is not None:
             experiments[key] = experiment
 
@@ -45,10 +48,10 @@ def create_citations(parsed_citations, group):
                 cell_type = parsed_cell["type"]
                 cell_key = parsed_cell["key"]
                 cell_value = parsed_cell["value"]
-
+                #All recognized fields in citation are attribute types
                 if cell_type == "attribute":
                     reference_dict[cell_key] = cell_value
-
+        #Attempts to create a Reference object that would be added to a Citation object
         reference = _create_object(cript.Reference, reference_dict, parsed_cell)
         citation = _create_object(cript.Citation, {"reference": reference}, parsed_cell)
         if None not in (reference, citation):
@@ -59,6 +62,7 @@ def create_citations(parsed_citations, group):
 
 
 def create_data(parsed_data, group, experiments, citations):
+    """Compiles dictionaries with Data and File cript objects."""
     data = {}
     files = {}
 
@@ -80,6 +84,7 @@ def create_data(parsed_data, group, experiments, citations):
                         datum_dict[cell_key] = cell_value
 
                 elif cell_type == "relation":
+                    #Relates the data to an experiment object it is connected to
                     if cell_key == "experiment":
                         datum_dict["experiment"] = _get_relation(
                             experiments, cell_value, parsed_cell
@@ -104,6 +109,8 @@ def create_data(parsed_data, group, experiments, citations):
 
 
 def create_materials(parsed_materials, group, data, citations):
+    """Creates Material objects and adds them to a dictionary of Material objects if possible.
+    Returns dictionary of Material objects"""
     materials = {}
 
     for key, parsed_material in parsed_materials.items():
@@ -159,6 +166,7 @@ def create_mixtures(parsed_components, materials):
             mixture.components.append(component)
 
     # Reorder materials so mixtures are uploaded last
+    #Mixtures must be uploaded last in order to ensure Components can be accessed
     if materials:
         return {
             k: v
@@ -171,6 +179,7 @@ def create_mixtures(parsed_components, materials):
 
 
 def create_processes(parsed_processes, group, experiments, data, citations):
+    """Creates a dictionary of Process objects to be returned."""
     processes = {}
 
     for key, parsed_process in parsed_processes.items():
@@ -187,13 +196,13 @@ def create_processes(parsed_processes, group, experiments, data, citations):
 
             if cell_type == "attribute":
                 process_dict[cell_key] = cell_value
-
+            #Gets existing object if available
             elif cell_type == "relation":
                 if cell_key == "experiment":
                     process_dict["experiment"] = _get_relation(
                         experiments, cell_value, parsed_cell
                     )
-
+            #Creates objects that will go into process node
             elif cell_type == "property":
                 property = _create_property(parsed_cell, data, citations)
                 process_dict["properties"].append(property)
@@ -210,6 +219,7 @@ def create_processes(parsed_processes, group, experiments, data, citations):
 
 
 def create_ingredients(parsed_ingredients, processes, materials):
+    """Creates a dictionary of Ingredient objects to be returned."""
     for key, parsed_ingredient in parsed_ingredients.items():
         ingredient_dict = {
             "quantities": [],
@@ -222,7 +232,7 @@ def create_ingredients(parsed_ingredients, processes, materials):
 
             if cell_type == "attribute":
                 ingredient_dict[cell_key] = cell_value
-
+            #Gets related objects to be included in node
             elif cell_type == "relation":
                 if cell_key == "process":
                     process = _get_relation(processes, cell_value, parsed_cell)
@@ -231,7 +241,7 @@ def create_ingredients(parsed_ingredients, processes, materials):
                     ingredient_dict["material"] = _get_relation(
                         materials, cell_value, parsed_cell
                     )
-
+            #Creates Quantity node
             elif cell_type == "quantity":
                 quantity = _create_object(
                     cript.Quantity,
@@ -251,12 +261,13 @@ def create_ingredients(parsed_ingredients, processes, materials):
 
 
 def create_products(parsed_products, processes, materials):
+    """Attaches material product to its related process"""
     for key, parsed_product in parsed_products.items():
         for parsed_cell in parsed_product.values():
             cell_type = parsed_cell["type"]
             cell_key = parsed_cell["key"]
             cell_value = parsed_cell["value"]
-
+            #Gets related objects
             if cell_type == "relation":
                 if cell_key == "process":
                     process = _get_relation(processes, cell_value, parsed_cell)
@@ -269,6 +280,7 @@ def create_products(parsed_products, processes, materials):
 
 
 def create_prerequisites(parsed_prerequisites, processes):
+    """Attaches prerequisite process information to a Process node."""
     for key, parsed_prerequisite in parsed_prerequisites.items():
         for parsed_cell in parsed_prerequisite.values():
             cell_type = parsed_cell["type"]
@@ -287,6 +299,8 @@ def create_prerequisites(parsed_prerequisites, processes):
 
 
 def _create_property(parsed_property, data, citations):
+    """Tries to create a Property object that contains plain attributes as well as other
+    objects within. Returns Property object or None"""
     property_dict = {
         "key": parsed_property["key"],
         "value": parsed_property["value"],
@@ -323,6 +337,7 @@ def _create_property(parsed_property, data, citations):
 
 
 def _create_condition(parsed_condition, data, citations=[]):
+    """Creates a condition node and returns if possible."""
     condition_dict = {
         "key": parsed_condition["key"],
         "value": parsed_condition["value"],
@@ -336,10 +351,10 @@ def _create_condition(parsed_condition, data, citations=[]):
             cell_type = parsed_cell["type"]
             cell_key = parsed_cell["key"]
             cell_value = parsed_cell["value"]
-
+            
             if cell_type == "attribute":
                 condition_dict[cell_key] = cell_value
-
+            #Gets and stores objects for valid related objects
             elif cell_type == "relation":
                 if cell_key == "data":
                     data = _get_relation(data, cell_value, parsed_cell)
@@ -353,9 +368,13 @@ def _create_condition(parsed_condition, data, citations=[]):
 
 
 def _create_object(obj_class, obj_dict, parsed_cell):
+    """Tries to create and return a cript object."""
     try:
+        #Returns a succesfully created cript object
         return obj_class(**obj_dict)
     except (CRIPTError, BeartypeException, ValueError, TypeError) as e:
+        #Updates list of error messages to show to user and returns None if an object 
+        #couldn't be created
         row_index = parsed_cell["index"] + 4
         sheet_name = parsed_cell["sheet"].capitalize()
         message = f"{sheet_name} sheet, Row {row_index}: {e}"
@@ -364,9 +383,14 @@ def _create_object(obj_class, obj_dict, parsed_cell):
 
 
 def _get_relation(related_objs, cell_value, parsed_cell):
+    """Tries to get and return an object created from another sheet by
+    indexing into the dictionary where the object is stored."""
     try:
+        #returns related object if possible
         return related_objs[cell_value]
     except KeyError:
+        #Adds error to list of errors and returns None
+        #Add 4 due to differences in DataFrame and excel format
         row_index = parsed_cell["index"] + 4
         sheet_name = parsed_cell["sheet"].capitalize()
         related_sheet = parsed_cell["key"].capitalize()
