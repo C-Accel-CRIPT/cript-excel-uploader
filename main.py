@@ -80,6 +80,10 @@ while collection is None:
         config["collection"] = input("Collection name: ")
 
 
+# Prompt user for privacy setting
+public = input("Do you want your data visible to the public? (y/N): ").lower() == "y"
+
+
 # Display chem art
 print(ascii_art.chem.template)
 
@@ -141,7 +145,7 @@ sheet_parameters = [
 
 parsed_sheets = {}
 for parameter in sheet_parameters:
-    #Creates a Sheet object to be parsed for each sheet
+    # Creates a Sheet object to be parsed for each sheet
     parsed_sheets[parameter["name"]] = parse.Sheet(
         config["path"],
         parameter["name"],
@@ -154,13 +158,21 @@ for parameter in sheet_parameters:
 # Create and validate
 ###
 
-experiments = create.create_experiments(parsed_sheets["experiment"], group, collection)
-references, citations = create.create_citations(parsed_sheets["citation"], group)
-data, files = create.create_data(parsed_sheets["data"], group, experiments, citations)
-materials = create.create_materials(parsed_sheets["material"], group, data, citations)
+experiments = create.create_experiments(
+    parsed_sheets["experiment"], group, collection, public
+)
+references, citations = create.create_citations(
+    parsed_sheets["citation"], group, public
+)
+data, files = create.create_data(
+    parsed_sheets["data"], group, experiments, citations, public
+)
+materials = create.create_materials(
+    parsed_sheets["material"], group, data, citations, public
+)
 materials = create.create_mixtures(parsed_sheets["mixture component"], materials)
 processes = create.create_processes(
-    parsed_sheets["process"], group, experiments, data, citations
+    parsed_sheets["process"], group, experiments, data, citations, public
 )
 create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)
 create.create_products(parsed_sheets["process product"], processes, materials)
