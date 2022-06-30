@@ -42,7 +42,7 @@ except FileNotFoundError:
 connected = False
 while connected == False:
     try:
-        api = cript.API(config["host"], config["token"])
+        api = cript.API(config.get("host"), config.get("token"))
         connected = True
     except (cript.exceptions.APIAuthError, requests.exceptions.RequestException) as e:
         print(f"~ API connection failed. Try again.\n")
@@ -51,7 +51,7 @@ while connected == False:
 
 
 # Get Excel file path
-while not os.path.exists(config["path"]):
+while not os.path.exists(config.get("path")):
     print("~ Could not find the file. Try again.\n")
     config["path"] = input("Path to Excel file: ").strip('"')
 
@@ -61,7 +61,7 @@ group = None
 while group is None:
     try:
         group = api.get(
-            cript.Group, {"name": config["group"], "created_by": api.user.uid}
+            cript.Group, {"name": config.get("group"), "created_by": api.user.uid}
         )
     except cript.exceptions.APIGetError:
         print("~ Could not find the specified group. Try again.\n")
@@ -73,7 +73,8 @@ collection = None
 while collection is None:
     try:
         collection = api.get(
-            cript.Collection, {"name": config["collection"], "created_by": api.user.uid}
+            cript.Collection,
+            {"name": config.get("collection"), "created_by": api.user.uid},
         )
     except cript.exceptions.APIGetError:
         print("~ Could not find the specified collection. Try again.\n")
