@@ -7,9 +7,9 @@ def upload(api, obj_dict, obj_type):
     """Saves/updates objects to cript database.
     api-obj, api connection
     obj_dict-dict, full of cript objects
-    obj_type-str, dscribes object types being saved
+    obj_type-str, describes object types being saved
     returns-None"""
-   
+
     # Instantiate progress bar
     pbar = tqdm(
         total=len(obj_dict),

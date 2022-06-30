@@ -11,9 +11,9 @@ class Sheet:
         self.required_columns = required_columns
         self.unique_columns = unique_columns
 
-        #Converts excel sheet into pandas DataFrame
+        # Converts excel sheet into pandas DataFrame
         self.df = pd.read_excel(self.path, sheet_name=self.sheet_name, header=[0, 1, 2])
-        #Gets rid of any completely exmpty rows
+        # Gets rid of any completely exmpty rows
         self.df.dropna(how="all", inplace=True)
         self.columns = self.df.columns
 
@@ -33,7 +33,7 @@ class Sheet:
                 cell_info = self._get_cell_info(index, row, column)
 
                 # Check if column should be skipped
-                if self._skip_column(cell_info["key"], cell_info["value"]):
+                if self._skip_column(column[1], cell_info["value"]):
                     continue
 
                 # Convert list values (with ";" separator) to Python lists
@@ -44,7 +44,7 @@ class Sheet:
                     and ";" in cell_info["value"]
                 ):
                     cell_info["value"] = [
-                        x.strip() for x in cell_info["value"].split(";")
+                        x.strip() for x in cell_info["value"].split(";") if x
                     ]
 
                 # Identify the cell's nested parent
@@ -57,8 +57,8 @@ class Sheet:
                     cell_info["value"] = (cell_info["value"].strip(),)
 
                 self._parse_cell(parent, cell_info)
-            #Adds the parsed information to the parsed objects dictionary using the unique_together key(s)
-            #as the key value
+            # Adds the parsed information to the parsed objects dictionary using the unique_together key(s)
+            # as the key value
             parsed_objects[row_key] = parsed_object
 
         return parsed_objects
@@ -104,13 +104,13 @@ class Sheet:
         column_key_list-list
         return-dictionary"""
         column_len = len(column_type_list)
-        #Checks if there is no nesting
+        # Checks if there is no nesting
         if column_len == 1:
             return parsed_object
 
         current_parent = parsed_object
         i = 1
-        #Walks through nested values
+        # Walks through nested values
         while i < column_len:
             current_parent = current_parent[column_key_list[i - 1]]
             i += 1
@@ -118,7 +118,7 @@ class Sheet:
         return current_parent
 
     def _parse_cell(self, parent, cell_info):
-        """Updates parsed parent object with new cell information. Updates are deliberatly made to the 
+        """Updates parsed parent object with new cell information. Updates are deliberatly made to the
         parent due to working with nested/children fields. Nothing is returned, the parent object is mutated.
         parent-dict
         cell_info-dict

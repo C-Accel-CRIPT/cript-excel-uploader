@@ -64,7 +64,7 @@ Alternatively, you can do things the hard way:
 
 ### Column Headers
 
-#### **Row 1 - Meta**
+#### **Row 1 - Type**
 The first header row defines the column type and mirrors the key headers (row 2).  
 e.g., `property:relation` --> `density:data`
 

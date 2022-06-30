@@ -42,7 +42,7 @@ except FileNotFoundError:
 connected = False
 while connected == False:
     try:
-        api = cript.API(config["host"], config["token"], tls=False)
+        api = cript.API(config.get("host"), config.get("token"))
         connected = True
     except (cript.exceptions.APIAuthError, requests.exceptions.RequestException) as e:
         print(f"~ API connection failed. Try again.\n")
@@ -51,7 +51,7 @@ while connected == False:
 
 
 # Get Excel file path
-while not os.path.exists(config["path"]):
+while not os.path.exists(config.get("path")):
     print("~ Could not find the file. Try again.\n")
     config["path"] = input("Path to Excel file: ").strip('"')
 
@@ -61,7 +61,7 @@ group = None
 while group is None:
     try:
         group = api.get(
-            cript.Group, {"name": config["group"], "created_by": api.user.uid}
+            cript.Group, {"name": config.get("group"), "created_by": api.user.uid}
         )
     except cript.exceptions.APIGetError:
         print("~ Could not find the specified group. Try again.\n")
@@ -73,11 +73,16 @@ collection = None
 while collection is None:
     try:
         collection = api.get(
-            cript.Collection, {"name": config["collection"], "created_by": api.user.uid}
+            cript.Collection,
+            {"name": config.get("collection"), "created_by": api.user.uid},
         )
     except cript.exceptions.APIGetError:
         print("~ Could not find the specified collection. Try again.\n")
         config["collection"] = input("Collection name: ")
+
+
+# Prompt user for privacy setting
+public = input("Do you want your data visible to the public? (y/N): ").lower() == "y"
 
 
 # Display chem art
@@ -141,7 +146,11 @@ sheet_parameters = [
 
 parsed_sheets = {}
 for parameter in sheet_parameters:
+<<<<<<< HEAD
     #Creates a Sheet object to be parsed for each sheet
+=======
+    # Creates a Sheet object to be parsed for each sheet
+>>>>>>> origin/master
     parsed_sheets[parameter["name"]] = parse.Sheet(
         config["path"],
         parameter["name"],
@@ -154,13 +163,21 @@ for parameter in sheet_parameters:
 # Create and validate
 ###
 
-experiments = create.create_experiments(parsed_sheets["experiment"], group, collection)
-references, citations = create.create_citations(parsed_sheets["citation"], group)
-data, files = create.create_data(parsed_sheets["data"], group, experiments, citations)
-materials = create.create_materials(parsed_sheets["material"], group, data, citations)
+experiments = create.create_experiments(
+    parsed_sheets["experiment"], group, collection, public
+)
+references, citations = create.create_citations(
+    parsed_sheets["citation"], group, public
+)
+data, files = create.create_data(
+    parsed_sheets["data"], group, experiments, citations, public
+)
+materials = create.create_materials(
+    parsed_sheets["material"], group, data, citations, public
+)
 materials = create.create_mixtures(parsed_sheets["mixture component"], materials)
 processes = create.create_processes(
-    parsed_sheets["process"], group, experiments, data, citations
+    parsed_sheets["process"], group, experiments, data, citations, public
 )
 create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)
 create.create_products(parsed_sheets["process product"], processes, materials)
