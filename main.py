@@ -42,7 +42,7 @@ except FileNotFoundError:
 connected = False
 while connected == False:
     try:
-        api = cript.API(config["host"], config["token"], tls=False)
+        api = cript.API(config["host"], config["token"])
         connected = True
     except (cript.exceptions.APIAuthError, requests.exceptions.RequestException) as e:
         print(f"~ API connection failed. Try again.\n")
