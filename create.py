@@ -410,7 +410,7 @@ def _create_condition(parsed_condition, data, citations=[]):
             cell_type = parsed_cell["type"]
             cell_key = parsed_cell["key"]
             cell_value = parsed_cell["value"]
-
+            
             if cell_type == "attribute":
                 condition_dict[cell_key] = cell_value
             # Gets and stores objects for valid related objects

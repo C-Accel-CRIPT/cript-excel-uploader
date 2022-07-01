@@ -12,10 +12,15 @@ class Sheet:
         self.unique_columns = unique_columns
 
         # Converts excel sheet into pandas DataFrame
-        self.df = pd.read_excel(self.path, sheet_name=self.sheet_name, header=[0, 1, 2])
-        # Gets rid of any completely exmpty rows
-        self.df.dropna(how="all", inplace=True)
-        self.columns = self.df.columns
+        try:
+            self.df = pd.read_excel(self.path, sheet_name=self.sheet_name, header=[0, 1, 2])
+        except IndexError as e:
+            self.exists=False
+        else:
+            self.exists=True
+            # Gets rid of any completely exmpty rows
+            self.df.dropna(how="all", inplace=True)
+            self.columns = self.df.columns
 
     def parse(self):
         """Parses a DataFrame conversion of an excel sheet and returns parsed information as a
@@ -23,7 +28,9 @@ class Sheet:
         information from the excel sheet.
         """
         parsed_objects = {}
-
+        if not self.exists:
+            return parsed_objects
+            
         for index, row in self.df.iterrows():
             parsed_object = {}
             row_key = self._get_unique_row_key(row)
