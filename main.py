@@ -51,7 +51,7 @@ while connected == False:
 
 
 # Get Excel file path
-while not os.path.exists(config.get("path")):
+while config.get("path") is None or not os.path.exists(config.get("path")):
     print("~ Could not find the file. Try again.\n")
     config["path"] = input("Path to Excel file: ").strip('"')
 
