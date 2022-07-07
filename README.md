@@ -235,7 +235,7 @@ Define references to be associated with properties, etc. as citations.
 
 <br><br>
 
-### FAQ
+## FAQ
 - ***What happens if I run the uploader more than once?***  
   If the name of an object has not been changed, the existing object will be updated in the database. If the name has been changed, a new object will be created and the old will remain.
 
