@@ -6,29 +6,38 @@ This code is used to upload a dynamic Excel template to the [CRIPT platform](htt
 <br>
 <br>
 
-## Installation
+## Usage
 
-### Template
-Download **example_template_vX.X.X.xlsx** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+### Excel Template
+- Download **example_template_vX-X-X.xlsx** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
 
 <br>
 
-### Uploader
-> Executables are available for Windows and MacOS.  
-> These can be downloaded and run without installing Python or any other dependency.
+### Config File
+> Used to define required variables (e.g., `path` to the Excel template).   
 
+- Download the **config.yaml** template from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases).  
+- Place the file in the same directory as the executable or Python script. 
+- Fill out template with your info.
+
+<br>
+
+### Uploader 
 - **Windows**
-    - Download **cript_uploader.exe** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+    - Download **cript_uploader_vX-X-X.exe** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+    - Open a terminal and navigate the relevant folder  
+    `cd <path_to_folder>`  
+    - Run it  
+    `.\cript_uploader_vX-X-X.exe`  
 
 - **MacOS** 
-    - Download **cript_uploader** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-    - Having issues running the file?
-        - Open a terminal and navigate the relevant folder  
-        `cd <path_to_folder>`
-        - Change the file permissions  
-        `chmod 755 ./cript_uploader`
-        - Run it  
-        `./cript_uploader`
+    - Download **cript_uploader_vX-X-X** from the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)  
+    - Open a terminal and navigate the relevant folder  
+    `cd <path_to_folder>`  
+    - Change the file permissions  
+    `chmod 755 ./cript_uploader`  
+    - Run it  
+    `./cript_uploader_vX-X-X`  
 
 Alternatively, you can do things the hard way:
 
@@ -153,6 +162,7 @@ Define the processes of each experiment.
 | --- | --- | --- | --- |
 | *experiment | relation | yes | string from `*name` column of `experiment` sheet |
 | *name | attribute | yes | unique string | unique |
+| *type | attribute | yes | any [process type](https://criptapp.org/keys/process-type/)
 | keywords | attribute | no | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g, `str1; str2; str3`)
 | description | attribute | no | string |
 | equipment | attribute | no | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`) |
