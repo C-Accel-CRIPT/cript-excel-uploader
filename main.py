@@ -118,7 +118,7 @@ sheet_parameters = [
     },
     {
         "name": "process",
-        "required_columns": ("experiment", "name"),
+        "required_columns": ("experiment", "name", "type"),
         "unique_columns": ("name",),
     },
     {
