@@ -13,11 +13,13 @@ class Sheet:
 
         # Converts excel sheet into pandas DataFrame
         try:
-            self.df = pd.read_excel(self.path, sheet_name=self.sheet_name, header=[0, 1, 2])
-        except IndexError as e:
-            self.exists=False
+            self.df = pd.read_excel(
+                self.path, sheet_name=self.sheet_name, header=[0, 1, 2]
+            )
+        except (IndexError, ValueError) as e:
+            self.exists = False
         else:
-            self.exists=True
+            self.exists = True
             # Gets rid of any completely exmpty rows
             self.df.dropna(how="all", inplace=True)
             self.columns = self.df.columns
@@ -30,7 +32,7 @@ class Sheet:
         parsed_objects = {}
         if not self.exists:
             return parsed_objects
-            
+
         for index, row in self.df.iterrows():
             parsed_object = {}
             row_key = self._get_unique_row_key(row)
