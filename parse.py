@@ -48,7 +48,7 @@ class Sheet:
                 # Convert list values (with ";" separator) to Python lists
                 # Manually skip fields commonly containing semicolons
                 if (
-                    cell_info["value"] not in ("notes", "description", "sample_prep")
+                    cell_info["value"] not in ("notes", "description")
                     and isinstance(cell_info["value"], str)
                     and ";" in cell_info["value"]
                 ):

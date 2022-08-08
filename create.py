@@ -8,7 +8,7 @@ from beartype.roar import BeartypeException
 error_list = []
 
 
-def create_experiments(parsed_experiments, group, collection, public):
+def create_experiments(parsed_experiments, collection, public):
     """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
     into an Experiment object it is added to an experiments dictionary and that dictionary is returned.
     parsed_...-dict of dicts
@@ -19,7 +19,7 @@ def create_experiments(parsed_experiments, group, collection, public):
     experiments = {}
 
     for key, parsed_experiment in parsed_experiments.items():
-        experiment_dict = {"group": group, "collection": collection, "public": public}
+        experiment_dict = {"collection": collection, "public": public}
 
         for parsed_cell in parsed_experiment.values():
             if isinstance(parsed_cell, dict):
@@ -70,10 +70,10 @@ def create_citations(parsed_citations, group, public):
     return references, citations
 
 
-def create_data(parsed_data, group, experiments, citations, public):
+def create_data(parsed_data, project, experiments, citations, public):
     """Compiles dictionaries with Data and File cript objects.
     parsed_...-dict of dicts
-    group-obj
+    project-obj
     experiments-dict of objs
     public-bool, Privacy flag for the object.
     returns-tuple of dicts of objs
@@ -82,7 +82,7 @@ def create_data(parsed_data, group, experiments, citations, public):
     files = {}
 
     for key, parsed_datum in parsed_data.items():
-        datum_dict = {"group": group, "citations": [], "public": public}
+        datum_dict = {"citations": [], "public": public}
 
         for parsed_cell in parsed_datum.values():
             if isinstance(parsed_cell, dict):
@@ -113,7 +113,7 @@ def create_data(parsed_data, group, experiments, citations, public):
         file = _create_object(
             cript.File,
             {
-                "group": group,
+                "project": project,
                 "data": [datum],
                 "source": file_source,
                 "type": "data",
@@ -127,11 +127,11 @@ def create_data(parsed_data, group, experiments, citations, public):
     return data, files
 
 
-def create_materials(parsed_materials, group, data, citations, public):
+def create_materials(parsed_materials, project, data, citations, public):
     """Creates Material objects and adds them to a dictionary of Material objects if possible.
     Returns dictionary of Material objects
     parsed_..-dict of dicts
-    group-obj
+    project-obj
     data-obj
     citations-list
     public-bool, Privacy flag for the object.
@@ -140,7 +140,7 @@ def create_materials(parsed_materials, group, data, citations, public):
 
     for key, parsed_material in parsed_materials.items():
         material_dict = {
-            "group": group,
+            "project": project,
             "identifiers": [],
             "properties": [],
             "public": public,
@@ -178,8 +178,6 @@ def create_mixtures(parsed_components, materials):
     parsed_..-dict of dicts
     materials-dict of objs"""
     for key, parsed_component in parsed_components.items():
-        component_dict = {}
-
         for parsed_cell in parsed_component.values():
             cell_type = parsed_cell["type"]
             cell_key = parsed_cell["key"]
@@ -190,11 +188,8 @@ def create_mixtures(parsed_components, materials):
                     mixture = _get_relation(materials, cell_value, parsed_cell)
 
                 elif cell_key == "material":
-                    component_dict["material"] = _get_relation(
-                        materials, cell_value, parsed_cell
-                    )
+                    component = _get_relation(materials, cell_value, parsed_cell)
 
-        component = _create_object(cript.Component, component_dict, parsed_cell)
         if None not in (mixture, component):
             mixture.components.append(component)
 
@@ -211,10 +206,9 @@ def create_mixtures(parsed_components, materials):
     return materials
 
 
-def create_processes(parsed_processes, group, experiments, data, citations, public):
+def create_processes(parsed_processes, experiments, data, citations, public):
     """Creates a dictionary of Process objects to be returned.
     parsed_...-dict of objects
-    group-obj
     experiments-dict of objects
     data-obj
     citations-list
@@ -224,7 +218,6 @@ def create_processes(parsed_processes, group, experiments, data, citations, publ
 
     for key, parsed_process in parsed_processes.items():
         process_dict = {
-            "group": group,
             "properties": [],
             "conditions": [],
             "public": public,
@@ -237,12 +230,14 @@ def create_processes(parsed_processes, group, experiments, data, citations, publ
 
             if cell_type == "attribute":
                 process_dict[cell_key] = cell_value
+
             # Gets existing object if available
             elif cell_type == "relation":
                 if cell_key == "experiment":
                     process_dict["experiment"] = _get_relation(
                         experiments, cell_value, parsed_cell
                     )
+
             # Creates objects that will go into process node
             elif cell_type == "property":
                 property = _create_property(parsed_cell, data, citations)
@@ -257,6 +252,27 @@ def create_processes(parsed_processes, group, experiments, data, citations, publ
             processes[key] = process
 
     return processes
+
+
+def create_prerequisites(parsed_prerequisites, processes):
+    """Attaches prerequisite process information to a Process node.
+    parsed_...-dict of dicts
+    processes-dict of objs"""
+    for key, parsed_prerequisite in parsed_prerequisites.items():
+        for parsed_cell in parsed_prerequisite.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "relation":
+                if cell_key == "process":
+                    process = _get_relation(processes, cell_value, parsed_cell)
+
+                elif cell_key == "prerequisite":
+                    prerequisite = _get_relation(processes, cell_value, parsed_cell)
+
+        if None not in (process, prerequisite):
+            process.prerequisite_processes.append(prerequisite)
 
 
 def create_ingredients(parsed_ingredients, processes, materials):
@@ -327,25 +343,37 @@ def create_products(parsed_products, processes, materials):
             process.products.append(material)
 
 
-def create_prerequisites(parsed_prerequisites, processes):
-    """Attaches prerequisite process information to a Process node.
-    parsed_...-dict of dicts
+def create_equipment(parsed_equipment, processes, data, citations):
+    """Attaches equipment to its related process
+    parsed_equipment-dict of dicts
     processes-dict of objs"""
-    for key, parsed_prerequisite in parsed_prerequisites.items():
-        for parsed_cell in parsed_prerequisite.values():
+    for key, parsed_piece in parsed_equipment.items():
+        piece_dict = {"conditions": [], "citations": []}
+
+        for parsed_cell in parsed_piece.values():
             cell_type = parsed_cell["type"]
             cell_key = parsed_cell["key"]
             cell_value = parsed_cell["value"]
 
-            if cell_type == "relation":
+            if cell_type == "attribute":
+                piece_dict[cell_key] = cell_value
+
+            # Gets existing object if available
+            elif cell_type == "relation":
                 if cell_key == "process":
                     process = _get_relation(processes, cell_value, parsed_cell)
 
-                elif cell_key == "prerequisite":
-                    prerequisite = _get_relation(processes, cell_value, parsed_cell)
+            elif cell_type == "condition":
+                condition = _create_condition(parsed_cell, data, citations)
+                piece_dict["conditions"].append(condition)
 
-        if None not in (process, prerequisite):
-            process.prerequisite_processes.append(prerequisite)
+            elif cell_key == "citation":
+                citation = _get_relation(citations, cell_value, parsed_cell)
+                piece_dict["citations"].append(citation)
+
+        piece = _create_object(cript.Equipment, piece_dict, parsed_cell)
+        if None not in (process, piece):
+            process.equipment.append(piece)
 
 
 def _create_property(parsed_property, data, citations):
@@ -360,7 +388,6 @@ def _create_property(parsed_property, data, citations):
         "key": parsed_property["key"],
         "value": parsed_property["value"],
         "conditions": [],
-        "data": [],
         "citations": [],
     }
     if parsed_property["unit"]:
@@ -382,7 +409,7 @@ def _create_property(parsed_property, data, citations):
             elif cell_type == "relation":
                 if cell_key == "data":
                     data = _get_relation(data, cell_value, parsed_cell)
-                    property_dict["data"].append(data)
+                    property_dict["data"] = data
 
                 elif cell_key == "citation":
                     citation = _get_relation(citations, cell_value, parsed_cell)
@@ -400,7 +427,6 @@ def _create_condition(parsed_condition, data, citations=[]):
     condition_dict = {
         "key": parsed_condition["key"],
         "value": parsed_condition["value"],
-        "data": [],
     }
     if parsed_condition["unit"]:
         condition_dict.update({"unit": parsed_condition["unit"]})
@@ -410,14 +436,14 @@ def _create_condition(parsed_condition, data, citations=[]):
             cell_type = parsed_cell["type"]
             cell_key = parsed_cell["key"]
             cell_value = parsed_cell["value"]
-            
+
             if cell_type == "attribute":
                 condition_dict[cell_key] = cell_value
             # Gets and stores objects for valid related objects
             elif cell_type == "relation":
                 if cell_key == "data":
                     data = _get_relation(data, cell_value, parsed_cell)
-                    condition_dict["data"].append(data)
+                    condition_dict["data"] = data
 
                 elif cell_key == "citation":
                     citation = _get_relation(citations, cell_value, parsed_cell)
@@ -433,7 +459,7 @@ def _create_object(obj_class, obj_dict, parsed_cell):
     parsed_cell-dict
     return-object or None"""
     try:
-        # Returns a succesfully created cript object
+        # Returns a successfully created cript object
         return obj_class(**obj_dict)
     except (
         CRIPTError,
