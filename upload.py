@@ -37,7 +37,7 @@ def upload(api, obj_dict, obj_type):
             # Update existing object by swapping URLs
             existing_obj = api.get(obj.__class__, unique_together, max_level=0)
             obj.url = existing_obj.url
-            api.save(obj)
+            api.save(obj, max_level=0)
             obj_dict[key] = existing_obj
         finally:
             pbar.update(1)  # Increment progress bar
