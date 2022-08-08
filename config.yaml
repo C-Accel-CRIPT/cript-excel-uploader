@@ -1,5 +1,6 @@
 host: 
 token: 
-group: 
+project: 
 collection: 
 path: 
+public: 
