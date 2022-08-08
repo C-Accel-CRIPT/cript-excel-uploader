@@ -66,14 +66,14 @@ Alternatively, you can do things the hard way:
 ## Modify Excel Template
 
 ### General
-- A `Group` and `Collection` must be created in the [CRIPT platform](https://www.criptapp.org/) before running the uploader.
+- A `Project` and `Collection` must be created in the [CRIPT platform](https://www.criptapp.org/) before running the uploader.
 - Each Excel document corresponds to a single `Collection`.
 
 <br>
 
 ### Column Headers
 
-#### **Row 1 - Type**
+#### **Row 1 - Header Type**
 The first header row defines the column type and mirrors the key headers (row 2).  
 e.g., `property:relation` --> `density:data`
 
@@ -90,17 +90,17 @@ e.g., `property:relation` --> `density:data`
 - `quantity`
   - Column with key, value and unit combinations for quantities.
 
-#### **Row 2 - Key**
+#### **Row 2 - Header Key**
 The second row defines the key for a column.  
 e.g., `name`, `density`, `bigsmiles`  
 
-#### **Row 3 - Unit**
+#### **Row 3 - Header Key Unit**
 The third row defines the unit for a column.  
 e.g., `celsius`, `g/ml`  
 
 <br>
 
-### Column Header Format
+### Column Header Key Format
 [`Id`]`Field`:`Field`:`Field`
 > Columns beginning with `*` are required (eg. `*name`).  
 > Columns beginning with `#` will be ignored (eg. `#storage`).  
@@ -124,8 +124,6 @@ e.g., `celsius`, `g/ml`
 <br>
 
 ### Sheets
-- Required sheets are colored orange.
-- Optional sheets are colored grey (can be removed).
 - Sheets **cannot be renamed**.
 > List values must use a semicolon (`;`) as a separator.  
 > e.g., `styrene; vinylbenzene; phenylethylene; ethenylbenzene`
@@ -165,10 +163,19 @@ Define the processes of each experiment.
 | *type | attribute | yes | any [process type](https://criptapp.org/keys/process-type/)
 | keywords | attribute | no | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g, `str1; str2; str3`)
 | description | attribute | no | string |
-| equipment | attribute | no | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`) |
 | any [process property key](https://criptapp.org/keys/process-property-key/) | property | no | refer to key table |
 | any [condition key](https://criptapp.org/keys/condition-key/) | condition | no | refer to key table |
 | notes | attribute | no | string |
+
+### `process equipment` sheet
+Define the equipment used in a process.
+| Key | Key Type | Required | Expected Value |
+| --- | --- | --- | --- |
+| *process | relation | yes | string from `*name` column of `process` sheet |
+| *key | attribute | yes | any [equipment key](https://criptapp.org/keys/equipment-key/)
+| description | attribute | no | string |
+| any [condition key](https://criptapp.org/keys/condition-key/) | condition | no | refer to key table |
+| *citation | relation | yes | string from `*name` column of `citation` sheet |
 
 #### `prerequisite process` sheet -- *optional*
 Define the immediate prerequisites for each process.
@@ -202,17 +209,9 @@ Define the data sets you will be associating with properties, etc.
 | *experiment | relation | yes | string from `*name` column of `experiment` sheet |
 | *name | attribute | yes | unique string | unique |
 | *type | attribute | yes | any [data type](https://criptapp.org/keys/data-type/)
-| sample_prep | attribute | no | string
+| *path | attribute | yes | local file path string |
 | citation | relation | no | string from `*name` column of `citation` sheet
 | notes | attribute | no | string | |
-
-#### `file` sheet
-Define the raw files you will be associating with each data set.
-| Key | Key Type | Required | Value Type
-| --- | --- | --- | --- |
-| *data | relation | yes | string from `*name` column of `data` sheet |
-| *source | attribute | yes | local file path string |
-| type | attribute | no | any [file type](https://criptapp.org/keys/file-type/)
 
 #### `citation` sheet
 Define references to be associated with properties, etc. as citations.
