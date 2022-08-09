@@ -83,6 +83,8 @@ class Sheet:
 
         # Check if val empty
         if pd.isna(value):
+            if key == "associated":
+                return False
             return True
 
         return False
@@ -162,4 +164,5 @@ class Sheet:
         For example, *name -> name or [3]temperature-> temperature
         raw_key-string
         return-string"""
+        raw_key.strip()
         return re.sub("\[.*\]", "", raw_key.strip("*"))
