@@ -91,7 +91,7 @@ def create_data(parsed_data, project, experiments, citations, public):
                 cell_value = parsed_cell["value"]
 
                 if cell_type == "attribute":
-                    if cell_key == "path":
+                    if cell_key == "source":
                         # Grab File object source
                         file_source = cell_value
                         continue
@@ -377,41 +377,6 @@ def create_equipment(parsed_equipment, processes, data, citations):
         piece = _create_object(cript.Equipment, piece_dict, parsed_cell)
         if None not in (process, piece):
             process.equipment.append(piece)
-
-
-def add_sample_preparation_to_process(parsed_data, data, processes, api):
-    """Adds Process Nodes to a Data nodes "sample_preparation" field if applicable and saves updated node.
-    parsed_data-dict
-    data-dict of CRIPT Data objects
-    processes-dict of CRIPT Process objects
-    """
-    for key, parsed_datum in parsed_data.items():
-        parsed_cell = parsed_datum.get("sample_preparation")
-        if parsed_cell is not None:
-            data_node = data[key]
-            process_node = processes[parsed_cell["value"]]
-            data_node.sample_preparation = process_node
-            # Save process with error checking
-            try:
-                api.save(data_node)
-            except cript.exceptions.DuplicateNodeError as e:
-                # Get values for the object's unique fields
-                unique_together = {}
-                for field in data_node.unique_together:
-                    if field == "created_by":
-                        value = api.user.uid
-                    else:
-                        value = getattr(data_node, field)
-                        if hasattr(value, "uid"):
-                            value = value.uid
-                    unique_together[field] = value
-
-                # Update existing object by swapping URLs
-                existing_obj = api.get(
-                    data_node.__class__, unique_together, max_level=0
-                )
-                data_node.url = existing_obj.url
-                api.save(data_node, max_level=0)
 
 
 def _create_property(parsed_property, data, citations):
