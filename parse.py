@@ -83,6 +83,7 @@ class Sheet:
 
         # Check if val empty
         if pd.isna(value):
+            # Asscoiated key should have an empty value, so it shouldn't be skipped
             if key == "associated":
                 return False
             return True

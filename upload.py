@@ -1,5 +1,4 @@
 import cript
-
 from tqdm import tqdm
 
 
@@ -18,7 +17,6 @@ def upload(api, obj_dict, obj_type):
         desc=f"Uploading {obj_type} objects: ",
         unit="item",
     )
-
     for key, obj in obj_dict.items():
         api.save(obj, update_existing=True)
         pbar.update(1)  # Increment progress bar
