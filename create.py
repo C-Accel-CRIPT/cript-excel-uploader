@@ -91,7 +91,7 @@ def create_data(parsed_data, project, experiments, citations, public):
                 cell_value = parsed_cell["value"]
 
                 if cell_type == "attribute":
-                    if cell_key == "path":
+                    if cell_key == "source":
                         # Grab File object source
                         file_source = cell_value
                         continue
@@ -108,6 +108,9 @@ def create_data(parsed_data, project, experiments, citations, public):
                     elif cell_key == "citation":
                         citation = _get_relation(citations, cell_value, parsed_cell)
                         datum_dict["citations"].append(citation)
+                    # Marks cell as None for now, and will be updated later once Process Nodes are created
+                    elif cell_key == "sample_preparation":
+                        datum_dict["sample_preparation"] = None
 
         datum = _create_object(cript.Data, datum_dict, parsed_cell)
         file = _create_object(
