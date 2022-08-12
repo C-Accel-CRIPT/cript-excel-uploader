@@ -143,8 +143,8 @@ Define the components of mixture materials.
 
 | Key | Key Type | Required | Expected Value
 | --- | --- | --- | --- |
-| *mixture | relation | yes | string from `*name` column of `material` sheet |
-| *material | relation | yes | string from `*name` column of `material` sheet | 
+| *mixture | relation | yes | value from `*name` column of `material` sheet |
+| *material | relation | yes | value from `*name` column of `material` sheet | 
 
 #### `experiment` sheet
 Define the experiments.
@@ -158,7 +158,7 @@ Define the experiments.
 Define the processes of each experiment.
 | Key | Key Type | Required | Expected Value |
 | --- | --- | --- | --- |
-| *experiment | relation | yes | string from `*name` column of `experiment` sheet |
+| *experiment | relation | yes | value from `*name` column of `experiment` sheet |
 | *name | attribute | yes | unique string | unique |
 | *type | attribute | yes | any [process type](https://criptapp.org/keys/process-type/)
 | keywords | attribute | no | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g, `str1; str2; str3`)
@@ -171,11 +171,11 @@ Define the processes of each experiment.
 Define the equipment used in a process.
 | Key | Key Type | Required | Expected Value |
 | --- | --- | --- | --- |
-| *process | relation | yes | string from `*name` column of `process` sheet |
+| *process | relation | yes | value from `*name` column of `process` sheet |
 | *key | attribute | yes | any [equipment key](https://criptapp.org/keys/equipment-key/)
 | description | attribute | no | string |
 | any [condition key](https://criptapp.org/keys/condition-key/) | condition | no | refer to key table |
-| *citation | relation | yes | string from `*name` column of `citation` sheet |
+| *citation | relation | yes | value from `*name` column of `citation` sheet |
 
 #### `prerequisite process` sheet -- *optional*
 Define the immediate prerequisites for each process.
@@ -183,15 +183,15 @@ Define the immediate prerequisites for each process.
 
 | Key | Key Type | Required | Value Type
 | --- | --- | --- | --- |
-| *process | relation | yes | string from `*name` column of `process` sheet |
-| *prerequisite | relation | yes | string from `*name` column of `process` sheet |
+| *process | relation | yes | value from `*name` column of `process` sheet |
+| *prerequisite | relation | yes | value from `*name` column of `process` sheet |
 
 #### `process ingredient` sheet
 Define the ingredients for each process and their respective quantities.
 | Key | Key Type | Required | Value Type
 | --- | --- | --- | --- |
-| *process | relation | yes | string from `*name` column of `process` sheet |
-| *material | relation | yes | string from `*name` column of `material` sheet |
+| *process | relation | yes | value from `*name` column of `process` sheet |
+| *material | relation | yes | value from `*name` column of `material` sheet |
 | *keyword | attribute | yes | any [ingredient keyword](https://criptapp.org/keys/ingredient-keyword/)
 | any [quantity key](https://criptapp.org/keys/quantity-key/) | quantity | yes | refer to key table |
 
@@ -199,18 +199,19 @@ Define the ingredients for each process and their respective quantities.
 Define the material products of each process.
 | Key | Key Type | Required | Value Type
 | --- | --- | --- | --- |
-| *process | relation | yes | string from `*name` column of `process` sheet |
-| *material | relation | yes | string from `*name` column of `material` sheet |
+| *process | relation | yes | value from `*name` column of `process` sheet |
+| *material | relation | yes | value from `*name` column of `material` sheet |
 
 #### `data` sheet
 Define the data sets you will be associating with properties, etc.
 | Key | Key Type | Required | Value Type
 | --- | --- | --- | --- |
-| *experiment | relation | yes | string from `*name` column of `experiment` sheet |
+| *experiment | relation | yes | value from `*name` column of `experiment` sheet |
 | *name | attribute | yes | unique string | unique |
 | *type | attribute | yes | any [data type](https://criptapp.org/keys/data-type/)
-| *path | attribute | yes | local file path string |
-| citation | relation | no | string from `*name` column of `citation` sheet
+| *source | attribute | yes | local file path or external URL |
+| sample_preparation | relation | no | value from `*name` column of `process` sheet |
+| citation | relation | no | value from `*name` column of `citation` sheet
 | notes | attribute | no | string | |
 
 #### `citation` sheet
