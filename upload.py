@@ -1,9 +1,7 @@
 import cript
 from tqdm import tqdm
 
-# TODO wait to make tests for these until Brilant is finished with his setup.
 
-# TODO test for each object type
 def upload(api, obj_dict, obj_type):
     """Saves/updates objects to cript database.
     api-obj, api connection
@@ -20,13 +18,15 @@ def upload(api, obj_dict, obj_type):
         unit="item",
     )
     for key, obj in obj_dict.items():
-        api.save(obj, update_existing=True)
+        # Creates name for File object made from external source
+        if obj_type == "File" and obj.name is None:
+            obj.name = obj.source
+        api.save(obj, update_existing=True, max_level=0)
         pbar.update(1)  # Increment progress bar
 
     pbar.close()
 
 
-# TODO will have to make the inputs and check that the node is updated and saved correctly.
 def add_sample_preparation_to_process(parsed_data, data, processes, api):
     """Adds Process Nodes to a Data nodes "sample_preparation" field if applicable and saves updated node.
     parsed_data-dict

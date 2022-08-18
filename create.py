@@ -7,8 +7,6 @@ from beartype.roar import BeartypeException
 
 error_list = []
 
-# TODO for each create_ check that each if statement is going off fine, these will be tedious.
-
 
 def create_experiments(parsed_experiments, collection, public):
     """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
@@ -457,8 +455,6 @@ def _create_condition(parsed_condition, data, citations=[]):
     return _create_object(cript.Condition, condition_dict, parsed_cell)
 
 
-# TODO try to do create each object type doing the bare minimum requirements
-# for it, just to see if that works.
 def _create_object(obj_class, obj_dict, parsed_cell):
     """Tries to create and return a cript object.
     obj_class-class
@@ -484,8 +480,6 @@ def _create_object(obj_class, obj_dict, parsed_cell):
         return None
 
 
-# TODO will have to make a dictionary of dictionaries for related_objs input.
-# will also have to create a errors_list or else the except won't work
 def _get_relation(related_objs, cell_value, parsed_cell):
     """Tries to get and return an object created from another sheet by
     indexing into the dictionary where the object is stored.

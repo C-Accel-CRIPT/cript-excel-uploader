@@ -14,8 +14,6 @@ import create
 from create import error_list
 import upload
 
-# TODO multiple upload tests, use different small excel sheets.
-# Also have an upload with config empty and config filled out.
 
 ###
 # Setup

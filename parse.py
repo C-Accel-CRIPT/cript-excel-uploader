@@ -3,7 +3,7 @@ from pprint import pprint
 
 import pandas as pd
 
-# TODO check that this initializes correctly, check each attribute for correctness
+
 class Sheet:
     def __init__(self, path, sheet_name, required_columns, unique_columns):
         self.path = path
@@ -74,7 +74,6 @@ class Sheet:
 
         return parsed_objects
 
-    # TODO input varies keys and values to check each if statement
     def _skip_column(self, key, value):
         """Check if a column should be skipped.
         key-DataSeries
@@ -93,7 +92,6 @@ class Sheet:
 
         return False
 
-    # TODO make row and column to be used. Check if return is as expected
     def _get_cell_info(self, index, row, column):
         """Collects relevant cell information into a dictionary and returns the dictionary.
         index-int
@@ -112,7 +110,6 @@ class Sheet:
             "unit": column[2] if "Unnamed" not in column[2] else None,
         }
 
-    # TODO create all inputs that point to some type of parent, then return that parent
     def _get_parent(self, parsed_object, column_type_list, column_key_list):
         """Finds parent of a nested field, i.e. determines temperature is the parent in
         temperature:data.
@@ -134,8 +131,6 @@ class Sheet:
 
         return current_parent
 
-    # TODO will have to create a parsed parent object and cell_info dict to be passed in.
-    # Check to see if the parsed parent object is correctly mutated.
     def _parse_cell(self, parent, cell_info):
         """Updates parsed parent object with new cell information. Updates are deliberatly made to the
         parent due to working with nested/children fields. Nothing is returned, the parent object is mutated.
@@ -155,7 +150,6 @@ class Sheet:
             }
         )
 
-    # TODO input row and check for appropriate tuple returned
     def _get_unique_row_key(self, row):
         """Gathers unique_together key(s) for a sheet and returns the key(s).
         row-DataSeries
@@ -168,8 +162,6 @@ class Sheet:
                 row_key = row_key + (value,)
         return row_key
 
-    # TODO input str with various symbols that we want to get rid of and test against
-    # the expected clean str. One test w/multiple strs should be fine
     def _clean_key(self, raw_key):
         """Cleans inputted raw_key so it is just a normal word and returns the cleaned value.
         For example, *name -> name or [3]temperature-> temperature
