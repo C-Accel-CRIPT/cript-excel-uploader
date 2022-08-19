@@ -69,7 +69,7 @@
   /* end excel sheet colors */
 </style>
 
-# CRIPT Excel Uploader
+## CRIPT Excel Uploader
 
 <!-- TODO be sure to update this picture for every release -->
 
@@ -80,14 +80,14 @@ This code is used to upload a dynamic Excel template to the [CRIPT platform](htt
 <br>
 <br>
 
-# Usage
+## Usage
 
 <img src="./docs_assets/screenshot_of_where_to_find_excel_uploader.png"
 alt="Screenshot latest CRIPT release assets">
 
 <br>
 
-## Follow these steps
+### Follow these steps
 
 <ol id="usage-steps">
   <li>
@@ -167,9 +167,9 @@ alt="Screenshot latest CRIPT release assets">
 
 <br>
 
-# Running CRIPT <span style="color: var(--excel-light-color)">Excel</span> Uploader
+## Running CRIPT <span style="color: var(--excel-light-color)">Excel</span> Uploader
 
-## Using the executable <code>cript_uploader_vX-X-X</code>
+### Using the executable <code>cript_uploader</code>
 
 - **Windows**
 
@@ -202,7 +202,7 @@ alt="Screenshot latest CRIPT release assets">
 
 <br>
 
-## <u>Alternatively, you can run the Python Script:</u>
+### <u>Alternatively, you can run the Python Script:</u>
 
 _Basic Setup:_
 
@@ -258,9 +258,9 @@ _Basic Setup:_
 
 <br>
 
-# Customizing the <span style="color: var(--excel-light-color)">Excel</span> File
+## Customizing the <span style="color: var(--excel-light-color)">Excel</span> File
 
-## Sheets
+### Sheets
 
 <!-- TODO be sure to always keep pictures up to date -->
 <img src="./docs_assets/screenshot_of_excel_sheets.png" alt="screenshot of the excel sheets to show required and optional sheets">
@@ -279,7 +279,7 @@ _Basic Setup:_
 
 <br>
 
-## The general structure for all sheets
+### The general structure for all sheets
 
 <blockquote>
     <table>
@@ -319,7 +319,7 @@ _Basic Setup:_
 
 <br>
 
-## <b> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
+### <b> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
 
 <img src="./docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
 alt="Screenshot of Material sheet rows and columns">
@@ -333,7 +333,7 @@ sheet come from a controlled vocabulary located in <a hre="https://criptapp.org/
 
   > It can be thought of as an abstraction of row 2
 
-### <u id="row-1-options-list">List of possible options for Row 1</u>
+#### <u id="row-1-options-list">List of possible options for Row 1</u>
 
 - <span class="row-1">attribute</span>
     - Column with simple key-value pairs
@@ -372,7 +372,7 @@ sheet come from a controlled vocabulary located in <a hre="https://criptapp.org/
     - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt">supported units are
       documented</a>
 
-### <u>List values in each cell</u>
+#### <u>List values in each cell</u>
 
 List values must use a semicolon **`;`** as a separator
 
@@ -382,7 +382,7 @@ Example:
 <table>
   <tr class="row-1">
     <td class="row-1">
-      identifier
+      category
     </td>
   </tr>
   <tr>
@@ -410,10 +410,7 @@ Example:
 
 <br>
 
-<!-- This html is used for another section of the page to be able to link to the "relation section" -->
-<div id="relation-explanation"></div>
-
-## <span class="row-1"><b>relation</b></span> field in row 1 explained
+### <span id="relation-explanation" class="row-1"><b>relation</b></span> field in row 1 explained
 
 The row 1 field <code>relation</code> is essentially a way for a row from one sheet to reference another row in a
 different sheet.
@@ -430,7 +427,7 @@ width="900">
 
 <br>
 
-## <span class="row-2">row 2</span> <u>Column Field Names</u>
+### <span class="row-2">row 2</span> <u>Column Field Names</u>
 
 <img src="./docs_assets/screenshot_of_star_required_columns.png"
 alt="Screenshot of an Excel column that shows the required column that begins with a *">
@@ -460,7 +457,7 @@ Below there is a section that has a list of
 
 <br>
 
-### <u>Multiple Field Headers for each column in row 2</u>
+#### <u>Multiple Field Headers for each column in row 2</u>
 
 <img src="./docs_assets/Screenshot_nested_row_column_header.png" style="margin-left: 3rem"
 alt="Screenshot from Excel sheet column that shows multiple field headers">
@@ -483,7 +480,7 @@ alt="Screenshot from Excel sheet column that shows multiple field headers">
 
 <br>
 
-### `Id` <span style="color: grey; font-size: 0.8rem;"> - (optional)</span>
+#### `Id` <span style="color: grey; font-size: 0.8rem;"> - (optional)</span>
 
 If there are multiple temperature throughout different time, and we want to show each of their color (or any other
 property) we can use an `Id` field to differentiate between the different temperatures. We denote an `Id` with brackets
@@ -563,9 +560,9 @@ density:temperature</span>
 
 ---
 
-# <u id="individual-sheets-reference">Individual Sheets</u>
+## <u id="individual-sheets-reference">Individual Sheets</u>
 
-## <span class="row-1"><u>material</u></span> sheet
+### <span class="row-1"><u>material</u></span> sheet
 
 <br>
 
@@ -662,7 +659,7 @@ Example of the <code>*name</code> column:
 
 <br>
 
-## <span class="optional-excel-sheet-color"><u>mixture component</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+### <span class="optional-excel-sheet-color"><u>mixture component</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
 
 This sheet Defines the components of mixture materials.
 
@@ -732,7 +729,7 @@ Row 1 is always <code>relation</code> and Row 2 is always
 
 <br>
 
-## <span class="required-excel-sheet-color"><u> experiment</u></span> sheet
+### <span class="required-excel-sheet-color"><u> experiment</u></span> sheet
 
 This sheet defines the experiment
 
@@ -803,7 +800,7 @@ This sheet defines the experiment
 
 <br>
 
-## <span class="required-excel-sheet-color"><u>process</u></span> sheet
+### <span class="required-excel-sheet-color"><u>process</u></span> sheet
 
 Define the processes of each experiment.
 
@@ -1045,7 +1042,7 @@ Example:
 ---
 <br>
 
-## <span class="optional-excel-sheet-color">process equipment</span> sheet
+### <span class="optional-excel-sheet-color">process equipment</span> sheet
 
 Define the equipment used in a process.
 
@@ -1200,7 +1197,7 @@ Define the immediate prerequisites for each process.
 
 <br>
 
-## <span class="required-excel-sheet-color"><u>process ingredient</u></span> sheet
+### <span class="required-excel-sheet-color"><u>process ingredient</u></span> sheet
 
 <br>
 
@@ -1313,7 +1310,7 @@ Define the ingredients for each process and their respective quantities.
 
 <br>
 
-## <span class="required-excel-sheet-color"><u>process product</u></span> sheet
+### <span class="required-excel-sheet-color"><u>process product</u></span> sheet
 
 <br>
 
@@ -1371,7 +1368,7 @@ Define the material products of each process.
 
 <br>
 
-## <span class="required-excel-sheet-color"><u>data</u></span> sheet
+### <span class="required-excel-sheet-color"><u>data</u></span> sheet
 
 <br>
 
@@ -1462,7 +1459,7 @@ Define the data sets you will be associating with properties, etc.
 
 <br>
 
-### <span class="required-excel-sheet-color"><u>file</u></span> sheet
+#### <span class="required-excel-sheet-color"><u>file</u></span> sheet
 
 Define the raw files you will be associating with each data set.
 
@@ -1479,7 +1476,7 @@ Define the raw files you will be associating with each data set.
 
 <br>
 
-## <span class="required-excel-sheet-color"><u>citation</u></span> sheet
+### <span class="required-excel-sheet-color"><u>citation</u></span> sheet
 
 > This sheet can be used to reference any sources used in the experiments that you want to cite in CRIPT
 
@@ -1711,7 +1708,7 @@ Define references to be associated with properties, etc. as citations.
 
 ---
 
-# FAQ
+## FAQ
 
 - **_What happens if I run the uploader more than once?_**  
   If the name of an object has not been changed, the existing object will be updated in the database. If the name has
