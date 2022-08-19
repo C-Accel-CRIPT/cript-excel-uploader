@@ -226,7 +226,7 @@ _Basic Setup:_
    **_Windows_**:
    ```bash
    cript-uploader\Scripts\activate
-   ``` <br> <br>
+   ```    
    **_Mac or Linux_**:
    ```bash
    source cript-uploader\bin\activate
@@ -564,8 +564,6 @@ density:temperature</span>
 ---
 
 # <u id="individual-sheets-reference">Individual Sheets</u>
-
-<br>
 
 ## <span class="row-1"><u>material</u></span> sheet
 
