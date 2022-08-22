@@ -84,6 +84,9 @@ This code is used to upload a dynamic Excel template to the [CRIPT platform](htt
 
 <img src="./docs_assets/screenshot_of_where_to_find_excel_uploader.png"
 alt="Screenshot latest CRIPT release assets">
+<small>
+    Please use the latest release assets
+</small>
 
 <br>
 
@@ -118,7 +121,7 @@ alt="Screenshot latest CRIPT release assets">
     Create an <b>Access Group</b> inside of the <a href="https://www.criptapp.org/group">CRIPT platform</a>
     <ul>
       <li>
-        A Group is needed because every collection must belong to a Group
+        A Group is needed because every Project must be owned by a Group
       </li>
     </ul>
   </li>
@@ -127,7 +130,7 @@ alt="Screenshot latest CRIPT release assets">
     Create a <b>Project</b> inside the <a href="https://www.criptapp.org/project">CRIPT platform</a>
     <ul>
       <li>
-      The entire <span style="color: #21a366">excel</span> file will become a collection within the CRIPT Platform
+      The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
       </li>
     </ul>
   </li>
@@ -136,7 +139,7 @@ alt="Screenshot latest CRIPT release assets">
     Create a <b>Collection</b> inside the <a href="https://www.criptapp.org/collection">CRIPT platform</a>
     <ul>
       <li>
-      The entire <span style="color: #21a366">excel</span> file will become a collection within the CRIPT Platform
+      The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
       </li>
     </ul>
   </li>
@@ -263,7 +266,9 @@ _Basic Setup:_
 ### Sheets
 
 <!-- TODO be sure to always keep pictures up to date -->
-<img src="./docs_assets/screenshot_of_excel_sheets.png" alt="screenshot of the excel sheets to show required and optional sheets">
+<img src="./docs_assets/screenshot_of_excel_sheets.png" alt="screenshot of the Excel sheets to show required and optional sheets">
+
+
 
 - Required sheets are colored
   <span class="required-excel-sheet-color"> Orange </span>
@@ -324,7 +329,7 @@ _Basic Setup:_
 <img src="./docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
 alt="Screenshot of Material sheet rows and columns">
 
-The Row 1 - 3 within each <span style="color: var(--excel-light-color)">excel</span>
+The Row 1 - 3 within each <span style="color: var(--excel-light-color)">Excel</span>
 sheet come from a controlled vocabulary located in <a hre="https://criptapp.org/keys/">CRIPT</a>.
 
 <br>
