@@ -429,42 +429,6 @@ Below is a list of
 
 ---
 
-## <span class="row-4">Row 4</span> - ∞
-
-#### <u>List values in each cell</u>
-
-List values must use a semicolon **`;`** as a separator
-
-Example:
-
-
-<table>
-  <tr class="row-1">
-    <td class="row-1">
-      category
-    </td>
-  </tr>
-  <tr>
-    <td class="row-2">
-      field name
-    </td>
-  </tr>
-  <tr class="row-3">
-    <th class="row-3">
-        units
-    </th>
-  </tr>
-  <tr class="row-4">
-    <td>
-      funder 1; funder 2; funder 3; funder 4
-    </td>
-  </tr>
-</table>
-
-<br>
-
----
-
 <br>
 
 #### <u>Multiple Field Headers for each column in row 2</u>
@@ -565,6 +529,42 @@ density with <span class="row-2">[1]density:temperature</span> and then we have 
 density</span> at a different time and then we are recording the temperature of that density <span class="row-2">[2]
 density:temperature</span>
 -->
+
+<br>
+
+---
+
+## <span class="row-4">Row 4</span> - ∞
+
+#### <u>Inputting list instead of a single value</u>
+
+List values must use a semicolon **`;`** as a separator
+
+Example:
+
+
+<table>
+  <tr class="row-1">
+    <td class="row-1">
+      category
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      field name
+    </td>
+  </tr>
+  <tr class="row-3">
+    <th class="row-3">
+        units
+    </th>
+  </tr>
+  <tr class="row-4">
+    <td>
+      funder 1; funder 2; funder 3; funder 4
+    </td>
+  </tr>
+</table>
 
 <br>
 
