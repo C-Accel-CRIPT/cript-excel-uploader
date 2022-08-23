@@ -559,10 +559,12 @@ and a number inside such as [1]. The `Id` is used to identify distinct propertie
   </tr>
 </table>
 
+<!--
 Here, we are recording the <span class="row-2">[1]density</span>, and then we are recording the temperature of that
 density with <span class="row-2">[1]density:temperature</span> and then we have a different <span class="row-2">[2]
 density</span> at a different time and then we are recording the temperature of that density <span class="row-2">[2]
 density:temperature</span>
+-->
 
 <br>
 
@@ -1417,24 +1419,7 @@ Define the data sets you will be associating with properties, etc.
   </tr>
 </table>
 
-
-<!-- file sheet no longer in use
----
-
 <br>
-
-#### <span class="required-excel-sheet-color"><u>file</u></span> sheet
-
-Define the raw files you will be associating with each data set.
-
-| Key     | Key Type  | Required | Value Type                                            |
-|---------|-----------|----------|-------------------------------------------------------|
-| *data   | relation  | yes      | string from `*name`column of`data` sheet              |
-| *source | attribute | yes      | local file path string                                |
-| type    | attribute | no       | any [file type](https://criptapp.org/keys/file-type/) |
-
-<br>
--->
 
 ---
 
