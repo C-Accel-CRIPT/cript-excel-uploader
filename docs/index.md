@@ -531,13 +531,13 @@ and a number inside such as [1]. The `Id` is used to identify distinct propertie
   </tr>
   <tr class="row-3">
     <th class="row-3">
-        <div class="row-3"></div>
+        g/ml
     </th>
     <th class="row-3-in-table">
       degC
     </th>
     <th class="row-3">
-        <div class="row-3"></div>
+        g/ml
     </th>
     <th class="row-3-in-table">
       degC
@@ -545,16 +545,16 @@ and a number inside such as [1]. The `Id` is used to identify distinct propertie
   </tr>
   <tr class="row-4">
     <td>
-      100
+      0.87
     </td>
     <td>
-      100
+      20
     </td>
     <td>
-      100
+      1
     </td>
     <td>
-      100
+      30
     </td>
   </tr>
 </table>
