@@ -85,7 +85,7 @@ This code is used to upload a dynamic Excel template to the [CRIPT platform](htt
 <img src="./docs_assets/screenshot_of_where_to_find_excel_uploader.png"
 alt="Screenshot latest CRIPT release assets">
 <small>
-    Please use the latest release assets
+Please use the latest release assets
 </small>
 
 <br>
@@ -268,8 +268,6 @@ _Basic Setup:_
 <!-- TODO be sure to always keep pictures up to date -->
 <img src="./docs_assets/screenshot_of_excel_sheets.png" alt="screenshot of the Excel sheets to show required and optional sheets">
 
-
-
 - Required sheets are colored
   <span class="required-excel-sheet-color"> Orange </span>
 
@@ -377,39 +375,7 @@ sheet come from a controlled vocabulary located in <a hre="https://criptapp.org/
     - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt">supported units are
       documented</a>
 
-#### <u>List values in each cell</u>
-
-List values must use a semicolon **`;`** as a separator
-
-Example:
-
-
-<table>
-  <tr class="row-1">
-    <td class="row-1">
-      category
-    </td>
-  </tr>
-  <tr>
-    <td class="row-2">
-      names
-    </td>
-  </tr>
-  <tr class="row-3">
-    <th class="row-3">
-        units
-    </th>
-  </tr>
-  <tr class="row-4">
-    <td>
-      vinylbenzene; phenylethylene; ethenylbenzene; styrene
-    </td>
-  </tr>
-</table>
-
-
 <br>
-
 
 ---
 
@@ -420,9 +386,10 @@ Example:
 The row 1 field <code>relation</code> is essentially a way for a row from one sheet to reference another row in a
 different sheet.
 
-In computer science terms, we could think of it as a one-to-one relationship from the <code>relation</code> row of one
+In computer science terms, we could think of it as a foreign key type of relationship from the
+<code>relation</code> row of one
 sheet to the <code>*name</code> row of another sheet, the name field works well as an identifier because we are
-requiring all names to be unique.
+requiring names to be unique within a given sheet.
 
 <img src="./docs_assets/relation-column-animation-explanation.gif"
 alt="video explanation of relation column in an animated format"
@@ -431,6 +398,8 @@ width="900">
 ---
 
 <br>
+
+[//]: # (todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3)
 
 ### <span class="row-2">row 2</span> <u>Column Field Names</u>
 
@@ -455,8 +424,44 @@ alt="Screenshot of an Excel column that shows the required column that begins wi
 
 <br>
 
-Below there is a section that has a list of
+Below is a list of
 <a href="#individual-sheets-reference">valid values for each sheet's row 2</a>
+
+---
+
+## <span class="row-4">Row 4</span> - ∞
+
+#### <u>List values in each cell</u>
+
+List values must use a semicolon **`;`** as a separator
+
+Example:
+
+
+<table>
+  <tr class="row-1">
+    <td class="row-1">
+      category
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      field name
+    </td>
+  </tr>
+  <tr class="row-3">
+    <th class="row-3">
+        units
+    </th>
+  </tr>
+  <tr class="row-4">
+    <td>
+      funder 1; funder 2; funder 3; funder 4
+    </td>
+  </tr>
+</table>
+
+<br>
 
 ---
 
@@ -470,8 +475,6 @@ alt="Screenshot from Excel sheet column that shows multiple field headers">
 - We can have more than one field present on a column header if needed
     - We can indicate that we are recording the `density` at a certain `temperature` by using a colon `":"` and notating
       it like this: `"density:temperature"`
-    - We can also show the `color` of the material at that `density` at that `temperature`
-      with `density:temperature:color` and we can add on more
     - Examples
         - Define a material property method: `density:method`
         - Associate data with a process condition `temperature:data`
@@ -615,51 +618,6 @@ Define all materials that will be referenced throughout the document.
 
 <br>
 
-<blockquote>
-All materials MUST have a <code>name</code> column that is UNIQUE
-
-<br>
-
-Example of the <code>*name</code> column:
-
-  <table>
-    <tr>
-      <td class="row-1">
-          attribute
-      </td>
-    </tr>
-    <tr>
-      <td class="row-2">
-        *name
-      </td>
-    </tr>
-    <tr>
-      <th class="row-3">
-        <div style="margin-bottom: 1rem;"></div>
-      </th>
-    </tr>
-    <tr>
-      <td class="row-4">
-        toluene
-      </td>
-    </tr>
-    <tr>
-      <td class="row-4">
-        styrene
-      </td>
-    </tr>
-    <tr>
-      <td class="row-4">
-        1-butanol
-      </td>
-    </tr>
-
-  </table>
-
-</blockquote>
-
-<br>
-
 ---
 
 <br>
@@ -746,7 +704,8 @@ This sheet defines the experiment
 
 <br>
 
-> If there are multiple sources for funding please list them and separate each one with a `";"` (e.g, `PBS; CBS; HBO`)
+> If there are multiple sources for funding please list them and separate each one with a `";"`
+> (e.g, `Grants; NSF; IRIS`)
 
 <br>
 
@@ -795,7 +754,7 @@ This sheet defines the experiment
       These are my notes
     </td>
     <td class="row-4 row-4-required-optional-label">
-      NSF; MIT; NASA; Dow; Pepsi
+      funder 1; funder 2; funder 3; funder 4;
     </td>
 
   </tr>
