@@ -130,7 +130,7 @@ Please use the latest release assets
     Create a <b>Project</b> inside the <a href="https://www.criptapp.org/project">CRIPT platform</a>
     <ul>
       <li>
-      The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
+        A Project is needed because each Collection belongs to a Project
       </li>
     </ul>
   </li>
@@ -328,7 +328,7 @@ _Basic Setup:_
 alt="Screenshot of Material sheet rows and columns">
 
 The Row 1 - 3 within each <span style="color: var(--excel-light-color)">Excel</span>
-sheet come from a controlled vocabulary located in <a hre="https://criptapp.org/keys/">CRIPT</a>.
+sheet are treated differently than Rows 4 - ∞.
 
 <br>
 
@@ -431,7 +431,7 @@ Below is a list of
 
 <br>
 
-#### <u>Multiple Field Headers for each column in row 2</u>
+#### <u>Nesting Headers for each column in row 2</u>
 
 <img src="./docs_assets/Screenshot_nested_row_column_header.png" style="margin-left: 3rem"
 alt="Screenshot from Excel sheet column that shows multiple field headers">
@@ -454,9 +454,12 @@ alt="Screenshot from Excel sheet column that shows multiple field headers">
 
 #### `Id` <span style="color: grey; font-size: 0.8rem;"> - (optional)</span>
 
-If there are multiple temperature throughout different time, and we want to show each of their color (or any other
-property) we can use an `Id` field to differentiate between the different temperatures. We denote an `Id` with brackets
-and a number inside such as [1]. The `Id` is used to identify distinct properties/conditions of the same type
+`Id` is used to allow for multiple measurements throughout time. With `Id` it is possible to take several measurements
+through an experiment, and later use nesting to record more details.
+
+If there are multiple densities throughout time, and we want to show each of their temperatures (or any other
+condition) we can use an `Id` field to differentiate between the different temperatures. We denote an `Id` with brackets
+and a number inside such as [1] or [2]. The `Id` is used to identify distinct properties/conditions of the same type
 
 - e.g., To identify two density measurements at two different temperatures, we could create the following column
   headers: <span class="row-2">[1]density</span>, <span class="row-2">[1]density:temperature</span>
@@ -1414,7 +1417,17 @@ Define the data sets you will be associating with properties, etc.
       My type
     </td>
     <td class="row-4" style="font-size: 0.8rem;">
-      C:\Users\myUsername\Desktop\MIT\cript-excel-uploader\example_template_v0-3-1.xlsx
+        <b>Can be either local:</b>
+        <br>
+        <em>
+            C:\Users\myUsername\Desktop\MIT\cript-excel-uploader\example_template_v0-3-1.xlsx
+        </em>
+        <br> <br>
+        <b>Or on the web: </b>
+        <br>
+        <em>
+            https://google.com
+        </em>
     </td>
   </tr>
 </table>
