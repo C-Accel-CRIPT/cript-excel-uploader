@@ -581,12 +581,12 @@ Example:
 
 Define all materials that will be referenced throughout the document.
 
-| Key                                                                           | Key Type    | Required  | Expected Value      |
-|-------------------------------------------------------------------------------|-------------|-----------|---------------------|
-| *name                                                                         | attribute   | yes       | unique string       |
-| any [identifier key](https://criptapp.org/keys/material-identifier-key/)      | identifier  | no        | refer to key table  |
-| any [material property key](https://criptapp.org/keys/material-property-key/) | property    | no        | refer to key table  |
-| notes                                                                         | attribute   | no        | string              |
+| Row 2                                                                         | Row 1      | Required  | Expected Value      |
+|-------------------------------------------------------------------------------|------------|-----------|---------------------|
+| *name                                                                         | attribute  | yes       | unique string       |
+| any [identifier key](https://criptapp.org/keys/material-identifier-key/)      | identifier | no        | refer to key table  |
+| any [material property key](https://criptapp.org/keys/material-property-key/) | property   | no        | refer to key table  |
+| notes                                                                         | attribute  | no        | string              |
 
 <br>
 
@@ -649,7 +649,7 @@ Row 1 is always <code>relation</code> and Row 2 is always
 
 <br>
 
-| Key       | Key Type | Required | Expected Value                                |
+| Row 2     | Row 1    | Required | Expected Value                                |
 |-----------|----------|----------|-----------------------------------------------|
 | *mixture  | relation | yes      | value from `*name` column of `material` sheet |
 | *material | relation | yes      | value from `*name` column of `material` sheet | 
@@ -701,11 +701,11 @@ Row 1 is always <code>relation</code> and Row 2 is always
 
 This sheet defines the experiment
 
-| Key      | Key Type   | Required  | Value Type                                |
-|----------|------------|-----------|-------------------------------------------|
-| *name    | attribute  | yes       | unique value                              |
-| funding  | attribute  | no        | list of values (e.g, `str1; str2; str3`)  |
-| notes    | attribute  | no        | string                                    |
+| Row 2   | Row 1     | Required  | Value Type                                |
+|---------|-----------|-----------|-------------------------------------------|
+| *name   | attribute | yes       | unique value                              |
+| funding | attribute | no        | list of values (e.g, `str1; str2; str3`)  |
+| notes   | attribute | no        | string                                    |
 
 <br>
 
@@ -773,13 +773,13 @@ This sheet defines the experiment
 
 Define the processes of each experiment.
 
-| Key                                                                         | Key Type  | Required | Expected Value                                                                          |
+| Row 2                                                                       | Row 1     | Required | Expected Value                                                                          |
 |-----------------------------------------------------------------------------|-----------|----------|-----------------------------------------------------------------------------------------|
 | *experiment                                                                 | relation  | yes      | string from `*name`column of`experiment` sheet                                          | 
 | *name                                                                       | attribute | yes      | unique string                                                                           |                                                                     
 | *type                                                                       | attribute | yes      | any [process type](https://criptapp.org/keys/process-type/)                             | 
 | keywords                                                                    | attribute | no       | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g,`str1; str2; str3`) | 
-|  description                                                                | attribute | no       | string                                                                                  | 
+| description                                                                 | attribute | no       | string                                                                                  | 
 | equipment                                                                   | attribute | no       | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`)     | 
 | any [process property key](https://criptapp.org/keys/process-property-key/) | property  | no       | refer to key table                                                                      |
 | any [condition key](https://criptapp.org/keys/condition-key/)               | condition | no       | refer to key table                                                                      |
@@ -1015,7 +1015,7 @@ Example:
 
 Define the equipment used in a process.
 
-| Key                                                           | Key Type  | Required | Expected Value                                                |
+| Row 2                                                         | Row 1     | Required | Expected Value                                                |
 |---------------------------------------------------------------|-----------|----------|---------------------------------------------------------------|
 | *process                                                      | relation  | yes      | value from `*name` column of `process` sheet                  |
 | *equipment key                                                | attribute | yes      | any [equipment key](https://criptapp.org/keys/equipment-key/) |
@@ -1117,7 +1117,7 @@ Define the immediate prerequisites for each process.
 
 > e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).
 
-| Key           | Key Type | Required | Value Type                                    |
+| Row 2         | Row 1    | Required | Value Type                                    |
 |---------------|----------|----------|-----------------------------------------------|
 | *process      | relation | yes      | string from `*name` column of `process` sheet |
 | *prerequisite | relation | yes      | string from `*name` column of `process` sheet |
@@ -1176,7 +1176,7 @@ Define the immediate prerequisites for each process.
 
 Define the ingredients for each process and their respective quantities.
 
-| Key                                                         | Key Type  | Required | Value Type                                                              |
+| Row 2                                                       | Row 1     | Required | Value Type                                                              |
 |-------------------------------------------------------------|-----------|----------|-------------------------------------------------------------------------|
 | *process                                                    | relation  | yes      | value from `*name` column of `process` sheet                            |
 | *material                                                   | relation  | yes      | value from `*name` column of `material` sheet                           |
@@ -1289,10 +1289,10 @@ Define the ingredients for each process and their respective quantities.
 
 Define the material products of each process.
 
-| Key                                   | Key Type | Required | Value Type                                  |
-|---------------------------------------|----------|----------|---------------------------------------------|
-| *process                              | relation | yes      | string from `*name`column of`process`sheet  | 
-| *material                             | relation | yes      | string from`*name`column of`material` sheet |
+| Row 2     | Row 1    | Required | Value Type                                  |
+|-----------|----------|----------|---------------------------------------------|
+| *process  | relation | yes      | string from `*name`column of`process`sheet  | 
+| *material | relation | yes      | string from`*name`column of`material` sheet |
 
 <br>
 
@@ -1348,7 +1348,7 @@ Define the material products of each process.
 
 Define the data sets you will be associating with properties, etc.
 
-| Key         | Key Type  | Required | Value Type                                            |                                          
+| Row 2       | Row 1     | Required | Value Type                                            |                                          
 |-------------|-----------|----------|-------------------------------------------------------|
 | *experiment | relation  | yes      | string from `*name`column of`experiment`sheet         | 
 | *name       | attribute | yes      | unique string                                         |
@@ -1453,7 +1453,7 @@ Define the data sets you will be associating with properties, etc.
 
 Define references to be associated with properties, etc. as citations.
 
-| Key       | Key Type  | Required | Value Type    |
+| Row 2     | Row 1     | Required | Value Type    |
 |-----------|-----------|----------|---------------|
 | *title    | attribute | yes      | unique string |
 | doi       | attribute | no       | string        |
