@@ -1451,7 +1451,7 @@ Define the data sets you will be associating with properties, etc.
 
 <br>
 
-Define references to be associated with properties, etc. as citations.
+Define references to be associated with properties, etc. as citations. 
 
 | Row 2     | Row 1     | Required | Value Type    |
 |-----------|-----------|----------|---------------|
