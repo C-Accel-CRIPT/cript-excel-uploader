@@ -8,6 +8,7 @@ nav:
   # TODO this can later become either filling out config file or config sheet
   - Filling Out Config: "filling out config.md"
   - How to Run Excel Uploader: "how to run excel uploader.md"
+  - Excel Sheets Rows: "excel rows.md"
   - Individual Excel Sheets: "individual sheets.md"
 
 theme:

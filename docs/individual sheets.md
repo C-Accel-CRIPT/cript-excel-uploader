@@ -1,7 +1,8 @@
 # Customizing the <span style="color: var(--excel-light-color)">Excel</span> Sheets
 
 <!-- TODO be sure to always keep pictures up to date -->
-<img src="./docs_assets/screenshot_of_excel_sheets.png" alt="screenshot of the Excel sheets to show required and optional sheets">
+<img src="/docs_assets/screenshot_of_excel_sheets.png"
+alt="screenshot of the Excel sheets to show required and optional sheets">
 
 - Required sheets are colored
   <span class="required-excel-sheet-color"> Orange </span>
@@ -21,14 +22,14 @@
     <table>
       <tr>
         <td class="row-1">
-            <a href="#row-1-options-list">
+            <a href="/excel rows/#row-1-options-list">
               abstract category
             </a>
         </td>
       </tr>
       <tr>
         <td class="row-2">
-            <a href="#individual-sheets-reference">
+            <a href="/individual sheets/#sheets">
               field name
             </a>
         </td>
@@ -74,7 +75,7 @@ Define all materials that will be referenced throughout the document.
 <table>
   <tr>
     <td class="row-1">
-      <a class="row-1" href="/#row-1-options-list" style="color: blue">
+      <a class="row-1" href="/excel rows/#row-1-options-list" style="color: blue">
         <em><u>supported abstract categories</u></em>
       </a>
     </td>
