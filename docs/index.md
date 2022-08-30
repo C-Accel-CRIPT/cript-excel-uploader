@@ -94,18 +94,69 @@ Please use the latest release assets
 
 <ol id="usage-steps">
   <li>
-    Download <code style="color: var(--excel-light-color)">example_template_vX-X-X.xlsx</code> from the 
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases">latest release</a>
+    Login or Signup for the <a href="https://www.criptapp.org/" target="_blank">CRIPT platform</a>
+  </li>
+
+  <li>
+    Create an <b>Access Group</b> inside of the 
+    <a href="https://www.criptapp.org/group" target="_blank">CRIPT platform</a>
     <ul>
       <li>
-        The example_template_vX-X-X.xlsx can serve as an example or can be configured and used directly
+        An Access Group serves as permission control for the project. It represents an organization, institution, research group, or any grouping of users.
+      </li>
+      <li>
+        An Access Group is needed because every Project must be owned by an Access Group
+      </li>
+    </ul>
+  </li>
+
+  <li>
+    Create a <b>Project</b> inside the 
+    <a href="https://www.criptapp.org/project" target="_blank">CRIPT platform</a>
+    <ul>
+      <li>
+      <!-- todo define project -->
+      A Project can be thought of as a bunch of folders each containing experiments that contribute to a single project
+      </li>
+      <li>
+        Essentially some Collections put in one bucket
+      </li>
+      <li>
+        A Project is needed because each Collection belongs to a Project
+      </li>
+    </ul>
+  </li>
+
+  <li>
+    Create a <b>Collection</b> inside the 
+    <a href="https://www.criptapp.org/collection" target="_blank">CRIPT platform</a>
+    <ul>
+      <li>
+        <!-- todo is this correct? -->
+        A Collection can be thought of as a binder filled with experiments
+      </li>
+      <li>
+      The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
+      </li>
+    </ul>
+  </li>
+
+  <li>
+    Download <code style="color: var(--excel-light-color)">example_template_vX-X-X.xlsx</code> from the 
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
+    <ul>
+      <li>
+          The example_template_vX-X-X.xlsx can be used by users to directly record their data in the file
+      </li>
+      <li>
+        Additionally, example_template_vX-X-X.xlsx can serve as an example excel file for users to get an idea on how to structure the excel files they may already have to conform with CRIPT
       </li>
     </ul>
   </li>
 
   <li>
     Download <code>config.yaml</code> from the 
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases">latest release</a>
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
     <ul>
       <li>
         Fill out template with your information
@@ -114,41 +165,10 @@ Please use the latest release assets
   </li>
 
   <li>
-    Login to the <a href="https://www.criptapp.org/">CRIPT platform</a>
-  </li>
-
-  <li>
-    Create an <b>Access Group</b> inside of the <a href="https://www.criptapp.org/group">CRIPT platform</a>
-    <ul>
-      <li>
-        A Group is needed because every Project must be owned by a Group
-      </li>
-    </ul>
-  </li>
-
-  <li>
-    Create a <b>Project</b> inside the <a href="https://www.criptapp.org/project">CRIPT platform</a>
-    <ul>
-      <li>
-        A Project is needed because each Collection belongs to a Project
-      </li>
-    </ul>
-  </li>
-
-  <li>
-    Create a <b>Collection</b> inside the <a href="https://www.criptapp.org/collection">CRIPT platform</a>
-    <ul>
-      <li>
-      The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
-      </li>
-    </ul>
-  </li>
-
-  <li>
   <!-- TODO be sure to keep this version up to date -->
-    Download <code>cript_uploader_vx.x.x</code> from <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases">latest release</a>
+    Download <code>cript_uploader_vx.x.x</code> from <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
   <li>
-      Palace all 3 files in the same directory 
+      Be sure all 3 files in the same directory 
       <br>
       <ul>
         <li>
@@ -176,32 +196,32 @@ Please use the latest release assets
 
 - **Windows**
 
-    - Download <code>cript_uploader_vX-X-X.exe</code> from
-      the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-    - Open a terminal and navigate the relevant folder
-      ```bash
-      cd <path_to_folder>
-      ```
-    - Run it
-      ``` bash .\cript_uploader_vX-X-X.exe```
+  - Download <code>cript_uploader_vX-X-X.exe</code> from
+    the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+  - Open a terminal and navigate the relevant folder
+    ```bash
+    cd <path_to_folder>
+    ```
+  - Run it
+    ` bash .\cript_uploader_vX-X-X.exe`
 
 <br>
 
 - **Mac or Linux**
-    - Download <code>cript_uploader_vX-X-X</code> from
-      the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-    - Open a terminal and navigate the relevant folder
-      ```bash
-      cd <path_to_folder>
-      ```
-    - Change the file permissions
-      ```bash
-      chmod 755 ./cript_uploader
-      ```
-    - Run it
-      ```bash
-      ./cript_uploader_vX-X-X
-      ```
+  - Download <code>cript_uploader_vX-X-X</code> from
+    the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+  - Open a terminal and navigate the relevant folder
+    ```bash
+    cd <path_to_folder>
+    ```
+  - Change the file permissions
+    ```bash
+    chmod 755 ./cript_uploader
+    ```
+  - Run it
+    ```bash
+    ./cript_uploader_vX-X-X
+    ```
 
 <br>
 
@@ -278,8 +298,6 @@ _Basic Setup:_
 
 > **Sheets CANNOT be renamed**, but **sheets CAN be removed**
 
-
-
 <br>
 
 ### The general structure for all sheets
@@ -302,7 +320,7 @@ _Basic Setup:_
       </tr>
       <tr class="row-3">
         <th class="row-3">
-            <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt">
+            <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">
               units
             </a>
         </th>
@@ -314,7 +332,6 @@ _Basic Setup:_
       </tr>
     </table>
 </blockquote>
-
 
 <br>
 
@@ -339,18 +356,18 @@ sheet are treated differently than Rows 4 - ∞.
 #### <u id="row-1-options-list">List of possible options for Row 1</u>
 
 - <span class="row-1">attribute</span>
-    - Column with simple key-value pairs
+  - Column with simple key-value pairs
 - <span class="row-1">condition</span>
-    - Column with key, value, and unit combinations for
-    - The condition under which the property was discerned
+  - Column with key, value, and unit combinations for
+  - The condition under which the property was discerned
 - <span class="row-1">identifier</span>
-    - Column with key-value pairs for material identifiers
+  - Column with key-value pairs for material identifiers
 - <span class="row-1">property</span>
-    - Column with key, value, and unit combinations for properties
+  - Column with key, value, and unit combinations for properties
 - <span class="row-1">relation</span>
-    - Column that reference other sheets in the template
+  - Column that reference other sheets in the template
 - <span class="row-1">quantity</span>
-    - Column with key, value and unit combinations for quantities
+  - Column with key, value and unit combinations for quantities
 
 <br>
 
@@ -361,19 +378,19 @@ sheet are treated differently than Rows 4 - ∞.
 
 - <span class="row-2">Row 2</span>: This is the label for each column
 
-    - Eg. `name`, `density`, `bigsmiles`
+  - Eg. `name`, `density`, `bigsmiles`
 
-    - Each label for each sheet column from a controlled list of vocabulary options from CRIPT
-        - Each list of controlled vocabulary options will be listed as a link in the
-          <a href="#individual-sheets-reference">documentation of each sheet below</a>
+  - Each label for each sheet column from a controlled list of vocabulary options from CRIPT
+    - Each list of controlled vocabulary options will be listed as a link in the
+      <a href="#individual-sheets-reference">documentation of each sheet below</a>
 
 <br>
 
 - <span class="row-3">Row 3</span>: Defines the units for that column
 
-    - `celsius`, `g/ml`
-    - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt">supported units are
-      documented</a>
+  - `celsius`, `g/ml`
+  - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported units are
+    documented</a>
 
 <br>
 
@@ -399,7 +416,7 @@ width="900">
 
 <br>
 
-[//]: # (todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3)
+[//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"
 
 ### <span class="row-2">row 2</span> <u>Column Field Names</u>
 
@@ -437,16 +454,16 @@ Below is a list of
 alt="Screenshot from Excel sheet column that shows multiple field headers">
 
 - We can have more than one field present on a column header if needed
-    - We can indicate that we are recording the `density` at a certain `temperature` by using a colon `":"` and notating
-      it like this: `"density:temperature"`
-    - Examples
-        - Define a material property method: `density:method`
-        - Associate data with a process condition `temperature:data`
-        - Associate a citation with a material property: `density:citation`
-        - Define material property condition: `density:temperature`
-        - Define the uncertainty of a material property condition: `density:temperature:uncertainty`
-          > `<field>:data` column values should derive from the `*name` column of the `Data` sheet.  
-          > `<field>:citation` column values should derive from the `*name` column of the `Citation` sheet.
+  - We can indicate that we are recording the `density` at a certain `temperature` by using a colon `":"` and notating
+    it like this: `"density:temperature"`
+  - Examples
+    - Define a material property method: `density:method`
+    - Associate data with a process condition `temperature:data`
+    - Associate a citation with a material property: `density:citation`
+    - Define material property condition: `density:temperature`
+    - Define the uncertainty of a material property condition: `density:temperature:uncertainty`
+      > `<field>:data` column values should derive from the `*name` column of the `Data` sheet.  
+      > `<field>:citation` column values should derive from the `*name` column of the `Citation` sheet.
 
 ---
 
@@ -545,7 +562,6 @@ List values must use a semicolon **`;`** as a separator
 
 Example:
 
-
 <table>
   <tr class="row-1">
     <td class="row-1">
@@ -581,12 +597,12 @@ Example:
 
 Define all materials that will be referenced throughout the document.
 
-| Row 2                                                                         | Row 1      | Required  | Expected Value      |
-|-------------------------------------------------------------------------------|------------|-----------|---------------------|
-| *name                                                                         | attribute  | yes       | unique string       |
-| any [identifier key](https://criptapp.org/keys/material-identifier-key/)      | identifier | no        | refer to key table  |
-| any [material property key](https://criptapp.org/keys/material-property-key/) | property   | no        | refer to key table  |
-| notes                                                                         | attribute  | no        | string              |
+| Row 2                                                                         | Row 1      | Required | Expected Value     |
+|-------------------------------------------------------------------------------|------------|----------|--------------------|
+| \*name                                                                        | attribute  | yes      | unique string      |
+| any [identifier key](https://criptapp.org/keys/material-identifier-key/)      | identifier | no       | refer to key table |
+| any [material property key](https://criptapp.org/keys/material-property-key/) | property   | no       | refer to key table |
+| notes                                                                         | attribute  | no       | string             |
 
 <br>
 
@@ -602,14 +618,14 @@ Define all materials that will be referenced throughout the document.
   </tr>
   <tr>
     <td class="row-2">
-    <a class="row-2" href="https://criptapp.org/keys/material-property-key/" style="color: blue">
+    <a class="row-2" href="https://criptapp.org/keys/material-property-key/" target="_blank" style="color: blue">
       <em><u>supported column field names</u></em>
     </a>
     </td>
   </tr>
   <tr>
     <th class="row-3-in-table">
-      <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" style="color: blue">
+      <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank" style="color: blue">
         <em><u>supported units</u></em>
       </a>
     </th>
@@ -638,7 +654,6 @@ This sheet Defines the components of mixture materials.
   <span class="required-excel-sheet-color">materials</span> sheet.
 </blockquote>
 
-
 Row 1 is always <code>relation</code> and Row 2 is always
 <code>*mixture</code> and <code>*material</code>
 
@@ -652,7 +667,7 @@ Row 1 is always <code>relation</code> and Row 2 is always
 | Row 2     | Row 1    | Required | Expected Value                                |
 |-----------|----------|----------|-----------------------------------------------|
 | *mixture  | relation | yes      | value from `*name` column of `material` sheet |
-| *material | relation | yes      | value from `*name` column of `material` sheet | 
+| *material | relation | yes      | value from `*name` column of `material` sheet |
 
 <br>
 
@@ -701,11 +716,11 @@ Row 1 is always <code>relation</code> and Row 2 is always
 
 This sheet defines the experiment
 
-| Row 2   | Row 1     | Required  | Value Type                                |
-|---------|-----------|-----------|-------------------------------------------|
-| *name   | attribute | yes       | unique value                              |
-| funding | attribute | no        | list of values (e.g, `str1; str2; str3`)  |
-| notes   | attribute | no        | string                                    |
+| Row 2   | Row 1     | Required | Value Type                               |
+|---------|-----------|----------|------------------------------------------|
+| *name   | attribute | yes      | unique value                             |
+| funding | attribute | no       | list of values (e.g, `str1; str2; str3`) |
+| notes   | attribute | no       | string                                   |
 
 <br>
 
@@ -775,12 +790,12 @@ Define the processes of each experiment.
 
 | Row 2                                                                       | Row 1     | Required | Expected Value                                                                          |
 |-----------------------------------------------------------------------------|-----------|----------|-----------------------------------------------------------------------------------------|
-| *experiment                                                                 | relation  | yes      | string from `*name`column of`experiment` sheet                                          | 
-| *name                                                                       | attribute | yes      | unique string                                                                           |                                                                     
-| *type                                                                       | attribute | yes      | any [process type](https://criptapp.org/keys/process-type/)                             | 
-| keywords                                                                    | attribute | no       | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g,`str1; str2; str3`) | 
-| description                                                                 | attribute | no       | string                                                                                  | 
-| equipment                                                                   | attribute | no       | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`)     | 
+| *experiment                                                                 | relation  | yes      | string from `*name`column of`experiment` sheet                                          |
+| *name                                                                       | attribute | yes      | unique string                                                                           |
+| *type                                                                       | attribute | yes      | any [process type](https://criptapp.org/keys/process-type/)                             |
+| keywords                                                                    | attribute | no       | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g,`str1; str2; str3`) |
+| description                                                                 | attribute | no       | string                                                                                  |
+| equipment                                                                   | attribute | no       | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`)     |
 | any [process property key](https://criptapp.org/keys/process-property-key/) | property  | no       | refer to key table                                                                      |
 | any [condition key](https://criptapp.org/keys/condition-key/)               | condition | no       | refer to key table                                                                      |
 | notes                                                                       | attribute | no       | string                                                                                  |
@@ -832,15 +847,15 @@ Define the processes of each experiment.
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/process-property-key/">process property</a>
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank">process property</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>    
     <td class="row-2">
-      <a href="https://criptapp.org/keys/condition-key/">any condition value</a>
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">any condition value</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/condition-key/">any condition value</a>
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">any condition value</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
 
@@ -1009,6 +1024,7 @@ Example:
 </blockquote>
 
 ---
+
 <br>
 
 ### <span class="optional-excel-sheet-color">process equipment</span> sheet
@@ -1049,7 +1065,7 @@ Define the equipment used in a process.
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
-        <a href="https://criptapp.org/keys/equipment-key/">*select equipment</a>
+        <a href="https://criptapp.org/keys/equipment-key/" target="_blank">*select equipment</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>    
     <td class="row-2">
@@ -1057,7 +1073,7 @@ Define the equipment used in a process.
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/condition-key/">condition</a>
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">condition</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
@@ -1076,7 +1092,7 @@ Define the equipment used in a process.
       <div></div>
     </th>
     <th class="row-3-in-table">
-      <a style="color: blue" href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt">supported units</a>
+      <a style="color: blue" href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported units</a>
     </th>
     <th class="row-3-in-table">
       <div></div>
@@ -1100,8 +1116,6 @@ Define the equipment used in a process.
     </td>
   </tr>
 </table>
-
-
 
 ---
 
@@ -1220,15 +1234,18 @@ Define the ingredients for each process and their respective quantities.
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/quantity-key/">quantity value</a>
+      <a href="https://criptapp.org/keys/quantity-key/" 
+      target="_blank">quantity value</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/quantity-key/">quantity value</a>
+      <a href="https://criptapp.org/keys/quantity-key/"
+        target="_blank">quantity value</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
       <td class="row-2">
-      <a href="https://criptapp.org/keys/quantity-key/">quantity value</a>
+      <a href="https://criptapp.org/keys/quantity-key/"
+        target="_blank">quantity value</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
 
@@ -1291,7 +1308,7 @@ Define the material products of each process.
 
 | Row 2     | Row 1    | Required | Value Type                                  |
 |-----------|----------|----------|---------------------------------------------|
-| *process  | relation | yes      | string from `*name`column of`process`sheet  | 
+| *process  | relation | yes      | string from `*name`column of`process`sheet  |
 | *material | relation | yes      | string from`*name`column of`material` sheet |
 
 <br>
@@ -1348,12 +1365,12 @@ Define the material products of each process.
 
 Define the data sets you will be associating with properties, etc.
 
-| Row 2       | Row 1     | Required | Value Type                                            |                                          
+| Row 2       | Row 1     | Required | Value Type                                            |
 |-------------|-----------|----------|-------------------------------------------------------|
-| *experiment | relation  | yes      | string from `*name`column of`experiment`sheet         | 
+| *experiment | relation  | yes      | string from `*name`column of`experiment`sheet         |
 | *name       | attribute | yes      | unique string                                         |
-| *type       | attribute | yes      | any [data type](https://criptapp.org/keys/data-type/) | 
-| sample_prep | attribute | no       | string                                                | 
+| *type       | attribute | yes      | any [data type](https://criptapp.org/keys/data-type/) |
+| sample_prep | attribute | no       | string                                                |
 | citation    | relation  | no       | string from`*name`column of`citation` sheet           |
 | notes       | attribute | no       | string                                                |
 
@@ -1442,7 +1459,6 @@ Define the data sets you will be associating with properties, etc.
 
 > This sheet can be used to reference any sources used in the experiments that you want to cite in CRIPT
 
-
 <blockquote>
   <code>Row 1:</code> can only be an <em><q>attribute</q></em> <br>
   <code>Row 2:</code> MUST have a title column, but ALL other columns are optional <br>
@@ -1451,7 +1467,7 @@ Define the data sets you will be associating with properties, etc.
 
 <br>
 
-Define references to be associated with properties, etc. as citations. 
+Define references to be associated with properties, etc. as citations.
 
 | Row 2     | Row 1     | Required | Value Type    |
 |-----------|-----------|----------|---------------|
@@ -1680,7 +1696,7 @@ Define references to be associated with properties, etc. as citations.
   This is likely caused by the wrong value type being set for the given cell in the Excel document.
 
 - **_What units can I use?_**  
-  Here is a list of the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt">supported units</a>
+  Here is a list of the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported units</a>
   from the Pint Python package.
 
 <div style="margin-bottom: 5rem;"></div>
