@@ -159,7 +159,7 @@ sheet are treated differently than Rows 4 - ∞.
 
   - Each label for each sheet column from a controlled list of vocabulary options from CRIPT
     - Each list of controlled vocabulary options will be listed as a link in the
-      <a href="#individual-sheets-reference">documentation of each sheet below</a>
+      <a href="/individual sheets/">Individual Sheets page</a>
 
 <br>
 
@@ -219,7 +219,7 @@ alt="Screenshot of an Excel column that shows the required column that begins wi
 <br>
 
 Below is a list of
-<a href="#individual-sheets-reference">valid values for each sheet's row 2</a>
+<a href="/individual sheets/">valid values for each sheet's row 2</a>
 
 ---
 

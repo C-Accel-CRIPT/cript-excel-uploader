@@ -74,7 +74,7 @@ Define all materials that will be referenced throughout the document.
 <table>
   <tr>
     <td class="row-1">
-      <a class="row-1" href="##row-1-options-list" style="color: blue">
+      <a class="row-1" href="/#row-1-options-list" style="color: blue">
         <em><u>supported abstract categories</u></em>
       </a>
     </td>
