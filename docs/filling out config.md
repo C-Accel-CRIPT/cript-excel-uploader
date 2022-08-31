@@ -30,8 +30,8 @@ The token is needed because we need to authenticate the user before saving any o
 
 <br>
 
-<img src="/docs_assets/filling_out_config/cript_login_screen.png">
-<img src="/docs_assets/filling_out_config/api_token_page.png">
+<img src="../docs_assets/filling_out_config/cript_login_screen.png">
+<img src="../docs_assets/filling_out_config/api_token_page.png">
 
 <small>
    <a href="https://criptapp.org/settings/">Account Settings</a> under the profile icon dropdown
@@ -68,7 +68,7 @@ A Project can be thought of as a bunch of folders each containing experiments th
 
 <br>
 
-<img src="/docs_assets/filling_out_config/project_name_screenshot.png">
+<img src="../docs_assets/filling_out_config/project_name_screenshot.png">
 <small>
    <a href="https://criptapp.org/project/">projects tab</a> within CRIPT
 </small>
@@ -98,7 +98,7 @@ The entire <span style="color: #21a366">Excel</span> file will become a collecti
 
 <br>
 
-<img src="/docs_assets/filling_out_config/collections_name_screenshot.png">
+<img src="../docs_assets/filling_out_config/collections_name_screenshot.png">
 <small>
    <a href="https://criptapp.org/collection/">Collections tab</a> within CRIPT
 </small>

@@ -3,7 +3,7 @@
 
 ## <b> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
 
-<img src="/docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
+<img src="../docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
 alt="Screenshot of Material sheet rows and columns">
 
 The Row 1 - 3 within each <span style="color: var(--excel-light-color)">Excel</span>
@@ -74,7 +74,7 @@ In computer science terms, we could think of it as a foreign key type of relatio
 sheet to the <code>\*name</code> row of another sheet, the name field works well as an identifier because we are
 requiring names to be unique within a given sheet.
 
-<img src="/docs_assets/relation-column-animation-explanation.gif"
+<img src="../docs_assets/relation-column-animation-explanation.gif"
 alt="video explanation of relation column in an animated format"
 width="900">
 
@@ -88,7 +88,7 @@ width="900">
 
 ### <span class="row-2">row 2</span> <u>Column Field Names</u>
 
-<img src="/docs_assets/screenshot_of_star_required_columns.png"
+<img src="../docs_assets/screenshot_of_star_required_columns.png"
 alt="Screenshot of an Excel column that shows the required column that begins with a *">
 
 <blockquote>
@@ -118,7 +118,7 @@ Individual Excel Sheets page has a
 
 ### <u>Nesting Headers for each column in row 2</u>
 
-<img src="/docs_assets/Screenshot_nested_row_column_header.png" style="margin-left: 3rem"
+<img src="../docs_assets/Screenshot_nested_row_column_header.png" style="margin-left: 3rem"
 alt="Screenshot from Excel sheet column that shows multiple field headers">
 
 - We can have more than one field present on a column header if needed
