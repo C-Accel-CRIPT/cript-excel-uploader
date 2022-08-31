@@ -1,7 +1,7 @@
 # Customizing the <span style="color: var(--excel-light-color)">Excel</span> Sheets
 
 
-<img src="/docs_assets/screenshot_of_excel_sheets.png"
+<img src="../docs_assets/screenshot_of_excel_sheets.png"
 alt="screenshot of the Excel sheets to show required and optional sheets">
 
 - Required sheets are colored
