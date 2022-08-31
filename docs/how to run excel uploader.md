@@ -1,39 +1,37 @@
 # Running CRIPT <span style="color: var(--excel-light-color)">Excel</span> Uploader
 
-## Using the executable <code>cript_uploader</code>
+## Using the executable
 
-- **Windows**
+**Windows**
 
-  - Download <code>cript_uploader_vX-X-X.exe</code> from
-    the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-  - Open a terminal and navigate the relevant folder
-    ```bash
-    cd <path_to_folder>
-    ```
-  - Run it
-    ` bash .\cript_uploader_vX-X-X.exe`
+1. Download <code>cript_uploader_vX-X-X.exe</code> from
+   the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+2. Be sure config.yaml, Excel file, and cript_uploader_vX-X-X.exe file are all in the same directory
+3. Double-click on <code>cript_uploader_vX-X-X.exe</code> to run the program
 
 <br>
 
-- **Mac or Linux**
-  - Download <code>cript_uploader_vX-X-X</code> from
-    the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
-  - Open a terminal and navigate the relevant folder
-    ```bash
-    cd <path_to_folder>
-    ```
-  - Change the file permissions
-    ```bash
-    chmod 755 ./cript_uploader
-    ```
-  - Run it
-    ```bash
-    ./cript_uploader_vX-X-X
-    ```
+[//]: # (TODO change this away from terminal and more towards clicking on GUI)
+**Mac or Linux**
+
+1. Download <code>cript_uploader_vX-X-X</code> from
+   the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+2. Open a terminal and navigate the relevant folder
+      ```bash
+   cd <path_to_folder>
+   ```
+3. Change the file permissions
+     ```bash
+     chmod 755 ./cript_uploader
+     ```
+4. Run it
+     ```bash
+     ./cript_uploader_vX-X-X
+     ```
 
 <br>
 
-## <u>Alternatively, you can run the Python Script:</u>
+## Alternatively, you can run the Python Script Directly
 
 _Basic Setup:_
 

@@ -1,6 +1,6 @@
 # Customizing the <span style="color: var(--excel-light-color)">Excel</span> Sheets
 
-<!-- TODO be sure to always keep pictures up to date -->
+
 <img src="/docs_assets/screenshot_of_excel_sheets.png"
 alt="screenshot of the Excel sheets to show required and optional sheets">
 

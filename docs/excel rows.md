@@ -82,9 +82,11 @@ width="900">
 
 <br>
 
+## <span class="row-2">row 2</span>
+
 [//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"
 
-## <span class="row-2">row 2</span> <u>Column Field Names</u>
+### <span class="row-2">row 2</span> <u>Column Field Names</u>
 
 <img src="/docs_assets/screenshot_of_star_required_columns.png"
 alt="Screenshot of an Excel column that shows the required column that begins with a *">
@@ -114,7 +116,7 @@ Individual Excel Sheets page has a
 
 <br>
 
-## <u>Nesting Headers for each column in row 2</u>
+### <u>Nesting Headers for each column in row 2</u>
 
 <img src="/docs_assets/Screenshot_nested_row_column_header.png" style="margin-left: 3rem"
 alt="Screenshot from Excel sheet column that shows multiple field headers">
@@ -135,7 +137,7 @@ alt="Screenshot from Excel sheet column that shows multiple field headers">
 
 <br>
 
-## `Id` <span style="color: grey; font-size: 0.8rem;"> - (optional)</span>
+### `Id` <span style="color: grey; font-size: 0.8rem;"> - (optional)</span>
 
 `Id` is used to allow for multiple measurements throughout time. With `Id` it is possible to take several measurements
 through an experiment, and later use nesting to record more details.
@@ -220,9 +222,9 @@ density:temperature</span>
 
 ---
 
-# <span class="row-4">Row 4</span> - ∞
+## <span class="row-4">Row 4</span> - ∞
 
-## <u>Inputting list instead of a single value</u>
+### <u>Inputting list instead of a single value</u>
 
 List values must use a semicolon **`;`** as a separator
 

@@ -36,8 +36,7 @@ Please use the latest release assets
     <a href="https://www.criptapp.org/project" target="_blank">CRIPT platform</a>
     <ul>
       <li>
-      <!-- todo define project -->
-      A Project can be thought of as a bunch of folders each containing experiments that contribute to a single project
+        A Project can be thought of as a bunch of folders each containing experiments that contribute to a single project
       </li>
       <li>
         Essentially some Collections put in one bucket
@@ -57,7 +56,7 @@ Please use the latest release assets
         A Collection can be thought of as a binder filled with experiments
       </li>
       <li>
-      The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
+        The entire <span style="color: #21a366">Excel</span> file will become a collection within the CRIPT Platform
       </li>
     </ul>
   </li>
@@ -80,7 +79,7 @@ Please use the latest release assets
     <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
     <ul>
       <li>
-        Fill out template with your information
+        <a href="filling out config.md">Fill out template with your information</a>
       </li>
     </ul>
   </li>
@@ -105,6 +104,13 @@ Please use the latest release assets
       </ul>
     </li>
   <li>
+    Input your data into the excel sheet
+    <blockquote>
+      Please refer to <a href="filling out config.md">filling out row 1 - 3</a> in the documentation, 
+      and also the specifications of <a href="individual sheets.md">individual sheets</a>
+    </blockquote>
+  </li>
+  <li>
     <a href="how to run excel uploader.md">
       Run CRIPT Excel Uploader
     </a>
@@ -125,5 +131,8 @@ Please use the latest release assets
 - **_What units can I use?_**  
   Here is a list of the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported units</a>
   from the Pint Python package.
+
+- **_What if I have multiple measurements of the same thing?_**  
+  You can use an `ID` field in front of row 2 to separate out the different measurements <a href="excel rows.md/#id-optional"></a>
 
 <div style="margin-bottom: 5rem;"></div>
