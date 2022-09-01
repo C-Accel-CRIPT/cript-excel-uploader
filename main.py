@@ -5,7 +5,6 @@ import warnings
 from getpass import getpass
 
 import cript
-import yaml
 import requests
 
 import ascii_art
@@ -13,7 +12,7 @@ import parse
 import create
 from create import error_list
 import upload
-
+from get_config import get_config_from_excel_sheet
 
 ###
 # Setup
@@ -29,17 +28,16 @@ print(ascii_art.title.template)
 time.sleep(1)
 
 
-# Load config file
-try:
-    with open("config.yaml", "r") as f:
-        config = yaml.safe_load(f)
-except FileNotFoundError:
-    config = {}
+# Load config from Excel sheet
+# try:
+config = get_config_from_excel_sheet()
+# except FileNotFoundError:
+#     config = {}
 
 
 # Establish API connection
 connected = False
-while connected == False:
+while not connected:
     try:
         api = cript.API(
             config.get("host"), config.get("token"), tls=config.get("tls", True)
@@ -54,7 +52,7 @@ while connected == False:
 # Get Excel file path
 while config.get("path") is None or not os.path.exists(config.get("path")):
     print("~ Could not find the file. Try again.\n")
-    config["path"] = input("Path to Excel file: ").strip('"')
+    config["path"] = input("Absolute Path to Excel file: ").strip('"')
 
 
 # Get Project
