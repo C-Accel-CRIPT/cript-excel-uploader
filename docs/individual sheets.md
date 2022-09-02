@@ -60,12 +60,12 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
 
 Define all materials that will be referenced throughout the document.
 
-| Row 2                                                                         | Row 1      | Required | Row 4 - ∞ value type                                                               |
-|-------------------------------------------------------------------------------|------------|----------|------------------------------------------------------------------------------------|
-| \*name                                                                        | attribute  | yes      | unique string                                                                      |
-| any [identifier key](https://criptapp.org/keys/material-identifier-key/)      | identifier | no       | refer to [identifier key](https://criptapp.org/keys/material-identifier-key/)      |
-| any [material property key](https://criptapp.org/keys/material-property-key/) | property   | no       | refer to [material property key](https://criptapp.org/keys/material-property-key/) |
-| notes                                                                         | attribute  | no       | string                                                                             |
+| Row 2                                                                                                 | Row 1      | Required | Row 4 - ∞ expected value                                                                              |
+|-------------------------------------------------------------------------------------------------------|------------|----------|-------------------------------------------------------------------------------------------------------|
+| \*name                                                                                                | attribute  | yes      | unique name                                                                                           |
+| pick from `Name` column of [material identifiers](https://criptapp.org/keys/material-identifier-key/) | identifier | no       | pick a name from the [identifier chart](https://criptapp.org/keys/material-identifier-key/)           |
+| pick from `Name` column of [material properties](https://criptapp.org/keys/material-property-key/)    | property   | no       | pick from name column of  [material property chart](https://criptapp.org/keys/material-property-key/) |
+| notes                                                                                                 | attribute  | no       | regular text                                                                                          |
 
 <br>
 
@@ -127,7 +127,7 @@ Row 1 is always <code>relation</code> and Row 2 is always
 
 <br>
 
-| Row 2      | Row 1    | Required | Row 4 - ∞ value type                          |
+| Row 2      | Row 1    | Required | Row 4 - ∞ expected value                      |
 |------------|----------|----------|-----------------------------------------------|
 | \*mixture  | relation | yes      | value from `*name` column of `material` sheet |
 | \*material | relation | yes      | value from `*name` column of `material` sheet |
@@ -179,11 +179,11 @@ Row 1 is always <code>relation</code> and Row 2 is always
 
 This sheet defines the experiment
 
-| Row 2   | Row 1     | Required | Row 4 - ∞ value type                     |
-|---------|-----------|----------|------------------------------------------|
-| \*name  | attribute | yes      | unique value                             |
-| funding | attribute | no       | list of values (e.g, `str1; str2; str3`) |
-| notes   | attribute | no       | string                                   |
+| Row 2   | Row 1     | Required | Row 4 - ∞ expected value                                |
+|---------|-----------|----------|---------------------------------------------------------|
+| \*name  | attribute | yes      | unique name                                             |
+| funding | attribute | no       | list of your funders (e.g, `funder1; funder2; funder3`) |
+| notes   | attribute | no       | regular text                                            |
 
 <br>
 
@@ -251,17 +251,17 @@ This sheet defines the experiment
 
 Define the processes of each experiment.
 
-| Row 2                                                                       | Row 1     | Required | Row 4 - ∞ value type                                                                    |
-|-----------------------------------------------------------------------------|-----------|----------|-----------------------------------------------------------------------------------------|
-| \*experiment                                                                | relation  | yes      | string from `*name`column of`experiment` sheet                                          |
-| \*name                                                                      | attribute | yes      | unique string                                                                           |
-| \*type                                                                      | attribute | yes      | any [process type](https://criptapp.org/keys/process-type/)                             |
-| keywords                                                                    | attribute | no       | list of [keywords](https://criptapp.org/keys/process-keyword/) (e.g,`str1; str2; str3`) |
-| description                                                                 | attribute | no       | string                                                                                  |
-| equipment                                                                   | attribute | no       | list of [equipment](https://criptapp.org/keys/equipment/) (e.g, `str1; str2; str3`)     |
-| any [process property key](https://criptapp.org/keys/process-property-key/) | property  | no       | refer to [process property key](https://criptapp.org/keys/process-property-key/)        |
-| any [condition key](https://criptapp.org/keys/condition-key/)               | condition | no       | refer to [condition key](https://criptapp.org/keys/condition-key/)                      |
-| notes                                                                       | attribute | no       | string                                                                                  |
+| Row 2                                                                                          | Row 1     | Required | Row 4 - ∞ expected value                                                                                                                    |
+|------------------------------------------------------------------------------------------------|-----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| \*experiment                                                                                   | relation  | yes      | value from `*name`column of`experiment` sheet                                                                                               |
+| \*name                                                                                         | attribute | yes      | unique name                                                                                                                                 |
+| \*type                                                                                         | attribute | yes      | pick from `Name` column of [Process Type](https://criptapp.org/keys/process-type/)                                                          |
+| keywords                                                                                       | attribute | no       | list from `Name` column of [Process keywords](https://criptapp.org/keys/process-keyword/) (e.g, `anionic; annealing_sol; annealing_thermo`) |
+| description                                                                                    | attribute | no       | regular text                                                                                                                                |
+| equipment                                                                                      | attribute | no       | list of [equipments](https://criptapp.org/keys/equipment/) (e.g, `equipment1; equipment2; equipment3`)                                      |
+| pick from `Name` column of [process property](https://criptapp.org/keys/process-property-key/) | property  | no       | record your values                                                                                                                          |
+| pick from `Name` column of [conditions](https://criptapp.org/keys/condition-key/)              | condition | no       | record your values                                                                                                                          |
+| notes                                                                                          | attribute | no       | regular text                                                                                                                                |
 
 <br>
 
@@ -281,7 +281,7 @@ Define the processes of each experiment.
     </td>
     <td class="row-1">
       <u class="row-1">
-        <a href="##row-1-options-list">property</a>
+        property
       </u> 
     </td>
     <td class="row-1">
@@ -352,13 +352,13 @@ Define the processes of each experiment.
       value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      pick a unique process name
+      pick your own unique process name
     </td>
     <td class="row-4 row-4-required-optional-label">
-      NSF; MIT; NASA; Dow; Pepsi
+      pick from Name column of <a href="https://criptapp.org/keys/process-type/">Process Type</a>
     </td>
     <td class="row-4 row-4-required-optional-label">
-      my keywords to find my process
+      anionic; annealing_sol; annealing_thermo
     </td>
     <td class="row-4 row-4-required-optional-label">
       description of my process
@@ -466,7 +466,7 @@ Example:
       pick a unique process name
     </td>
     <td class="row-4 row-4-required-optional-label">
-      NSF; MIT; NASA; Dow; Pepsi
+      anionic; annealing_sol; annealing_thermo
     </td>
     <td class="row-4 row-4-required-optional-label">
       my keywords to find my process
@@ -494,13 +494,13 @@ Example:
 
 Define the equipment used in a process.
 
-| Row 2                                                         | Row 1     | Required | Row 4 - ∞ value type                                               |
-|---------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------|
-| \*process                                                     | relation  | yes      | value from `*name` column of `process` sheet                       |
-| \*equipment key                                               | attribute | yes      | any [equipment key](https://criptapp.org/keys/equipment-key/)      |
-| description                                                   | attribute | no       | string                                                             |
-| any [condition key](https://criptapp.org/keys/condition-key/) | condition | no       | refer to [condition key](https://criptapp.org/keys/condition-key/) |
-| \*citation                                                    | relation  | yes      | value from `*name` column of `citation` sheet                      |
+| Row 2                                                                             | Row 1     | Required | Row 4 - ∞ expected value                                                          |
+|-----------------------------------------------------------------------------------|-----------|----------|-----------------------------------------------------------------------------------|
+| \*process                                                                         | relation  | yes      | value from `*name` column of `process` sheet                                      |
+| \*equipment                                                                       | attribute | yes      | pick from `Name` column of [equipments](https://criptapp.org/keys/equipment-key/) |
+| description                                                                       | attribute | no       | regular text                                                                      |
+| pick from `Name` column of [conditions](https://criptapp.org/keys/condition-key/) | condition | no       | record your values                                                                |
+| \*citation                                                                        | relation  | yes      | value from `*name` column of `citation` sheet                                     |
 
 <br>
 
@@ -594,10 +594,10 @@ Define the immediate prerequisites for each process.
 
 > e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).
 
-| Row 2          | Row 1    | Required | Row 4 - ∞ value type                          |
-|----------------|----------|----------|-----------------------------------------------|
-| \*process      | relation | yes      | string from `*name` column of `process` sheet |
-| \*prerequisite | relation | yes      | string from `*name` column of `process` sheet |
+| Row 2          | Row 1    | Required | Row 4 - ∞ expected value                     |
+|----------------|----------|----------|----------------------------------------------|
+| \*process      | relation | yes      | value from `*name` column of `process` sheet |
+| \*prerequisite | relation | yes      | value from `*name` column of `process` sheet |
 
 <br>
 
@@ -653,12 +653,12 @@ Define the immediate prerequisites for each process.
 
 Define the ingredients for each process and their respective quantities.
 
-| Row 2                                                       | Row 1     | Required | Row 4 - ∞ value type                                                    |
-|-------------------------------------------------------------|-----------|----------|-------------------------------------------------------------------------|
-| \*process                                                   | relation  | yes      | value from `*name` column of `process` sheet                            |
-| \*material                                                  | relation  | yes      | value from `*name` column of `material` sheet                           |
-| \*keyword                                                   | attribute | yes      | any [ingredient keyword](https://criptapp.org/keys/ingredient-keyword/) |
-| any [quantity key](https://criptapp.org/keys/quantity-key/) | quantity  | yes      | refer to [quantity key](https://criptapp.org/keys/quantity-key/)        |
+| Row 2                                                                          | Row 1     | Required | Row 4 - ∞ expected value                                                                |
+|--------------------------------------------------------------------------------|-----------|----------|-----------------------------------------------------------------------------------------|
+| \*process                                                                      | relation  | yes      | value from `*name` column of `process` sheet                                            |
+| \*material                                                                     | relation  | yes      | value from `*name` column of `material` sheet                                           |
+| \*keyword                                                                      | attribute | yes      | pick from `Name` column of [ingredients](https://criptapp.org/keys/ingredient-keyword/) |
+| pick from `Name` column of [quantity](https://criptapp.org/keys/quantity-key/) | quantity  | yes      | record your quantity here                                                               |
 
 <br>
 
@@ -769,10 +769,10 @@ Define the ingredients for each process and their respective quantities.
 
 Define the material products of each process.
 
-| Row 2      | Row 1    | Required | Row 4 - ∞ value type                        |
-|------------|----------|----------|---------------------------------------------|
-| \*process  | relation | yes      | string from `*name`column of`process`sheet  |
-| \*material | relation | yes      | string from`*name`column of`material` sheet |
+| Row 2      | Row 1    | Required | Row 4 - ∞ expected value                   |
+|------------|----------|----------|--------------------------------------------|
+| \*process  | relation | yes      | value from `*name`column of`process`sheet  |
+| \*material | relation | yes      | value from`*name`column of`material` sheet |
 
 <br>
 
@@ -828,14 +828,14 @@ Define the material products of each process.
 
 Define the data sets you will be associating with properties, etc.
 
-| Row 2        | Row 1     | Required | Row 4 - ∞ value type                                  |
-|--------------|-----------|----------|-------------------------------------------------------|
-| \*experiment | relation  | yes      | string from `*name`column of`experiment`sheet         |
-| \*name       | attribute | yes      | unique string                                         |
-| \*type       | attribute | yes      | any [data type](https://criptapp.org/keys/data-type/) |
-| sample_prep  | attribute | no       | string                                                |
-| citation     | relation  | no       | string from`*name`column of`citation` sheet           |
-| notes        | attribute | no       | string                                                |
+| Row 2        | Row 1     | Required | Row 4 - ∞ expected value                                                     |
+|--------------|-----------|----------|------------------------------------------------------------------------------|
+| \*experiment | relation  | yes      | value from `*name`column of`experiment`sheet                                 |
+| \*name       | attribute | yes      | unique name                                                                  |
+| \*type       | attribute | yes      | pick from `Name` column of [data type](https://criptapp.org/keys/data-type/) |
+| sample_prep  | attribute | no       | regular text                                                                 |
+| citation     | relation  | no       | value from`*name`column of`citation` sheet                                   |
+| notes        | attribute | no       | regular text                                                                 |
 
 <br>
 
@@ -932,22 +932,22 @@ Define the data sets you will be associating with properties, etc.
 
 Define references to be associated with properties, etc. as citations.
 
-| Row 2     | Row 1     | Required | Row 4 - ∞ value type |
-|-----------|-----------|----------|----------------------|
-| \*title   | attribute | yes      | unique string        |
-| doi       | attribute | no       | string               |
-| authors   | attribute | no       | string               |
-| journal   | attribute | no       | string               |
-| publisher | attribute | no       | string               |
-| year      | attribute | no       | attribute            |
-| volume    | attribute | no       | string               |
-| issue     | attribute | no       | string               |
-| pages     | attribute | no       | string               |
-| issn      | attribute | no       | string               |
-| arxiv_id  | attribute | no       | string               |
-| pmid      | attribute | no       | string               |
-| website   | attribute | no       | string               |
-| notes     | attribute | no       | string               |
+| Row 2     | Row 1     | Required | Row 4 - ∞ expected value |
+|-----------|-----------|----------|--------------------------|
+| \*title   | attribute | yes      | unique title             |
+| doi       | attribute | no       | text                     |
+| authors   | attribute | no       | text                     |
+| journal   | attribute | no       | text                     |
+| publisher | attribute | no       | text                     |
+| year      | attribute | no       | number                   |
+| volume    | attribute | no       | text                     |
+| issue     | attribute | no       | text                     |
+| pages     | attribute | no       | text                     |
+| issn      | attribute | no       | text                     |
+| arxiv_id  | attribute | no       | text                     |
+| pmid      | attribute | no       | text                     |
+| website   | attribute | no       | text                     |
+| notes     | attribute | no       | text                     |
 
 <br>
 
