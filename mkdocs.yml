@@ -4,8 +4,8 @@ repo_url: https://github.com/C-Accel-CRIPT/cript-excel-uploaders
 repo_name: C-Accel-CRIPT/cript-excel-uploader
 
 nav:
-  - Home: index.md
-  # TODO this can later become either filling out config file or config sheet
+  - Quick Start: index.md
+  # TODO this can later become either filling out config file, config sheet, or whatever else
   - Filling Out Config: "filling out config.md"
   - How to Run Excel Uploader: "how to run excel uploader.md"
   - Excel Sheets Rows: "excel rows.md"

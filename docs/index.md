@@ -2,7 +2,6 @@
 
 ## Usage
 
-<!-- TODO be sure to update this picture for every release -->
 <img src="./docs_assets/screenshot_of_where_to_find_excel_uploader.png"
 alt="Screenshot latest CRIPT release assets">
 <small>
@@ -105,10 +104,15 @@ Please use the latest release assets
     </li>
   <li>
     Input your data into the excel sheet
-    <blockquote>
-      Please refer to <a href="filling out config.md">filling out row 1 - 3</a> in the documentation, 
-      and also the specifications of <a href="individual sheets.md">individual sheets</a>
-    </blockquote>
+    <ul>
+      <li>
+        Refer to <a href="filling out config.md">filling out row 1 - 3</a> to understand the Excel file
+        structure
+      </li>
+      <li>
+        Refer to <a href="individual sheets.md">individual sheets</a> to see what is allowed in each sheet
+      </li>
+    </ul>
   </li>
   <li>
     <a href="how to run excel uploader.md">
@@ -129,10 +133,12 @@ Please use the latest release assets
   This is likely caused by the wrong value type being set for the given cell in the Excel document.
 
 - **_What units can I use?_**  
-  Here is a list of the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported units</a>
+  Here is a list of the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">
+  supported units</a>
   from the Pint Python package.
 
 - **_What if I have multiple measurements of the same thing?_**  
-  You can use an `ID` field in front of row 2 to separate out the different measurements <a href="excel rows.md/#id-optional"></a>
+  You can use an `ID` field in front of row 2 to separate out the different measurements more on that in
+  the <a href="excel rows/#id-optional">ID section of Row 2</a>
 
 <div style="margin-bottom: 5rem;"></div>
