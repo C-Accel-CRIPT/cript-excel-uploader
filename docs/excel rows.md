@@ -23,13 +23,64 @@ sheet are treated differently than Rows 4 - ∞.
   - Column with key, value, and unit combinations for
   - The condition under which the property was discerned
 - <span class="row-1">identifier</span>
-  - Column with key-value pairs for material identifiers
+  - Column that can identify a row
+    - Example in everyday life can be `social security` that can identify a single citizen
+    - Example in chemistry can be smiles, bigSmiles, cas, etc.
 - <span class="row-1">property</span>
   - Column with key, value, and unit combinations for properties
 - <span class="row-1">relation</span>
-  - Column that reference other sheets in the template
+  - Column that shows a relationship between a row from one sheet to the row of another sheet
+  - relation is further explained in <a href="#relation-explanation">relation section</a>
 - <span class="row-1">quantity</span>
   - Column with key, value and unit combinations for quantities
+  - Column that describes the amount of something and combined with a unit
+
+<!-- Quantity Example for Row 1 -->
+<ul>
+  <li>
+    Example
+    <ul>
+      <li>
+        <code>process ingredients</code> sheet
+        <table>
+          <tr>
+            <td class="row-1">
+              attribute
+            </td>
+            <td class="row-1">
+              quantity
+            </td>
+          </tr>
+          <tr>
+            <td class="row-2">
+              *name
+            </td>
+            <td class="row-2">
+              volume
+            </td>
+          </tr>
+          <tr>
+            <th class="row-3">
+              <div class="empty-row-3-placeholders"></div>
+            </th>
+            <th class="row-3">
+              ml
+            </th>
+          </tr>
+          <tr>
+            <td class="row-4">
+              water
+            </td>
+            <td class="row-4">
+              5
+            </td>
+          </tr>
+        </table>
+      </li>
+    </ul>
+  </li>
+</ul>
+
 
 <br>
 

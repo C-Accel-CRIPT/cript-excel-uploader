@@ -38,6 +38,10 @@ body {
   text-align: center;
 }
 
+.empty-row-3-placeholders {
+  margin-bottom: 1rem;
+}
+
 .row-4 {
   background-color: #e6e6e7;
   color: black;
