@@ -23,9 +23,8 @@ sheet are treated differently than Rows 4 - ∞.
   - Column with key, value, and unit combinations for
   - The condition under which the property was discerned
 - <span class="row-1">identifier</span>
-  - Column that can identify a row
-    - Example in everyday life can be `social security` that can identify a single citizen
-    - Example in chemistry can be smiles, bigSmiles, cas, etc.
+  - Column with key-value pairs for material identifiers
+  - An example of an identifier can be smiles, bigSmiles, cas, etc.
 - <span class="row-1">property</span>
   - Column with key, value, and unit combinations for properties
 - <span class="row-1">relation</span>
