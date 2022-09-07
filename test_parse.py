@@ -55,36 +55,68 @@ sheet_parameters = {
     },
 }
 
+path = "example_template_v0-4-1.xlsx"
+
 """
 TODO
 Check that sheet initializes correctly, check each attribute for correctness.
 Need path(str), sheet_name(str), required_columns(tuple), unique_columns(tuple) for args.
-All args but path can be found specified in main for each type of object. Should check initialization
-for each type to be extensive. Also check for cases of empty sheets, and skipping rows.
+All args but path can be found specified in main for each type of object.
+Also check for cases of empty sheets, and skipping rows.
 """
 
 
 def test_sheet_init():
-    pass
+    exp_params = sheet_parameters["experiment"]
+    sheet = parse.Sheet(
+        path,
+        exp_params["name"],
+        exp_params["required_columns"],
+        exp_params["unique_columns"],
+    )
+    correctMI = pd.MultiIndex.from_tuples(
+        [("attribute", "*name", " "), ("attribute", "notes", "Unnamed: 1_level_2")]
+    )
+    assert sheet.path == path
+    assert sheet.sheet_name == exp_params["name"]
+    assert sheet.required_columns == exp_params["required_columns"]
+    assert sheet.unique_columns == exp_params["unique_columns"]
+    assert (
+        sheet.df[("attribute", "*name")].values[0]
+        == "Anionic Polymerization of Styrene"
+    )
+    assert sheet.columns.equals(correctMI) == True
 
 
 def test_sheet_init_skips():
-    pass
+    mat_params = sheet_parameters["material"]
+    sheet = parse.Sheet(
+        path,
+        mat_params["name"],
+        mat_params["required_columns"],
+        mat_params["unique_columns"],
+    )
+    assert len(sheet.df.index) == 9
 
 
 def test_sheet_init_empty():
-    pass
-
-
-"""
-Input various keys and values to check each if statement
-"""
+    cit_params = sheet_parameters["citation"]
+    sheet = parse.Sheet(
+        path,
+        cit_params["name"],
+        cit_params["required_columns"],
+        cit_params["unique_columns"],
+    )
+    assert sheet.exists == False
 
 
 def test_skip_columns():
+    """
+    Input various keys and values to check each if statement
+    """
     mat_params = sheet_parameters["material"]
     sheet = parse.Sheet(
-        "example_template_v0-4-1.xlsx",
+        path,
         mat_params["name"],
         mat_params["required_columns"],
         mat_params["unique_columns"],
@@ -106,7 +138,7 @@ def test_get_cell_info():
     # Setup
     mat_params = sheet_parameters["material"]
     sheet = parse.Sheet(
-        "example_template_v0-4-1.xlsx",
+        path,
         mat_params["name"],
         mat_params["required_columns"],
         mat_params["unique_columns"],
@@ -164,7 +196,7 @@ def test_get_parent():
     # Setup
     mat_params = sheet_parameters["material"]
     sheet = parse.Sheet(
-        "example_template_v0-4-1.xlsx",
+        path,
         mat_params["name"],
         mat_params["required_columns"],
         mat_params["unique_columns"],
@@ -223,7 +255,7 @@ def test_parse_cell():
     # Setup
     mat_params = sheet_parameters["material"]
     sheet = parse.Sheet(
-        "example_template_v0-4-1.xlsx",
+        path,
         mat_params["name"],
         mat_params["required_columns"],
         mat_params["unique_columns"],
@@ -248,7 +280,7 @@ def test_get_unique_row_key():
     """
     mat_params = sheet_parameters["material"]
     sheet = parse.Sheet(
-        "example_template_v0-4-1.xlsx",
+        path,
         mat_params["name"],
         mat_params["required_columns"],
         mat_params["unique_columns"],
@@ -261,8 +293,8 @@ def test_get_unique_row_key():
         4: ("polystyrene",),
         5: ("mixture",),
         6: ("component1",),
-        7: ("component2",),
-        8: ("intermediate_material_1",),
+        8: ("component2",),  # skips index num due to skipping empty row in template
+        9: ("intermediate_material_1",),
     }
     for ix, row in sheet.df.iterrows():
         keys = sheet._get_unique_row_key(row)
@@ -279,7 +311,7 @@ def test_clean_key():
     raw3 = "density    "
     exp_params = sheet_parameters["experiment"]
     sheet = parse.Sheet(
-        "example_template_v0-4-1.xlsx",
+        path,
         exp_params["name"],
         exp_params["required_columns"],
         exp_params["unique_columns"],
@@ -287,3 +319,26 @@ def test_clean_key():
     assert sheet._clean_key(raw1) == "temperature"
     assert sheet._clean_key(raw2) == "name"
     assert sheet._clean_key(raw3) == "density"
+
+
+def test_parse():
+    mat_params = sheet_parameters["experiment"]
+    sheet = parse.Sheet(
+        path,
+        mat_params["name"],
+        mat_params["required_columns"],
+        mat_params["unique_columns"],
+    )
+    parsed = sheet.parse()
+    assert parsed == {
+        ("Anionic Polymerization of Styrene",): {
+            "name": {
+                "sheet": "experiment",
+                "index": 0,
+                "key": "name",
+                "value": "Anionic Polymerization of Styrene",
+                "unit": " ",
+                "type": "attribute",
+            }
+        }
+    }
