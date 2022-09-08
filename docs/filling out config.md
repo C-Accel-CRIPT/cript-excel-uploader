@@ -2,7 +2,7 @@
 
 ## Host
 
-Host indicates to our program where to host the data from the Excel file, whether that is
+Host indicates the CRIPT instance that you want to upload your data to whether that is
 <a href="https://criptapp.org/">CRIPT</a> or a private instance
 
 For most users host will be `criptapp.org`
