@@ -1,9 +1,8 @@
-name: Excel Uploader Documentation Continuous Integration
+name: Docs CI
 on:
   push:
     branches:
-      - master
-      - main
+      - docs
 jobs:
   deploy:
     runs-on: ubuntu-latest
