@@ -56,6 +56,9 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
 
 #### <span class="required-excel-sheet-color"><u>material</u></span> sheet
 
+This sheet is for both materials used at the beginning of the experiment (ingredients),
+and the material that occurs as a result of the experiment (process product)
+
 <br>
 
 Define all materials that will be referenced throughout the document.
@@ -584,11 +587,7 @@ Define the equipment used in a process.
 
 <br>
 
-<h2>
- <span class="optional-excel-sheet-color"><u>prerequisite process</u></span> 
- sheet 
- <span style="color: grey; font-size: 0.8rem;">(optional)</span>
-</h2>
+#### <span class="optional-excel-sheet-color"><u>prerequisite process</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
 
 Define the immediate prerequisites for each process.
 

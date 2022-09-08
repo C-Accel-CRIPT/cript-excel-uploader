@@ -2,7 +2,7 @@
 
 ## Host
 
-Host indicates to our program where to host the data from the Excel file, whether that is 
+Host indicates the CRIPT instance that you want to upload your data to whether that is
 <a href="https://criptapp.org/">CRIPT</a> or a private instance
 
 For most users host will be `criptapp.org`
@@ -30,27 +30,26 @@ The token is needed because we need to authenticate the user before saving any o
 
 <br>
 
-<img src="../docs_assets/filling_out_config/cript_login_screen.png">
-<img src="../docs_assets/filling_out_config/api_token_page.png">
+<img class="screenshot-border" src="../docs_assets/filling_out_config/cript_login_screen_for_token.png" alt="Screenshot of CRIPT login screen">
+<img class="screenshot-border" src="../docs_assets/filling_out_config/api_token_page.png" alt="Screenshot of CRIPT security page where API token is found">
+
 
 <small>
-   <a href="https://criptapp.org/settings/">Account Settings</a> under the profile icon dropdown
+   <a href="https://criptapp.org/security/">Security Settings</a> under the profile icon dropdown
 </small>
 
 <br>
 
 To get your token:
 
-1. please visit your <a href="https://criptapp.org/settings/">Account Settings</a> under the profile icon dropdown on
+1. please visit your <a href="https://criptapp.org/security/">Security Settings</a> under the profile icon dropdown on
    the top right
-2. Then click on "Show API Token" near the bottom to reveal your API token
-3. Please click on the copy button to copy your API Token to clipboard
-4. Now you can paste it into the token section of config.yaml
+2. Click on the <b>copy</b> button next to the API Token to copy it to clipboard
+3. Now you can paste it into the token section of config.yaml
+
+> Note: The "Token" in front of the random characters is part of the token as well
 
 <br>
-
-> The "Token" in front of the random characters is part of the token as well
-
 
 Example:
 
@@ -62,15 +61,17 @@ token: Token 4abc478b25e30766652f76103b978349c4c4b214
 
 ## Project
 
-Project is needed for the software to know which project these experiments are for, and each Collection belongs to a Project
+Project is needed for the software to know which project these experiments are for, and each Collection belongs to a
+Project
 
 A Project can be thought of as a bunch of folders each containing experiments that contribute to a single project
 
 <br>
 
-<img src="../docs_assets/filling_out_config/project_name_screenshot.png">
+<img class="screenshot-border" src="../docs_assets/filling_out_config/project_name_screenshot.png"
+alt="Screenshot of project screen within CRIPT">
 <small>
-   <a href="https://criptapp.org/project/">projects tab</a> within CRIPT
+<a href="https://criptapp.org/project/">projects tab</a> within CRIPT
 </small>
 
 
@@ -98,7 +99,9 @@ The entire <span style="color: #21a366">Excel</span> file will become a collecti
 
 <br>
 
-<img src="../docs_assets/filling_out_config/collections_name_screenshot.png">
+<img class="screenshot-border" src="../docs_assets/filling_out_config/collections_name_screenshot.png"
+alt="Screenshot of project screen within CRIPT">
+
 <small>
    <a href="https://criptapp.org/collection/">Collections tab</a> within CRIPT
 </small>
