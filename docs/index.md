@@ -141,4 +141,7 @@ Please use the latest release assets
   You can use an `ID` field in front of row 2 to separate out the different measurements more on that in
   the <a href="excel rows/#id-optional">ID section of Row 2</a>
 
+- **_How do I debug the errors when running the CRIP Excel Uploader?_**
+  The best order to solve the issues is from the top down, as often many of the errors listed below are caused by the errors that appear at the top of the list.
+
 <div style="margin-bottom: 5rem;"></div>
