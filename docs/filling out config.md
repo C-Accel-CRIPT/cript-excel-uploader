@@ -35,23 +35,21 @@ The token is needed because we need to authenticate the user before saving any o
 
 
 <small>
-   <a href="https://criptapp.org/security/">Account Settings</a> under the profile icon dropdown
+   <a href="https://criptapp.org/security/">Security Settings</a> under the profile icon dropdown
 </small>
 
 <br>
 
 To get your token:
 
-1. please visit your <a href="https://criptapp.org/settings/">Account Settings</a> under the profile icon dropdown on
+1. please visit your <a href="https://criptapp.org/security/">Security Settings</a> under the profile icon dropdown on
    the top right
-2. Then click on "Show API Token" near the bottom to reveal your API token
-3. Please click on the copy button to copy your API Token to clipboard
-4. Now you can paste it into the token section of config.yaml
+2. Click on the <b>copy</b> button next to the API Token to copy it to clipboard
+3. Now you can paste it into the token section of config.yaml
+
+> Note: The "Token" in front of the random characters is part of the token as well
 
 <br>
-
-> The "Token" in front of the random characters is part of the token as well
-
 
 Example:
 
