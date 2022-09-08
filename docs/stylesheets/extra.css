@@ -11,6 +11,10 @@ body {
   --cript-color: #6d3eb5;
 }
 
+.screenshot-border {
+  border: black solid 0.1rem;
+}
+
 /* excel row colors */
 .row-1 {
   background-color: #e3eeda;
