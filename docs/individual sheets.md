@@ -500,7 +500,7 @@ Define the equipment used in a process.
 | Row 2                                                                             | Row 1     | Required | Row 4 - ∞ expected value                                                          |
 |-----------------------------------------------------------------------------------|-----------|----------|-----------------------------------------------------------------------------------|
 | \*process                                                                         | relation  | yes      | value from `*name` column of `process` sheet                                      |
-| \*equipment                                                                       | attribute | yes      | pick from `Name` column of [equipments](https://criptapp.org/keys/equipment-key/) |
+| \*key                                                                             | attribute | yes      | pick from `Name` column of [equipments](https://criptapp.org/keys/equipment-key/) |
 | description                                                                       | attribute | no       | regular text                                                                      |
 | pick from `Name` column of [conditions](https://criptapp.org/keys/condition-key/) | condition | no       | record your values                                                                |
 | \*citation                                                                        | relation  | yes      | value from `*name` column of `citation` sheet                                     |
@@ -531,8 +531,7 @@ Define the equipment used in a process.
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
-        <a href="https://criptapp.org/keys/equipment-key/" target="_blank">*select equipment</a>
-      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+      *key
     </td>    
     <td class="row-2">
       description
@@ -569,7 +568,8 @@ Define the equipment used in a process.
        value from <code>*name</code> column of <span class="required-excel-sheet-color">process</span> sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      equipment used in process
+      <a href="https://criptapp.org/keys/equipment-key/" target="_blank">select equipment</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-4 row-4-required-optional-label">
       description of the equipment
