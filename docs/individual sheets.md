@@ -64,6 +64,10 @@ and the material that occurs as a result of the experiment (process product)
 <br>
 
 Define all materials that will be referenced throughout the document.
+> You can have as many <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material
+> identifiers</a>
+> and <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material properties</a> as you needed
+
 
 > You can have as many <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material
 > identifiers</a>
@@ -757,6 +761,9 @@ Define the immediate prerequisites for each process.
 <br>
 
 Define the ingredients for each process and their respective quantities.
+> you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantities</a> as needed for
+> your different materials
+
 
 > you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantities</a> as needed for
 > your different materials
