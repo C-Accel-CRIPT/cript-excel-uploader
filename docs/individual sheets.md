@@ -23,14 +23,14 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
     <table>
       <tr>
         <td class="row-1">
-            <a href="/excel rows/#row-1-options-list">
+            <a href="/excel rows/#row-1-options-list" target="_blank">
               abstract category
             </a>
         </td>
       </tr>
       <tr>
         <td class="row-2">
-            <a href="/individual sheets/#sheets">
+            <a href="/individual sheets/#sheets" target="_blank">
               field name
             </a>
         </td>
@@ -605,13 +605,13 @@ Example:
 
 Define the equipment used in a process.
 
-| Row 2                                                                                                                  | Row 1     | Required | Row 4 - ∞ expected value                                                                                     |
-|------------------------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------|
-| \*process                                                                                                              | relation  | yes      | value from `*name` column of `process` sheet                                                                 |
-| \*key                                                                                                                  | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> |
-| description                                                                                                            | attribute | no       | regular text                                                                                                 |
-| pick from `Name` column of <a href="https://criptapp.org/keys/condition-key/" target="_blank"conditions>conditions</a> | condition | no       | record your values                                                                                           |
-| \*citation                                                                                                             | relation  | yes      | value from `*name` column of `citation` sheet                                                                |
+| Row 2                                                                                                        | Row 1     | Required | Row 4 - ∞ expected value                                                                                     |
+|--------------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------|
+| \*process                                                                                                    | relation  | yes      | value from `*name` column of `process` sheet                                                                 |
+| \*key                                                                                                        | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> |
+| description                                                                                                  | attribute | no       | regular text                                                                                                 |
+| pick from `Name` column of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
+| \*citation                                                                                                   | relation  | yes      | value from `*name` column of `citation` sheet                                                                |
 
 <br>
 

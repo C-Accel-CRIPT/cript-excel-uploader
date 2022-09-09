@@ -77,10 +77,11 @@ Example of **quantity** in <code>process ingredients</code> sheet
 
 <br>
 
-> `Relation` is a bit tricky to explain, so we dedicated a section that <a href="#relation-explanation">explains row 1
+> `Relation` is a bit tricky to explain, so we dedicated a section that <a href="#relation-explanation" target="_blank">
+> explains row 1
 > abstract category of `relation`</a>
 
-Please refer to <a href="/individual sheets">Individual Excel Sheets</a>for a complete breakdown of each sheet
+Please refer to <a href="/individual sheets" target="_blank">Individual Excel Sheets</a>for a complete breakdown of each sheet
 
 <br>
 
@@ -120,7 +121,7 @@ width="900">
 
 > This can be seen as the label for each column
 
-> The breakdown can be found in <a href="/individual sheets">Individual Excel Sheets</a>
+> The breakdown can be found in <a href="/individual sheets" target="_blank">Individual Excel Sheets</a>
 
 
 [//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"

@@ -5,7 +5,7 @@
 **Windows**
 
 1. Download <code>cript_uploader_vX-X-X.exe</code> from
-   the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+   the <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
 2. Be sure config.yaml, Excel file, and cript_uploader_vX-X-X.exe file are all in the same directory
 3. Double-click on <code>cript_uploader_vX-X-X.exe</code> to run the program
 
@@ -15,7 +15,7 @@
 **Mac or Linux**
 
 1. Download <code>cript_uploader_vX-X-X</code> from
-   the [latest release](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
+   the <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
 2. Open a terminal and navigate the relevant folder
       ```bash
    cd <path_to_folder>
@@ -37,9 +37,9 @@
 
 _Basic Setup:_
 
-1. <a href="https://www.python.org/downloads/" target="_blank">Download and install Python(>=3.10)</a>
+1. <a href="https://www.python.org/downloads/" target="_blank">Download Python(>=3.10)</a>
 
-2. <a href="https://git-scm.com/downloads" target="_blank">Download and install Git</a> []()
+2. <a href="https://git-scm.com/downloads" target="_blank">Download Git</a>
 
 3. Open a terminal
 
