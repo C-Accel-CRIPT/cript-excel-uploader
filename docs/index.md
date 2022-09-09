@@ -145,4 +145,8 @@ Please use the latest release assets
   The best order to solve the issues is from the top down, as often many of the errors listed below are caused by the
   errors that appear at the top of the list.
 
+- **_How do I debug the errors when running the CRIP Excel Uploader?_**
+  The best order to solve the issues is from the top down, as often many of the errors listed below are caused by the
+  errors that appear at the top of the list.
+
 <div style="margin-bottom: 5rem;"></div>
