@@ -37,9 +37,9 @@
 
 _Basic Setup:_
 
-1. [Download Python(>=3.10)](https://www.python.org/)
+1. <a href="https://www.python.org/downloads/" target="_blank">Download and install Python(>=3.10)</a>
 
-2. [Download Git](https://git-scm.com/downloads)
+2. <a href="https://git-scm.com/downloads" target="_blank">Download and install Git</a> []()
 
 3. Open a terminal
 

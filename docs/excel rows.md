@@ -21,18 +21,18 @@ sheet are treated differently than Rows 4 - ∞.
 - <span class="row-1">condition</span>
     - The condition under which the property was found
     - Some examples include `temperature`, `mixing_rate`, `stirring`, `time_duration`
-    - Please visit <a href="https://criptapp-staging.herokuapp.com/keys/condition-key/">
+    - Please visit <a href="https://criptapp-staging.herokuapp.com/keys/condition-key/" target="_blank">
       condition controlled vocabulary</a> for a full list of conditions
 - <span class="row-1">identifier</span>
     - Column with key-value pairs for material identifiers
     - An example of an identifier can be `smiles`, `bigSmiles`, `cas`, etc.
-    - Please visit <a href="https://criptapp.org/keys/material-identifier-key/">
+    - Please visit <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">
       material identifier controlled vocabulary</a> for a full list of material identifiers
 - <span class="row-1">property</span>
     - Column with key, value, and unit combinations for properties
 - <span class="row-1">relation</span>
     - Column that shows a relationship between a row from one sheet to the row of another sheet
-    - relation is further explained in <a href="#relation-explanation">relation section</a>
+    - relation is further explained in <a href="#relation-explanation" target="_blank">relation section</a>
 - <span class="row-1">quantity</span>
     - Column with key, value and unit combinations for quantities
     - Column that describes the amount combined with a unit
