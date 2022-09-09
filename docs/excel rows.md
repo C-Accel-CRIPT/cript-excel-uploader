@@ -21,18 +21,18 @@ sheet are treated differently than Rows 4 - ∞.
 - <span class="row-1">condition</span>
     - The condition under which the property was found
     - Some examples include `temperature`, `mixing_rate`, `stirring`, `time_duration`
-    - Please visit <a href="https://criptapp-staging.herokuapp.com/keys/condition-key/">
+    - Please visit <a href="https://criptapp-staging.herokuapp.com/keys/condition-key/" target="_blank">
       condition controlled vocabulary</a> for a full list of conditions
 - <span class="row-1">identifier</span>
     - Column with key-value pairs for material identifiers
     - An example of an identifier can be `smiles`, `bigSmiles`, `cas`, etc.
-    - Please visit <a href="https://criptapp.org/keys/material-identifier-key/">
+    - Please visit <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">
       material identifier controlled vocabulary</a> for a full list of material identifiers
 - <span class="row-1">property</span>
     - Column with key, value, and unit combinations for properties
 - <span class="row-1">relation</span>
     - Column that shows a relationship between a row from one sheet to the row of another sheet
-    - relation is further explained in <a href="#relation-explanation">relation section</a>
+    - relation is further explained in <a href="#relation-explanation" target="_blank">relation section</a>
 - <span class="row-1">quantity</span>
     - Column with key, value and unit combinations for quantities
     - Column that describes the amount combined with a unit
@@ -77,10 +77,11 @@ Example of **quantity** in <code>process ingredients</code> sheet
 
 <br>
 
-> `Relation` is a bit tricky to explain, so we dedicated a section that <a href="#relation-explanation">explains row 1
+> `Relation` is a bit tricky to explain, so we dedicated a section that <a href="#relation-explanation" target="_blank">
+> explains row 1
 > abstract category of `relation`</a>
 
-Please refer to <a href="/individual sheets">Individual Excel Sheets</a>for a complete breakdown of each sheet
+Please refer to <a href="/individual sheets" target="_blank">Individual Excel Sheets</a>for a complete breakdown of each sheet
 
 <br>
 
@@ -120,7 +121,8 @@ width="900">
 
 > This can be seen as the label for each column
 
-> The breakdown can be found in <a href="/individual sheets">Individual Excel Sheets</a>
+
+> The breakdown can be found in <a href="/individual sheets" target="_blank">Individual Excel Sheets</a>
 
 
 [//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"

@@ -3,7 +3,7 @@
 ## Host
 
 Host indicates the CRIPT instance that you want to upload your data to whether that is
-<a href="https://criptapp.org/">CRIPT</a> or a private instance
+<a href="https://criptapp.org/" target="_blank">CRIPT</a> or a private instance
 
 For most users host will be `criptapp.org`
 
@@ -35,14 +35,14 @@ The token is needed because we need to authenticate the user before saving any o
 
 
 <small>
-   <a href="https://criptapp.org/security/">Security Settings</a> under the profile icon dropdown
+   <a href="https://criptapp.org/security/" target="_blank">Security Settings</a> under the profile icon dropdown
 </small>
 
 <br>
 
 To get your token:
 
-1. please visit your <a href="https://criptapp.org/security/">Security Settings</a> under the profile icon dropdown on
+1. please visit your <a href="https://criptapp.org/security/" target="_blank">Security Settings</a> under the profile icon dropdown on
    the top right
 2. Click on the <b>copy</b> button next to the API Token to copy it to clipboard
 3. Now you can paste it into the token section of config.yaml
@@ -71,7 +71,7 @@ A Project can be thought of as a bunch of folders each containing experiments th
 <img class="screenshot-border" src="../docs_assets/filling_out_config/project_name_screenshot.png"
 alt="Screenshot of project screen within CRIPT">
 <small>
-<a href="https://criptapp.org/project/">projects tab</a> within CRIPT
+<a href="https://criptapp.org/project/" target="_blank">projects tab</a> within CRIPT
 </small>
 
 
@@ -79,7 +79,7 @@ alt="Screenshot of project screen within CRIPT">
 
 To get project name, follow these steps:
 
-1. Navigate to the <a href="https://criptapp.org/project/">projects tab</a> within CRIPT
+1. Navigate to the <a href="https://criptapp.org/project/" target="_blank">projects tab</a> within CRIPT
 2. Find the project you want to upload your data under
 3. Copy the name and paste it into config.yaml
 
@@ -103,14 +103,14 @@ The entire <span style="color: #21a366">Excel</span> file will become a collecti
 alt="Screenshot of project screen within CRIPT">
 
 <small>
-   <a href="https://criptapp.org/collection/">Collections tab</a> within CRIPT
+   <a href="https://criptapp.org/collection/" target="_blank">Collections tab</a> within CRIPT
 </small>
 
 <br>
 
 To get your collection name, follow these steps:
 
-1. Please visit the <a href="https://criptapp.org/collection/">collections tab</a> within CRIPT
+1. Please visit the <a href="https://criptapp.org/collection/" target="_blank">collections tab</a> within CRIPT
 2. Find the collection you want to use
 3. copy the name of that collection and paste it into the config.yaml file
 

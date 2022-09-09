@@ -78,7 +78,7 @@ Please use the latest release assets
     <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
     <ul>
       <li>
-        <a href="filling out config">Fill out template with your information</a>
+        <a href="filling out config" target="_blank">Fill out template with your information</a>
       </li>
     </ul>
   </li>
@@ -106,16 +106,16 @@ Please use the latest release assets
     Input your data into the excel sheet
     <ul>
       <li>
-        Refer to <a href="excel rows">filling out row 1 - 3</a> to understand the Excel file
+        Refer to <a href="excel rows" target="_blank">filling out row 1 - 3</a> to understand the Excel file
         structure
       </li>
       <li>
-        Refer to <a href="individual sheets">individual sheets</a> to see what is allowed in each sheet
+        Refer to <a href="individual sheets" target="_blank">individual sheets</a> to see what is allowed in each sheet
       </li>
     </ul>
   </li>
   <li>
-    <a href="how to run excel uploader">
+    <a href="how to run excel uploader" target="_blank">
       Run CRIPT Excel Uploader
     </a>
   </li>
