@@ -31,6 +31,8 @@
 
 <br>
 
+---
+
 ## Alternatively, you can run the Python Script Directly
 
 _Basic Setup:_
