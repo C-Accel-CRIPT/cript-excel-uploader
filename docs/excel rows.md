@@ -1,6 +1,5 @@
 # Excel Rows
 
-
 ## <b> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
 
 <img src="../docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
@@ -18,85 +17,70 @@ sheet are treated differently than Rows 4 - ∞.
 ## <u id="row-1-options-list">List of possible options for Row 1</u>
 
 - <span class="row-1">attribute</span>
-  - Column with simple key-value pairs
+    - Column with simple key-value pairs
 - <span class="row-1">condition</span>
-  - Column with key, value, and unit combinations for
-  - The condition under which the property was discerned
+    - The condition under which the property was found
+    - Some examples include `temperature`, `mixing_rate`, `stirring`, `time_duration`
+    - Please visit <a href="https://criptapp-staging.herokuapp.com/keys/condition-key/">
+      condition controlled vocabulary</a> for a full list of conditions
 - <span class="row-1">identifier</span>
-  - Column with key-value pairs for material identifiers
-  - An example of an identifier can be smiles, bigSmiles, cas, etc.
+    - Column with key-value pairs for material identifiers
+    - An example of an identifier can be `smiles`, `bigSmiles`, `cas`, etc.
+    - Please visit <a href="https://criptapp.org/keys/material-identifier-key/">
+      material identifier controlled vocabulary</a> for a full list of material identifiers
 - <span class="row-1">property</span>
-  - Column with key, value, and unit combinations for properties
+    - Column with key, value, and unit combinations for properties
 - <span class="row-1">relation</span>
-  - Column that shows a relationship between a row from one sheet to the row of another sheet
-  - relation is further explained in <a href="#relation-explanation">relation section</a>
+    - Column that shows a relationship between a row from one sheet to the row of another sheet
+    - relation is further explained in <a href="#relation-explanation">relation section</a>
 - <span class="row-1">quantity</span>
-  - Column with key, value and unit combinations for quantities
-  - Column that describes the amount of something and combined with a unit
+    - Column with key, value and unit combinations for quantities
+    - Column that describes the amount combined with a unit
 
 <!-- Quantity Example for Row 1 -->
-<ul>
-  <li>
-    Example
-    <ul>
-      <li>
-        <code>process ingredients</code> sheet
-        <table>
-          <tr>
-            <td class="row-1">
-              attribute
-            </td>
-            <td class="row-1">
-              quantity
-            </td>
-          </tr>
-          <tr>
-            <td class="row-2">
-              *name
-            </td>
-            <td class="row-2">
-              volume
-            </td>
-          </tr>
-          <tr>
-            <th class="row-3">
-              <div class="empty-row-3-placeholders"></div>
-            </th>
-            <th class="row-3">
-              ml
-            </th>
-          </tr>
-          <tr>
-            <td class="row-4">
-              water
-            </td>
-            <td class="row-4">
-              5
-            </td>
-          </tr>
-        </table>
-      </li>
-    </ul>
-  </li>
-</ul>
+Example of **quantity** in <code>process ingredients</code> sheet
 
+<table>
+  <tr>
+    <td class="row-1">
+      attribute
+    </td>
+    <td class="row-1">
+      quantity
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *name
+    </td>
+    <td class="row-2">
+      volume
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3">
+      ml
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+      water
+    </td>
+    <td class="row-4">
+      5
+    </td>
+  </tr>
+</table>
 
 <br>
 
 > `Relation` is a bit tricky to explain, so we dedicated a section that <a href="#relation-explanation">explains row 1
 > abstract category of `relation`</a>
 
-<br>
-
----
-
-- <span class="row-2">Row 2</span>: This is the label for each column
-
-  - Eg. `name`, `density`, `bigsmiles`
-
-  - Each label for each sheet column from a controlled list of vocabulary options from CRIPT
-    - Each list of controlled vocabulary options will be listed as a link in the
-      <a href="/individual sheets/">Individual Sheets page</a>
+Please refer to <a href="/individual sheets">Individual Excel Sheets</a>for a complete breakdown of each sheet
 
 <br>
 
@@ -104,9 +88,9 @@ sheet are treated differently than Rows 4 - ∞.
 
 - <span class="row-3">Row 3</span>: Defines the units for that column
 
-  - `celsius`, `g/ml`
-  - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported units are
-    documented</a>
+    - `celsius`, `g/ml`
+    - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported
+      units</a> are documented within the Pint python package
 
 <br>
 
@@ -134,6 +118,11 @@ width="900">
 
 ## <span class="row-2">row 2</span>
 
+> This can be seen as the label for each column
+
+> The breakdown can be found in <a href="/individual sheets">Individual Excel Sheets</a>
+
+
 [//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"
 
 ### <span class="row-2">row 2</span> <u>Column Field Names</u>
@@ -159,9 +148,6 @@ alt="Screenshot of an Excel column that shows the required column that begins wi
 
 <br>
 
-Individual Excel Sheets page has a 
-<a href="/individual sheets/">valid values for each sheet's row 2</a>
-
 ---
 
 <br>
@@ -172,16 +158,16 @@ Individual Excel Sheets page has a
 alt="Screenshot from Excel sheet column that shows multiple field headers">
 
 - We can have more than one field present on a column header if needed
-  - We can indicate that we are recording the `density` at a certain `temperature` by using a colon `":"` and notating
-    it like this: `"density:temperature"`
-  - Examples
-    - Define a material property method: `density:method`
-    - Associate data with a process condition `temperature:data`
-    - Associate a citation with a material property: `density:citation`
-    - Define material property condition: `density:temperature`
-    - Define the uncertainty of a material property condition: `density:temperature:uncertainty`
-      > `<field>:data` column values should derive from the `*name` column of the `Data` sheet.  
-      > `<field>:citation` column values should derive from the `*name` column of the `Citation` sheet.
+    - We can indicate that we are recording the `density` at a certain `temperature` by using a colon `":"` and notating
+      it like this: `"density:temperature"`
+    - Examples
+        - Define a material property method: `density:method`
+        - Associate data with a process condition `temperature:data`
+        - Associate a citation with a material property: `density:citation`
+        - Define material property condition: `density:temperature`
+        - Define the uncertainty of a material property condition: `density:temperature:uncertainty`
+          > `<field>:data` column values should derive from the `*name` column of the `Data` sheet.  
+          > `<field>:citation` column values should derive from the `*name` column of the `Citation` sheet.
 
 ---
 
