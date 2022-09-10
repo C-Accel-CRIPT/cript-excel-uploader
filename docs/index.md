@@ -78,7 +78,7 @@ Please use the latest release assets
     <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
     <ul>
       <li>
-        <a href="/filling_out_config.md/" target="_blank">Fill out template with your information</a>
+        <a href="filling_out_config.md/" target="_blank">Fill out template with your information</a>
       </li>
     </ul>
   </li>
