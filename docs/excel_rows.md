@@ -81,7 +81,7 @@ Example of **quantity** in <code>process ingredients</code> sheet
 > explains row 1
 > abstract category of `relation`</a>
 
-Please refer to <a href="./individual_sheets.md/" target="_blank">Individual Excel Sheets</a> for a complete breakdown of each sheet
+Please refer to <a href="[](individual_sheets.md)" target="_blank">Individual Excel Sheets</a> for a complete breakdown of each sheet
 
 <br>
 
