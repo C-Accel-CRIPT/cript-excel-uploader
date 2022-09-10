@@ -78,7 +78,7 @@ Please use the latest release assets
     <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
     <ul>
       <li>
-        <a href="/filling out config/" target="_blank">Fill out template with your information</a>
+        <a href="/filling_out_config/" target="_blank">Fill out template with your information</a>
       </li>
     </ul>
   </li>
@@ -106,16 +106,16 @@ Please use the latest release assets
     Input your data into the excel sheet
     <ul>
       <li>
-        Refer to <a href="/excel rows/" target="_blank">filling out row 1 - 3</a> to understand the Excel file
+        Refer to <a href="/filling_out_config/" target="_blank">filling out row 1 - 3</a> to understand the Excel file
         structure
       </li>
       <li>
-        Refer to <a href="/individual sheets/" target="_blank">individual sheets</a> to see what is allowed in each sheet
+        Refer to <a href="/individual_sheets/" target="_blank">individual sheets</a> to see what is allowed in each sheet
       </li>
     </ul>
   </li>
   <li>
-    <a href="/how to run excel uploader/" target="_blank">
+    <a href="/how_to_run_excel_uploader/" target="_blank">
       Run CRIPT Excel Uploader
     </a>
   </li>
@@ -139,14 +139,6 @@ Please use the latest release assets
 
 - **_What if I have multiple measurements of the same thing?_**  
   You can use an `ID` field in front of row 2 to separate out the different measurements more on that in
-  the <a href="excel rows/#id-optional" target="_blank">ID section of Row 2</a>
-
-- **_How do I debug the errors when running the CRIP Excel Uploader?_**
-  The best order to solve the issues is from the top down, as often many of the errors listed below are caused by the
-  errors that appear at the top of the list.
-
-- **_How do I debug the errors when running the CRIP Excel Uploader?_**
-  The best order to solve the issues is from the top down, as often many of the errors listed below are caused by the
-  errors that appear at the top of the list.
+  the <a href="/excel_rows/#id-optional/" target="_blank">ID section of Row 2</a>
 
 <div style="margin-bottom: 5rem;"></div>
