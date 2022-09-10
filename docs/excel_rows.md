@@ -81,7 +81,7 @@ Example of **quantity** in <code>process ingredients</code> sheet
 > explains row 1
 > abstract category of `relation`</a>
 
-Please refer to <a href="/individual_sheets/" target="_blank">Individual Excel Sheets</a> for a complete breakdown of each sheet
+Please refer to <a href="individual_sheets" target="_blank">Individual Excel Sheets</a> for a complete breakdown of each sheet
 
 <br>
 
@@ -121,7 +121,7 @@ width="900">
 
 > This can be seen as the label for each column
 
-> The breakdown can be found in <a href="/individual_sheets/" target="_blank">Individual Excel Sheets</a>
+> The breakdown can be found in <a href="individual_sheets" target="_blank">Individual Excel Sheets</a>
 
 
 [//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"

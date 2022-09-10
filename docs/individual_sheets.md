@@ -23,14 +23,14 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
     <table>
       <tr>
         <td class="row-1">
-            <a href="/excel_rows/#row-1-options-list" target="_blank">
+            <a href="excel_rows/#row-1-options-list" target="_blank">
               abstract category
             </a>
         </td>
       </tr>
       <tr>
         <td class="row-2">
-            <a href="/individual_sheets/#sheets" target="_blank">
+            <a href="individual_sheets/#sheets" target="_blank">
               field name
             </a>
         </td>
