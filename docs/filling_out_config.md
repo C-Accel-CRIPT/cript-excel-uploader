@@ -1,5 +1,14 @@
 # How to fill out config.yaml
 
+
+## How to open config.yaml
+Please open and edit the config.yaml file with your preferred text editor.
+Some good choices can be notepad (that comes preinstalled on windows),
+<a href="https://notepad-plus-plus.org/" target="_blank">notepad++</a>, and 
+<a href="https://code.visualstudio.com/" target="_blank">vs code</a>
+
+---
+
 ## Host
 
 Host indicates the CRIPT instance that you want to upload your data to whether that is
