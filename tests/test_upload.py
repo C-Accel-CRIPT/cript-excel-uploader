@@ -1,4 +1,4 @@
-import upload
+import src.upload as upload
 import pytest
 
 # TODO wait to make tests for these until Brilant is finished with his setup.

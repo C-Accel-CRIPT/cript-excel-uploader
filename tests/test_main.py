@@ -1,4 +1,4 @@
-import main
+import src.main as main
 import pytest
 
 """
