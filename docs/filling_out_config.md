@@ -1,12 +1,15 @@
 # How to fill out config.yaml
 
-
 ## How to open config.yaml
+
 Please open and edit the config.yaml file with your preferred text editor.
 Some good choices can be notepad (that comes preinstalled on windows),
-<a href="https://notepad-plus-plus.org/" target="_blank">notepad++</a>, and 
+<a href="https://notepad-plus-plus.org/" target="_blank">notepad++</a>, and
 <a href="https://code.visualstudio.com/" target="_blank">vs code</a>
 
+<img class="screenshot-border"
+src="../docs_assets/filling_out_config/screenshot_of_config_file_opened_in_notepad.png" alt="screenshot of config.yaml
+file opened in windows notepad app">
 ---
 
 ## Host
@@ -51,7 +54,8 @@ The token is needed because we need to authenticate the user before saving any o
 
 To get your token:
 
-1. please visit your <a href="https://criptapp.org/security/" target="_blank">Security Settings</a> under the profile icon dropdown on
+1. please visit your <a href="https://criptapp.org/security/" target="_blank">Security Settings</a> under the profile
+   icon dropdown on
    the top right
 2. Click on the <b>copy</b> button next to the API Token to copy it to clipboard
 3. Now you can paste it into the token section of config.yaml
