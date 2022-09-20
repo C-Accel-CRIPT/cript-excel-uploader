@@ -55,7 +55,7 @@ sheet_parameters = {
     },
 }
 
-path = "example_template_v0-4-1.xlsx"
+path = "testing_template_v0.xlsx"
 
 """
 TODO
