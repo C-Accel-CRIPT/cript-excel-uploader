@@ -95,8 +95,8 @@ function displayFormErrors(errors) {
     let projectInput = document.getElementById("project-name");
     let collectionInput = document.getElementById("collection-name");
     let excelFile = document.getElementById("excel-file-path");
-    let uploadButton = document.getElementById("upload-button");
 
+    let uploadButton = document.getElementById("upload-button");
     uploadButton.textContent = "Upload";
     uploadButton.disabled = false;
 

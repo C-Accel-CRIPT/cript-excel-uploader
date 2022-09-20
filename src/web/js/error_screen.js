@@ -42,8 +42,16 @@ function addErrorsToScreen(errorList) {
 
 }
 
+/*
+    function that fires when the user clicks on the button from the error screen "Try again"
+*/
+function tryAgain() {
+    let uploadButton = document.getElementById("upload-button");
+    uploadButton.textContent = "Upload";
+    uploadButton.disabled = false;
 
-
+    goToStartScreen();
+}
 
 
 
