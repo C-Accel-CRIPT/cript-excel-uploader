@@ -17,6 +17,9 @@ result is:
 eel.expose(addErrorsToScreen);
 
 function addErrorsToScreen(errorList) {
+
+    console.log(errorList)
+
     // show how many total errors there are
     let errorHeader = "Error";
 
@@ -46,11 +49,16 @@ function addErrorsToScreen(errorList) {
     function that fires when the user clicks on the button from the error screen "Try again"
 */
 function tryAgain() {
+    // enable the start screen "Upload" button if it may have been changed to "Loading .."
     let uploadButton = document.getElementById("upload-button");
     uploadButton.textContent = "Upload";
     uploadButton.disabled = false;
 
+    // show start screen
     goToStartScreen();
+
+    // empty the errors that were on the error screen, so they do not show up again
+    document.getElementById("error-window").innerHTML = "";
 }
 
 

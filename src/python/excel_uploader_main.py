@@ -1,9 +1,12 @@
+import traceback
+
 import cript
 
-import create, parse, upload
+import create
+import parse
+import upload
 from create import error_list
 from sheet_parameters import sheet_parameters
-import traceback
 
 
 class ExcelUploader:
@@ -160,11 +163,9 @@ class ExcelUploader:
                 gui_object.display_success(self.collection_url)
 
         except KeyError as key_error:
-            print("hit KeyError")
-            # print(traceback.print_exc())
             error_list.append(f"Key Error: {key_error}")
-            # error_list.append(f"Traceback: {traceback.format_exc()}")
+            error_list.append(f"Traceback: {traceback.format_exc()}")
 
         # display errors if try wasn't successful
         gui_object.display_errors(error_list)
-
+        error_list.clear()
