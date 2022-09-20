@@ -136,11 +136,7 @@ class ExcelUploaderGUI:
         """
         eel.goToLoadingScreen()
 
-        # TODO put exception handling inside of upload driver where all the other errors are
-        try:
-            self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
-        except KeyError:
-            self.display_errors("key Error")
+        self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
 
     # JS calls this
     def cancel_upload(self):
@@ -176,10 +172,8 @@ class ExcelUploaderGUI:
         :return: None
         """
 
-        print("ran display_errors from python function")
-
-        eel.goToErrorScreen()()
-        eel.addErrorsToScreen()()
+        eel.goToErrorScreen()
+        eel.addErrorsToScreen(error_list)
 
     # this calls JS
     def display_success(self, collection_url):

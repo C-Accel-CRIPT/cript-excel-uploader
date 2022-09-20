@@ -3,6 +3,7 @@ import cript
 import create, parse, upload
 from create import error_list
 from sheet_parameters import sheet_parameters
+import traceback
 
 
 class ExcelUploader:
@@ -146,12 +147,24 @@ class ExcelUploader:
         :param gui_object: eel_GUI object
         :return: None
         """
-        parsed_sheets = self.get_parsed_sheets(excel_file_path)
-        self.create_nodes(parsed_sheets, data_is_public)
 
-        if len(error_list) > 0:
-            gui_object.display_errors(error_list)
-        else:
-            self.upload_to_cript(parsed_sheets, gui_object)
-            self.collection_url = self.collection_object.url.replace("api/", "")
-            gui_object.display_success(self.collection_url)
+        try:
+            parsed_sheets = self.get_parsed_sheets(excel_file_path)
+            self.create_nodes(parsed_sheets, data_is_public)
+
+            if len(error_list) > 0:
+                gui_object.display_errors(error_list)
+            else:
+                self.upload_to_cript(parsed_sheets, gui_object)
+                self.collection_url = self.collection_object.url.replace("api/", "")
+                gui_object.display_success(self.collection_url)
+
+        except KeyError as key_error:
+            print("hit KeyError")
+            # print(traceback.print_exc())
+            error_list.append(f"Key Error: {key_error}")
+            # error_list.append(f"Traceback: {traceback.format_exc()}")
+
+        # display errors if try wasn't successful
+        gui_object.display_errors(error_list)
+
