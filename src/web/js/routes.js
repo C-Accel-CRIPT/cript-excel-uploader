@@ -1,7 +1,8 @@
-// TODO could use some refactoring to get it a lot cleaner and simpler
-
-// base url of the app
-const rootUrl = "http://localhost:8000/templates"
+// screens
+let startScreen = document.getElementById("start-screen");
+let loadingScreen = document.getElementById("loading-screen");
+let errorScreen = document.getElementById("error-screen");
+let successScreen = document.getElementById("success-screen");
 
 
 // navigate to start screen
@@ -9,7 +10,13 @@ eel.expose(goToStartScreen);
 const start_URL = "start_screen.html";
 
 function goToStartScreen() {
-    window.location.replace(`${rootUrl}/${start_URL}`);
+    // show #start-screen
+    startScreen.classList.remove("hidden");
+
+    // hide all other screens
+    loadingScreen.classList.add("hidden");
+    errorScreen.classList.add("hidden");
+    successScreen.classList.add("hidden");
 }
 
 
@@ -17,22 +24,37 @@ function goToStartScreen() {
 eel.expose(goToLoadingScreen);
 
 function goToLoadingScreen() {
-    const loading_URL = "loading_screen.html";
-    window.location.replace(`${rootUrl}/${loading_URL}`);
+    // show #loading-screen
+    loadingScreen.classList.remove("hidden");
+
+    // hide all other screens
+    startScreen.classList.add("hidden");
+    errorScreen.classList.add("hidden");
+    successScreen.classList.add("hidden");
 }
 
 // navigate to error screen
 eel.expose(goToErrorScreen);
 
 function goToErrorScreen() {
-    const error_URL = "error_screen.html";
-    window.location.replace(`${rootUrl}/${error_URL}`);
+        // show #error-screen
+    errorScreen.classList.remove("hidden");
+
+    // hide all other screens
+    loadingScreen.classList.add("hidden");
+    startScreen.classList.add("hidden");
+    successScreen.classList.add("hidden");
 }
 
 // navigate to Success screen
 eel.expose(goToSuccessScreen);
 
 function goToSuccessScreen() {
-    const success_URL = "success_screen.html";
-    window.location.replace(`${rootUrl}/${success_URL}`);
+        // show #success-screen
+    successScreen.classList.remove("hidden");
+
+    // hide all other screens
+    loadingScreen.classList.add("hidden");
+    errorScreen.classList.add("hidden");
+    startScreen.classList.add("hidden");
 }

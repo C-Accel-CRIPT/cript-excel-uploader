@@ -34,7 +34,7 @@ class ExcelUploaderGUI:
         :return: none
         """
         self.eel.start(
-            'templates/start_screen.html',
+            'templates/base.html',
             jinja_templates='templates',
             size=(800, 850),
         )
