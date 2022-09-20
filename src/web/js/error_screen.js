@@ -47,9 +47,12 @@ function addErrorsToScreen(errorList) {
 
 /*
     function that fires when the user clicks on the button from the error screen "Try again"
+    1. enable the start screen "Upload" button if it may have been changed to "Loading .."
+    2. show start screen
+    3. empty the errors that were on the error screen, so they do not show up again from last time
 */
 function tryAgain() {
-    // enable the start screen "Upload" button if it may have been changed to "Loading .."
+    // enable the start screen button
     let uploadButton = document.getElementById("upload-button");
     uploadButton.textContent = "Upload";
     uploadButton.disabled = false;
