@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="container">
+
+    <h2 class="text-center text-success" style="font-size: 5rem">
+        <i class="material-icons" style="font-size: 5rem">
+            check_circle
+        </i>
+        Success
+    </h2>
+
+    <img src="../assets/done.png" class="img-fluid" style="height: 30rem;"
+         alt="cartoon picture of task completed">
+
+    <div class="d-grid gap-2">
+        <!-- onclick close the window -->
+        <a id="data-in-cript-link" class="btn btn-primary" href="https://criptapp.org" target="_blank">
+            <i class="material-icons">cloud_done</i>
+            See my data in CRIPT
+        </a>
+    </div>
+</div>
+
+{% endblock %}

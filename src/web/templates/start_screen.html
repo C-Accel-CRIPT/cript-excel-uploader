@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block screen_js %}
+<script src="../js/start_screen.js" defer></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <!-- hidden alert that shows when authentication error occurs it shows up -->
+    <div id="authentication-error-alert" class="alert alert-danger hidden" role="alert">
+        Authentication Failure: Could not authenticate user with host and token.
+        <br>
+        Please be sure both host and token are correct
+    </div>
+
+    <!-- return false to prevent refresh-->
+    <form id="start-screen-form" onsubmit="submitForm(); return false;">
+
+        <!-- host input -->
+        <div class="input-group mb-3 margin-top">
+        <span class="input-group-text" id="host-label">
+             <i class="material-icons margin-right">dns</i> Host:
+        </span>
+
+            <input type="text" id="host-input" class="form-control" placeholder="criptapp.org"
+                   aria-label="place host here" aria-describedby="host-label host-validation-feedback"
+                   required>
+
+            <!-- invalid feedback -->
+            <div id="host-validation-feedback" class="invalid-feedback">
+                Invalid host or token
+            </div>
+        </div>
+
+        <!-- api token input -->
+        <div class="input-group mb-3 margin-top">
+        <span class="input-group-text" id="api-token-label" title="Get your key from: https://criptapp.org/security/">
+             <i class="material-icons margin-right">key</i> API Token:
+        </span>
+
+            <input type="password" id="api-token-input" class="form-control"
+                   placeholder="Token 012345e678910b111213a14151617181b9202122"
+                   aria-label="place host here"
+                   aria-describedby="api-token-label api-token-validation-feedback"
+                   required>
+
+            <!-- invalid feedback -->
+            <div id="api-token-validation-feedback" class="invalid-feedback">
+                Invalid host or token
+            </div>
+        </div>
+
+        <!-- project name input -->
+        <div class="input-group margin-top">
+        <span class="input-group-text" id="project-name-label">
+             <i class="material-icons margin-right">insert_chart</i> Project Name:
+        </span>
+
+            <input type="text" id="project-name" class="form-control" placeholder="My Project Name"
+                   aria-label="place host here"
+                   aria-describedby="project-name-label project-name-validation-feedback"
+                   required>
+
+            <!-- invalid feedback -->
+            <div id="project-name-validation-feedback" class="invalid-feedback">
+                Please be sure your Project exists in CRIPT
+            </div>
+        </div>
+
+        <!-- collection name input -->
+        <div class="input-group mb-3 margin-top">
+        <span class="input-group-text" id="collection-name-label">
+             <i class="material-icons margin-right">article</i> Collection Name:
+        </span>
+
+            <input type="text" id="collection-name" class="form-control" placeholder="My Collection Name"
+                   aria-label="place host here"
+                   aria-describedby="collection-name-label collection-name-validation-feedback"
+                   required>
+
+            <!-- invalid feedback -->
+            <div id="collection-name-validation-feedback" class="invalid-feedback">
+                Please be sure your Collection exists in CRIPT
+            </div>
+        </div>
+
+        <!-- Excel file path -->
+        <div class="input-group mb-3 margin-top">
+
+            <button type="button" onclick="getFilePathPython()"
+                    class="btn margin-right" id="excel-file-button">
+                <i class="material-icons margin-right">folder</i>
+                Excel File:
+            </button>
+
+            <input type="text" id="excel-file-path" class="form-control"
+                   placeholder="Excel absolute file path"
+                   aria-label="place host here"
+                   aria-describedby="excel-file-button excel-file-path-validation-feedback"
+                   disabled required>
+
+            <!-- invalid feedback -->
+            <div id="excel-file-path-validation-feedback" class="invalid-feedback">
+                Excel file not found
+            </div>
+        </div>
+
+        <div id="data-privacy-options">
+            <!-- TODO styling looks a bit off with this part -->
+            <label id="data-privacy-label">
+                Keep my data:
+            </label>
+
+            <!-- data is public -->
+            <div class="form-check form-check-inline">
+                <input id="public-data" class="form-check-input" type="radio"
+                       name="data-privacy" value="public-data" checked>
+                <label class="form-check-label" for="public-data">
+                    <i class="material-icons">public</i>
+                    Public
+                </label>
+            </div>
+
+            <!-- data is private -->
+            <div class="form-check form-check-inline">
+                <input id="private-data" class="form-check-input" type="radio"
+                       name="data-privacy" value="private-data">
+                <label class="form-check-label" for="private-data">
+                    <i class="material-icons">lock</i>
+                    Private
+                </label>
+            </div>
+        </div>
+
+        <!-- data privacy error -->
+        <div id="data-privacy-error" class="alert alert-danger hidden " role="alert" style="margin-top: 1.1rem;">
+            Error: please select if you want to keep your data private or public
+        </div>
+
+
+        <!-- upload button -->
+        <div class="d-grid gap-2" style="margin-top: 0.5rem;">
+            <button type="submit" id="upload-button"
+                    class="btn btn-primary btn-lg margin-top d-flex justify-content-center"
+                    style="background-color: var(--cript-primary-color)">
+                Upload
+            </button>
+        </div>
+
+        <br>
+
+        <!-- docs link for how to fill out config -->
+        <small class="documentation-link">
+            Please refer to our
+
+            <a href="https://c-accel-cript.github.io/cript-excel-uploader/filling_out_config/" target="_blank">
+                documentation
+            </a>
+            on how to fill out this screen
+        </small>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,9 +1,6 @@
-import os
-
 import cript
-from cript.exceptions import CRIPTError
 from beartype.roar import BeartypeException
-
+from cript.exceptions import CRIPTError
 
 error_list = []
 

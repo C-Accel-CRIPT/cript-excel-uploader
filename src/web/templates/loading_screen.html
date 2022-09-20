@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block screen_js %}
+<script src="../js/loading_screen.js" defer></script>
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+
+    <!-- image -->
+    <div class="text-center">
+        <img src="../assets/publish_article.png" class="img-fluid" alt="cartoon picture of a person uploading data">
+    </div>
+
+    <!-- progress bar -->
+    <div class="progress" style="height: 1.5rem;">
+        <div id="uploader-progress" class="progress-bar bg-success progress-bar-striped"
+             role="progressbar" style="width: 0%;"
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+             aria-label="CRIPT Excel Uploader Progress">
+            0%
+        </div>
+    </div>
+
+    <p>
+        uploading...
+    </p>
+
+    <!-- cancel button -->
+    <div style="margin-top: 2rem">
+        <button type="button" class="btn btn-danger" onclick="cancelUpload()">Cancel</button>
+    </div>
+</div>
+{% endblock %}
