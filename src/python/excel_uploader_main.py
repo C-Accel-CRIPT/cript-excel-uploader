@@ -76,7 +76,6 @@ class ExcelUploader:
 
         return parsed_sheets
 
-    # TODO this function isn't made the best, and should be refactored after tested and it works
     def create_nodes(self, parsed_sheets, data_is_public):
         """
 
@@ -86,20 +85,25 @@ class ExcelUploader:
         """
         self.nodes["experiments"] = create.create_experiments(
             parsed_sheets["experiment"], self.collection_object, data_is_public)
+
         self.nodes["references"], self.nodes["citations"] = create.create_citations(
             parsed_sheets["citation"], self.project_object.group, data_is_public
         )
+
         self.nodes["data"], self.nodes["files"] = create.create_data(
             parsed_sheets["data"], self.project_object, self.nodes["experiments"], self.nodes["citations"],
             data_is_public
         )
+
         self.nodes["materials"] = create.create_materials(
             parsed_sheets["material"], self.project_object, self.nodes["data"], self.nodes["citations"],
             data_is_public
         )
+
         self.nodes["materials"] = create.create_mixtures(
             parsed_sheets["mixture component"], self.nodes["materials"]
         )
+
         self.nodes["processes"] = create.create_processes(
             parsed_sheets["process"], self.nodes["experiments"], self.nodes["data"],
             self.nodes["citations"],
@@ -122,7 +126,7 @@ class ExcelUploader:
 
     def upload_to_cript(self, parsed_sheets, gui_object):
         """
-        
+
         :param parsed_sheets: dict
         :param gui_object: passes instance of ExcelUploaderGUI to upload.py
         to update the progress bar on every loop

@@ -18,18 +18,6 @@ eel.expose(addErrorsToScreen);
 
 function addErrorsToScreen(errorList) {
 
-    console.log(errorList)
-
-    // show how many total errors there are
-    let errorHeader = "Error";
-
-    if (errorList.length > 1) {
-        errorHeader = "Errors"
-    }
-
-    document.getElementById("error-header").textContent = `${errorList.length} ${errorHeader}`;
-
-
     let errorWindow = document.getElementById("error-window");
 
     for (let i = 0; i < errorList.length; i++) {
@@ -63,15 +51,3 @@ function tryAgain() {
     // empty the errors that were on the error screen, so they do not show up again
     document.getElementById("error-window").innerHTML = "";
 }
-
-
-
-
-
-
-
-
-
-
-
-

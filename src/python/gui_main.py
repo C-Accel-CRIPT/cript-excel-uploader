@@ -23,7 +23,7 @@ class ExcelUploaderGUI:
         self.api_key = None
         self.project_name = None
         self.collection_name = None
-        self.data_is_public = None
+        self.data_is_public = False
         self.excel_file_path = None
 
         self.excel_uploader = ExcelUploader()
@@ -109,6 +109,8 @@ class ExcelUploaderGUI:
 
         except cript.exceptions.APIGetError:
             error_dict["collection"] = "Please enter a valid Collection name"
+
+        self.data_is_public = user_input["isDataPublic"]
 
         try:
             # just check to see if the Excel file exists,

@@ -1,4 +1,5 @@
-import math
+import cript
+import traceback
 
 from tqdm import tqdm
 
@@ -22,18 +23,17 @@ def upload(api, obj_dict, obj_type, gui_object):
     )
 
     for key, obj in obj_dict.items():
-        progress_number = 0
-        api.save(obj, update_existing=True)
+        try:
+            api.save(obj, update_existing=True)
+        except cript.exceptions.APISaveError as error:
+            errors = [
+                "cript.exceptions.APISaveError",
+                traceback.format_exc()
+            ]
+            gui_object.display_errors(errors)
+            return
 
         pbar.update(1)  # Increment progress bar
-
-        # add one to progress
-        progress_number += 1
-        # divide iteration number (progress_number) by length of obj_dict to get percentage
-        # since we don't want fractions, we'll just round down to nearest whole number
-        total_progress = progress_number / len(obj_dict)
-        total_progress = math.floor(total_progress)
-        gui_object.update_progress_bar(total_progress)
 
     pbar.close()
 
