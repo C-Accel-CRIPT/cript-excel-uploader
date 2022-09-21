@@ -20,6 +20,7 @@
     <script src="../js/dev.js" defer></script>
     <script src="../js/start_screen.js" defer></script>
     <script src="../js/loading_screen.js" defer></script>
+    <script src="../js/globus_screen.js" defer></script>
     <script src="../js/error_screen.js" defer></script>
     <script src="../js/success_screen.js" defer></script>
 
@@ -235,6 +236,35 @@
         <!-- cancel button -->
         <div style="margin-top: 2rem">
             <button type="button" class="btn btn-danger" onclick="cancelUpload()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Globus Auth Screen -->
+    <div id="globus-auth-screen" class="container hidden">
+
+        <h2 style="font-size: 1.5rem;" class="text-center">
+            Globus Authentication
+        </h2>
+
+        <!-- image -->
+        <div class="text-center">
+            <img src="../assets/secure_login.png" class="img-fluid"
+                 alt="cartoon picture that shows a laptop with a lock on it, depicting a secure login">
+        </div>
+
+        <!-- instructions on what to do with button -->
+        <div>
+            <h3 class="text-center" style="font-size: 1rem">
+                Please click the button below to authenticate through Globus to continue
+            </h3>
+        </div>
+
+        <!-- Globus Auth Link -->
+        <div class="text-center" style="margin-top: 2rem;">
+            <a id="globus-auth-link" class="btn btn-primary btn-lg" href="" target="_blank">
+                <i class="material-icons">vpn_lock</i>
+                Globus Authentication
+            </a>
         </div>
     </div>
 

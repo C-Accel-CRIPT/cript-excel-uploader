@@ -140,6 +140,18 @@ class ExcelUploaderGUI:
 
         self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
 
+        self.globus_auth("gibberish.com")
+
+    def globus_auth(self, globus_auth_link):
+        # after upload go to globus for authentication
+        eel.goToLoadingScreen()
+
+        # set globus auth link for html <a href=""
+        eel.setGlobusAuthlink(globus_auth_link)
+
+        # get globus auth link from sdk
+        # after sdk says theyve been authenticated then send them to success screen
+
     # JS calls this
     def cancel_upload(self):
         """

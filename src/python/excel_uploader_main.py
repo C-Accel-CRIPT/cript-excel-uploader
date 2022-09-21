@@ -137,19 +137,37 @@ class ExcelUploader:
 
         current_progress = 0
 
-        current_progress = upload.upload(self.api, experiments, "Experiment", current_progress, total, gui_object)
-        current_progress = upload.upload(self.api, references, "Reference", current_progress, total, gui_object)
-        current_progress = upload.upload(self.api, data, "Data", current_progress, total, gui_object)
-        current_progress = upload.upload(self.api, materials, "Material", current_progress, total, gui_object)
-        current_progress = upload.upload(self.api, processes, "Process", current_progress, total, gui_object)
-        current_progress = upload.upload(self.api, files, "File", current_progress, total, gui_object)
+        current_progress = upload.upload(
+            self.api, experiments, "Experiment", current_progress, total, gui_object
+        )
+
+        current_progress = upload.upload(
+            self.api, references, "Reference", current_progress, total, gui_object
+        )
+
+        current_progress = upload.upload(
+            self.api, data, "Data", current_progress, total, gui_object
+        )
+
+        current_progress = upload.upload(
+            self.api, materials, "Material", current_progress, total, gui_object
+        )
+
+        current_progress = upload.upload(
+            self.api, processes, "Process", current_progress, total, gui_object
+        )
+
+        current_progress = upload.upload(
+            self.api, files, "File", current_progress, total, gui_object
+        )
+
         current_progress = upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, self.api)
 
-        ###
-        # Finish
-        ###
+    def get_collections_url(self):
+        """
+        gets the collection object url after it has been uploaded to CRIPT
+        so users can see their data in CRIPT
 
-        # Print message
-        collection_url = self.collection_object.url.replace("api/", "")
-        gui_object.display_success(collection_url)
-        return
+        :returns: str: which is a url for CRIPT collection
+        """
+        return self.collection_object.url.replace("api/", "")
