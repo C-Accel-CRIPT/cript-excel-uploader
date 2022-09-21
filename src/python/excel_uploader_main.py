@@ -134,8 +134,9 @@ class ExcelUploader:
         """
         # get len of each self.node[...] and add them up (total)
         current_progress = 0
-        current_progress = upload.upload(self.api, self.nodes["experiments"], total, current_progress, "Experiment", gui_object)
-        upload.upload(self.api, self.nodes["references"], total,  "Reference", gui_object)
+        current_progress = upload.upload(self.api, self.nodes["experiments"], total, current_progress, "Experiment",
+                                         gui_object)
+        upload.upload(self.api, self.nodes["references"], total, "Reference", gui_object)
         upload.upload(self.api, self.nodes["data"], "Data", gui_object)
         upload.upload(self.api, self.nodes["materials"], "Material", gui_object)
         upload.upload(self.api, self.nodes["processes"], "Process", gui_object)
@@ -143,6 +144,23 @@ class ExcelUploader:
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], self.nodes["data"], self.nodes["processes"], self.api
         )
+
+    def get_total_for_progress_bar(self, nodes_list):
+        """
+        loop through the list of nodes and add up all their lengths
+        for total for progress bar.
+        e.g. total = len(materials) + len(experiments) + len(data) ...
+        return total
+        :param: nodes_list: list of nodes that will be passed to upload
+        :return: None
+        """
+
+        total = 0
+
+        for node in nodes_list:
+            total += len(node)
+
+        return total
 
     def upload_driver(self, excel_file_path, data_is_public, gui_object):
         """
@@ -185,10 +203,15 @@ class ExcelUploader:
         processes = create.create_processes(
             parsed_sheets["process"], experiments, data, citations, data_is_public
         )
+
+        # create
         create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
         create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)
         create.create_products(parsed_sheets["process product"], processes, materials)
         create.create_equipment(parsed_sheets["process equipment"], processes, data, citations)
+
+        nodes_list = [experiments, references, files, materials, processes]
+        total = self.get_total_for_progress_bar(nodes_list)
 
         # Print errors
         if error_list:
@@ -199,13 +222,15 @@ class ExcelUploader:
         # Upload
         ###
 
-        upload.upload(self.api, experiments, "Experiment")
-        upload.upload(self.api, references, "Reference")
-        upload.upload(self.api, data, "Data")
-        upload.upload(self.api, materials, "Material")
-        upload.upload(self.api, processes, "Process")
-        upload.upload(self.api, files, "File")
-        upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, self.api)
+        current_progress = 0
+
+        current_progress = upload.upload(self.api, experiments, "Experiment", current_progress, total, gui_object)
+        current_progress = upload.upload(self.api, references, "Reference", current_progress, total, gui_object)
+        current_progress = upload.upload(self.api, data, "Data", current_progress, total, gui_object)
+        current_progress = upload.upload(self.api, materials, "Material", current_progress, total, gui_object)
+        current_progress = upload.upload(self.api, processes, "Process", current_progress, total, gui_object)
+        current_progress = upload.upload(self.api, files, "File", current_progress, total, gui_object)
+        current_progress = upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, self.api)
 
         ###
         # Finish
@@ -213,6 +238,5 @@ class ExcelUploader:
 
         # Print message
         collection_url = self.collection_object.url.replace("api/", "")
-        print(f"\n\nThe upload was successful!")
-        print(f"You can view your collection here: {collection_url}\n\n")
-        input("Press ENTER to exit.")
+        gui_object.display_success(collection_url)
+        return

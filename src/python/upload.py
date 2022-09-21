@@ -1,8 +1,10 @@
+import math
+
 import cript
 from tqdm import tqdm
 
 
-def upload(api, obj_dict, obj_type):
+def upload(api, obj_dict, obj_type, current_progress, total, gui_object):
     """
     Loops through all objects and saves/updates in cript database
     at the end of every loop it calls GUI to update the progressbar
@@ -20,11 +22,25 @@ def upload(api, obj_dict, obj_type):
         desc=f"Uploading {obj_type} objects: ",
         unit="item",
     )
+
     for key, obj in obj_dict.items():
+        # increment progress wherever it was
+        current_progress += 1
+
         api.save(obj, update_existing=True)
         pbar.update(1)  # Increment progress bar
 
+        # take current progress and divide it by total needed progress to get a decimal
+        # multiply decimal by 100 to have percentage
+        # math.floor percentage, so it's always a whole number
+        progress_percentage = (current_progress/total) * 100
+        progress_percentage = math.floor(progress_percentage)
+        gui_object.update_progress_bar(progress_percentage, obj_type)
+
     pbar.close()
+
+
+    return current_progress
 
 
 def add_sample_preparation_to_process(parsed_data, data, processes, api):

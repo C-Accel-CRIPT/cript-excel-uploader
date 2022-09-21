@@ -153,17 +153,23 @@ class ExcelUploaderGUI:
         sys.exit()
 
     # this calls JS
-    def update_progress_bar(self, progress_number):
+    def update_progress_bar(self, progress_number, progress_label):
         """
         gets called on every loop iteration from ../excel_uploader/upload.py
-        and the number is calculated by (iteration number/ dictionary length) and then floor that
-        to get the nearest whole number, so we don't end up with 75.2%
+        and the number is calculated by (iteration number/ dictionary length) * 100
+        and then floor that to get the nearest whole number,
+        so we don't end up with 75.2%
+
+        then the progress_number is passed to updateLoadingBar to change the percent completed
+        and progress_label says what is being is currently being uploaded e.g. "uploading material"
 
         this function then calls the JS function updateLoadingBar to update it on the dom
-        :param progress_number: int
+
+        :param: progress_label: str label for frontend of what is being uploaded "uploading materials"
+        :param: progress_number: int
         :return: none
         """
-        eel.updateLoadingBar(progress_number)
+        eel.updateLoadingBar(progress_number, progress_label)
 
     # this calls JS
     def display_errors(self, error_list):
