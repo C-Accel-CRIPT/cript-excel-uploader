@@ -1,15 +1,14 @@
 import cript
-import traceback
-
 from tqdm import tqdm
 
 
-def upload(api, obj_dict, obj_type, gui_object):
+def upload(api, obj_dict, obj_type):
     """
     Loops through all objects and saves/updates in cript database
     at the end of every loop it calls GUI to update the progressbar
     api-obj, api connection
     obj_dict-dict, full of cript objects
+    obj_type-str, describes object types being saved
     returns-None
     """
 
@@ -21,18 +20,8 @@ def upload(api, obj_dict, obj_type, gui_object):
         desc=f"Uploading {obj_type} objects: ",
         unit="item",
     )
-
     for key, obj in obj_dict.items():
-        try:
-            api.save(obj, update_existing=True)
-        except cript.exceptions.APISaveError as error:
-            errors = [
-                "cript.exceptions.APISaveError",
-                traceback.format_exc()
-            ]
-            gui_object.display_errors(errors)
-            return
-
+        api.save(obj, update_existing=True)
         pbar.update(1)  # Increment progress bar
 
     pbar.close()

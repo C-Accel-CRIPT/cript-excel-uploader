@@ -68,7 +68,7 @@
             Please be sure both host and token are correct
         </div>
 
-        <!-- return false to prevent refresh-->
+        <!-- return false to prevent refresh -->
         <form id="start-screen-form" onsubmit="submitForm(); return false;">
 
             <!-- host input -->
@@ -169,7 +169,7 @@
                 <!-- data is public -->
                 <div class="form-check form-check-inline">
                     <input id="public-data" class="form-check-input" type="radio"
-                           name="data-privacy" value="public-data" checked>
+                           name="data-privacy" value="public-data">
                     <label class="form-check-label" for="public-data">
                         <i class="material-icons">public</i>
                         Public
@@ -179,19 +179,13 @@
                 <!-- data is private -->
                 <div class="form-check form-check-inline">
                     <input id="private-data" class="form-check-input" type="radio"
-                           name="data-privacy" value="private-data">
+                           name="data-privacy" value="private-data" checked>
                     <label class="form-check-label" for="private-data">
                         <i class="material-icons">lock</i>
                         Private
                     </label>
                 </div>
             </div>
-
-            <!-- data privacy error -->
-            <div id="data-privacy-error" class="alert alert-danger hidden " role="alert" style="margin-top: 1.1rem;">
-                Error: please select if you want to keep your data private or public
-            </div>
-
 
             <!-- upload button -->
             <div class="d-grid gap-2" style="margin-top: 0.5rem;">
@@ -235,7 +229,7 @@
         </div>
 
         <p>
-            uploading...
+            uploading <span id="uploading-specifics">...</span>
         </p>
 
         <!-- cancel button -->

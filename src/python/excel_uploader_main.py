@@ -132,8 +132,10 @@ class ExcelUploader:
         to update the progress bar on every loop
         :return: None
         """
-        upload.upload(self.api, self.nodes["experiments"], "Experiment", gui_object)
-        upload.upload(self.api, self.nodes["references"], "Reference", gui_object)
+        # get len of each self.node[...] and add them up (total)
+        current_progress = 0
+        current_progress = upload.upload(self.api, self.nodes["experiments"], total, current_progress, "Experiment", gui_object)
+        upload.upload(self.api, self.nodes["references"], total,  "Reference", gui_object)
         upload.upload(self.api, self.nodes["data"], "Data", gui_object)
         upload.upload(self.api, self.nodes["materials"], "Material", gui_object)
         upload.upload(self.api, self.nodes["processes"], "Process", gui_object)
@@ -155,21 +157,62 @@ class ExcelUploader:
         :return: None
         """
 
-        try:
-            parsed_sheets = self.get_parsed_sheets(excel_file_path)
-            self.create_nodes(parsed_sheets, data_is_public)
+        parsed_sheets = {}
+        for parameter in sheet_parameters:
+            # Creates a Sheet object to be parsed for each sheet
+            parsed_sheets[parameter["name"]] = parse.Sheet(
+                excel_file_path,
+                parameter["name"],
+                parameter["required_columns"],
+                unique_columns=parameter["unique_columns"],
+            ).parse()
 
-            if len(error_list) > 0:
-                gui_object.display_errors(error_list)
-            else:
-                self.upload_to_cript(parsed_sheets, gui_object)
-                self.collection_url = self.collection_object.url.replace("api/", "")
-                gui_object.display_success(self.collection_url)
+        ###
+        # Create and validate
+        ###
 
-        except KeyError as key_error:
-            error_list.append(f"Key Error: {key_error}")
-            error_list.append(f"Traceback: {traceback.format_exc()}")
+        experiments = create.create_experiments(parsed_sheets["experiment"], self.collection_object, data_is_public)
+        references, citations = create.create_citations(
+            parsed_sheets["citation"], self.project_object.group, data_is_public
+        )
+        data, files = create.create_data(
+            parsed_sheets["data"], self.project_object, experiments, citations, data_is_public
+        )
+        materials = create.create_materials(
+            parsed_sheets["material"], self.project_object, data, citations, data_is_public
+        )
+        materials = create.create_mixtures(parsed_sheets["mixture component"], materials)
+        processes = create.create_processes(
+            parsed_sheets["process"], experiments, data, citations, data_is_public
+        )
+        create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
+        create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)
+        create.create_products(parsed_sheets["process product"], processes, materials)
+        create.create_equipment(parsed_sheets["process equipment"], processes, data, citations)
 
-        # display errors if try wasn't successful
-        gui_object.display_errors(error_list)
-        error_list.clear()
+        # Print errors
+        if error_list:
+            gui_object.display_errors(error_list)
+            return
+
+        ###
+        # Upload
+        ###
+
+        upload.upload(self.api, experiments, "Experiment")
+        upload.upload(self.api, references, "Reference")
+        upload.upload(self.api, data, "Data")
+        upload.upload(self.api, materials, "Material")
+        upload.upload(self.api, processes, "Process")
+        upload.upload(self.api, files, "File")
+        upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, self.api)
+
+        ###
+        # Finish
+        ###
+
+        # Print message
+        collection_url = self.collection_object.url.replace("api/", "")
+        print(f"\n\nThe upload was successful!")
+        print(f"You can view your collection here: {collection_url}\n\n")
+        input("Press ENTER to exit.")
