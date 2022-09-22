@@ -20,9 +20,7 @@
     <script src="../js/all_screens.js"></script>
 
     <!-- js for development -->
-    <!--
-        <script src="../js/dev.js" defer></script>
-    -->
+    <script src="../js/dev.js" defer></script>
     <!-- screen specific JS -->
     <script src="../js/start_screen.js" defer></script>
     <script src="../js/loading_screen.js" defer></script>
@@ -93,15 +91,21 @@
 
             <!-- api token input -->
             <div class="input-group mb-3 margin-top">
-        <span class="input-group-text" id="api-token-label" title="Get your key from: https://criptapp.org/security/">
-             <i class="material-icons margin-right">key</i> API Token:
-        </span>
+                <span class="input-group-text" id="api-token-label"
+                      title="Get your key from: https://criptapp.org/security/">
+                     <i class="material-icons margin-right">key</i> API Token:
+                </span>
 
                 <input type="password" id="api-token-input" class="form-control"
                        placeholder="Token 012345e678910b111213a14151617181b9202122"
                        aria-label="place host here"
                        aria-describedby="api-token-label api-token-validation-feedback"
                        required>
+
+                <button type="button" id="api-token-visibility-toggle"
+                        class="input-group-text" onclick="passwordVisibilityToggle()">
+                    <i class="material-icons">visibility</i>
+                </button>
 
                 <!-- invalid feedback -->
                 <div id="api-token-validation-feedback" class="invalid-feedback">
@@ -270,6 +274,31 @@
                 Globus Authentication
             </a>
         </div>
+
+        <form style="margin-top: 2rem">
+            <label for="globus-auth-token-input">Globus Auth Token</label> <br>
+
+            <div class="input-group">
+
+                <input type="password" class="form-control" id="globus-auth-token-input"
+                       placeholder="OtJKBk25bjHg1KbcwW50eCKx402G2x"
+                       aria-label="Username" aria-describedby="basic-addon1">
+
+                <!-- visibility toggle -->
+                <button type="button"
+                        class="input-group-text" onclick="globusAuthVisibilityToggle()">
+                    <i class="material-icons">visibility</i>
+                </button>
+            </div>
+
+            <br>
+
+            <button type="button" class="btn btn-primary" onclick="submitGlobusAuthToken()">
+                submit
+            </button>
+        </form>
+
+
     </div>
 
     <!-- ERROR SCREEN -->

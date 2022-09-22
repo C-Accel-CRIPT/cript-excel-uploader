@@ -132,8 +132,10 @@ class ExcelUploaderGUI:
 
     def send_to_upload(self):
         """
-        changes the screen from start_screen.html to loading_screen.html
+        After validate_and_set_user_input() passes, then it calls this function to
+        change the screen from start_screen.html to loading_screen.html
         all excel_uploader required objects get sent and upload_driver starts to work
+        and there the upload.py starts to increment the progress bar as it uploads
         :return: None
         """
         eel.goToLoadingScreen()
@@ -143,6 +145,13 @@ class ExcelUploaderGUI:
         self.globus_auth("gibberish.com")
 
     def globus_auth(self, globus_auth_link):
+        """
+        this function is called when globus authentication is needed
+        changes the screen to globus auth screen, and sends the globus_auth_link
+        to JS to set it in dom, so user can click on and get their token
+
+        :params: globus_auth_link: str, that is a link to globus auth
+        """
         # after upload go to globus for authentication
         eel.goToLoadingScreen()
 
@@ -151,6 +160,18 @@ class ExcelUploaderGUI:
 
         # get globus auth link from sdk
         # after sdk says theyve been authenticated then send them to success screen
+
+    # JS calls this
+    def globus_auth_token_validation(self, globus_auth_token):
+        """
+        JS calls this function when the user submits the globus auth token.
+        this function checks the token, and if everything is valid,
+        then it sends them to the success screen
+
+        :params: globus_auth_token: str, globus auth token e.g. "OtJKBk25bjHg1KbcwW50eCKx402G2x"
+        :returns: True or False, whether they authenticated or not
+        """
+        print(globus_auth_token)
 
     # JS calls this
     def cancel_upload(self):
@@ -226,5 +247,6 @@ if __name__ == "__main__":
     eel.expose(app.get_excel_file_path)
     eel.expose(app.validate_and_set_user_input)
     eel.expose(app.cancel_upload)
+    eel.expose(app.globus_auth_token_validation)
     eel.expose(app.user_closed_app)
     app.start_app()

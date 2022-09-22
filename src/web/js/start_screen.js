@@ -155,3 +155,15 @@ function displayFormErrors(errors) {
     }
 
 }
+
+/*
+    toggle that shows text or password type input when clicked
+ */
+function passwordVisibilityToggle() {
+    let apiTokenInput = document.getElementById("api-token-input");
+    if (apiTokenInput.type === "password") {
+        apiTokenInput.type = "text";
+    } else {
+        apiTokenInput.type = "password";
+    }
+}
