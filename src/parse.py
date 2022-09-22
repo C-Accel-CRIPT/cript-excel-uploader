@@ -24,6 +24,8 @@ class Sheet:
             self.df.dropna(how="all", inplace=True)
             self.columns = self.df.columns
 
+    # TODO should be tested last, once component functions are found to be working.
+    # Check against manually created parsed objects.
     def parse(self):
         """Parses a DataFrame conversion of an excel sheet and returns parsed information as a
         dictionary of dictionaries. Each dictionary within the main dictionary contains relevant cell
@@ -78,7 +80,7 @@ class Sheet:
         value-any
         return-boolean"""
         # Check if col starts with '#'
-        if key[0] == "#":
+        if key.startswith("#"):
             return True
 
         # Check if val empty
@@ -165,5 +167,5 @@ class Sheet:
         For example, *name -> name or [3]temperature-> temperature
         raw_key-string
         return-string"""
-        raw_key.strip()
+        raw_key = raw_key.strip()
         return re.sub("\[.*\]", "", raw_key.strip("*"))

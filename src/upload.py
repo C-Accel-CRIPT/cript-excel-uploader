@@ -18,7 +18,10 @@ def upload(api, obj_dict, obj_type):
         unit="item",
     )
     for key, obj in obj_dict.items():
-        api.save(obj, update_existing=True)
+        # Creates name for File object made from external source
+        if obj_type == "File" and obj.name is None:
+            obj.name = obj.source
+        api.save(obj, update_existing=True, max_level=0)
         pbar.update(1)  # Increment progress bar
 
     pbar.close()

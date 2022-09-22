@@ -12,7 +12,7 @@ import ascii_art
 import parse
 import create
 from create import error_list
-import upload
+import upload as upload
 
 
 ###
