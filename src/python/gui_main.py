@@ -1,7 +1,9 @@
 # native imports
 import sys
 import tkinter
+import traceback
 from tkinter import filedialog
+import trace
 
 # third party imports
 import cript
@@ -11,6 +13,7 @@ import requests
 # my imports
 # TODO this needs to change after alternative main is renamed to something like Driver
 from excel_uploader_main import ExcelUploader
+from create import error_list
 
 
 class ExcelUploaderGUI:
@@ -142,7 +145,14 @@ class ExcelUploaderGUI:
 
         self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
 
-        self.globus_auth("gibberish.com")
+        if not error_list:
+            print("hit error list")
+            self.display_errors(error_list)
+            return
+        else:
+            print("hit continue to globus clause")
+            self.globus_auth("https://google.com")
+            return
 
     def globus_auth(self, globus_auth_link):
         """
@@ -152,8 +162,10 @@ class ExcelUploaderGUI:
 
         :params: globus_auth_link: str, that is a link to globus auth
         """
+
+        print("taking user to globus screen")
         # after upload go to globus for authentication
-        eel.goToLoadingScreen()
+        eel.goToGlobusAuthScreen()
 
         # set globus auth link for html <a href=""
         eel.setGlobusAuthlink(globus_auth_link)
@@ -214,8 +226,11 @@ class ExcelUploaderGUI:
         :return: None
         """
 
+        print("hit display errors")
+
         eel.goToErrorScreen()
         eel.addErrorsToScreen(error_list)
+        return
 
     # this calls JS
     def display_success(self, collection_url):
