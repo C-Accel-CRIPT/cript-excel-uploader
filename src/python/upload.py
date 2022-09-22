@@ -65,7 +65,7 @@ def upload(api, obj_dict, obj_type, current_progress, total, gui_object):
     pbar.close()
 
 
-def add_sample_preparation_to_process(parsed_data, data, processes, api):
+def add_sample_preparation_to_process(parsed_data, data, processes, api, gui_object):
     """
     Adds Process Nodes to a Data nodes "sample_preparation" field if applicable and saves updated node.
      :params parsed_data: dict
@@ -81,4 +81,14 @@ def add_sample_preparation_to_process(parsed_data, data, processes, api):
             process_node = processes[parsed_cell["value"]]
             data_node.sample_preparation = process_node
             # Save process with error checking
-            api.save(data_node, update_existing=True)
+            try:
+                api.save(data_node, update_existing=True)
+            except cript.exceptions.UnsavedNodeError:
+                # in case of error, let the user at least know what happened
+                gui_object.display_errors(
+                    [
+                        "Error: cript.exceptions.UnsavedNodeError",
+                        traceback.format_exc()
+                    ])
+
+                print(traceback.print_exc())

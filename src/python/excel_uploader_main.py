@@ -162,7 +162,7 @@ class ExcelUploader:
         )
 
         current_progress = upload.add_sample_preparation_to_process(
-            parsed_sheets["data"], data, processes, self.api
+            parsed_sheets["data"], data, processes, self.api, gui_object
         )
 
         return
