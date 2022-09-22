@@ -1,0 +1,49 @@
+site_name: CRIPT Excel Uploader Documentation
+
+repo_url: https://github.com/C-Accel-CRIPT/cript-excel-uploaders
+repo_name: C-Accel-CRIPT/cript-excel-uploader
+
+nav:
+  - Quick Start: index.md
+  # TODO this can later become either filling out config file, config sheet, or whatever else
+  - Filling Out Config: "filling out config.md"
+  - How to Run Excel Uploader: "how to run excel uploader.md"
+  - Excel Sheets Rows: "excel rows.md"
+  - Individual Excel Sheets: "individual sheets.md"
+
+theme:
+  name: material
+  palette:
+    primary: deep purple
+    accent: deep purple
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - mkdocs-jupyter
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          selection:
+            docstring_style: "restructured-text"
+          rendering:
+            show_source: true
+            heading_level: 3
+
+markdown_extensions:
+  - toc:
+      baselevel: 1
+      permalink: True
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

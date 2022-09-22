@@ -1,0 +1,68 @@
+/* used for  "Follow these steps" section */
+#usage-steps > li {
+  margin-bottom: 2rem;
+}
+
+body {
+  /* logo colors */
+  --excel-dark-color: #0d7239;
+  --excel-light-color: #21a366;
+  --yaml-color: #ce272d;
+  --cript-color: #6d3eb5;
+}
+
+/* excel row colors */
+.row-1 {
+  background-color: #e3eeda;
+  color: black;
+  text-align: center;
+}
+
+.row-2 {
+  background-color: #b5c7e7;
+  color: black;
+  text-align: center;
+}
+
+.row-3 {
+  background-color: #fefecc;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.row-3-in-table {
+  background-color: #fefecc;
+  color: black;
+  font-weight: 400;
+  text-align: center;
+}
+
+.row-4 {
+  background-color: #e6e6e7;
+  color: black;
+  text-align: center;
+}
+
+.user-input-row {
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.row-4-required-optional-label {
+  font-size: 0.7rem;
+  text-align: center;
+}
+/* end excel row colors */
+
+/* excel sheet colors */
+.required-excel-sheet-color {
+  background-color: #ffc000;
+  color: black;
+}
+
+.optional-excel-sheet-color {
+  background-color: #aeaaaa;
+  color: black;
+}
+/* end excel sheet colors */

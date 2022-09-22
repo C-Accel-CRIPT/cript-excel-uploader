@@ -204,8 +204,10 @@ upload.upload(api, references, "Reference")
 upload.upload(api, data, "Data")
 upload.upload(api, materials, "Material")
 upload.upload(api, processes, "Process")
-upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, api)
+upload.add_sample_preparation_to_process(api, parsed_sheets["data"], data, processes)
 upload.upload(api, files, "File")
+
+
 ###
 # Finish
 ###
