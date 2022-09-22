@@ -161,7 +161,11 @@ class ExcelUploader:
             self.api, files, "File", current_progress, total, gui_object
         )
 
-        current_progress = upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, self.api)
+        current_progress = upload.add_sample_preparation_to_process(
+            parsed_sheets["data"], data, processes, self.api
+        )
+
+        return
 
     def get_collections_url(self):
         """

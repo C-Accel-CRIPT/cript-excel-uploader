@@ -16,7 +16,10 @@
     <!-- my js routes -->
     <script src="../js/routes.js" defer></script>
 
-    <!-- all screen JS -->
+    <!-- JS that is needed for all screens -->
+    <script src="../js/all_screens.js"></script>
+
+    <!-- screen specific JS -->
     <script src="../js/dev.js" defer></script>
     <script src="../js/start_screen.js" defer></script>
     <script src="../js/loading_screen.js" defer></script>
@@ -24,9 +27,6 @@
     <script src="../js/error_screen.js" defer></script>
     <script src="../js/success_screen.js" defer></script>
 
-    {% block screen_js %}
-
-    {% endblock %}
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -239,9 +239,10 @@
         </div>
     </div>
 
-    <!-- Globus Auth Screen -->
+    <!-- Globus Auth SCREEN -->
     <div id="globus-auth-screen" class="container hidden">
 
+        <!-- screen header that explains the screen -->
         <h2 style="font-size: 1.5rem;" class="text-center">
             Globus Authentication
         </h2>
@@ -324,10 +325,6 @@
     </div>
 
 </main>
-
-{% block body %}
-
-{% endblock %}
 
 </body>
 </html>

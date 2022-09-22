@@ -162,6 +162,7 @@ class ExcelUploaderGUI:
 
         :return: None
         """
+        print("user canceled the upload")
         sys.exit()
 
     # this calls JS
@@ -206,14 +207,17 @@ class ExcelUploaderGUI:
         eel.goToSuccessScreen()
         eel.displayCollectionURL(collection_url)
 
-    # JS should call this
+    # JS calls this
     def user_closed_app(self):
         """
-        If the user closes the GUI window then the program should exit immediately
-        and not continue to run in the background without any indication.
-        This method handles any clean up before exit and then exits the program
-        :return: None
+        If the user closes the GUI window then the program will call this method
+        and the program will exit and not continue to run in the background without
+        any indication.
+        This method handles any clean up before exit and then exits the program nicely
+
+        :returns: None
         """
+        print("user closed the app")
         sys.exit()
 
 
@@ -222,4 +226,5 @@ if __name__ == "__main__":
     eel.expose(app.get_excel_file_path)
     eel.expose(app.validate_and_set_user_input)
     eel.expose(app.cancel_upload)
+    eel.expose(app.user_closed_app)
     app.start_app()
