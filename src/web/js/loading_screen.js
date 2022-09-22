@@ -20,7 +20,7 @@ function updateLoadingBar(progressNumber, uploadingSpecifics) {
     const progressPercent = `${progressNumber}%`;
 
     // aria-value-now (accessibility) needs raw number
-    progressbar.ariaValueNow = progressNumber;
+    progressbar.ariaValueNow = `${progressNumber}`;
 
     // width and text content both use percentage
     progressbar.style.width = progressPercent;
@@ -30,4 +30,27 @@ function updateLoadingBar(progressNumber, uploadingSpecifics) {
     let uploadingLabel = document.getElementById("uploading-specifics");
     uploadingLabel.textContent = uploadingSpecifics;
 
+}
+
+
+/*
+    can be called by other functions to clear out the progress bar, in case of a re-upload
+*/
+function resetProgressBar() {
+    // must change aria-valuenow, text content, style width
+    const progressbar = document.getElementById("uploader-progress");
+
+    // converts 10 to 10%
+    const progressPercent = "0%";
+
+    // aria-value-now (accessibility) needs raw number
+    progressbar.ariaValueNow = "0";
+
+    // width and text content both use percentage
+    progressbar.style.width = progressPercent;
+    progressbar.textContent = progressPercent;
+
+    // reset progress bar label to "uploading ..."
+    let uploadingLabel = document.getElementById("uploading-specifics");
+    uploadingLabel.textContent = "...";
 }

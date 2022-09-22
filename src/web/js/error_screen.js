@@ -50,4 +50,7 @@ function tryAgain() {
 
     // empty the errors that were on the error screen, so they do not show up again
     document.getElementById("error-window").innerHTML = "";
+
+    // start progress bar from 0, so it doesn't start from where it left off
+    resetProgressBar();
 }
