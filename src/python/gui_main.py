@@ -151,7 +151,8 @@ class ExcelUploaderGUI:
             return
         else:
             print("hit continue to globus clause")
-            self.globus_auth("https://bing.com")
+            # self.globus_auth("https://bing.com")
+            self.display_success(self.excel_uploader.get_collections_url())
             return
 
     def globus_auth(self, globus_auth_link):
