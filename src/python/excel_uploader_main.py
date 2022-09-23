@@ -22,6 +22,10 @@ class ExcelUploader:
         # after successful upload we have a collections URL
         self.collection_url = None
 
+        # keeps the current progress of upload.py to update on the gui
+        self.current_progress = 0
+        self.total_progress_needed = 0
+
     def authenticate_user(self, host, api_token):
         """
         This method is just called to create an api and authenticate the user.
@@ -124,7 +128,7 @@ class ExcelUploader:
         create.create_equipment(parsed_sheets["process equipment"], processes, data, citations)
 
         nodes_list = [experiments, references, files, materials, processes]
-        total = self.get_total_for_progress_bar(nodes_list)
+        self.total_progress_needed = self.get_total_for_progress_bar(nodes_list)
 
         # Print errors
         if error_list:
@@ -135,34 +139,33 @@ class ExcelUploader:
         # Upload
         ###
 
-        current_progress = 0
-
-        current_progress = upload.upload(
-            self.api, experiments, "Experiment", current_progress, total, gui_object
+        upload.upload(
+            self.api, experiments, "Experiment", self, gui_object
         )
 
-        current_progress = upload.upload(
-            self.api, references, "Reference", current_progress, total, gui_object
+        upload.upload(
+            self.api, references, "Reference", self, gui_object
         )
 
-        current_progress = upload.upload(
-            self.api, data, "Data", current_progress, total, gui_object
+        upload.upload(
+            self.api, data, "Data", self, gui_object
         )
 
-        current_progress = upload.upload(
-            self.api, materials, "Material", current_progress, total, gui_object
+        upload.upload(
+            self.api, materials, "Material", self, gui_object
         )
 
-        current_progress = upload.upload(
-            self.api, processes, "Process", current_progress, total, gui_object
+        upload.upload(
+            self.api, processes, "Process", self, gui_object
         )
 
-        current_progress = upload.upload(
-            self.api, files, "File", current_progress, total, gui_object
+        upload.upload(
+            self.api, files, "File", self, gui_object
         )
 
-        current_progress = upload.add_sample_preparation_to_process(
-            parsed_sheets["data"], data, processes, self.api, gui_object
+        # TODO what is going on here?
+        upload.add_sample_preparation_to_process(
+            parsed_sheets["data"], data, processes, self.api, self, gui_object
         )
 
         return

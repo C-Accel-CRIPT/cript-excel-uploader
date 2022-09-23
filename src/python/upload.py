@@ -5,7 +5,7 @@ import cript
 from tqdm import tqdm
 
 
-def upload(api, obj_dict, obj_type, current_progress, total, gui_object):
+def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
     """
     Loops through all objects and saves/updates them in cript database
     at the end of every loop it calls gui_object.update_progress_bar()
@@ -41,31 +41,33 @@ def upload(api, obj_dict, obj_type, current_progress, total, gui_object):
     )
 
     for key, obj in obj_dict.items():
-        # increment progress wherever it was
-        current_progress += 1
 
         try:
             api.save(obj, update_existing=True)
+
+            excel_uploader_object.current_progress += 1
+
+            progress_percentage = (excel_uploader_object.current_progress / excel_uploader_object.total_progress_needed)
+            progress_percentage = progress_percentage * 100
+            progress_percentage = math.floor(progress_percentage)
+
+            gui_object.update_progress_bar(progress_percentage, obj_type)
 
         except cript.exceptions.APISaveError as error:
             # put error name into the errors and another error with the traceback
             print("hit cript.exceptions.APISaveError")
             errors = [f"cript.exceptions.APISaveError: {error}", traceback.format_exc()]
-            gui_object.display_error()
+
+            gui_object.display_error(errors)
+
             return
 
         pbar.update(1)  # Increment progress bar
 
-        progress_percentage = (current_progress / total) * 100
-        progress_percentage = math.floor(progress_percentage)
-        gui_object.update_progress_bar(progress_percentage, obj_type)
-
     pbar.close()
 
-    return current_progress
 
-
-def add_sample_preparation_to_process(parsed_data, data, processes, api, gui_object):
+def add_sample_preparation_to_process(parsed_data, data, processes, api, excel_uploader_object, gui_object):
     """
     Adds Process Nodes to a Data nodes "sample_preparation" field if applicable and saves updated node.
      :params parsed_data: dict
