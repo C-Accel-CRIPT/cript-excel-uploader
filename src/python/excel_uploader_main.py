@@ -139,7 +139,7 @@ class ExcelUploader:
             return self.error_list
 
         # files and citations are not being used
-        nodes_list = [experiments, references, citations, files, data, materials, processes]
+        nodes_list = [experiments, references, citations, data, files, materials, processes]
         self.total_progress_needed = self.get_total_for_progress_bar(nodes_list)
 
         print(f"total is: {self.total_progress_needed} and progress is {self.current_progress}")
