@@ -151,7 +151,7 @@ class ExcelUploaderGUI:
             return
         else:
             print("hit continue to globus clause")
-            self.globus_auth("https://google.com")
+            self.globus_auth("https://bing.com")
             return
 
     def globus_auth(self, globus_auth_link):
@@ -183,7 +183,8 @@ class ExcelUploaderGUI:
         :params: globus_auth_token: str, globus auth token e.g. "OtJKBk25bjHg1KbcwW50eCKx402G2x"
         :returns: True or False, whether they authenticated or not
         """
-        print(globus_auth_token)
+        print("validating token")
+        self.display_success(self.excel_uploader.get_collections_url())
 
     # JS calls this
     def cancel_upload(self):
