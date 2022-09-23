@@ -43,7 +43,11 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
     for key, obj in obj_dict.items():
 
         try:
-            api.save(obj, update_existing=True)
+            # if using files from web instead of local then dont take to globus
+            if obj_type == "File" and obj.name is None:
+                obj.name = obj.source
+
+            api.save(obj, update_existing=True, max_level=0)
 
             excel_uploader_object.current_progress += 1
 
