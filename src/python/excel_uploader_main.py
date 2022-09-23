@@ -1,11 +1,9 @@
-import traceback
-
 import cript
 
 import create
 import parse
 import upload
-from create import error_list
+from create import error_list as create_error_list
 from sheet_parameters import sheet_parameters
 
 
@@ -25,6 +23,9 @@ class ExcelUploader:
         # keeps the current progress of upload.py to update on the gui
         self.current_progress = 0
         self.total_progress_needed = 0
+
+        # holds any errors that could come up during upload_driver
+        self.error_list = []
 
     def authenticate_user(self, host, api_token):
         """
@@ -89,7 +90,8 @@ class ExcelUploader:
         :param excel_file_path: string
         :param data_is_public: boolean
         :param gui_object: eel_GUI object
-        :return: None
+        :returns: a list of errors that gui_object can see if there were any errors in the process and send
+                 them to error screen or if there were no errors to send them to globus screen
         """
 
         parsed_sheets = {}
@@ -130,10 +132,13 @@ class ExcelUploader:
         nodes_list = [experiments, references, files, materials, processes]
         self.total_progress_needed = self.get_total_for_progress_bar(nodes_list)
 
-        # Print errors
-        if error_list:
-            gui_object.display_errors(error_list)
-            return
+        # any error coming from create has now been recorded here in case anything else wants to know
+        # if there were any errors or not
+        self.error_list = create_error_list
+
+        if self.error_list:
+            gui_object.display_errors(self.error_list)
+            return self.error_list
 
         ###
         # Upload
@@ -168,7 +173,7 @@ class ExcelUploader:
             parsed_sheets["data"], data, processes, self.api, self, gui_object
         )
 
-        return
+        return self.error_list
 
     def get_collections_url(self):
         """

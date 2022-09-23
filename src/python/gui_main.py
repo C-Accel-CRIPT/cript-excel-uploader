@@ -13,7 +13,6 @@ import requests
 # my imports
 # TODO this needs to change after alternative main is renamed to something like Driver
 from excel_uploader_main import ExcelUploader
-from create import error_list
 
 
 class ExcelUploaderGUI:
@@ -143,9 +142,10 @@ class ExcelUploaderGUI:
         """
         eel.goToLoadingScreen()
 
-        self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
+        # at the end it returns an error list that I can check for errors
+        error_list = self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
 
-        if not error_list:
+        if len(error_list) > 0:
             print("hit error list")
             self.display_errors(error_list)
             return
