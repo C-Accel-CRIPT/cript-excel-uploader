@@ -9,10 +9,10 @@ import yaml
 import requests
 
 import ascii_art
-import parse
-import create
-from create import error_list
-import upload as upload
+import src.parse as parse
+import src.create as create
+from src.create import error_list
+import src.upload as upload
 
 
 ###
