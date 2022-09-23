@@ -27,7 +27,7 @@ def upload(api, obj_dict, obj_type):
     pbar.close()
 
 
-def add_sample_preparation_to_process(parsed_data, data, processes, api):
+def add_sample_preparation_to_process(api, parsed_data, data, processes):
     """Adds Process Nodes to a Data nodes "sample_preparation" field if applicable and saves updated node.
     parsed_data-dict
     data-dict of CRIPT Data objects

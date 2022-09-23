@@ -1,4 +1,4 @@
-cript==0.4.5
+cript==0.4.7
 openpyxl==3.0.10
 pandas==1.4.4
 PyYAML==6.0
