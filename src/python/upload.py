@@ -47,22 +47,22 @@ def upload(api, obj_dict, obj_type, current_progress, total, gui_object):
         try:
             api.save(obj, update_existing=True)
 
-            progress_percentage = (current_progress / total) * 100
-            progress_percentage = math.floor(progress_percentage)
-            gui_object.update_progress_bar(progress_percentage, obj_type)
-
-            pbar.update(1)  # Increment progress bar
-
-            return current_progress
-
         except cript.exceptions.APISaveError as error:
             # put error name into the errors and another error with the traceback
-            print("hit cript.exceptions.APISaveError as error")
+            print("hit cript.exceptions.APISaveError")
             errors = [f"cript.exceptions.APISaveError: {error}", traceback.format_exc()]
-            gui_object.display_errors(errors)
+            gui_object.display_error()
             return
 
+        pbar.update(1)  # Increment progress bar
+
+        progress_percentage = (current_progress / total) * 100
+        progress_percentage = math.floor(progress_percentage)
+        gui_object.update_progress_bar(progress_percentage, obj_type)
+
     pbar.close()
+
+    return current_progress
 
 
 def add_sample_preparation_to_process(parsed_data, data, processes, api, gui_object):
@@ -81,14 +81,4 @@ def add_sample_preparation_to_process(parsed_data, data, processes, api, gui_obj
             process_node = processes[parsed_cell["value"]]
             data_node.sample_preparation = process_node
             # Save process with error checking
-            try:
-                api.save(data_node, update_existing=True)
-            except cript.exceptions.UnsavedNodeError:
-                # in case of error, let the user at least know what happened
-                gui_object.display_errors(
-                    [
-                        "Error: cript.exceptions.UnsavedNodeError",
-                        traceback.format_exc()
-                    ])
-
-                print(traceback.print_exc())
+            api.save(data_node, update_existing=True)
