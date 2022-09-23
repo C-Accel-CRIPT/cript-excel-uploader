@@ -3,7 +3,6 @@ import sys
 import tkinter
 import traceback
 from tkinter import filedialog
-import trace
 
 # third party imports
 import cript
@@ -13,6 +12,7 @@ import requests
 # my imports
 # TODO this needs to change after alternative main is renamed to something like Driver
 from excel_uploader_main import ExcelUploader
+from create import error_list as create_error_list
 
 
 class ExcelUploaderGUI:

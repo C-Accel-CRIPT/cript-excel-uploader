@@ -78,7 +78,8 @@ class ExcelUploader:
         for node in nodes_list:
             total += len(node)
 
-        return total
+        # TODO I am 3 over for the total
+        return total - 3
 
     def upload_driver(self, excel_file_path, data_is_public, gui_object):
         """
@@ -129,9 +130,6 @@ class ExcelUploader:
         create.create_products(parsed_sheets["process product"], processes, materials)
         create.create_equipment(parsed_sheets["process equipment"], processes, data, citations)
 
-        nodes_list = [experiments, references, files, materials, processes]
-        self.total_progress_needed = self.get_total_for_progress_bar(nodes_list)
-
         # any error coming from create has now been recorded here in case anything else wants to know
         # if there were any errors or not
         self.error_list = create_error_list
@@ -139,6 +137,13 @@ class ExcelUploader:
         if self.error_list:
             gui_object.display_errors(self.error_list)
             return self.error_list
+
+        # files and citations are not being used
+        nodes_list = [experiments, references, citations, files, data, materials, processes]
+        self.total_progress_needed = self.get_total_for_progress_bar(nodes_list)
+
+        print(f"total is: {self.total_progress_needed} and progress is {self.current_progress}")
+
 
         ###
         # Upload
@@ -169,6 +174,7 @@ class ExcelUploader:
         )
 
         # TODO what is going on here?
+        # TODO arguments should be in the same order as others
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object
         )
