@@ -9,10 +9,10 @@ import yaml
 import requests
 
 import ascii_art
-import parse
-import create
-from create import error_list
-import upload
+import src.parse as parse
+import src.create as create
+from src.create import error_list
+import src.upload as upload
 
 
 ###
@@ -204,8 +204,9 @@ upload.upload(api, references, "Reference")
 upload.upload(api, data, "Data")
 upload.upload(api, materials, "Material")
 upload.upload(api, processes, "Process")
+upload.add_sample_preparation_to_process(api, parsed_sheets["data"], data, processes)
 upload.upload(api, files, "File")
-upload.add_sample_preparation_to_process(parsed_sheets["data"], data, processes, api)
+
 
 ###
 # Finish
