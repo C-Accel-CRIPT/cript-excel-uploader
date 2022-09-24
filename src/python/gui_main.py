@@ -1,8 +1,9 @@
 # native imports
 import sys
 import tkinter
-import traceback
+from pathlib import Path
 from tkinter import filedialog
+import os
 
 # third party imports
 import cript
@@ -12,14 +13,20 @@ import requests
 # my imports
 # TODO this needs to change after alternative main is renamed to something like Driver
 from excel_uploader_main import ExcelUploader
-from create import error_list as create_error_list
 
 
 class ExcelUploaderGUI:
     def __init__(self):
+
+        # path to put you inside of src/
+        src_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.web_dir = os.path.join(src_dir, "web")
+
+        print(f'web dir is: {self.web_dir}')
+
         # initialize eel
         self.eel = eel
-        self.eel.init("../web")
+        self.eel.init(self.web_dir)
 
         self.host = None
         self.api_key = None
@@ -35,9 +42,14 @@ class ExcelUploaderGUI:
         starts the app
         :return: none
         """
+
+        # cd into templates/base.html to get html path
+        html_path = os.path.join(self.web_dir, "templates", "base.html")
+
+        print(f"html path is: {html_path}")
+
         self.eel.start(
-            'templates/base.html',
-            jinja_templates='templates',
+            html_path,
             size=(800, 850),
         )
 
