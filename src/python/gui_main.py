@@ -22,7 +22,6 @@ class ExcelUploaderGUI:
         src_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.web_dir = os.path.join(src_dir, "web")
 
-        print(f'web dir is: {self.web_dir}')
 
         # initialize eel
         self.eel = eel
@@ -45,8 +44,6 @@ class ExcelUploaderGUI:
 
         # cd into templates/base.html to get html path
         html_path = os.path.join(self.web_dir, "templates", "base.html")
-
-        print(f"html path is: {html_path}")
 
         self.eel.start(
             html_path,
