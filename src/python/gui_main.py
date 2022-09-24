@@ -1,9 +1,8 @@
 # native imports
+import os
 import sys
 import tkinter
-from pathlib import Path
 from tkinter import filedialog
-import os
 
 # third party imports
 import cript
@@ -21,7 +20,6 @@ class ExcelUploaderGUI:
         # path to put you inside of src/
         src_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.web_dir = os.path.join(src_dir, "web")
-
 
         # initialize eel
         self.eel = eel
