@@ -119,8 +119,6 @@ class ExcelUploaderGUI:
         except cript.exceptions.APIGetError:
             error_dict["collection"] = "Please enter a valid Collection name"
 
-        self.data_is_public = user_input["isDataPublic"]
-
         try:
             # just check to see if the Excel file exists,
             # if exists file then set object variable path, if not then give an error

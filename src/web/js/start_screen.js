@@ -6,9 +6,6 @@ function getInputElements() {
     const projectName = document.getElementById("project-name");
     const collectionName = document.getElementById("collection-name");
 
-    // TODO might want to enforce boolean so it can't become anything else in the middle
-    const isDataPublic = document.getElementById("public-data");
-
     const excelFilePath = document.getElementById("excel-file-path");
 
     return {
@@ -16,7 +13,6 @@ function getInputElements() {
         "apiToken": apiToken,
         "projectName": projectName,
         "collectionName": collectionName,
-        "isDataPublic": isDataPublic,
         "excelFile": excelFilePath
     }
 }
@@ -27,7 +23,6 @@ function submitForm(event) {
     const apiToken = document.getElementById("api-token-input").value;
     const projectName = document.getElementById("project-name").value;
     const collectionName = document.getElementById("collection-name").value;
-    const isDataPublic = document.getElementById("public-data").checked;
     const excelFilePath = document.getElementById("excel-file-path").value;
 
     // JSON pack of user input from UI
@@ -36,7 +31,6 @@ function submitForm(event) {
         "apiToken": apiToken,
         "projectName": projectName,
         "collectionName": collectionName,
-        "isDataPublic": isDataPublic,
         "excelFile": excelFilePath
     }
 
