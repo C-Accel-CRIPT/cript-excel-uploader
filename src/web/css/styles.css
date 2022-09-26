@@ -53,6 +53,15 @@ body {
     border-radius: 1rem;
 }
 
+/* success screen styles */
+
+#data-in-cript-link {
+    background-color: var(--cript-primary-color);
+    color: white;
+}
+
+/* end of success screen */
+
 /* end error screen styles */
 
 .documentation-link {
