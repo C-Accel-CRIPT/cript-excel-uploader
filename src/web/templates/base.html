@@ -20,7 +20,7 @@
     <script src="../js/all_screens.js"></script>
 
     <!-- js for development -->
-<!--    <script src="../js/dev.js" defer></script>-->
+    <!--    <script src="../js/dev.js" defer></script>-->
     <!-- screen specific JS -->
     <script src="../js/start_screen.js" defer></script>
     <script src="../js/loading_screen.js" defer></script>
@@ -305,11 +305,24 @@
     <!-- ERROR SCREEN -->
     <div id="error-screen" class="container hidden">
 
+        <div class="container alert alert-light" role="alert">
+            When you are ready to try uploading again, please close this window, launch the CRIPT Excel
+            Uploader again, retry uploading
+        </div>
+
         <h2 id="error-header" class="text-danger" style="margin-left: 1rem;">
             Errors
         </h2>
 
-        <div id="error-window"></div>
+        <div id="error-window-parent">
+            <p>
+                Please fix errors from top down as errors further down might have been caused by the top errors.
+            </p>
+
+            <hr>
+
+            <div id="error-window"></div>
+        </div>
 
 
         <!-- Try again button -->

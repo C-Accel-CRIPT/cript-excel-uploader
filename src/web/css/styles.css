@@ -44,7 +44,7 @@ body {
 
 /* error screen style */
 
-#error-window {
+#error-window-parent {
     height: 30rem;
     width: 100%;
     background-color: #f5f5f5;
