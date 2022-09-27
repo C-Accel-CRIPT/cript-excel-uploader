@@ -159,13 +159,13 @@ This takes a boolean value of either True or False
 We can indicate True, if we want the uploaded data be publicly available
 
 ```yaml
-public: True
+public: yes
 ```
 
 We can indicate False, if we want the uploaded data be private, and hidden from the public
 
 ```yaml
-public: False
+public: no
 ```
 
 <br> <br>
