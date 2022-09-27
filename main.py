@@ -80,13 +80,6 @@ while collection is None:
         config["collection"] = input("Collection name: ")
 
 
-# Get privacy settings
-public = config.get("public")
-while public is None or not isinstance(public, bool):
-    public = input("Do you want your data visible to the public? (yes/no): ")
-    public = public.lower() == "yes"
-
-
 # Display chem art
 print(ascii_art.chem.template)
 
@@ -166,19 +159,15 @@ for parameter in sheet_parameters:
 # Create and validate
 ###
 
-experiments = create.create_experiments(parsed_sheets["experiment"], collection, public)
+experiments = create.create_experiments(parsed_sheets["experiment"], collection)
 references, citations = create.create_citations(
-    parsed_sheets["citation"], project.group, public
+    parsed_sheets["citation"], project.group
 )
-data, files = create.create_data(
-    parsed_sheets["data"], project, experiments, citations, public
-)
-materials = create.create_materials(
-    parsed_sheets["material"], project, data, citations, public
-)
+data, files = create.create_data(parsed_sheets["data"], project, experiments, citations)
+materials = create.create_materials(parsed_sheets["material"], project, data, citations)
 materials = create.create_mixtures(parsed_sheets["mixture component"], materials)
 processes = create.create_processes(
-    parsed_sheets["process"], experiments, data, citations, public
+    parsed_sheets["process"], experiments, data, citations
 )
 create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
 create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)

@@ -8,18 +8,17 @@ from beartype.roar import BeartypeException
 error_list = []
 
 
-def create_experiments(parsed_experiments, collection, public):
+def create_experiments(parsed_experiments, collection):
     """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
     into an Experiment object it is added to an experiments dictionary and that dictionary is returned.
     parsed_...-dict of dicts
     group-object
     collection-object
-    public-bool, Privacy flag for the object.
     returns- dict of objects"""
     experiments = {}
 
     for key, parsed_experiment in parsed_experiments.items():
-        experiment_dict = {"collection": collection, "public": public}
+        experiment_dict = {"collection": collection}
 
         for parsed_cell in parsed_experiment.values():
             if isinstance(parsed_cell, dict):
@@ -38,11 +37,10 @@ def create_experiments(parsed_experiments, collection, public):
     return experiments
 
 
-def create_citations(parsed_citations, group, public):
+def create_citations(parsed_citations, group):
     """Compiles dictionaries with Data and File cript objects.
     parsed_...-dict of dicts
     group-obj
-    public-bool, Privacy flag for the object.
     returns-tuple of dicts of objs
     """
 
@@ -50,7 +48,7 @@ def create_citations(parsed_citations, group, public):
     citations = {}
 
     for key, parsed_citation in parsed_citations.items():
-        reference_dict = {"group": group, "public": public}
+        reference_dict = {"group": group}
 
         for parsed_cell in parsed_citation.values():
             if isinstance(parsed_cell, dict):
@@ -70,19 +68,18 @@ def create_citations(parsed_citations, group, public):
     return references, citations
 
 
-def create_data(parsed_data, project, experiments, citations, public):
+def create_data(parsed_data, project, experiments, citations):
     """Compiles dictionaries with Data and File cript objects.
     parsed_...-dict of dicts
     project-obj
     experiments-dict of objs
-    public-bool, Privacy flag for the object.
     returns-tuple of dicts of objs
     """
     data = {}
     files = {}
 
     for key, parsed_datum in parsed_data.items():
-        datum_dict = {"citations": [], "public": public}
+        datum_dict = {"citations": []}
 
         for parsed_cell in parsed_datum.values():
             if isinstance(parsed_cell, dict):
@@ -130,14 +127,13 @@ def create_data(parsed_data, project, experiments, citations, public):
     return data, files
 
 
-def create_materials(parsed_materials, project, data, citations, public):
+def create_materials(parsed_materials, project, data, citations):
     """Creates Material objects and adds them to a dictionary of Material objects if possible.
     Returns dictionary of Material objects
     parsed_..-dict of dicts
     project-obj
     data-obj
     citations-list
-    public-bool, Privacy flag for the object.
     return-dict of obj"""
     materials = {}
 
@@ -146,7 +142,6 @@ def create_materials(parsed_materials, project, data, citations, public):
             "project": project,
             "identifiers": [],
             "properties": [],
-            "public": public,
         }
 
         for parsed_cell in parsed_material.values():
@@ -209,22 +204,17 @@ def create_mixtures(parsed_components, materials):
     return materials
 
 
-def create_processes(parsed_processes, experiments, data, citations, public):
+def create_processes(parsed_processes, experiments, data, citations):
     """Creates a dictionary of Process objects to be returned.
     parsed_...-dict of objects
     experiments-dict of objects
     data-obj
     citations-list
-    public-bool, Privacy flag for the object.
     returns dict of objects"""
     processes = {}
 
     for key, parsed_process in parsed_processes.items():
-        process_dict = {
-            "properties": [],
-            "conditions": [],
-            "public": public,
-        }
+        process_dict = {"properties": [], "conditions": []}
 
         for parsed_cell in parsed_process.values():
             cell_type = parsed_cell["type"]
