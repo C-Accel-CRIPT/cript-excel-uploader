@@ -151,7 +151,11 @@ function displayFormErrors(errors) {
 }
 
 /*
-    toggle that shows text or password type input when clicked
+    toggle that shows text or password type input
+
+    when clicked, and it is displaying the api token as text,
+    it changes the icon to give user feedback that button has been clicked
+    and to show in which state the input field is in
  */
 function passwordVisibilityToggle() {
     let apiTokenInput = document.getElementById("api-token-input");
