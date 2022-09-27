@@ -26,6 +26,7 @@ class ExcelUploaderGUI:
         self.eel = eel
         self.eel.init(self.web_dir)
 
+        # user input variables needed for Excel Uploader
         self.host = None
         self.api_key = None
         self.project_name = None
@@ -33,6 +34,7 @@ class ExcelUploaderGUI:
         self.data_is_public = False
         self.excel_file_path = None
 
+        # creating an instance of ExcelUploader
         self.excel_uploader = ExcelUploader()
 
     def start_app(self):
@@ -42,7 +44,7 @@ class ExcelUploaderGUI:
         """
 
         # cd into templates/base.html to get html path
-        html_path = os.path.join(self.web_dir, "templates", "base.html")
+        html_path = os.path.join("templates", "base.html")
 
         self.eel.start(
             html_path,
