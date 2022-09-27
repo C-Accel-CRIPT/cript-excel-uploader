@@ -11,7 +11,6 @@ import eel
 import requests
 
 # my imports
-# TODO this needs to change after alternative main is renamed to something like Driver
 from excel_uploader_main import ExcelUploader
 
 
