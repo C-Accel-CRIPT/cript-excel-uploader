@@ -155,9 +155,13 @@ function displayFormErrors(errors) {
  */
 function passwordVisibilityToggle() {
     let apiTokenInput = document.getElementById("api-token-input");
+    let apiTokenVisibilityToggle = document.getElementById("api-token-visibility-button-icon");
+
     if (apiTokenInput.type === "password") {
         apiTokenInput.type = "text";
+        apiTokenVisibilityToggle.textContent = "visibility_off"
     } else {
         apiTokenInput.type = "password";
+        apiTokenVisibilityToggle.textContent = "visibility"
     }
 }
