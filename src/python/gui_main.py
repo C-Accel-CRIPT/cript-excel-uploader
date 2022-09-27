@@ -1,4 +1,5 @@
 # native imports
+import atexit
 import os
 import sys
 import tkinter
@@ -263,6 +264,19 @@ class ExcelUploaderGUI:
         print("user closed the app")
         sys.exit()
 
+    # this calls JS
+    def program_exit_clean_up(self):
+        """
+        This method is called when python is about to exit the program
+        either because of an exception or whatever else.
+        It is meant to be used to clean up whatever python was doing
+        and then close the GUI to let the user know the program has ended
+        returns: None
+        """
+        print("python exited the program and GUI is being closed")
+        eel.pythonExitCleanUp()
+        return
+
 
 if __name__ == "__main__":
     app = ExcelUploaderGUI()
@@ -272,3 +286,6 @@ if __name__ == "__main__":
     eel.expose(app.globus_auth_token_validation)
     eel.expose(app.user_closed_app)
     app.start_app()
+
+    # register method to handle clean up when python exits
+    atexit.register(app.program_exit_clean_up)
