@@ -1,0 +1,25 @@
+name: Compile GUI for Mac
+# run this job manually
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: macos-latest
+    steps:
+      # used to checkout different branches
+      - uses: actions/checkout@v3
+        with:
+          # checkout my specific branch
+          ref: main
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: pip install dependencies
+        run: pip install -r requirements.txt
+      - name: compile GUI for Mac OS
+        run: python -m eel src/python/gui_main.py src/web/ --onefile --noconsole --icon=src/assets/logo_condensed.ico
+      - name: show what is in directory
+        run: ls
+      - name: show inside of dist
+        run: ls dist/
+      - name: finished compiling GUI
+        run: echo "hello world!"
