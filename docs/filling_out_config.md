@@ -156,13 +156,13 @@ This option indicates to our software whether we want to keep the uploaded data 
 
 This takes a boolean value of either True or False
 
-We can indicate True, if we want the uploaded data be publicly available
+We can indicate yes, if we want the uploaded data be publicly available
 
 ```yaml
 public: yes
 ```
 
-We can indicate False, if we want the uploaded data be private, and hidden from the public
+We can indicate no, if we want the uploaded data be private, and hidden from the public
 
 ```yaml
 public: no
