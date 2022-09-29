@@ -43,7 +43,7 @@ class ExcelUploaderGUI:
         """
 
         # cd into templates/base.html to get html path
-        html_path = os.path.join("templates", "base.html")
+        html_path = os.path.join(self.web_dir, "templates", "base.html")
 
         self.eel.start(
             html_path,
