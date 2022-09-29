@@ -613,7 +613,7 @@ Define the equipment used in a process.
 | \*key                                                                                                        | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> |
 | description                                                                                                  | attribute | no       | regular text                                                                                                 |
 | pick from `Name` column of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
-| \*citation                                                                                                   | relation  | yes      | value from `*name` column of `citation` sheet                                                                |
+| citation                                                                                                     | relation  | no       | value from `*name` column of `citation` sheet                                                                |
 
 <br>
 
