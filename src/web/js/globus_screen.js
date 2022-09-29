@@ -12,11 +12,15 @@ function setGlobusAuthlink(globusLink) {
 */
 function globusAuthVisibilityToggle() {
     let globusAuthToken = document.getElementById("globus-auth-token-input");
+    let authTokenVisibilityIcon = document.getElementById("globus-auth-token-visibility-button-icon");
+
 
     if (globusAuthToken.type === "password") {
         globusAuthToken.type = "text";
+        authTokenVisibilityIcon.textContent = "visibility_off"
     } else {
         globusAuthToken.type = "password";
+        authTokenVisibilityIcon.textContent = "visibility"
     }
 }
 
