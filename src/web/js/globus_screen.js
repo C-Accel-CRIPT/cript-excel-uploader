@@ -32,3 +32,15 @@ function submitGlobusAuthToken() {
 
     eel.globus_auth_token_validation(globusToken.value);
 }
+
+
+eel.expose(invalidGlobusAuthToken);
+
+/*
+python calls this function when the globus auth token was invalid
+this function shows feedback error
+*/
+function invalidGlobusAuthToken() {
+    let globusTokenInputField = document.getElementById("globus-auth-token-input");
+    globusTokenInputField.classList.add("is-invalid");
+}

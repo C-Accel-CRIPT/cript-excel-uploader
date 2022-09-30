@@ -185,15 +185,26 @@ class ExcelUploaderGUI:
     # JS calls this
     def globus_auth_token_validation(self, globus_auth_token):
         """
-        JS calls this function when the user submits the globus auth token.
-        this function checks the token, and if everything is valid,
-        then it sends them to the success screen
+        JS calls this method when the user submits the globus auth token.
+        this function sends the token to excel_uploader_main.py where it
+        validates it and returns a true or false for validation.
+
+        This method will then either show invalid feedback error to user or continue
+        the upload process
 
         :params: globus_auth_token: str, globus auth token e.g. "OtJKBk25bjHg1KbcwW50eCKx402G2x"
         :returns: True or False, whether they authenticated or not
         """
-        print("validating token")
-        self.display_success(self.excel_uploader.get_collections_url())
+
+        globus_token_is_valid = self.excel_uploader.is_globus_auth_token_valid(globus_auth_token)
+
+        # globus token is valid, take them to upload again
+        if globus_token_is_valid:
+            self.send_to_upload()
+
+        # token is invalid, show feedback on UI, and ask for token again
+        else:
+            eel.invalidGlobusAuthToken()
 
     # JS calls this
     def cancel_upload(self):

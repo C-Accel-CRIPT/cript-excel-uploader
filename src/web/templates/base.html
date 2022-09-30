@@ -19,8 +19,6 @@
     <!-- JS that is needed for all screens -->
     <script src="../js/all_screens.js"></script>
 
-    <!-- js for development -->
-    <!--    <script src="../js/dev.js" defer></script>-->
     <!-- screen specific JS -->
     <script src="../js/start_screen.js" defer></script>
     <script src="../js/loading_screen.js" defer></script>
@@ -171,7 +169,7 @@
 
             <div id="data-privacy-options">
                 <small>
-                    Your data will be uploaded as non-public
+                    Your data will be uploaded as unpublished
                 </small>
             </div>
 
@@ -257,25 +255,34 @@
         </div>
 
         <!-- Globus token form input -->
-        <form class="" style="margin-top: 2rem;">
+        <form class="" style="margin-top: 2rem;" onsubmit="submitGlobusAuthToken(); return false;">
+
             <label for="globus-auth-token-input">Globus Auth Token</label> <br>
 
             <div class="input-group">
 
+                <!-- auth token input field -->
                 <input type="password" class="form-control" id="globus-auth-token-input"
                        placeholder="OtJKBk25bjHg1KbcwW50eCKx402G2x"
-                       aria-label="Username" aria-describedby="basic-addon1">
+                       aria-label="Globus Authentication Token Input"
+                       aria-describedby="globus-auth-token-input globus-auth-token-invalid-feedback">
 
                 <!-- visibility toggle -->
                 <button type="button"
                         class="input-group-text" onclick="globusAuthVisibilityToggle()">
                     <i id="globus-auth-token-visibility-button-icon" class="material-icons">visibility</i>
                 </button>
+
+                <!-- invalid feedback -->
+                <div id="globus-auth-token-invalid-feedback" class="invalid-feedback">
+                    Token was invalid
+                </div>
+
             </div>
 
             <br>
 
-            <button type="button" class="btn btn-primary" onclick="submitGlobusAuthToken()">
+            <button type="submit" class="btn btn-primary">
                 submit
             </button>
         </form>
