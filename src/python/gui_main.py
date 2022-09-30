@@ -48,6 +48,7 @@ class ExcelUploaderGUI:
         self.eel.start(
             html_path,
             size=(800, 850),
+            port=8001
         )
 
     # JS calls this
