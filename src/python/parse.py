@@ -77,7 +77,7 @@ class Sheet:
         value-any
         return-boolean"""
         # Check if col starts with '#'
-        if key[0] == "#":
+        if key.startswith("#"):
             return True
 
         # Check if val empty
@@ -164,5 +164,5 @@ class Sheet:
         For example, *name -> name or [3]temperature-> temperature
         raw_key-string
         return-string"""
-        raw_key.strip()
+        raw_key = raw_key.strip()
         return re.sub("\[.*\]", "", raw_key.strip("*"))
