@@ -79,7 +79,7 @@ def create_data(parsed_data, project, experiments, citations):
     files = {}
 
     for key, parsed_datum in parsed_data.items():
-        datum_dict = {"citations": []}
+        datum_dict = {"files": [], "citations": []}
 
         for parsed_cell in parsed_datum.values():
             if isinstance(parsed_cell, dict):
@@ -109,17 +109,18 @@ def create_data(parsed_data, project, experiments, citations):
                     elif cell_key == "sample_preparation":
                         datum_dict["sample_preparation"] = None
 
-        datum = _create_object(cript.Data, datum_dict, parsed_cell)
         file = _create_object(
             cript.File,
             {
                 "project": project,
-                "data": [datum],
                 "source": file_source,
                 "type": "data",
             },
             parsed_cell,
         )
+        datum_dict["files"].append(file)
+        datum = _create_object(cript.Data, datum_dict, parsed_cell)
+
         if None not in (datum, file):
             data[key] = datum
             files[key] = file
