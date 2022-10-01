@@ -153,6 +153,8 @@ class ExcelUploaderGUI:
         # at the end it returns an error list that I can check for errors
         error_list = self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
 
+        # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
+        #   screen and not returning any errors
         if len(error_list) > 0:
             print("hit error list")
             self.display_errors(error_list)
