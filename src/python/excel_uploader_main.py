@@ -71,6 +71,30 @@ class ExcelUploader:
         """
         self.collection_object = self.api.get(cript.Collection, {"name": collection_name})
 
+    def is_uploading_local_files(self, files):
+        """
+         method checks if there are any files to upload first
+         if there are files to upload then it loops through and checks the source of each file node
+         if a single source does not have http:// or https:// then it returns true and user needs
+         to go to Globus auth screen
+         if loop completes and all the sources are have web indications (http or https) then
+         user is uploading all web files, doesn't need to authenticate with globus, and returns False
+
+        :params files: files is an array of file nodes
+        :returns: True if use has local files to upload,
+        and False if user does not have any files to upload or the files they want to upload are all on the web
+        """
+
+        if len(files) < 1:
+            return False
+
+        for key in files:
+            # if file is local
+            if ("http://" not in files[key].source) and ("https://" not in files[key].source):
+                return True
+
+        return False
+
     def set_globus_auth_link(self):
         """
          sets the url for globus auth, that then can be accessed and given to the frontend
@@ -171,7 +195,7 @@ class ExcelUploader:
         # if there is local files to upload, and they have not authenticated with storage client yet
         # take them to authenticate with globus
         # TODO need to check if the file node exists first and then check if there is any
-        if (len(files) > 0) and not self.has_authenticated_with_globus:
+        if self.is_uploading_local_files(files) and not self.has_authenticated_with_globus:
             # take them to globus screen
             self.set_globus_auth_link()
             gui_object.globus_auth(self.globus_auth_link)
