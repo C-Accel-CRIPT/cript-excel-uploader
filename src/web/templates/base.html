@@ -230,39 +230,47 @@
 
         <!-- screen header that explains the screen -->
         <h2 style="font-size: 1.5rem;" class="text-center">
-            Globus Authentication
+            Globus Authentication for File Uploads
         </h2>
 
         <!-- image -->
         <div class="text-center">
-            <img src="../assets/secure_login.png" class="img-fluid" style="width: 30rem"
+            <img src="../assets/secure_login.png" class="img-fluid"
+                 style="width: 35rem; margin-bottom: 2rem"
                  alt="cartoon picture that shows a laptop with a lock on it, depicting a secure login">
         </div>
 
         <!-- instructions on what to do with button -->
         <div>
             <h3 class="text-center" style="font-size: 1rem">
-                Please click the button below to authenticate through Globus to continue
+                Click the button below to authenticate through Globus
             </h3>
         </div>
 
         <!-- Globus Auth Link -->
-        <div class="text-center" style="margin-top: 2rem;">
-            <a id="globus-auth-link" class="btn btn-primary btn-lg" href="" target="_blank">
+        <div class="text-center" style="margin-top: 1rem;">
+            <a id="globus-auth-link" class="btn btn-primary " href="" target="_blank">
                 <i class="material-icons">vpn_lock</i>
                 Globus Authentication
             </a>
         </div>
 
         <!-- Globus token form input -->
-        <form class="" style="margin-top: 2rem;" onsubmit="submitGlobusAuthToken(); return false;">
+        <form class="mx-auto"
+              style="margin-top: 2rem; width: 29rem;"
+              onsubmit="submitGlobusAuthToken(); return false;">
 
-            <label for="globus-auth-token-input">Globus Auth Token</label> <br>
+            <label for="globus-auth-token-input" style="font-weight: 400">
+                Paste authentication token
+            </label>
+
+            <br>
 
             <div class="input-group">
 
                 <!-- auth token input field -->
-                <input type="password" class="form-control" id="globus-auth-token-input"
+                <input type="password" class="form-control"
+                       id="globus-auth-token-input"
                        placeholder="OtJKBk25bjHg1KbcwW50eCKx402G2x"
                        aria-label="Globus Authentication Token Input"
                        aria-describedby="globus-auth-token-input globus-auth-token-invalid-feedback">
@@ -280,9 +288,7 @@
 
             </div>
 
-            <br>
-
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" style="margin-top: 0.7rem">
                 submit
             </button>
         </form>
