@@ -49,8 +49,6 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
 
         except cript.exceptions.APISaveError as error:
             # put error name into the errors and another error with the traceback
-            print("hit cript.exceptions.APISaveError")
-
             excel_uploader_object.error_list.append(f"cript.exceptions.APISaveError: {error}")
             excel_uploader_object.error_list.append(traceback.format_exc())
 

@@ -160,8 +160,6 @@ class ExcelUploaderGUI:
             self.display_errors(error_list)
             return
         else:
-            print("hit continue to globus clause")
-            # self.globus_auth("https://bing.com")
             self.display_success(self.excel_uploader.get_collections_url())
             return
 
@@ -174,7 +172,6 @@ class ExcelUploaderGUI:
         :params: globus_auth_link: str, that is a link to globus auth
         """
 
-        print("taking user to globus screen")
         # after upload go to globus for authentication
         eel.goToGlobusAuthScreen()
 
@@ -248,8 +245,6 @@ class ExcelUploaderGUI:
         :param error_list: list
         :return: None
         """
-
-        print("hit display errors")
 
         eel.goToErrorScreen()
         eel.addErrorsToScreen(error_list)
