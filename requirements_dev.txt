@@ -1,6 +1,5 @@
 -r requirements.txt
 black==22.8.0
 pre-commit==2.20.0
-tqdm==4.64.1
 eel==0.14.0
 pyinstaller==5.4.1

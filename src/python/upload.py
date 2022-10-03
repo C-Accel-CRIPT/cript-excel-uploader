@@ -2,7 +2,6 @@ import math
 import traceback
 
 import cript
-from tqdm import tqdm
 
 
 def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
@@ -31,15 +30,6 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
               If the upload loop runs successfully then it returns the current_progress at the end
     """
 
-    # Instantiate progress bar
-    pbar = tqdm(
-        total=len(obj_dict),
-        mininterval=0.1,
-        dynamic_ncols=True,
-        desc=f"Uploading {obj_type} objects: ",
-        unit="item",
-    )
-
     for key, obj in obj_dict.items():
 
         try:
@@ -65,10 +55,6 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
             excel_uploader_object.error_list.append(traceback.format_exc())
 
             return
-
-        pbar.update(1)  # Increment progress bar
-
-    pbar.close()
 
 
 def add_sample_preparation_to_process(parsed_data, data, processes, api, excel_uploader_object, gui_object):
