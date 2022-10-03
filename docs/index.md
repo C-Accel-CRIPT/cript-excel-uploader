@@ -61,8 +61,10 @@ Please use the latest release assets
   </li>
 
   <li>
-    Download <code style="color: var(--excel-light-color)">example_template_vX-X-X.xlsx</code> from the 
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
+    Download the 
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.4.2/example_template_v0-4-2.xlsx">
+        example_template_vX-X-X.xlsx
+    </a>
     <ul>
       <li>
           The example_template_vX-X-X.xlsx can be used by users to directly record their data in the file
@@ -74,8 +76,10 @@ Please use the latest release assets
   </li>
 
   <li>
-    Download <code>config.yaml</code> from the 
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
+    Download the
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.4.2/config.yaml">
+          config.yaml
+    </a>
     <ul>
       <li>
         <a href="filling_out_config" target="_blank">Fill out template with your information</a>
@@ -85,7 +89,10 @@ Please use the latest release assets
 
   <li>
   <!-- TODO be sure to keep this version up to date -->
-    Download <code>cript_uploader_vX.X.X</code> from <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases" target="_blank">latest release</a>
+    Download the
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.4.2/main.exe">
+      executable
+    </a>
   <li>
       Be sure all 3 files in the same directory 
       <br>
