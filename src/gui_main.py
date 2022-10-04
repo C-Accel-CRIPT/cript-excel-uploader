@@ -14,9 +14,6 @@ import requests
 from python.excel_uploader_main import ExcelUploader
 
 
-eel.init("web")
-
-
 class ExcelUploaderGUI:
     def __init__(self):
         # user input variables needed for Excel Uploader
@@ -29,6 +26,9 @@ class ExcelUploaderGUI:
 
         # creating an instance of ExcelUploader
         self.excel_uploader = ExcelUploader()
+
+        # initialize eel
+        eel.init("web")
 
     def start_app(self):
         """
