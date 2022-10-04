@@ -1,11 +1,11 @@
 import cript
 import globus_sdk
 
-import create
-import parse
-import upload
-from create import error_list as create_error_list
-from sheet_parameters import sheet_parameters
+from python import create
+from python import parse
+from python import upload
+from python.create import error_list as create_error_list
+from python.sheet_parameters import sheet_parameters
 
 
 class ExcelUploader:

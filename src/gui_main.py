@@ -11,20 +11,14 @@ import eel
 import requests
 
 # my imports
-from excel_uploader_main import ExcelUploader
+from python.excel_uploader_main import ExcelUploader
+
+
+eel.init("web")
 
 
 class ExcelUploaderGUI:
     def __init__(self):
-
-        # path to put you inside of src/
-        src_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.web_dir = os.path.join(src_dir, "web")
-
-        # initialize eel
-        self.eel = eel
-        self.eel.init(self.web_dir)
-
         # user input variables needed for Excel Uploader
         self.host = None
         self.api_key = None
@@ -45,11 +39,7 @@ class ExcelUploaderGUI:
         # cd into templates/base.html to get html path
         html_path = os.path.join("templates", "base.html")
 
-        self.eel.start(
-            html_path,
-            size=(800, 850),
-            port=8001
-        )
+        eel.start(html_path, size=(800, 850), port=8001)
 
     # JS calls this
     def get_excel_file_path(self):
@@ -67,13 +57,11 @@ class ExcelUploaderGUI:
         root = tkinter.Tk()
         # root.iconbitmap("./assets/logo_condensed.ico")
         root.withdraw()
-        root.wm_attributes('-topmost', 1)
+        root.wm_attributes("-topmost", 1)
         # allows only Excel files to be selected
-        path_to_excel_file = filedialog.askopenfilename(title="Select your CRIPT Excel file",
-                                                        filetypes=(
-                                                            ("Excel file", "*.xlsx"),
-                                                        )
-                                                        )
+        path_to_excel_file = filedialog.askopenfilename(
+            title="Select your CRIPT Excel file", filetypes=(("Excel file", "*.xlsx"),)
+        )
         eel.setExcelFilePath(path_to_excel_file)
 
     # JS calls this
@@ -151,7 +139,9 @@ class ExcelUploaderGUI:
         eel.goToLoadingScreen()
 
         # at the end it returns an error list that I can check for errors
-        error_list = self.excel_uploader.upload_driver(self.excel_file_path, self.data_is_public, self)
+        error_list = self.excel_uploader.upload_driver(
+            self.excel_file_path, self.data_is_public, self
+        )
 
         # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
         #   screen and not returning any errors
@@ -195,7 +185,9 @@ class ExcelUploaderGUI:
         :returns: True or False, whether they authenticated or not
         """
 
-        globus_token_is_valid = self.excel_uploader.is_globus_auth_token_valid(globus_auth_token)
+        globus_token_is_valid = self.excel_uploader.is_globus_auth_token_valid(
+            globus_auth_token
+        )
 
         # globus token is valid, take them to upload again
         if globus_token_is_valid:
@@ -288,14 +280,13 @@ class ExcelUploaderGUI:
         return
 
 
-if __name__ == "__main__":
-    app = ExcelUploaderGUI()
-    eel.expose(app.get_excel_file_path)
-    eel.expose(app.validate_and_set_user_input)
-    eel.expose(app.cancel_upload)
-    eel.expose(app.globus_auth_token_validation)
-    eel.expose(app.user_closed_app)
-    app.start_app()
+app = ExcelUploaderGUI()
+eel.expose(app.get_excel_file_path)
+eel.expose(app.validate_and_set_user_input)
+eel.expose(app.cancel_upload)
+eel.expose(app.globus_auth_token_validation)
+eel.expose(app.user_closed_app)
+app.start_app()
 
-    # register method to handle clean up when python exits
-    atexit.register(app.program_exit_clean_up)
+# register method to handle clean up when python exits
+atexit.register(app.program_exit_clean_up)
