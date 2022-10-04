@@ -73,10 +73,13 @@ class ExcelUploader:
 
     def is_uploading_local_files(self, files):
         """
-         method checks if there are any files to upload first
+         method checks if there are any files to upload first, and if no file uploads then it
+         returns False for local files
+
          if there are files to upload then it loops through and checks the source of each file node
-         if a single source does not have http:// or https:// then it returns true and user needs
-         to go to Globus auth screen
+         if a single source starts with either http:// or https:// then it returns true
+          and user needs to go to Globus auth screen
+
          if loop completes and all the sources are have web indications (http or https) then
          user is uploading all web files, doesn't need to authenticate with globus, and returns False
 
@@ -89,8 +92,8 @@ class ExcelUploader:
             return False
 
         for key in files:
-            # if file is local
-            if ("http://" not in files[key].source) and ("https://" not in files[key].source):
+            # if file starts with http or https, then file is local, and returns true
+            if not files[key].source.startswith("http://") and not files[key].source.startswith("https://"):
                 return True
 
         return False
