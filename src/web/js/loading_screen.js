@@ -16,6 +16,16 @@ function updateLoadingBar(progressNumber, uploadingSpecifics) {
     // must change aria-valuenow, text content, style width
     const progressbar = document.getElementById("uploader-progress");
 
+    // tell the user what is being uploaded currently eg "uploading materials"
+    let uploadingLabel = document.getElementById("uploading-specifics");
+    uploadingLabel.textContent = uploadingSpecifics;
+
+    // if progress bar tries to go over 100, then I do not let it
+    if (progressNumber > 100) {
+        console.error(`uploading: ${uploadingSpecifics}; progressNumber is: ${progressNumber}`);
+        return;
+    }
+
     // converts 10 to 10%
     const progressPercent = `${progressNumber}%`;
 
@@ -25,11 +35,6 @@ function updateLoadingBar(progressNumber, uploadingSpecifics) {
     // width and text content both use percentage
     progressbar.style.width = progressPercent;
     progressbar.textContent = progressPercent;
-
-    // tell the user what is being uploaded currently eg "uploading materials"
-    let uploadingLabel = document.getElementById("uploading-specifics");
-    uploadingLabel.textContent = uploadingSpecifics;
-
 }
 
 
