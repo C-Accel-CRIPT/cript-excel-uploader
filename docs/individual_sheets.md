@@ -606,13 +606,14 @@ Example:
 #### <span class="optional-excel-sheet-color">process equipment</span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
 
 Define the equipment used in a process.
+> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Conditions</a> columns as you need
 
 | Row 2                                                                                                        | Row 1     | Required | Row 4 - ∞ expected value                                                                                     |
 |--------------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------|
 | \*process                                                                                                    | relation  | yes      | value from `*name` column of `process` sheet                                                                 |
 | \*key                                                                                                        | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> |
 | description                                                                                                  | attribute | no       | regular text                                                                                                 |
-| pick from `Name` column of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
+| pick from `Name` column of <a href="https://criptapp.org/keys/condition-key/" target="_blank">Conditions</a> | condition | no       | record your values                                                                                           |
 | citation                                                                                                     | relation  | no       | value from `*name` column of `citation` sheet                                                                |
 
 <br>
