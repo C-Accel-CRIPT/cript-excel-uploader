@@ -149,8 +149,7 @@ class ExcelUploader:
         for node in nodes_list:
             total += len(node)
 
-        # TODO I am 3 over for the total
-        return total - 3
+        return total
 
     def upload_driver(self, excel_file_path, data_is_public, gui_object):
         """
