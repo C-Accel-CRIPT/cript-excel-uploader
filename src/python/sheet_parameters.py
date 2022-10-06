@@ -12,7 +12,7 @@ sheet_parameters = [
     },
     {
         "name": "data",
-        "required_columns": ("experiment", "name", "type", "path"),
+        "required_columns": ("experiment", "name", "type", "source"),
         "unique_columns": ("name",),
     },
     {
