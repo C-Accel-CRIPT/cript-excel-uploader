@@ -606,7 +606,8 @@ Example:
 #### <span class="optional-excel-sheet-color">process equipment</span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
 
 Define the equipment used in a process.
-> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Conditions</a> columns as you need
+> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Conditions</a> columns as you
+> need
 
 | Row 2                                                                                                        | Row 1     | Required | Row 4 - ∞ expected value                                                                                     |
 |--------------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------|
@@ -937,13 +938,13 @@ Define the material products of each process.
 
 Define the data sets you will be associating with properties, etc.
 
-| Row 2              | Row 1     | Required | Row 4 - ∞ expected value                                                                                |
-|--------------------|-----------|----------|---------------------------------------------------------------------------------------------------------|
-| \*experiment       | relation  | yes      | value from `*name`column of`experiment`sheet                                                            |
-| \*name             | attribute | yes      | unique name                                                                                             |
-| \*type             | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/data-type/" target="_blank">data type</a> |
-| \*source           | attribute | yes      | can either be a path to a local file on your computer or a url to a website                             |
-| sample_preparation | attribute | no       | regular text                                                                                            |
+| Row 2              | Row 1     | Required | Row 4 - ∞ expected value                                                                                 |
+|--------------------|-----------|----------|----------------------------------------------------------------------------------------------------------|
+| \*experiment       | relation  | yes      | value from `*name`column of`experiment`sheet                                                             |
+| \*name             | attribute | yes      | unique name                                                                                              |
+| \*type             | attribute | yes      | pick from `*name` column of <a href="https://criptapp.org/keys/data-type/" target="_blank">data type</a> |
+| \*source           | attribute | yes      | can either be a path to a local file on your computer or a url to a website                              |
+| sample_preparation | relation  | no       | pick from `*name` column of `process` sheet                                                              |
 
 <br>
 
@@ -962,7 +963,7 @@ Define the data sets you will be associating with properties, etc.
       <u class="row-1">attribute</u> 
     </td>
     <td class="row-1">
-      <u class="row-1">attribute</u> 
+      <u class="row-1">relation</u> 
     </td>
   </tr>
   <tr>
@@ -1006,7 +1007,7 @@ Define the data sets you will be associating with properties, etc.
   </tr>
   <tr>
     <td class="row-4">
-       value from <code>*name</code> column of <span class=".required-excel-sheet-color">experiment</span> sheet
+       value from <code>*name</code> column of <span class="required-excel-sheet-color">experiment</span> sheet
     </td>
     <td class="row-4">
       Pick a unique name
@@ -1028,7 +1029,7 @@ Define the data sets you will be associating with properties, etc.
         </em>
     </td>
     <td class="row-4">
-      your description of how you prepared the sample
+      pick a process from <code>*name</code> column of <span class="required-excel-sheet-color">process sheet</span>
     </td>
   </tr>
 </table>
