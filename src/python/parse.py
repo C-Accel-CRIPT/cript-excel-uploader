@@ -23,6 +23,8 @@ class Sheet:
             self.df.dropna(how="all", inplace=True)
             self.columns = self.df.columns
 
+    # TODO should be tested last, once component functions are found to be working.
+    # Check against manually created parsed objects.
     def parse(self):
         """Parses a DataFrame conversion of an excel sheet and returns parsed information as a
         dictionary of dictionaries. Each dictionary within the main dictionary contains relevant cell
