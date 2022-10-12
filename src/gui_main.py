@@ -27,9 +27,6 @@ class ExcelUploaderGUI:
         # creating an instance of ExcelUploader
         self.excel_uploader = ExcelUploader()
 
-        # tkinter
-        self.root = tkinter.Tk()
-
         # initialize eel
         eel.init("web")
 
@@ -55,16 +52,32 @@ class ExcelUploaderGUI:
         with JS, so we have no access to it, and we can't send it to python from JS either
         thus we are left with opening our own dialog box, getting the path,
         and then reading the file from absolute path
+
+        in this method python also notifies JS when a dialog box has been opened and closed, so the user
+        does not accidentally launch 100 instances of tkinter dialog box
+
         :return: none
         """
 
-        self.root.withdraw()
-        self.root.wm_attributes("-topmost", 1)
+        # tell JS that tkinter dialog box has been opened
+        eel.setIsDialogBoxOpen(True)
+
+        root = tkinter.Tk()
+
+        # remove the tkinter window, so we can just see the dialog box
+        root.withdraw()
+
+        root.wm_attributes("-topmost", 1)
         # allows only Excel files to be selected
         path_to_excel_file = filedialog.askopenfilename(
             title="Select your CRIPT Excel file", filetypes=(("Excel file", "*.xlsx"),)
         )
+
+        # tell JS what the path is from tkinter dialog box
         eel.setExcelFilePath(path_to_excel_file)
+
+        # notify js that dialog box is closed
+        eel.setIsDialogBoxOpen(False)
 
     # JS calls this
     def validate_and_set_user_input(self, user_input):
@@ -267,9 +280,6 @@ class ExcelUploaderGUI:
         """
         print("user closed the app")
 
-        # close tkinter if running
-        self.root.destroy()
-
         # stop the program
         sys.exit()
 
@@ -283,9 +293,6 @@ class ExcelUploaderGUI:
         returns: None
         """
         print("python exited the program and GUI is being closed")
-
-        # close tkinter if running
-        self.root.destroy()
 
         # tells JS frontend to clean up and close the GUI, as the python program has exited
         eel.pythonExitCleanUp()

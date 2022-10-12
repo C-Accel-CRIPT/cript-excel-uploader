@@ -45,10 +45,29 @@ function submitForm(event) {
     uploadButton.disabled = true;
 }
 
+// variable used to check if tkinter dialog box is already open or not
+let isTkinterDialogBoxOpen = false;
+
 // launches a tkinter dialog box and gets the Excel file path
 function getFilePathPython() {
-    eel.get_excel_file_path();
+    // only open dialog box if not already open
+    if (!isTkinterDialogBoxOpen) {
+        eel.get_excel_file_path();
+    }
+
+    // dialog box is already open and user clicked to open it again
+    else {
+        console.log("modal is already open");
+    }
 }
+
+eel.expose(setIsDialogBoxOpen);
+
+// python calls this and sets it to the state of whether dialog box is open or not
+function setIsDialogBoxOpen(dialogBoxState) {
+    isTkinterDialogBoxOpen = dialogBoxState;
+}
+
 
 // gets excel absolute path from python tkinter and sets the input text value
 eel.expose(setExcelFilePath);
