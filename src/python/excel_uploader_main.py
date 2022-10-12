@@ -69,7 +69,9 @@ class ExcelUploader:
         :return: None
         :raises: cript.exceptions.APIGetError
         """
-        self.collection_object = self.api.get(cript.Collection, {"name": collection_name})
+        self.collection_object = self.api.get(
+            cript.Collection, {"name": collection_name}
+        )
 
     def is_uploading_local_files(self, files):
         """
@@ -93,7 +95,9 @@ class ExcelUploader:
 
         for key in files:
             # if file starts with http or https, then file is local, and returns true
-            if not files[key].source.startswith("http://") and not files[key].source.startswith("https://"):
+            if not files[key].source.startswith("http://") and not files[
+                key
+            ].source.startswith("https://"):
                 return True
 
         return False
@@ -178,24 +182,39 @@ class ExcelUploader:
         # Create and validate
         ###
 
-        experiments = create.create_experiments(parsed_sheets["experiment"], self.collection_object, data_is_public)
+        experiments = create.create_experiments(
+            parsed_sheets["experiment"], self.collection_object, data_is_public
+        )
         references, citations = create.create_citations(
             parsed_sheets["citation"], self.project_object.group, data_is_public
         )
         data, files = create.create_data(
-            parsed_sheets["data"], self.project_object, experiments, citations, data_is_public
+            parsed_sheets["data"],
+            self.project_object,
+            experiments,
+            citations,
+            data_is_public,
         )
         materials = create.create_materials(
-            parsed_sheets["material"], self.project_object, data, citations, data_is_public
+            parsed_sheets["material"],
+            self.project_object,
+            data,
+            citations,
+            data_is_public,
         )
-        materials = create.create_mixtures(parsed_sheets["mixture component"], materials)
+        materials = create.create_mixtures(
+            parsed_sheets["mixture component"], materials
+        )
         processes = create.create_processes(
             parsed_sheets["process"], experiments, data, citations, data_is_public
         )
 
         # if there is local files to upload, and they have not authenticated with storage client yet
         # take them to authenticate with globus
-        if self.is_uploading_local_files(files) and not self.has_authenticated_with_globus:
+        if (
+            self.is_uploading_local_files(files)
+            and not self.has_authenticated_with_globus
+        ):
             # take them to globus screen
             self.set_globus_auth_link()
             gui_object.globus_auth(self.globus_auth_link)
@@ -203,9 +222,13 @@ class ExcelUploader:
 
         # create
         create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
-        create.create_ingredients(parsed_sheets["process ingredient"], processes, materials)
+        create.create_ingredients(
+            parsed_sheets["process ingredient"], processes, materials
+        )
         create.create_products(parsed_sheets["process product"], processes, materials)
-        create.create_equipment(parsed_sheets["process equipment"], processes, data, citations)
+        create.create_equipment(
+            parsed_sheets["process equipment"], processes, data, citations
+        )
 
         # any error coming from create has now been recorded here in case anything else wants to know
         # if there were any errors or not
@@ -216,36 +239,32 @@ class ExcelUploader:
             return self.error_list
 
         # files and citations are not being used
-        nodes_list = [experiments, references, citations, data, files, materials, processes]
+        nodes_list = [
+            experiments,
+            references,
+            citations,
+            data,
+            files,
+            materials,
+            processes,
+        ]
         self.total_progress_needed = self.get_total_for_progress_bar(nodes_list)
 
         ###
         # Upload
         ###
 
-        upload.upload(
-            self.api, files, "File", self, gui_object
-        )
+        upload.upload(self.api, files, "File", self, gui_object)
 
-        upload.upload(
-            self.api, experiments, "Experiment", self, gui_object
-        )
+        upload.upload(self.api, experiments, "Experiment", self, gui_object)
 
-        upload.upload(
-            self.api, references, "Reference", self, gui_object
-        )
+        upload.upload(self.api, references, "Reference", self, gui_object)
 
-        upload.upload(
-            self.api, data, "Data", self, gui_object
-        )
+        upload.upload(self.api, data, "Data", self, gui_object)
 
-        upload.upload(
-            self.api, materials, "Material", self, gui_object
-        )
+        upload.upload(self.api, materials, "Material", self, gui_object)
 
-        upload.upload(
-            self.api, processes, "Process", self, gui_object
-        )
+        upload.upload(self.api, processes, "Process", self, gui_object)
 
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object

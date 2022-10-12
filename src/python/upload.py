@@ -41,7 +41,10 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
 
             excel_uploader_object.current_progress += 1
 
-            progress_percentage = (excel_uploader_object.current_progress / excel_uploader_object.total_progress_needed)
+            progress_percentage = (
+                excel_uploader_object.current_progress
+                / excel_uploader_object.total_progress_needed
+            )
             progress_percentage = progress_percentage * 100
             progress_percentage = math.floor(progress_percentage)
 
@@ -49,13 +52,17 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
 
         except cript.exceptions.APISaveError as error:
             # put error name into the errors and another error with the traceback
-            excel_uploader_object.error_list.append(f"cript.exceptions.APISaveError: {error}")
+            excel_uploader_object.error_list.append(
+                f"cript.exceptions.APISaveError: {error}"
+            )
             excel_uploader_object.error_list.append(traceback.format_exc())
 
             return
 
 
-def add_sample_preparation_to_process(parsed_data, data, processes, api, excel_uploader_object, gui_object):
+def add_sample_preparation_to_process(
+    parsed_data, data, processes, api, excel_uploader_object, gui_object
+):
     """
     Adds Process Nodes to a Data nodes "sample_preparation" field if applicable and saves updated node.
      :params parsed_data: dict
