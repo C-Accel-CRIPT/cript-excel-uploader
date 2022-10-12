@@ -121,7 +121,6 @@ class ExcelUploader:
         :param globus_auth_token: str globus auth token/code inputted by the user
         :returns: True if tokens were valid and False if it was invalid
         """
-        # TODO consider passing in globus auth link, and token to the whole function
         try:
             self.api.storage_client.set_tokens(self.globus_auth_link, globus_auth_token)
 
@@ -196,7 +195,6 @@ class ExcelUploader:
 
         # if there is local files to upload, and they have not authenticated with storage client yet
         # take them to authenticate with globus
-        # TODO need to check if the file node exists first and then check if there is any
         if self.is_uploading_local_files(files) and not self.has_authenticated_with_globus:
             # take them to globus screen
             self.set_globus_auth_link()
@@ -249,8 +247,6 @@ class ExcelUploader:
             self.api, processes, "Process", self, gui_object
         )
 
-        # TODO what is going on here?
-        # TODO arguments should be in the same order as others
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object
         )
