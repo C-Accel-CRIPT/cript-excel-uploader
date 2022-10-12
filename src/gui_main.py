@@ -27,6 +27,9 @@ class ExcelUploaderGUI:
         # creating an instance of ExcelUploader
         self.excel_uploader = ExcelUploader()
 
+        # tkinter
+        self.root = tkinter.Tk()
+
         # initialize eel
         eel.init("web")
 
@@ -54,9 +57,9 @@ class ExcelUploaderGUI:
         and then reading the file from absolute path
         :return: none
         """
-        root = tkinter.Tk()
-        root.withdraw()
-        root.wm_attributes("-topmost", 1)
+
+        self.root.withdraw()
+        self.root.wm_attributes("-topmost", 1)
         # allows only Excel files to be selected
         path_to_excel_file = filedialog.askopenfilename(
             title="Select your CRIPT Excel file", filetypes=(("Excel file", "*.xlsx"),)
@@ -263,6 +266,11 @@ class ExcelUploaderGUI:
         :returns: None
         """
         print("user closed the app")
+
+        # close tkinter if running
+        self.root.destroy()
+
+        # stop the program
         sys.exit()
 
     # this calls JS
@@ -275,6 +283,11 @@ class ExcelUploaderGUI:
         returns: None
         """
         print("python exited the program and GUI is being closed")
+
+        # close tkinter if running
+        self.root.destroy()
+
+        # tells JS frontend to clean up and close the GUI, as the python program has exited
         eel.pythonExitCleanUp()
         return
 
