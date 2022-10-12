@@ -55,7 +55,6 @@ class ExcelUploaderGUI:
         :return: none
         """
         root = tkinter.Tk()
-        # root.iconbitmap("./assets/logo_condensed.ico")
         root.withdraw()
         root.wm_attributes("-topmost", 1)
         # allows only Excel files to be selected
