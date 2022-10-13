@@ -14,11 +14,6 @@ from python.excel_uploader_main import ExcelUploader
 class ExcelUploaderGUI:
     def __init__(self):
         # user input variables needed for Excel Uploader
-        self.host = None
-        self.api_key = None
-        self.project_name = None
-        self.collection_name = None
-        self.data_is_public = False
         self.excel_file_path = None
 
         # creating an instance of ExcelUploader
@@ -150,9 +145,12 @@ class ExcelUploaderGUI:
         """
         eel.goToLoadingScreen()
 
+        # public data is not allowed from Excel Uploader
+        data_is_public = False
+
         # at the end it returns an error list that I can check for errors
         error_list = self.excel_uploader.upload_driver(
-            self.excel_file_path, self.data_is_public, self
+            self.excel_file_path, data_is_public, self
         )
 
         # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
