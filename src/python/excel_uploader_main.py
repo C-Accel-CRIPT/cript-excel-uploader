@@ -13,7 +13,6 @@ class ExcelUploader:
         self.api = None
         self.project_object = None
         self.collection_object = None
-        self.data_is_public = False
 
         # used in create nodes function
         self.nodes = {}

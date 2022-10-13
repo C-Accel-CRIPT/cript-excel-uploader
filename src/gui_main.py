@@ -1,16 +1,13 @@
-# native imports
 import atexit
 import os
 import sys
 import tkinter
 from tkinter import filedialog
 
-# third party imports
 import cript
 import eel
 import requests
 
-# my imports
 from python.excel_uploader_main import ExcelUploader
 
 
