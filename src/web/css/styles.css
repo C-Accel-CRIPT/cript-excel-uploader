@@ -18,6 +18,11 @@ body {
     display: none;
 }
 
+/* styles for undraw images */
+.cartoon-img {
+    max-width: 40rem;
+}
+
 /* start screen styles */
 
 #data-privacy-label {
