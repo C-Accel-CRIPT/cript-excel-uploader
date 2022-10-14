@@ -153,7 +153,7 @@ class ExcelUploader:
 
         return total
 
-    def upload_driver(self, excel_file_path, data_is_public, gui_object):
+    def upload_driver(self, excel_file_path, gui_object):
         """
         The driver method that calls all the other methods to upload everything
         parses the Excel sheets, and if any errors then give them to gui_object.display_errors
@@ -182,30 +182,22 @@ class ExcelUploader:
         ###
 
         experiments = create.create_experiments(
-            parsed_sheets["experiment"], self.collection_object, data_is_public
+            parsed_sheets["experiment"], self.collection_object
         )
         references, citations = create.create_citations(
-            parsed_sheets["citation"], self.project_object.group, data_is_public
+            parsed_sheets["citation"], self.project_object.group
         )
         data, files = create.create_data(
-            parsed_sheets["data"],
-            self.project_object,
-            experiments,
-            citations,
-            data_is_public,
+            parsed_sheets["data"], self.project_object, experiments, citations
         )
         materials = create.create_materials(
-            parsed_sheets["material"],
-            self.project_object,
-            data,
-            citations,
-            data_is_public,
+            parsed_sheets["material"], self.project_object, data, citations
         )
         materials = create.create_mixtures(
             parsed_sheets["mixture component"], materials
         )
         processes = create.create_processes(
-            parsed_sheets["process"], experiments, data, citations, data_is_public
+            parsed_sheets["process"], experiments, data, citations
         )
 
         # if there is local files to upload, and they have not authenticated with storage client yet

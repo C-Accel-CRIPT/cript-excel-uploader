@@ -149,9 +149,7 @@ class ExcelUploaderGUI:
         data_is_public = False
 
         # at the end it returns an error list that I can check for errors
-        error_list = self.excel_uploader.upload_driver(
-            self.excel_file_path, data_is_public, self
-        )
+        error_list = self.excel_uploader.upload_driver(self.excel_file_path, self)
 
         # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
         #   screen and not returning any errors
