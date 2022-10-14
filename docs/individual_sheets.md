@@ -66,8 +66,8 @@ and the material that occurs as a result of the experiment (process product)
 Define all materials that will be referenced throughout the document.
 
 > You can have as many <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material
-> identifiers</a>
-> and <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material properties</a> as you needed
+> identifier</a>
+> and <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material property</a> columns as you needed
 
 | Row 2                                                                                                                            | Row 1      | Required | Row 4 - ∞ expected value |
 |----------------------------------------------------------------------------------------------------------------------------------|------------|----------|--------------------------|
@@ -323,7 +323,7 @@ This sheet defines the experiment
 Define the processes of each experiment.
 
 > You can have as many <a href="https://criptapp.org/keys/process-property-key/" target="_blank">process property</a>
-> and <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> as you need
+> and <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> columns as you need
 
 | Row 2                                                                                                                     | Row 1     | Required | Row 4 - ∞ expected value                                                                                                                                               |
 |---------------------------------------------------------------------------------------------------------------------------|-----------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -606,7 +606,7 @@ Example:
 #### <span class="optional-excel-sheet-color">process equipment</span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
 
 Define the equipment used in a process.
-> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Conditions</a> columns as you
+> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Condition</a> columns as you
 > need
 
 | Row 2                                                                                                        | Row 1     | Required | Row 4 - ∞ expected value                                                                                     |
@@ -760,7 +760,7 @@ Define the immediate prerequisites for each process.
 
 Define the ingredients for each process and their respective quantities.
 
-> you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantities</a> as needed for
+> you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a> columns as needed for
 > your different materials
 
 | Row 2                                                                                                     | Row 1     | Required | Row 4 - ∞ expected value                                                                                           |
