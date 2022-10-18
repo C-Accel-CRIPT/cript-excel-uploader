@@ -38,10 +38,10 @@ Please use the latest release assets
         A Project can be thought of as a bunch of folders each containing experiments that contribute to a single project
       </li>
       <li>
-        Essentially some Collections put in one bucket
+        Essentially, the project can be thought of as Collections put inside of one folder
       </li>
       <li>
-        A Project is needed because each Collection belongs to a Project
+        A Project is needed because each Collection belongs inside of a Project
       </li>
     </ul>
   </li>
