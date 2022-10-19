@@ -38,7 +38,7 @@ Please use the latest release assets
         A Project can be thought of as a bunch of folders each containing experiments that contribute to a single project
       </li>
       <li>
-        Essentially, the project can be thought of as Collections put inside of one folder
+        Essentially, the project can be thought of as a folder that holds Collection nodes
       </li>
       <li>
         A Project is needed because each Collection belongs inside of a Project
