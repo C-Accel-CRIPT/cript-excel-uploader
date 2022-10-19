@@ -262,6 +262,18 @@ class ExcelUploaderGUI:
         eel.displayCollectionURL(collection_url)
 
     # JS calls this
+    def reset_for_uploading(self):
+        """
+        this method is called by JS when the user reaches the error screen and
+        clicks on the "Try again" button to clear out the errors that were placed in the
+        error_list that may have already contained error, so we do not just keep adding on to it
+        also, the count for the progress bar needs to be reset to 0 so it does not start from 100
+        """
+        self.excel_uploader.error_list.clear()
+        self.excel_uploader.reset_progress()
+        return
+
+    # JS calls this
     def user_closed_app(self):
         """
         If the user closes the GUI window then the program will call this method
@@ -292,13 +304,19 @@ class ExcelUploaderGUI:
         return
 
 
-app = ExcelUploaderGUI()
-eel.expose(app.get_excel_file_path)
-eel.expose(app.validate_and_set_user_input)
-eel.expose(app.cancel_upload)
-eel.expose(app.globus_auth_token_validation)
-eel.expose(app.user_closed_app)
-app.start_app()
+if __name__ == "__main__":
+    app = ExcelUploaderGUI()
 
-# register method to handle clean up when python exits
-atexit.register(app.program_exit_clean_up)
+    # functions that JS can call
+    eel.expose(app.get_excel_file_path)
+    eel.expose(app.validate_and_set_user_input)
+    eel.expose(app.cancel_upload)
+    eel.expose(app.globus_auth_token_validation)
+    eel.expose(app.reset_for_uploading)
+    eel.expose(app.user_closed_app)
+
+    # start the app
+    app.start_app()
+
+    # register method to handle clean up when python exits
+    atexit.register(app.program_exit_clean_up)

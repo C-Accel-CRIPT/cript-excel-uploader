@@ -153,6 +153,13 @@ class ExcelUploader:
 
         return total
 
+    def reset_progress(self):
+        """
+        this method is called when the user wants to rerun the program to try re-uploading,
+        thus the progress needs to be reset to 0, so it can count again from 0 and not from 100
+        """
+        self.current_progress = 0
+
     def upload_driver(self, excel_file_path, gui_object):
         """
         The driver method that calls all the other methods to upload everything

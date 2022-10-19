@@ -34,23 +34,41 @@ function addErrorsToScreen(errorList) {
 }
 
 /*
-    function that fires when the user clicks on the button from the error screen "Try again"
-    1. enable the start screen "Upload" button if it may have been changed to "Loading .."
-    2. show start screen
-    3. empty the errors that were on the error screen, so they do not show up again from last time
+    this function runs when user clicks on "Try Again" to try re-uploading
+    restarts the start_screen, loading_screen, globus_screen, and error_screen
+    calls the eel function to clear out the error_list so there are no old errors
+    from previous upload attempt, and sets the current_progress to 0 so the progress bar
+    can start from 0 and not from 100
+    then takes the user to the start_screen
 */
 function tryAgain() {
+    restartAllScreens();
+    eel.reset_for_uploading()
+    goToStartScreen();
+}
+
+/*
+    restarts the start_screen, loading_screen, globus_screen, and error_screen
+*/
+function restartAllScreens() {
+//    restart start screen
     // enable the start screen button
     let uploadButton = document.getElementById("upload-button");
     uploadButton.textContent = "Upload";
     uploadButton.disabled = false;
 
-    // show start screen
-    goToStartScreen();
+// restart loading screen
+    updateLoadingBar(0);
+    // removing updating label from what the last thing it was
+    document.getElementById("uploading-specifics").textContent = "...";
 
-    // empty the errors that were on the error screen, so they do not show up again
-    document.getElementById("error-window").innerHTML = "";
+// restart globus screen
+    // clears out the form of the token that they have already inputted and ready to accept input
+    // the link for globus will get auto generated anyways
+    document.getElementById("globus-auth-token-input").value = "";
 
-    // start progress bar from 0, so it doesn't start from where it left off
-    resetProgressBar();
+// restart error screen
+    // remove any errors that are already appended to the error window
+document.getElementById("error-window").textContent = "";
+
 }
