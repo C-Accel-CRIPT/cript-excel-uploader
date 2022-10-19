@@ -57,6 +57,33 @@ function restartAllScreens() {
     uploadButton.textContent = "Upload";
     uploadButton.disabled = false;
 
+    // remove all previous errors that there might have been there
+    document.getElementById("authentication-error-alert").classList.add("hidden");
+
+    // get all input elements for start_screen
+    let inputElements = getInputElements();
+
+    // remove feedback from host
+    inputElements.host.classList.remove("is-valid");
+    inputElements.host.classList.remove("is-invalid");
+
+    // remove feedback from apiToken
+    inputElements.apiToken.classList.remove("is-valid");
+    inputElements.apiToken.classList.remove("is-invalid");
+
+    // remove feedback from projectName
+    inputElements.projectName.classList.remove("is-valid");
+    inputElements.projectName.classList.remove("is-invalid");
+
+    // remove feedback from collectionName
+    inputElements.collectionName.classList.remove("is-valid");
+    inputElements.collectionName.classList.remove("is-invalid");
+
+    // remove feedback from excelFile
+    inputElements.excelFile.classList.remove("is-valid");
+    inputElements.excelFile.classList.remove("is-invalid");
+
+
 // restart loading screen
     updateLoadingBar(0);
     // removing updating label from what the last thing it was
