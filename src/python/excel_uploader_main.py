@@ -56,7 +56,7 @@ class ExcelUploader:
         :return: None
         :raises: cript.exceptions.APIGetError
         """
-        self.project_object = self.api.get(cript.Project, {"name": project_name})
+        self.project_object = cript.Project.get(name=project_name)
 
     def set_collection(self, collection_name):
         """
@@ -68,9 +68,7 @@ class ExcelUploader:
         :return: None
         :raises: cript.exceptions.APIGetError
         """
-        self.collection_object = self.api.get(
-            cript.Collection, {"name": collection_name}
-        )
+        self.collection_object = cript.Collection.get(name=collection_name)
 
     def is_uploading_local_files(self, files):
         """
@@ -252,17 +250,18 @@ class ExcelUploader:
         # Upload
         ###
 
-        upload.upload(self.api, files, "File", self, gui_object)
+        # TODO for newest SDK changed here
+        upload.upload(files, "File", self, gui_object)
 
-        upload.upload(self.api, experiments, "Experiment", self, gui_object)
+        upload.upload(experiments, "Experiment", self, gui_object)
 
-        upload.upload(self.api, references, "Reference", self, gui_object)
+        upload.upload(references, "Reference", self, gui_object)
 
-        upload.upload(self.api, data, "Data", self, gui_object)
+        upload.upload(data, "Data", self, gui_object)
 
-        upload.upload(self.api, materials, "Material", self, gui_object)
+        upload.upload(materials, "Material", self, gui_object)
 
-        upload.upload(self.api, processes, "Process", self, gui_object)
+        upload.upload(processes, "Process", self, gui_object)
 
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object

@@ -4,23 +4,43 @@ import traceback
 import cript
 
 
-def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
+def update_progress_bar(obj_type, excel_uploader_object, gui_object):
+    """
+    This function sets the progress for the progress bar in the loading screen
+    and is used in the upload function in upload.py
+
+    It works by taking the current_progress stored in excel_uploader_object and adding 1 to it
+    every time its called. Then, it divides the current_progress
+    by the total_progress_needed (max times this method will be called)
+    to get a ratio. Then the ratio will be floored to always get a whole number for the progress bar
+    and to never get a 75.2% progress
+
+    :params obj_type: what node we are saving, eg. "Material", "Experiment", "Mixture", etc.
+    :params excel_uploader_object: excel_uploader_main.py object used to keep track of the update
+    :params gui_object: gui_main.py object used to update the progress bar in the frontend
+    returns: None
+    """
+    excel_uploader_object.current_progress += 1
+
+    progress_percentage = (
+        excel_uploader_object.current_progress
+        / excel_uploader_object.total_progress_needed
+    )
+    progress_percentage = progress_percentage * 100
+    progress_percentage = math.floor(progress_percentage)
+
+    gui_object.update_progress_bar(progress_percentage, obj_type)
+    return
+
+
+def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
     """
     Loops through all objects and saves/updates them in cript database
     at the end of every loop it calls gui_object.update_progress_bar()
     to update the progress bar or gui_object.display_error() to show errors to users
 
-    :params api: api connection object
     :params obj_dict: dict, full of cript objects
     :params  obj_type: str, describes object types being saved e.g. "Material", "Experiment", "Data", etc.
-    :params current_progress: int, current_progress is kept by excel_uploader_main.py
-                               and is passed to this function so this function can increment correctly on
-                               every loop and update progressbar in the gui far,
-                               gui_object.update_progress_bar()
-    :params total: int, the total amount of loops needed to upload everything
-                   total is used to (current_progress / total) to get the decimal amount of progress that
-                   has been made on the upload, then multiply by 100, to get percentage
-                   then floor the number to only get ints in the progress bar
     :params gui_object: gui_main object that allows this function to use it to call
                         gui_object.update_progress_bar()
                         or if there are any errors to call
@@ -32,25 +52,29 @@ def upload(api, obj_dict, obj_type, excel_uploader_object, gui_object):
 
     for key, obj in obj_dict.items():
 
+        # TODO for newest SDK changed here
         try:
-            # if using files from web instead of local then dont take to globus
             if obj_type == "File" and obj.name is None:
                 obj.name = obj.source
 
-            api.save(obj, update_existing=True, max_level=0)
+                file_object = cript.File(
+                    project=excel_uploader_object.project_object, source=obj.source
+                )
+                file_object.save()
 
-            excel_uploader_object.current_progress += 1
+            elif obj_type == "Experiment":
+                cript.Experiment(
+                    collection=excel_uploader_object.collection, name=obj.name
+                )
 
-            progress_percentage = (
-                excel_uploader_object.current_progress
-                / excel_uploader_object.total_progress_needed
-            )
-            progress_percentage = progress_percentage * 100
-            progress_percentage = math.floor(progress_percentage)
+            else:
+                obj.save()
 
-            gui_object.update_progress_bar(progress_percentage, obj_type)
+            # update progress bar regardless of what happens
+            update_progress_bar(obj_type, excel_uploader_object, gui_object)
 
-        except cript.exceptions.APISaveError as error:
+        # TODO this needs specific errors instead of a catch all
+        except Exception as error:
             # put error name into the errors and another error with the traceback
             excel_uploader_object.error_list.append(
                 f"cript.exceptions.APISaveError: {error}"
@@ -78,4 +102,7 @@ def add_sample_preparation_to_process(
             process_node = processes[parsed_cell["value"]]
             data_node.sample_preparation = process_node
             # Save process with error checking
-            api.save(data_node, update_existing=True)
+            # TODO for newest SDK changed here
+            data_node.save(update_existing=True)
+
+            # api.save(data_node, update_existing=True)
