@@ -57,18 +57,7 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
             if obj_type == "File" and obj.name is None:
                 obj.name = obj.source
 
-                file_object = cript.File(
-                    project=excel_uploader_object.project_object, source=obj.source
-                )
-                file_object.save()
-
-            elif obj_type == "Experiment":
-                cript.Experiment(
-                    collection=excel_uploader_object.collection, name=obj.name
-                )
-
-            else:
-                obj.save()
+            obj.save(update_existing=True)
 
             # update progress bar regardless of what happens
             update_progress_bar(obj_type, excel_uploader_object, gui_object)
