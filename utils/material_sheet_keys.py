@@ -91,15 +91,17 @@ def single_options(sheet_df):
     return df
 
 
-# TODO make this abstract so it can work for all of them
-def property_colon_condition(property_df, condition_df):
-    all_property_condition = pd.DataFrame()
+def sheet1_colon_sheet2(sheet1_df, sheet2_df):
+    df = pd.DataFrame()
 
-    for property_row in property_df.iterrows():
-        for condition_row in condition_df.iterrows():
-            df = pd.DataFrame()
-            df["Row 1 Value"] = condition_df.sheet_name
-            df["Row 2 Value"] = f"{property_row[1].iloc.name}:{condition_row[1].iloc.name}"
+    for i, sheet1_row in sheet1_df.iterrows():
+        for index, sheet2_row in sheet2_df.iterrows():
+            df.loc[index, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
+            df.loc[index, "Row 2 Value"] = f'{sheet1_row["Name"]}:{sheet2_row["Name"]}'
+            df.loc[index, "unit"] = get_preferred_unit(sheet2_row)
+            df.loc[index, "instructions"] = sheet2_row["Description"]
+
+    return df
 
 
 def write_to_dest_excel_sheet(df):
@@ -112,4 +114,9 @@ if __name__ == "__main__":
     full_options_df = pd.DataFrame()
 
     # working on getting the single version working first
-    without_nesting = single_options(all_sheets_df["property"])
+    properties = single_options(all_sheets_df["property"])
+
+    property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
+
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+        print(property_colon_condition)
