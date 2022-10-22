@@ -34,22 +34,36 @@ def get_preferred_unit(row):
     if no preferred unit or SI unit, then it returns an empty string
 
     :params row: pandas series
-    :returns: a string that has the preferred units or an empty string
+    :returns: string unit or an empty string
     """
     preferred_unit = row["Preferred unit"]
     si_unit = row["SI unit"]
 
-    # has a preferred unit
-    if preferred_unit is not "" and preferred_unit is not "None":
+    # has a preferred unit ie not "", "None", nor nan
+    if preferred_unit != "" and preferred_unit != "None" and not pd.isna(preferred_unit):
         return preferred_unit
 
     # does not have preferred unit, but has SI unit
-    elif (preferred_unit is "" or preferred_unit is "None") and (si_unit is not "" and si_unit is not "None"):
+    elif (preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)) and (
+            si_unit != "" and si_unit != "None" and not pd.isna(si_unit)):
         return si_unit
 
     # si unit and preferred unit are both empty or none
-    elif (preferred_unit is "" or preferred_unit is "None") and (si_unit is "" or si_unit is "None"):
+    elif (preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)) and (
+            si_unit == "" or si_unit == "None" or pd.isna(si_unit)):
         return ""
+    else:
+        raise Exception(f'hit else for {row["Name"]}; preferred_unit: {preferred_unit}; si_unit: {si_unit}')
+
+
+def get_new_df():
+    row_1_value = "Row 1 Value"
+    row_2_value = "Row 2 Value"
+    unit = "unit"
+    instructions = "instructions"
+
+    df = pd.DataFrame(columns=[row_1_value, row_2_value, unit, instructions])
+    return df
 
 
 def single_options(sheet_df):
@@ -61,19 +75,20 @@ def single_options(sheet_df):
     :params sheet_df: pandas dataframe
     :returns df: pandas dataframe
     """
-    df = pd.DataFrame()
+    row_1_value = "Row 1 Value"
+    row_2_value = "Row 2 Value"
+    unit = "unit"
+    instructions = "instructions"
 
-    # TODO I don't think this way of appending to the df is working
-    for row in sheet_df.iterrows():
-        df["Row 1 Value"] = sheet_df.sheet_name
-        df["Row 2 Value"] = row[1]["Name"]
+    df = get_new_df()
 
-        # be sure you do not have "" or "None" in preferred values
-        # can probably add a check for having 2 preferred values as well
-        # if there is no preferred value see if there is SI Value instead
-        # use get_preferred_unit( ) here instead
-        df["unit"] = row[1]["Preferred unit"]
-        df["description"] = row[1]["Description"]
+    for index, row in sheet_df.iterrows():
+        df.loc[index, row_1_value] = sheet_df.sheet_name
+        df.loc[index, row_2_value] = row["Name"]
+        df.loc[index, unit] = get_preferred_unit(row)
+        df.loc[index, instructions] = row["Description"]
+
+    return df
 
 
 # TODO make this abstract so it can work for all of them
@@ -93,7 +108,8 @@ def write_to_dest_excel_sheet(df):
 
 if __name__ == "__main__":
     all_sheets_df = get_all_excel_sheets("./excel_files/source.xlsx")
+    # this is the final DF that will be written to the .xlsx file
     full_options_df = pd.DataFrame()
 
     # working on getting the single version working first
-    single_options(all_sheets_df["property"])
+    without_nesting = single_options(all_sheets_df["property"])
