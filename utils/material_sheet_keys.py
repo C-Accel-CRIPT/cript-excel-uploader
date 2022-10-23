@@ -1,5 +1,4 @@
 import pandas as pd
-import itertools
 
 
 # TODO this needs to be renamed because it is very unintuitive
