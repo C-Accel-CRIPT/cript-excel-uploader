@@ -108,8 +108,12 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
     return df
 
 
-def write_to_dest_excel_sheet(df):
-    pass
+def write_to_excel(df, output_path):
+    out_put_file_name = "output.xlsx"
+    sheet_name = "full options"
+
+    df.to_excel(f"{output_path}/{out_put_file_name}",
+                sheet_name=sheet_name, index=False)
 
 
 if __name__ == "__main__":
@@ -122,9 +126,9 @@ if __name__ == "__main__":
 
     property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
 
-    # print(property_colon_condition.shape)
+    full_options_df = pd.concat([full_options_df, properties, property_colon_condition])
 
-    full_options_df = pd.concat([full_options_df, property_colon_condition])
+    # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    #     print(full_options_df)
 
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-        print(full_options_df)
+    write_to_excel(full_options_df, "./excel_files")
