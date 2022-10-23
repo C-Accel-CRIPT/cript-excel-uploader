@@ -99,7 +99,6 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
 
     for i1, sheet1_row in sheet1_df.iterrows():
         for i2, sheet2_row in sheet2_df.iterrows():
-
             df.loc[row_number, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
             df.loc[row_number, "Row 2 Value"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
@@ -118,14 +117,8 @@ if __name__ == "__main__":
     all_sheets_df = get_all_excel_sheets("./excel_files/source.xlsx")
     # this is the final DF that will be written to the .xlsx file
 
-    row_1_value = "Row 1 Value"
-    row_2_value = "Row 2 Value"
-    unit = "unit"
-    instructions = "instructions"
+    full_options_df = get_new_df()
 
-    full_options_df = pd.DataFrame(columns=[row_1_value, row_2_value, unit, instructions])
-
-    # working on getting the single version working first
     properties = single_options(all_sheets_df["property"])
 
     property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
