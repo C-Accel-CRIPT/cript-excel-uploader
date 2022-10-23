@@ -1,4 +1,5 @@
 import pandas as pd
+import itertools
 
 
 # TODO this needs to be renamed because it is very unintuitive
@@ -94,12 +95,43 @@ def single_options(sheet_df):
 def sheet1_colon_sheet2(sheet1_df, sheet2_df):
     df = pd.DataFrame()
 
-    for i, sheet1_row in sheet1_df.iterrows():
-        for index, sheet2_row in sheet2_df.iterrows():
-            df.loc[index, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
-            df.loc[index, "Row 2 Value"] = f'{sheet1_row["Name"]}:{sheet2_row["Name"]}'
-            df.loc[index, "unit"] = get_preferred_unit(sheet2_row)
-            df.loc[index, "instructions"] = sheet2_row["Description"]
+    #
+    # df2 = pd.DataFrame()
+    # df2 = sheet1_df.loc[:, "Name"].values.tolist()
+    # # print(df2, len(df2))
+    #
+    # df3 = pd.DataFrame()
+    # df3 = sheet2_df.loc[:, "Name"].values.tolist()
+    # # print(df3, len(df3))
+    #
+    # permutations = list(itertools.permutations([df2, df3], 2))
+    #
+    # # print(permutations)
+    # # print(len(permutations))
+    #
+    # # for i, j in itertools.combinations(range(len(stuff) + 1), 2):
+    #     # print(stuff[i:j])
+    #
+    # output = []
+    #
+    # for word1 in df2:
+    #     for word2 in df3:
+    #         z = f"{word1}:{word2}"
+    #         output.append(z)
+    #
+    # print(output)
+
+    row_number = 0
+
+    for i1, sheet1_row in sheet1_df.iterrows():
+        for i2, sheet2_row in sheet2_df.iterrows():
+
+            df.loc[row_number, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
+            df.loc[row_number, "Row 2 Value"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
+            df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
+            df.loc[row_number, "instructions"] = sheet2_row['Description']
+
+            row_number += 1
 
     return df
 
@@ -111,12 +143,22 @@ def write_to_dest_excel_sheet(df):
 if __name__ == "__main__":
     all_sheets_df = get_all_excel_sheets("./excel_files/source.xlsx")
     # this is the final DF that will be written to the .xlsx file
-    full_options_df = pd.DataFrame()
+
+    row_1_value = "Row 1 Value"
+    row_2_value = "Row 2 Value"
+    unit = "unit"
+    instructions = "instructions"
+
+    full_options_df = pd.DataFrame(columns=[row_1_value, row_2_value, unit, instructions])
 
     # working on getting the single version working first
     properties = single_options(all_sheets_df["property"])
 
     property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
 
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-        print(property_colon_condition)
+    # print(property_colon_condition.shape)
+
+    full_options_df = pd.concat([full_options_df, property_colon_condition])
+
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        print(full_options_df)
