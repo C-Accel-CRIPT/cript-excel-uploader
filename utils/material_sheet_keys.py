@@ -108,11 +108,23 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
     return df
 
 
-def write_to_excel(df, output_path):
-    out_put_file_name = "output.xlsx"
-    sheet_name = "full options"
+def write_to_excel(df, output_path, output_file_name, sheet_name):
+    """
+    takes a df that we want to write to an Excel sheet.
+    then we take the output of the path Eg. "./excel_files/"
+    and we add to it the output_file_name to get "./excel_files/output.xlsx"
+    and we write our output to "./excel_files/output.xlsx" to the sheet_name we want,
+    and we remove the default index column that Pandas comes with by specifying
+    index=False
 
-    df.to_excel(f"{output_path}/{out_put_file_name}",
+    :params df: pandas dataframe object that will be written to an Excel sheet
+    :params output_path: a string path of where we want to write the Excel file to
+    :params output_file_name: what we want to call the file when it is written
+    :params sheet_name: the sheet we want to write to
+    :returns: None
+    """
+
+    df.to_excel(output_path + output_file_name,
                 sheet_name=sheet_name, index=False)
 
 
@@ -131,4 +143,4 @@ if __name__ == "__main__":
     # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     #     print(full_options_df)
 
-    write_to_excel(full_options_df, "./excel_files")
+    write_to_excel(full_options_df, "./excel_files/", "output.xlsx", "material options")
