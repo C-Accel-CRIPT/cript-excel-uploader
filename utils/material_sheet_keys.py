@@ -95,32 +95,6 @@ def single_options(sheet_df):
 def sheet1_colon_sheet2(sheet1_df, sheet2_df):
     df = pd.DataFrame()
 
-    #
-    # df2 = pd.DataFrame()
-    # df2 = sheet1_df.loc[:, "Name"].values.tolist()
-    # # print(df2, len(df2))
-    #
-    # df3 = pd.DataFrame()
-    # df3 = sheet2_df.loc[:, "Name"].values.tolist()
-    # # print(df3, len(df3))
-    #
-    # permutations = list(itertools.permutations([df2, df3], 2))
-    #
-    # # print(permutations)
-    # # print(len(permutations))
-    #
-    # # for i, j in itertools.combinations(range(len(stuff) + 1), 2):
-    #     # print(stuff[i:j])
-    #
-    # output = []
-    #
-    # for word1 in df2:
-    #     for word2 in df3:
-    #         z = f"{word1}:{word2}"
-    #         output.append(z)
-    #
-    # print(output)
-
     row_number = 0
 
     for i1, sheet1_row in sheet1_df.iterrows():
