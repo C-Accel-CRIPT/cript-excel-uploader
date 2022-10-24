@@ -36,27 +36,50 @@ def get_preferred_unit(row):
     :params row: pandas series
     :returns: string unit or an empty string
     """
+
+    # handling a case that I pass in a row from a sheet that doesn't have units,
+    # in that case just tell me and do nothing
+    if "Preferred unit" not in row and "SI unit" not in row:
+        print("hit no preferred unit")
+        return
+
+    # making them into variables, so I don't have to keep repeating them
     preferred_unit = row["Preferred unit"]
     si_unit = row["SI unit"]
 
-    # has a preferred unit ie not "", "None", nor nan
-    if preferred_unit != "" and preferred_unit != "None" and not pd.isna(preferred_unit):
+    # has a preferred unit ie not "", "None", nor nan, then return preferred_unit
+    if (
+            preferred_unit != ""
+            and preferred_unit != "None"
+            and not pd.isna(preferred_unit)
+    ):
         return preferred_unit
 
     # does not have preferred unit, but has SI unit
-    elif (preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)) and (
-            si_unit != "" and si_unit != "None" and not pd.isna(si_unit)):
+    elif (
+            preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
+    ) and (si_unit != "" and si_unit != "None" and not pd.isna(si_unit)):
         return si_unit
 
-    # si unit and preferred unit are both empty or none
-    elif (preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)) and (
-            si_unit == "" or si_unit == "None" or pd.isna(si_unit)):
+    # si unit and preferred unit are both empty or None
+    elif (
+            preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
+    ) and (si_unit == "" or si_unit == "None" or pd.isna(si_unit)):
         return ""
+
+    # if somehow all the if cases are passed,
+    # then I need to know about it and create new conditions to capture them
     else:
-        raise Exception(f'hit else for {row["Name"]}; preferred_unit: {preferred_unit}; si_unit: {si_unit}')
+        raise Exception(
+            f'hit else for {row["Name"]}; preferred_unit: {preferred_unit}; si_unit: {si_unit}'
+        )
 
 
 def get_new_df():
+    """
+    creates a new DF with columns needed for the Excel file options
+    returns: pandas dataframe object
+    """
     row_1_value = "Row 1 Value"
     row_2_value = "Row 2 Value"
     unit = "unit"
@@ -75,13 +98,17 @@ def single_options(sheet_df):
     :params sheet_df: pandas dataframe
     :returns df: pandas dataframe
     """
+
+    # made strings into a variable, so I can reference them easily
     row_1_value = "Row 1 Value"
     row_2_value = "Row 2 Value"
     unit = "unit"
     instructions = "instructions"
 
+    # df that I will fill for single options
     df = get_new_df()
 
+    # loop through and fill up the DF
     for index, row in sheet_df.iterrows():
         df.loc[index, row_1_value] = sheet_df.sheet_name
         df.loc[index, row_2_value] = row["Name"]
@@ -92,8 +119,11 @@ def single_options(sheet_df):
 
 
 def sheet1_colon_sheet2(sheet1_df, sheet2_df):
-    df = pd.DataFrame()
 
+    # df that I will fill for single options
+    df = get_new_df()
+
+    # counter to know how which row to write to
     row_number = 0
 
     for i1, sheet1_row in sheet1_df.iterrows():
@@ -101,8 +131,9 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
             df.loc[row_number, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
             df.loc[row_number, "Row 2 Value"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
-            df.loc[row_number, "instructions"] = sheet2_row['Description']
+            df.loc[row_number, "instructions"] = sheet2_row["Description"]
 
+            # increment counter to start on the next row that is blank
             row_number += 1
 
     return df
@@ -124,23 +155,37 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
     :returns: None
     """
 
-    df.to_excel(output_path + output_file_name,
-                sheet_name=sheet_name, index=False)
+    df.to_excel(output_path + output_file_name, sheet_name=sheet_name, index=False)
 
 
 if __name__ == "__main__":
+    # shows where to read all the options for the Excel file
     all_sheets_df = get_all_excel_sheets("./excel_files/source.xlsx")
-    # this is the final DF that will be written to the .xlsx file
 
+    # the df that holds all the options. making a df with all needed columns
     full_options_df = get_new_df()
 
-    properties = single_options(all_sheets_df["property"])
+    # creates all property keys
+    material_identifiers = single_options(all_sheets_df["identifiers"])
+    material_properties = single_options(all_sheets_df["property"])
 
-    property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
+    # creates all property:conditions df
+    material_property_colon_condition = sheet1_colon_sheet2(
+        all_sheets_df["property"], all_sheets_df["condition"]
+    )
 
-    full_options_df = pd.concat([full_options_df, properties, property_colon_condition])
+    # the full list of options for material sheet to be written to Excel
+    full_options_df = pd.concat(
+        [
+            full_options_df,
+            material_identifiers,
+            material_properties,
+            material_property_colon_condition
+        ]
+    )
 
     # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     #     print(full_options_df)
 
+    # write all options to an Excel file
     write_to_excel(full_options_df, "./excel_files/", "output.xlsx", "material options")
