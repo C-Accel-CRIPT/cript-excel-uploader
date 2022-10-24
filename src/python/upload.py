@@ -52,7 +52,6 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
 
     for key, obj in obj_dict.items():
 
-        # TODO for newest SDK changed here
         try:
             if obj_type == "File" and obj.name is None:
                 obj.name = obj.source
@@ -62,12 +61,18 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
             # update progress bar regardless of what happens
             update_progress_bar(obj_type, excel_uploader_object, gui_object)
 
+        # if Reference node already exists and user is trying to save duplicate,
+        # then recognize that, do nothing, and just continue with everything else
+        except cript.data_model.exceptions.UniqueNodeError as error:
+            if obj_type == "Reference":
+                continue
+            else:
+                raise error
+
         # TODO this needs specific errors instead of a catch all
         except Exception as error:
             # put error name into the errors and another error with the traceback
-            excel_uploader_object.error_list.append(
-                f"cript.exceptions.APISaveError: {error}"
-            )
+            excel_uploader_object.error_list.append(f"Error: {error}")
             excel_uploader_object.error_list.append(traceback.format_exc())
 
             return

@@ -250,7 +250,6 @@ class ExcelUploader:
         # Upload
         ###
 
-        # TODO for newest SDK changed here
         upload.upload(files, "File", self, gui_object)
 
         upload.upload(experiments, "Experiment", self, gui_object)
