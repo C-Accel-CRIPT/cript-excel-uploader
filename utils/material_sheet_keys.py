@@ -89,7 +89,7 @@ def get_instructions(row, sheet_name):
         return instruction
 
     if (sheet_name == "attribute") and (row["Name"] == "uncertainty_type"):
-        return "Pick from Name column of Uncertainty type from criptapp.org"
+        return "Pick uncertainty type from criptapp.org controlled vocabulary"
 
     # guard clause that returns empty string, if there is no description column in that sheet
     if "Description" not in row:
@@ -124,32 +124,37 @@ def single_options(sheet_df):
     :returns df: pandas dataframe
     """
 
-    # made strings into a variable, so I can reference them easily
-    category = "category"
-    column_name = "Name"
-    unit = "unit"
-    instructions = "instructions"
-
     # df that I will fill for single options
     df = get_new_df()
 
-    # loop through and fill up the DF
+    # loop through and fill up the DF in the columns of
+    # "category", "Name", "unit", "instructions"
     for index, row in sheet_df.iterrows():
-        df.loc[index, category] = sheet_df.sheet_name
-        df.loc[index, column_name] = row["Name"]
-        df.loc[index, unit] = get_preferred_unit(row)
-        df.loc[index, instructions] = get_instructions(row, sheet_df.sheet_name)
+        df.loc[index, "category"] = sheet_df.sheet_name
+        df.loc[index, "Name"] = row["Name"]
+        df.loc[index, "unit"] = get_preferred_unit(row)
+        df.loc[index, "instructions"] = get_instructions(row, sheet_df.sheet_name)
 
     return df
 
 
 def sheet1_colon_sheet2(sheet1_df, sheet2_df):
+    """
+    this function takes 2 Excel sheet df and returns a df with sheet1:sheet2
+
+    :params sheet1_df: Excel sheet pandas dataframe object
+    :params sheet2_df: Excel sheet pandas dataframe object
+
+    :returns df: pandas dataframe object with columns of "category, Name, unit, instructions"
+    """
+
     # df that I will fill for single options
     df = get_new_df()
 
-    # counter to know how which row to write to
+    # counter to know how which empty row to write to
     row_number = 0
 
+    # using index of i1 and i2 because it wasn't working without them
     for i1, sheet1_row in sheet1_df.iterrows():
         for i2, sheet2_row in sheet2_df.iterrows():
             df.loc[
@@ -219,6 +224,11 @@ if __name__ == "__main__":
         all_sheets_df["property"], all_sheets_df["condition"]
     )
 
+    # creates all property:type df
+    material_property_colon_type = sheet1_colon_sheet2(
+        all_sheets_df["property"], all_sheets_df["type"]
+    )
+
     # the full list of options for material sheet to be written to Excel
     full_options_df = pd.concat(
         [
@@ -228,6 +238,7 @@ if __name__ == "__main__":
             material_property_colon_attributes,
             material_property_colon_condition,
             material_property_colon_relation,
+            material_property_colon_type,
         ]
     )
 
