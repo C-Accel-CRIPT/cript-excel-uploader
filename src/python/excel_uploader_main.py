@@ -1,3 +1,5 @@
+import time
+
 import cript
 import globus_sdk
 
@@ -158,6 +160,11 @@ class ExcelUploader:
         """
         self.current_progress = 0
 
+    def pause_between_uploads(self):
+
+        # sleeps the program for 5 ms between uploads
+        time.sleep(5 / 1000)
+
     def upload_driver(self, excel_file_path, gui_object):
         """
         The driver method that calls all the other methods to upload everything
@@ -251,16 +258,22 @@ class ExcelUploader:
         ###
 
         upload.upload(files, "File", self, gui_object)
+        self.pause_between_uploads()
 
         upload.upload(experiments, "Experiment", self, gui_object)
+        self.pause_between_uploads()
 
         upload.upload(references, "Reference", self, gui_object)
+        self.pause_between_uploads()
 
         upload.upload(data, "Data", self, gui_object)
+        self.pause_between_uploads()
 
         upload.upload(materials, "Material", self, gui_object)
+        self.pause_between_uploads()
 
         upload.upload(processes, "Process", self, gui_object)
+        self.pause_between_uploads()
 
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object
