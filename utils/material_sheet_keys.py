@@ -1,8 +1,7 @@
 import pandas as pd
 
 
-# TODO this needs to be renamed because it is very unintuitive
-def get_all_excel_sheets(source_excel_file):
+def get_dict_of_all_excel_sheets(source_excel_file):
     """
     takes the whole source Excel file, gets the name of all the sheets that exist
     loops through every sheet and fills up all_sheets_dict with a df of each sheet
@@ -200,7 +199,7 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
 
 if __name__ == "__main__":
     # shows where to read all the options for the Excel file
-    all_sheets_df = get_all_excel_sheets("./excel_files/source.xlsx")
+    all_sheets_df = get_dict_of_all_excel_sheets("./excel_files/source.xlsx")
 
     # the df that holds all the options. making a df with all needed columns
     full_options_df = get_new_df()
