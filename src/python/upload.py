@@ -1,4 +1,5 @@
 import math
+import time
 import traceback
 
 import cript
@@ -60,6 +61,9 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
 
             # update progress bar regardless of what happens
             update_progress_bar(obj_type, excel_uploader_object, gui_object)
+
+            # sleeps the program for 5 ms between uploads
+            time.sleep(5 / 1000)
 
         # if Reference node already exists and user is trying to save duplicate,
         # then recognize that, do nothing, and just continue with everything else
