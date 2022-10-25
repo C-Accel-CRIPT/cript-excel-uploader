@@ -74,13 +74,19 @@ def get_preferred_unit(row):
         )
 
 
-def get_instructions(row):
+def get_instructions(row, sheet_name):
     """
     takes a row and gives back the instructions
 
-    :paramaters row: padnas series
-    :returns instructions: a string that represents the instructions for that row
+    :params row: padnas series
+    :returns instructions: a string that represents the instructions for that column
     """
+
+    # gave the same instruction for all relation fields
+    # e.g.: "Pick value from *name column of data sheet"
+    if sheet_name == "relation":
+        instruction = f"Pick value from *name column of {row['Name']} sheet"
+        return instruction
 
     # guard clause that returns empty string, if there is no description column in that sheet
     if "Description" not in row:
@@ -129,7 +135,7 @@ def single_options(sheet_df):
         df.loc[index, category] = sheet_df.sheet_name
         df.loc[index, column_name] = row["Name"]
         df.loc[index, unit] = get_preferred_unit(row)
-        df.loc[index, instructions] = get_instructions(row)
+        df.loc[index, instructions] = get_instructions(row, sheet_df.sheet_name)
 
     return df
 
@@ -150,7 +156,7 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
                 row_number, "Name"
             ] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
-            df.loc[row_number, "instructions"] = get_instructions(sheet2_row)
+            df.loc[row_number, "instructions"] = get_instructions(sheet2_row, sheet2_df.sheet_name)
 
             # increment counter to start on the next row that is blank
             row_number += 1
