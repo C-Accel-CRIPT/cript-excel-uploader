@@ -75,6 +75,24 @@ def get_preferred_unit(row):
         )
 
 
+def get_instructions(row):
+    """
+    takes a row and gives back the instructions
+
+    :paramaters row: padnas series
+    :returns instructions: a string that represents the instructions for that row
+    """
+
+    # guard clause that returns empty string, if there is no description column in that sheet
+    if "Description" not in row:
+        print("no description")
+        return ""
+
+    # if "Description" column exists, then instruction is description column
+    if "Description" in row:
+        return row["Description"]
+
+
 def get_new_df():
     """
     creates a new DF with columns needed for the Excel file options
@@ -113,13 +131,12 @@ def single_options(sheet_df):
         df.loc[index, row_1_value] = sheet_df.sheet_name
         df.loc[index, row_2_value] = row["Name"]
         df.loc[index, unit] = get_preferred_unit(row)
-        df.loc[index, instructions] = row["Description"]
+        df.loc[index, instructions] = get_instructions(row)
 
     return df
 
 
 def sheet1_colon_sheet2(sheet1_df, sheet2_df):
-
     # df that I will fill for single options
     df = get_new_df()
 
@@ -131,7 +148,7 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
             df.loc[row_number, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
             df.loc[row_number, "Row 2 Value"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
-            df.loc[row_number, "instructions"] = sheet2_row["Description"]
+            df.loc[row_number, "instructions"] = get_instructions(sheet2_row["Description"])
 
             # increment counter to start on the next row that is blank
             row_number += 1
