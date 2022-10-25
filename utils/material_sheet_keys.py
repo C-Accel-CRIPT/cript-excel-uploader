@@ -37,10 +37,9 @@ def get_preferred_unit(row):
     :returns: string unit or an empty string
     """
 
-    # handling a case that I pass in a row from a sheet that doesn't have units,
-    # in that case just tell me and do nothing
+    # Guard clause: handling a case that I pass in a row from a sheet
+    # that doesn't have any units' column,in that case just tell me and do nothing
     if "Preferred unit" not in row and "SI unit" not in row:
-        print("hit no preferred unit")
         return
 
     # making them into variables, so I don't have to keep repeating them
@@ -85,7 +84,6 @@ def get_instructions(row):
 
     # guard clause that returns empty string, if there is no description column in that sheet
     if "Description" not in row:
-        print("no description")
         return ""
 
     # if "Description" column exists, then instruction is description column
@@ -148,7 +146,7 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
             df.loc[row_number, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
             df.loc[row_number, "Row 2 Value"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
-            df.loc[row_number, "instructions"] = get_instructions(sheet2_row["Description"])
+            df.loc[row_number, "instructions"] = get_instructions(sheet2_row)
 
             # increment counter to start on the next row that is blank
             row_number += 1
@@ -175,7 +173,7 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
     """
 
     # sort the df based on row 2 values
-    df = df.sort_values("Row 2 Value")
+    # df = df.sort_values("Row 2 Value")
 
     df.to_excel(output_path + output_file_name, sheet_name=sheet_name, index=False)
 
@@ -191,6 +189,16 @@ if __name__ == "__main__":
     material_identifiers = single_options(all_sheets_df["identifiers"])
     material_properties = single_options(all_sheets_df["property"])
 
+    # creates all fields that can be nested under property e.g. property:uncertainty
+    material_property_colon_attributes = sheet1_colon_sheet2(
+        all_sheets_df["property"], all_sheets_df["attribute"]
+    )
+
+    # creates all fields that can have a relation under property e.g. property:data
+    material_property_colon_relation = sheet1_colon_sheet2(
+        all_sheets_df["property"], all_sheets_df["relation"]
+    )
+
     # creates all property:conditions df
     material_property_colon_condition = sheet1_colon_sheet2(
         all_sheets_df["property"], all_sheets_df["condition"]
@@ -202,7 +210,9 @@ if __name__ == "__main__":
             full_options_df,
             material_identifiers,
             material_properties,
-            material_property_colon_condition
+            material_property_colon_attributes,
+            material_property_colon_condition,
+            material_property_colon_relation
         ]
     )
 
