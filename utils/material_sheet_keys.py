@@ -152,11 +152,11 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
             df.loc[
                 row_number, "category"
             ] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
-            df.loc[
-                row_number, "Name"
-            ] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
+            df.loc[row_number, "Name"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
-            df.loc[row_number, "instructions"] = get_instructions(sheet2_row, sheet2_df.sheet_name)
+            df.loc[row_number, "instructions"] = get_instructions(
+                sheet2_row, sheet2_df.sheet_name
+            )
 
             # increment counter to start on the next row that is blank
             row_number += 1
