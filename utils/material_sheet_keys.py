@@ -88,6 +88,9 @@ def get_instructions(row, sheet_name):
         instruction = f"Pick value from *name column of {row['Name']} sheet"
         return instruction
 
+    if (sheet_name == "attribute") and (row["Name"] == "uncertainty_type"):
+        return "Pick from Name column of Uncertainty type from criptapp.org"
+
     # guard clause that returns empty string, if there is no description column in that sheet
     if "Description" not in row:
         return ""
