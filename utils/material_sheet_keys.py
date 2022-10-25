@@ -190,7 +190,7 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
     """
 
     # sort the df based on Names
-    # df = df.sort_values("Name")
+    df = df.sort_values("Name")
 
     df.to_excel(output_path + output_file_name, sheet_name=sheet_name, index=False)
 
