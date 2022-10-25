@@ -159,9 +159,11 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
 def write_to_excel(df, output_path, output_file_name, sheet_name):
     """
     takes a df that we want to write to an Excel sheet.
-    then we take the output of the path Eg. "./excel_files/"
+    sorts the df based on the Row 2 column to sort it alphabetically for the user
+    to easily find what they need.
+    we take the output path Eg. "./excel_files/"
     and we add to it the output_file_name to get "./excel_files/output.xlsx"
-    and we write our output to "./excel_files/output.xlsx" to the sheet_name we want,
+    and we write the contents of df to "./excel_files/output.xlsx" to the sheet_name we want,
     and we remove the default index column that Pandas comes with by specifying
     index=False
 
@@ -171,6 +173,9 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
     :params sheet_name: the sheet we want to write to
     :returns: None
     """
+
+    # sort the df based on row 2 values
+    df = df.sort_values("Row 2 Value")
 
     df.to_excel(output_path + output_file_name, sheet_name=sheet_name, index=False)
 
