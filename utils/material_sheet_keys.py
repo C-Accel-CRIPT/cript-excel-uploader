@@ -96,12 +96,12 @@ def get_new_df():
     creates a new DF with columns needed for the Excel file options
     returns: pandas dataframe object
     """
-    row_1_value = "Row 1 Value"
-    row_2_value = "Row 2 Value"
+    category = "category"
+    column_name = "Name"
     unit = "unit"
     instructions = "instructions"
 
-    df = pd.DataFrame(columns=[row_1_value, row_2_value, unit, instructions])
+    df = pd.DataFrame(columns=[category, column_name, unit, instructions])
     return df
 
 
@@ -116,8 +116,8 @@ def single_options(sheet_df):
     """
 
     # made strings into a variable, so I can reference them easily
-    row_1_value = "Row 1 Value"
-    row_2_value = "Row 2 Value"
+    category = "category"
+    column_name = "Name"
     unit = "unit"
     instructions = "instructions"
 
@@ -126,8 +126,8 @@ def single_options(sheet_df):
 
     # loop through and fill up the DF
     for index, row in sheet_df.iterrows():
-        df.loc[index, row_1_value] = sheet_df.sheet_name
-        df.loc[index, row_2_value] = row["Name"]
+        df.loc[index, category] = sheet_df.sheet_name
+        df.loc[index, column_name] = row["Name"]
         df.loc[index, unit] = get_preferred_unit(row)
         df.loc[index, instructions] = get_instructions(row)
 
@@ -144,10 +144,10 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
     for i1, sheet1_row in sheet1_df.iterrows():
         for i2, sheet2_row in sheet2_df.iterrows():
             df.loc[
-                row_number, "Row 1 Value"
+                row_number, "category"
             ] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
             df.loc[
-                row_number, "Row 2 Value"
+                row_number, "Name"
             ] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
             df.loc[row_number, "instructions"] = get_instructions(sheet2_row)
@@ -176,10 +176,12 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
     :returns: None
     """
 
-    # sort the df based on row 2 values
-    # df = df.sort_values("Row 2 Value")
+    # sort the df based on Names
+    # df = df.sort_values("Name")
 
     df.to_excel(output_path + output_file_name, sheet_name=sheet_name, index=False)
+
+    print(f"created all options for material in {output_path}{output_file_name}")
 
 
 if __name__ == "__main__":
