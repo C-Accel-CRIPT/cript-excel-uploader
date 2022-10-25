@@ -48,21 +48,21 @@ def get_preferred_unit(row):
 
     # has a preferred unit ie not "", "None", nor nan, then return preferred_unit
     if (
-            preferred_unit != ""
-            and preferred_unit != "None"
-            and not pd.isna(preferred_unit)
+        preferred_unit != ""
+        and preferred_unit != "None"
+        and not pd.isna(preferred_unit)
     ):
         return preferred_unit
 
     # does not have preferred unit, but has SI unit
     elif (
-            preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
+        preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
     ) and (si_unit != "" and si_unit != "None" and not pd.isna(si_unit)):
         return si_unit
 
     # si unit and preferred unit are both empty or None
     elif (
-            preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
+        preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
     ) and (si_unit == "" or si_unit == "None" or pd.isna(si_unit)):
         return ""
 
@@ -143,8 +143,12 @@ def sheet1_colon_sheet2(sheet1_df, sheet2_df):
 
     for i1, sheet1_row in sheet1_df.iterrows():
         for i2, sheet2_row in sheet2_df.iterrows():
-            df.loc[row_number, "Row 1 Value"] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
-            df.loc[row_number, "Row 2 Value"] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
+            df.loc[
+                row_number, "Row 1 Value"
+            ] = f"{sheet1_df.sheet_name}:{sheet2_df.sheet_name}"
+            df.loc[
+                row_number, "Row 2 Value"
+            ] = f"{sheet1_row['Name']}:{sheet2_row['Name']}"
             df.loc[row_number, "unit"] = get_preferred_unit(sheet2_row)
             df.loc[row_number, "instructions"] = get_instructions(sheet2_row)
 
@@ -212,7 +216,7 @@ if __name__ == "__main__":
             material_properties,
             material_property_colon_attributes,
             material_property_colon_condition,
-            material_property_colon_relation
+            material_property_colon_relation,
         ]
     )
 
