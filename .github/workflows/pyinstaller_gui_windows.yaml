@@ -1,0 +1,31 @@
+name: Compile GUI for Windows
+# run this job manually
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: windows-latest
+    steps:
+      # used to checkout different branches
+      - uses: actions/checkout@v3
+        with:
+          # checkout my specific branch
+          ref: main
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: pip install dependencies
+        run: pip install -r requirements.txt
+      - name: compile GUI for Windows
+        run: python -m eel .\src\python\gui_main.py .\src\web\ --onefile --noconsole --clean --name excel_uploader_gui_windows --icon=.\src\assets\logo_condensed.ico
+      - name: set Git credentials
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - name: push executable to branch "executable"
+        run: |
+          cd dist/
+          ls
+          git checkout executables
+          git add .
+          git commit -m "bot pushing windows GUI executable"
+          git push origin executable
