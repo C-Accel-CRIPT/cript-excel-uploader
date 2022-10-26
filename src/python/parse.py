@@ -13,7 +13,7 @@ class Sheet:
         # Converts Excel sheet into pandas DataFrame
         try:
             self.df = pd.read_excel(
-                self.path, sheet_name=self.sheet_name, header=[0, 1, 2]
+                self.path, sheet_name=self.sheet_name, header=[0, 1, 2, 3]
             )
         except (IndexError, ValueError) as e:
             self.exists = False
