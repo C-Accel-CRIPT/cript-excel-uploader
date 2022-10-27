@@ -62,62 +62,40 @@ Please use the latest release assets
 
   <li>
     Download the 
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.4.2/example_template_v0-4-2.xlsx">
-        example_template_vX-X-X.xlsx
+    <!-- TODO add link here -->
+    <a href="######">
+        CRIPT Excel Template
     </a>
     <ul>
       <li>
-          The example_template_vX-X-X.xlsx can be used by users to directly record their data in the file
+          The CRIPT Excel Template can be used to directly record data in the file
       </li>
       <li>
-        Additionally, example_template_vX-X-X.xlsx can serve as an example excel file for users to get an idea on how to structure the excel files they may already have to conform with CRIPT
+          The CRIPT Excel Template contains formulas and validations that makes recording data much easier
+      </li>
+      <li>
+        <!-- TODO add link here -->
+        Additionally, the <a href="######">CRIPT Example Excel Template</a>
+        can serve as an example Excel file for users to get an idea on how to structure 
+        the Excel files they may already have to conform with CRIPT
       </li>
     </ul>
   </li>
-
   <li>
     Download the
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.4.2/config.yaml">
-          config.yaml
+    <a href="#############">
+      CRIPT Excel Uploader executable
     </a>
+    for your operating system
+  <li>
+    Input your data into the CRIPT Excel template
     <ul>
       <li>
-        <a href="filling_out_config" target="_blank">Fill out template with your information</a>
-      </li>
-    </ul>
-  </li>
-
-  <li>
-  <!-- TODO be sure to keep this version up to date -->
-    Download the
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.4.2/main.exe">
-      executable
-    </a>
-  <li>
-      Be sure all 3 files in the same directory 
-      <br>
-      <ul>
-        <li>
-          <code>example_template_vX-X-X.xlsx</code>
-        </li>
-        <li>
-          <code>config.yaml</code>
-        </li>
-        <li>
-        <!-- TODO be sure to always keep this up to date -->
-          <code>cript_uploader_vx.x.x</code>
-        </li>
-      </ul>
-    </li>
-  <li>
-    Input your data into the excel sheet
-    <ul>
-      <li>
-        Refer to <a href="filling_out_config" target="_blank">filling out row 1 - 3</a> to understand the Excel file
-        structure
+        Refer to <a href="excel_rows" target="_blank">structure of Excel sheet</a> 
+        to understand rows 1-4 of every sheet
       </li>
       <li>
-        Refer to <a href="individual_sheets" target="_blank">individual sheets</a> to see what is allowed in each sheet
+        Refer to <a href="individual_sheets" target="_blank">individual sheets</a> to see the options for each sheet
       </li>
     </ul>
   </li>
