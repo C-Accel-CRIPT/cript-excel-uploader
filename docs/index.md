@@ -2,13 +2,7 @@
 
 ## Usage
 
-<img src="./docs_assets/screenshot_of_where_to_find_excel_uploader.png"
-alt="Screenshot latest CRIPT release assets">
-<small>
-Please use the latest release assets
-</small>
-
-<br>
+[//]: # (todo this could use some graphic at the top to make the UI a bit better)
 
 ### Follow these steps
 
@@ -61,9 +55,8 @@ Please use the latest release assets
   </li>
 
   <li>
-    Download the 
-    <!-- TODO add link here -->
-    <a href="######">
+    Download the
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.0/CRIPT_template.xlsx">
         CRIPT Excel Template
     </a>
     <ul>
@@ -74,19 +67,19 @@ Please use the latest release assets
           The CRIPT Excel Template contains formulas and validations that makes recording data much easier
       </li>
       <li>
-        <!-- TODO add link here -->
-        Additionally, the <a href="######">CRIPT Example Excel Template</a>
-        can serve as an example Excel file for users to get an idea on how to structure 
-        the Excel files they may already have to conform with CRIPT
+        The 
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.0/CRIPT_template.Example.xlsx">
+          CRIPT <b>Example</b> Excel Template
+        </a>
+        can serve as an example Excel file for users to see the overall flow and structure of the Excel file
       </li>
     </ul>
   </li>
   <li>
     Download the
-    <a href="#############">
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.0/CRIPT.Excel.Uploader.exe">
       CRIPT Excel Uploader executable
     </a>
-    for your operating system
   <li>
     Input your data into the CRIPT Excel template
     <ul>
@@ -100,9 +93,7 @@ Please use the latest release assets
     </ul>
   </li>
   <li>
-    <a href="how_to_run_excel_uploader" target="_blank">
-      Run CRIPT Excel Uploader
-    </a>
+    Run CRIPT Excel Uploader
   </li>
 </ol>
 
