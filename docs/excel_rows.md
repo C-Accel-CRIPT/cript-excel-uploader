@@ -256,7 +256,7 @@ density:temperature</span>
 <br>
 
 ---
-## <span class="row-3">Row 3</span>: **units**
+## <span class="row-3">Row 3</span>: **Units**
 
 - <span class="row-3">Row 3</span>: Defines the units for that column
 
