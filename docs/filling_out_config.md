@@ -1,15 +1,9 @@
-# How to fill out config.yaml
+# Filling out first screen
 
-## How to open config.yaml
+<img 
+   alt="Screenshot of CRIPT Excel Uploader GUI first screen" class="screenshot-border" style="width: 28rem;"
+   src="../docs_assets/filling_out_config/cript_excel_uploader_gui_start_screen_screenshot.png">
 
-Please open and edit the config.yaml file with your preferred text editor.
-Some good choices can be notepad (that comes preinstalled on windows),
-<a href="https://notepad-plus-plus.org/" target="_blank">notepad++</a>, and
-<a href="https://code.visualstudio.com/" target="_blank">vs code</a>
-
-<img class="screenshot-border"
-src="../docs_assets/filling_out_config/screenshot_of_config_file_opened_in_notepad.png" alt="screenshot of config.yaml
-file opened in windows notepad app">
 ---
 
 ## Host
@@ -36,7 +30,7 @@ host: myPrivateWebsite.com
 
 ---
 
-## Token
+## API Token
 
 The token is needed because we need to authenticate the user before saving any of their data
 
@@ -58,7 +52,7 @@ To get your token:
    icon dropdown on
    the top right
 2. Click on the <b>copy</b> button next to the API Token to copy it to clipboard
-3. Now you can paste it into the token section of config.yaml
+3. Now you can paste it into the `API Token` field
 
 > Note: The "Token" in front of the random characters is part of the token as well
 
@@ -67,12 +61,12 @@ To get your token:
 Example:
 
 ```yaml
-token: Token 4abc478b25e30766652f76103b978349c4c4b214
+API Token: Token 4abc478b25e30766652f76103b978349c4c4b214
 ```
 
 ---
 
-## Project
+## Project Name
 
 Project is needed for the software to know which project these experiments are for, and each Collection belongs to a
 Project
@@ -94,17 +88,17 @@ To get project name, follow these steps:
 
 1. Navigate to the <a href="https://criptapp.org/project/" target="_blank">projects tab</a> within CRIPT
 2. Find the project you want to upload your data under
-3. Copy the name and paste it into config.yaml
+3. Copy the name and paste it into `Project Name` field
 
 Example:
 
 ```yaml
-project: CRIPT Examples
+Project Name: CRIPT Examples
 ```
 
 ---
 
-## Collection
+## Collection Name
 
 A Collection can be thought of as a binder filled with experiments
 
@@ -125,47 +119,23 @@ To get your collection name, follow these steps:
 
 1. Please visit the <a href="https://criptapp.org/collection/" target="_blank">collections tab</a> within CRIPT
 2. Find the collection you want to use
-3. copy the name of that collection and paste it into the config.yaml file
+3. copy the name of that collection and paste it into the `Collection Name` field
 
 Example:
 
 ```yaml
-collection: Tutorial
+Collection Name: Tutorial
 ```
 
 ---
 
-## Path
+## Excel File
 
-Please indicate the path where the executable file is located
+<img 
+   alt="Screenshot of CRIPT Excel Uploader button that when clicked the user can pick the Excel file they want to upload"
+   class="screenshot-border" style="width: 28rem;"
+   src="../docs_assets/filling_out_config/excel_uploader_find_file_button.png">
 
-> Please note the path may look different depending on the operating system whether the computer is running Windows,
-> Mac, or Linux
-
-Example:
-
-```yaml
-path: C:\Users\myUsername\OneDrive\Desktop\MIT\cript-excel-uploader
-```
-
----
-
-## Public
-
-This option indicates to our software whether we want to keep the uploaded data private or public
-
-This takes a boolean value of either True or False
-
-We can indicate yes, if we want the uploaded data be publicly available
-
-```yaml
-public: yes
-```
-
-We can indicate no, if we want the uploaded data be private, and hidden from the public
-
-```yaml
-public: no
-```
+Please click the purple Excel File button and select the Excel file you wish to upload to CRIPT
 
 <br> <br>
