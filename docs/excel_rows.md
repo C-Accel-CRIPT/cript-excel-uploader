@@ -1,19 +1,21 @@
 # Excel Rows
 
-## <b> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
+<b style="font-size: 1.2rem"> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
 
 <img src="../docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
 alt="Screenshot of Material sheet rows and columns">
 
-The Row 1 - 3 within each <span style="color: var(--excel-light-color)">Excel</span>
-sheet are treated differently than Rows 4 - ∞.
+The Row 1 - 4 within each <span style="color: var(--excel-light-color)">Excel</span>
+sheet are treated differently than Rows 5 - ∞. 
+
+The CRIPT Excel Uploader reads row 1 - 3, and will skip row 4 as row 4 is human instructions and the program does not need them. User input can start from row 5
 
 Please refer to <a href="../individual_sheets" target="_blank">Individual Excel Sheets</a> 
 for a complete breakdown of each sheet
 
 ---
 
-### <span class="row-1">Row 1</span>: **Category**
+## <span class="row-1">Row 1</span>: **Category**
 
 Describes the abstract category of Row 2
 
@@ -100,7 +102,7 @@ width="900">
 
 <br>
 
-## <span class="row-2">Row 2</span>: Column Name
+## <span class="row-2">Row 2</span>: **Column Name**
 
 > This can be seen as the label for each column
 
@@ -254,7 +256,7 @@ density:temperature</span>
 <br>
 
 ---
-## <span class="row-3">Row 3</span>: units
+## <span class="row-3">Row 3</span>: **units**
 
 - <span class="row-3">Row 3</span>: Defines the units for that column
 
@@ -265,14 +267,14 @@ density:temperature</span>
 <br>
 
 ---
-## <span class="instruction-row">Row 4</span>: instructions
+## <span class="instruction-row">Row 4</span>: **Instructions**
 Many columns contain instructions on row 4 that tries to clarify the data that should go in 
 that column after the value for row 2 is picked
 
 
 ---
 
-## <span>Row 5</span> - ∞ : user input
+## <span>Row 5</span> - ∞ : **User Input**
 
 
 ### <u>Inputting list instead of a single value</u>
