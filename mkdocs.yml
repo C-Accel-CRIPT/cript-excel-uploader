@@ -7,7 +7,6 @@ nav:
   - Quick Start: index.md
   # TODO this can later become either filling out config file, config sheet, or whatever else
   - Filling Out Config: "filling_out_config.md"
-  - How to Run Excel Uploader: "how_to_run_excel_uploader.md"
   - Structure of Excel Sheets: "excel_rows.md"
   - Individual Excel Sheets: "individual_sheets.md"
 
