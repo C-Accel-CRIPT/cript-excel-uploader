@@ -84,7 +84,7 @@
     Input your data into the CRIPT Excel template
     <ul>
       <li>
-        Refer to <a href="excel_rows" target="_blank">structure of Excel sheet</a> 
+        Refer to <a href="../excel_rows" target="_blank">structure of Excel sheet</a> 
         to understand rows 1-4 of every sheet
       </li>
       <li>
