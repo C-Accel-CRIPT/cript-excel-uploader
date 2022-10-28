@@ -8,13 +8,18 @@ alt="Screenshot of Material sheet rows and columns">
 The Row 1 - 3 within each <span style="color: var(--excel-light-color)">Excel</span>
 sheet are treated differently than Rows 4 - ∞.
 
+Please refer to <a href="../individual_sheets" target="_blank">Individual Excel Sheets</a> 
+for a complete breakdown of each sheet
+
+---
+
+### <span class="row-1">Row 1</span>: **Category**
+
+Describes the abstract category of Row 2
+
 <br>
 
-- <span class="row-1">Row 1</span>: Describes the abstract category of Row 2
-
-  > It can be thought of as an abstraction of row 2
-
-## <u id="row-1-options-list">List of possible options for Row 1</u>
+#### <u id="row-1-options-list">List of all possible options for Row 1</u>
 
 - <span class="row-1">attribute</span>
     - Column with simple key-value pairs
@@ -77,29 +82,7 @@ Example of **quantity** in <code>process ingredients</code> sheet
 
 <br>
 
-> `Relation` is a bit tricky to explain, so we dedicated a section that <a href="#relation-explanation" target="_blank">
-> explains row 1
-> abstract category of `relation`</a>
-
-Please refer to <a href="../individual_sheets" target="_blank">Individual Excel Sheets</a> for a complete breakdown of each sheet
-
-<br>
-
----
-
-- <span class="row-3">Row 3</span>: Defines the units for that column
-
-    - `celsius`, `g/ml`
-    - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported
-      units</a> are documented within the Pint python package
-
-<br>
-
----
-
-<br>
-
-## <span id="relation-explanation" class="row-1"><b>relation</b></span> field in row 1 explained
+#### <span id="relation-explanation" class="row-1"><b>relation</b></span> field in row 1 explained
 
 The row 1 field <code>relation</code> is essentially a way for a row from one sheet to reference another row in a
 different sheet.
@@ -117,21 +100,15 @@ width="900">
 
 <br>
 
-## <span class="row-2">row 2</span>
+## <span class="row-2">Row 2</span>: Column Name
 
 > This can be seen as the label for each column
 
 > The breakdown can be found in <a href="../individual_sheets" target="_blank">Individual Excel Sheets</a>
 
-
-[//]: # "todo consider putting this section in the section where you explain ROW 1, ROW 2, ROW 3"
-
-### <span class="row-2">row 2</span> <u>Column Field Names</u>
-
 <img src="../docs_assets/screenshot_of_star_required_columns.png"
 alt="Screenshot of an Excel column that shows the required column that begins with a *">
 
-<blockquote>
   <ul>
     <li>
       Columns beginning with <code>*</code> are required (eg. <code>*name</code>)
@@ -144,8 +121,27 @@ alt="Screenshot of an Excel column that shows the required column that begins wi
         </li>
       </ul>
     </li>
+    <li>
+        Some sheets have dropdowns for row 2. 
+        After selecting an option, row 1, row 3, and row 4 are automatically populated with the correct information
+        <blockquote>
+            As we continue to update the controlled vocabulary,
+            it is very possible that the dropdown options and autofill can become outdated.
+        </blockquote>
+    </li>
+    <li>
+        Each Excel sheet has row 1, 3, 4 locked and the sheets are protected.
+        <ul>
+            <li>
+                This is because rows 1, 3, 4 contain formulas that if accidentally deleted or overwritten 
+                would break the autofill feature 
+            </li>
+            <li>
+                The sheets are protected without a password and can be easily unprotected
+            </li>
+        </ul>
+    </li>
   </ul>
-</blockquote>
 
 <br>
 
@@ -258,12 +254,29 @@ density:temperature</span>
 <br>
 
 ---
+## <span class="row-3">Row 3</span>: units
 
-## <span class="row-4">Row 4</span> - ∞
+- <span class="row-3">Row 3</span>: Defines the units for that column
+
+    - `celsius`, `g/ml`
+    - All the <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">supported
+      units</a> are documented within the Pint python package
+
+<br>
+
+---
+## <span class="instruction-row">Row 4</span>: instructions
+Many columns contain instructions on row 4 that tries to clarify the data that should go in 
+that column after the value for row 2 is picked
+
+
+---
+
+## <span>Row 5</span> - ∞ : user input
+
 
 ### <u>Inputting list instead of a single value</u>
-
-List values must use a semicolon **`;`** as a separator
+Some columns allow for more than a single value. List values must use a semicolon **`;`** as a separator
 
 Example:
 
