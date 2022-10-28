@@ -46,6 +46,12 @@ body {
   margin-bottom: 1rem;
 }
 
+.instruction-row {
+  background-color: #EDEDED;
+  color: black;
+  text-align: center;
+}
+
 .row-4 {
   background-color: #e6e6e7;
   color: black;
