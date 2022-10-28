@@ -1,6 +1,11 @@
 # Excel Rows
 
-<b style="font-size: 1.2rem"> <span class="row-1">Row 1</span> <span class="row-2">Row 2</span> <span class="row-3" style="font-weight: normal;">Row 3</span> </b>
+<b style="font-size: 1.2rem"> 
+    <span class="row-1">Row 1</span> 
+    <span class="row-2">Row 2</span> 
+    <span class="row-3" style="font-weight: normal;">Row 3</span>
+    <span class="instruction-row">Row 4</span>
+</b>
 
 <img src="../docs_assets/screenshot_of_material_sheet_rows_and_columns.png"
 alt="Screenshot of Material sheet rows and columns">
@@ -8,7 +13,7 @@ alt="Screenshot of Material sheet rows and columns">
 The Row 1 - 4 within each <span style="color: var(--excel-light-color)">Excel</span>
 sheet are treated differently than Rows 5 - ∞. 
 
-The CRIPT Excel Uploader reads row 1 - 3, and will skip row 4 as row 4 is human instructions and the program does not need them. User input can start from row 5
+The CRIPT Excel Uploader reads row 1 - 3, and will skip row 4 as row 4 is human instructions and the program does not need them. User input can only start from row 5
 
 Please refer to <a href="../individual_sheets" target="_blank">Individual Excel Sheets</a> 
 for a complete breakdown of each sheet
@@ -290,14 +295,19 @@ Example:
   </tr>
   <tr>
     <td class="row-2">
-      field name
+      column name
     </td>
   </tr>
   <tr class="row-3">
-    <th class="row-3">
+    <td class="row-3" style="font-weight: 500">
         units
-    </th>
+    </td>
   </tr>
+<tr>
+    <th class="instruction-row" style="font-weight: 500">
+      instructions
+    </th>
+</tr>
   <tr class="row-4">
     <td>
       funder 1; funder 2; funder 3; funder 4
