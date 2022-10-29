@@ -10,20 +10,6 @@
   <li>
     Login or Signup for the <a href="https://www.criptapp.org/" target="_blank">CRIPT platform</a>
   </li>
-
-  <li>
-    Create an <b>Access Group</b> inside of the 
-    <a href="https://www.criptapp.org/group" target="_blank">CRIPT platform</a>
-    <ul>
-      <li>
-        An Access Group serves as permission control for the project. It represents an organization, institution, research group, or any grouping of users.
-      </li>
-      <li>
-        An Access Group is needed because every Project must be owned by an Access Group
-      </li>
-    </ul>
-  </li>
-
   <li>
     Create a <b>Project</b> inside the 
     <a href="https://www.criptapp.org/project" target="_blank">CRIPT platform</a>
