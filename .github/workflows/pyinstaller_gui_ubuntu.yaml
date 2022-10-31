@@ -16,9 +16,8 @@ jobs:
       - name: pip install dependencies
         run: pip install -r requirements_dev.txt
       - name: compile GUI for ubuntu
-        run: |
-          cd ./src/
-          python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_linux --icon=/assets/logo_condensed.ico
+        working-directory: src/
+        run: python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_linux --icon=/assets/logo_condensed.ico
 
       # save compiled GUI
       - uses: actions/upload-artifact@v3

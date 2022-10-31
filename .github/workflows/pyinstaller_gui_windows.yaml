@@ -2,10 +2,7 @@ name: "Compile GUI for Windows"
 on:
   push:
     branches:
-      - develop_cd_compiling_gui
-  pull_request:
-    branches:
-      - develop_cd_compiling_gui
+      - develop_action_compiling_gui
 jobs:
   deploy:
     runs-on: windows-latest
@@ -21,9 +18,8 @@ jobs:
       - name: pip install dependencies
         run: pip install -r requirements_dev.txt
       - name: "compile GUI for Windows"
-        run: |
-          cd .\src\
-          python -m eel .\gui_main.py .\web\ --onefile --noconsole --name excel_uploader_windows --icon=.\assets\logo_condensed.ico
+        working-directory: .\src\
+        run: python -m eel .\gui_main.py .\web\ --onefile --noconsole --name excel_uploader_windows --icon=.\assets\logo_condensed.ico
 
       # save compiled GUI
       - uses: actions/upload-artifact@v3
