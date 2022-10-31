@@ -5,7 +5,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # used to checkout different branches
+      # used to check out different branches
       - uses: actions/checkout@v3
         with:
           # checkout my specific branch
@@ -14,12 +14,15 @@ jobs:
         with:
           python-version: "3.10"
       - name: pip install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements_dev.txt
       - name: compile GUI for ubuntu
-        run: python -m eel src/python/gui_main.py src/web/ --onefile --noconsole --icon=src/assets/logo_condensed.ico
-      - name: show what is in directory
-        run: ls
-      - name: show inside of dist
-        run: ls dist/
-      - name: finished compiling GUI
-        run: echo "hello world!"
+        run: |
+        cd ./src/
+        python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_linux --icon=/assets/logo_condensed.ico
+      - uses: actions/upload-artifact@v3
+        with:
+          # artifact name
+          name: CRIPT Excel Uploader Windows Zip
+          path: dist/
+          if-no-files-found: error
+          retention-days: 10
