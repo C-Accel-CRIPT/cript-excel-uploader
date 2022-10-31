@@ -1,15 +1,18 @@
 name: Compile GUI for Mac
 # run this job manually
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - develop_action_compiling_gui
 jobs:
   deploy:
     runs-on: macos-latest
     steps:
       # used to check out different branches
       - uses: actions/checkout@v3
-        with:
-          # checkout my specific branch
-          ref: master
+#        with:
+#          # checkout my specific branch
+#          ref: master
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
@@ -24,6 +27,6 @@ jobs:
         with:
           # artifact name
           name: CRIPT Excel Uploader Windows Zip
-          path: dist/
+          path: src/dist/
           if-no-files-found: error
           retention-days: 10
