@@ -19,6 +19,8 @@ jobs:
         run: |
           cd ./src/ 
           python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_mac --icon=/assets/logo_condensed.ico
+
+      # save compiled GUI
       - uses: actions/upload-artifact@v3
         with:
           # artifact name
