@@ -1,8 +1,9 @@
 name: "Compile GUI for Windows"
-on:
-  push:
-    branches:
-      - develop_action_compiling_gui
+on: workflow_dispatch
+#  push:
+#    branches:
+#      - develop_action_compiling_gui
+
 jobs:
   deploy:
     runs-on: windows-latest

@@ -1,9 +1,10 @@
 name: Compile GUI for Ubuntu
 # run this job manually
-on:
-  push:
-    branches:
-      - develop_action_compiling_gui
+on: workflow_dispatch
+#  push:
+#    branches:
+#      - develop_action_compiling_gui
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

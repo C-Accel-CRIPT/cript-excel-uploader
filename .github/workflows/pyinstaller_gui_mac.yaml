@@ -1,9 +1,10 @@
 name: Compile GUI for Mac
 # run this job manually
-on:
-  push:
-    branches:
-      - develop_action_compiling_gui
+on: workflow_dispatch
+#  push:
+#    branches:
+#      - develop_action_compiling_gui
+
 jobs:
   deploy:
     runs-on: macos-latest
@@ -20,7 +21,7 @@ jobs:
         run: pip install -r requirements_dev.txt
       - name: compile GUI for Mac OS
         working-directory: src/
-        run: python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_mac --icon=/assets/logo_condensed.ico
+        run: python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_mac --icon=assets/logo_condensed.ico
 
       # save compiled GUI
       - uses: actions/upload-artifact@v3
