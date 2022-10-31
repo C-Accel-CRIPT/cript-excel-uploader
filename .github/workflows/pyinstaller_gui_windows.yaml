@@ -4,6 +4,9 @@ on:
     branches:
       - develop_action_compiling_gui
 jobs:
+  defaults:
+    run:
+      working-directory: .\src\
   deploy:
     runs-on: windows-latest
     steps:
@@ -18,7 +21,6 @@ jobs:
       - name: pip install dependencies
         run: pip install -r requirements_dev.txt
       - name: "compile GUI for Windows"
-        working-directory: .\src\
         run: python -m eel .\gui_main.py .\web\ --onefile --noconsole --name excel_uploader_windows --icon=.\assets\logo_condensed.ico
 
       # save compiled GUI
