@@ -4,11 +4,11 @@ on:
     branches:
       - develop_action_compiling_gui
 jobs:
-  defaults:
-    run:
-      working-directory: .\src\
   deploy:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: .\src\
     steps:
       # used to check out different branches
       - uses: actions/checkout@v3
