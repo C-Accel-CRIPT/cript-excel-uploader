@@ -17,8 +17,9 @@ jobs:
         run: pip install -r requirements.txt
       - name: compile GUI for Windows
         run: |
-        cd ./src/
-        python -m eel gui_main.py .\web\ --onefile --noconsole --clean --name excel_uploader_windows --icon=.\assets\logo_condensed.ico
+        cd .\src\
+        python -m eel .\gui_main.py .\web\ --onefile --noconsole --name excel_uploader_windows --icon=.\assets\logo_condensed.ico
+
       - uses: actions/upload-artifact@v3
         with:
           # artifact name
