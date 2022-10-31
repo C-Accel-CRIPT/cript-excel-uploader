@@ -1,5 +1,4 @@
 name: Compile GUI for Windows
-# run this job manually
 on:
   push:
     branches:
