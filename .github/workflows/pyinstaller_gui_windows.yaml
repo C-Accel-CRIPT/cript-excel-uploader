@@ -6,7 +6,7 @@ jobs:
     runs-on: windows-latest
     steps:
       # used to check out different branches
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # checkout my specific branch
           ref: master
