@@ -19,6 +19,8 @@ jobs:
           python-version: "3.10"
       - name: pip install dependencies
         run: pip install -r requirements_dev.txt
+      - name: pip install Pillow
+        run: pip install Pillow
       - name: compile GUI for Mac OS
         working-directory: src/
         run: python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_mac --icon=assets/logo_condensed.ico
