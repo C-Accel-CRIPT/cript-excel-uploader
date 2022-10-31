@@ -26,7 +26,6 @@ jobs:
         with:
           # artifact name
           name: "CRIPT Excel Uploader Windows Zip"
-          working-directory: .\src\
-          path: dist/
+          path: .\src\dist\
           if-no-files-found: error
           retention-days: 10
