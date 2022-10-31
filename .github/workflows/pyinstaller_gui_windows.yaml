@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - develop_cd_compiling_gui
+  pull_request:
+    branches:
+      - develop_cd_compiling_gui
 jobs:
   deploy:
     runs-on: windows-latest
