@@ -29,7 +29,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           # artifact name
-          name: CRIPT Excel Uploader Windows Zip
+          name: CRIPT Excel Uploader Mac Zip
           path: src/dist/
           if-no-files-found: error
           retention-days: 10
