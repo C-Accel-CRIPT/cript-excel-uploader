@@ -1,15 +1,18 @@
 name: Compile GUI for Windows
 # run this job manually
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - develop_cd_compiling_gui
 jobs:
   deploy:
     runs-on: windows-latest
     steps:
       # used to check out different branches
       - uses: actions/checkout@v3
-        with:
-          # checkout my specific branch
-          ref: master
+#        with:
+#          # checkout my specific branch
+#          ref: master
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
