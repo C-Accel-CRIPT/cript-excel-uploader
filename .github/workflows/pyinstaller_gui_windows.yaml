@@ -1,4 +1,4 @@
-name: Compile GUI for Windows
+name: "Compile GUI for Windows"
 on:
   push:
     branches:
