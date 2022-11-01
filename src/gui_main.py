@@ -1,3 +1,4 @@
+import setuptools
 import atexit
 import os
 import sys
