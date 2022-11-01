@@ -157,6 +157,7 @@ class ExcelUploaderGUI:
             traceback_error = traceback.format_exc()
 
             self.display_errors([error_str, traceback_error])
+            return
 
         except Exception as error:
             error_str = f"Error: {error}"
@@ -165,15 +166,20 @@ class ExcelUploaderGUI:
             traceback_error = traceback.format_exc()
 
             self.display_errors([error_str, traceback_error])
+            return
 
         # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
         #   screen and not returning any errors
-        if len(error_list) > 0:
-            print("hit error list")
-            self.display_errors(error_list)
-            return
-        else:
-            self.display_success(self.excel_uploader.get_collections_url())
+        try:
+            if len(error_list) > 0:
+                print("hit error list")
+                self.display_errors(error_list)
+                return
+            else:
+                self.display_success(self.excel_uploader.get_collections_url())
+                return
+
+        except (TypeError, UnboundLocalError) as error:
             return
 
     def globus_auth(self, globus_auth_link):
