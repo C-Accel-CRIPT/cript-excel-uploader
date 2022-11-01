@@ -19,25 +19,26 @@ git clone https://github.com/C-Accel-CRIPT/cript-excel-uploader.git
 ```bash
 cd cript-excel-uploader
 ```
+3. Please be sure you are using `python version 3.9`
 
-3. Create virtual environment for needed dependencies
+4. Create virtual environment for needed dependencies
     * **_Windows:_** `python -m venv .\venv`
     * **_Mac & Linux:_** `python3 -m venv ./venv`
 
-4. Activate virtual environment
+5. Activate virtual environment
     * **_Windows:_** `.\venv\Scripts\activate`
     * **_Mac & Linux:_** `source venv/bin/activate`
 
-6. Install needed dependencies
+7. Install needed dependencies
 ```bash
 pip install -r requirements_dev.txt
 ```
 
-7. Navigate to correct directory
+8. Navigate to correct directory
     * **_Windows:_** `cd .\src\`
     * **_Mac & Linux:_** `cd src/`
 
-8. Run the GUI
+9. Run the GUI
     * **_Windows:_** `python gui_main.py`
     * **_Mac & Linux:_** `python3 gui_main.py`
 
