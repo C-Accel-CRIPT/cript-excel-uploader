@@ -2,6 +2,7 @@ import atexit
 import os
 import sys
 import tkinter
+import traceback
 from tkinter import filedialog
 
 import cript
@@ -97,7 +98,7 @@ class ExcelUploaderGUI:
                 user_input["host"], user_input["apiToken"]
             )
 
-        except (cript.exceptions.APIAuthError, requests.exceptions.RequestException):
+        except Exception:
             # send JSON to JS function with fields that have errors and give feedback
             error_dict["host"] = "invalid host or token"
             error_dict["apiToken"] = "invalid host or token"
@@ -145,11 +146,25 @@ class ExcelUploaderGUI:
         """
         eel.goToLoadingScreen()
 
-        # public data is not allowed from Excel Uploader
-        data_is_public = False
+        try:
+            # at the end it returns an error list that I can check for errors
+            error_list = self.excel_uploader.upload_driver(self.excel_file_path, self)
 
-        # at the end it returns an error list that I can check for errors
-        error_list = self.excel_uploader.upload_driver(self.excel_file_path, self)
+        except KeyError as error:
+            error_str = f"Error: {error}"
+
+            # this is used in case of debugging
+            traceback_error = traceback.format_exc()
+
+            self.display_errors([error_str, traceback_error])
+
+        except Exception as error:
+            error_str = f"Error: {error}"
+
+            # this is used in case of debugging
+            traceback_error = traceback.format_exc()
+
+            self.display_errors([error_str, traceback_error])
 
         # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
         #   screen and not returning any errors
