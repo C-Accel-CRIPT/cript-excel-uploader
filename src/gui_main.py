@@ -98,7 +98,7 @@ class ExcelUploaderGUI:
                 user_input["host"], user_input["apiToken"]
             )
 
-        except Exception:
+        except Exception as error:
             # send JSON to JS function with fields that have errors and give feedback
             error_dict["host"] = "invalid host or token"
             error_dict["apiToken"] = "invalid host or token"
