@@ -2,8 +2,6 @@
 
 ## Usage
 
-[//]: # (todo this could use some graphic at the top to make the UI a bit better)
-
 ### Follow these steps
 
 <ol id="usage-steps">
@@ -80,6 +78,17 @@
   </li>
   <li>
     Run CRIPT Excel Uploader
+    <ul>
+      <li>
+        <b><em>Windows:</em></b> simply double click on the executable to run
+      </li>
+       <li>
+        <b><em>Mac:</em></b> simply double click on the executable to run
+      </li>
+      <li>
+        <b><em>Linux</em></b>  convert file to executable by <code>chmod +x excel_uploader_linux</code> and then run the file as usual
+      </li>
+    </ul>
   </li>
 </ol>
 
