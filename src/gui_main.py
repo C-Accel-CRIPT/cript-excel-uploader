@@ -168,8 +168,11 @@ class ExcelUploaderGUI:
             self.display_errors([error_str, traceback_error])
             return
 
-        # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
-        #   screen and not returning any errors
+        # when checking the len(error_list) throws "TypeError: object of type 'NoneType' has no len()"
+        # this happens because the user has been taken to globus auth screen
+        # and there is no error_list object yet
+        # the program doesn't need any action here and the exception catching here is
+        # to not display any errors to the terminal, but not necessarily needed
         try:
             if len(error_list) > 0:
                 print("hit error list")
