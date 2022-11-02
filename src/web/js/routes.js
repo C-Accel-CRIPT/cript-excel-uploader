@@ -4,6 +4,7 @@ let loadingScreen = document.getElementById("loading-screen");
 let globusScreen = document.getElementById("globus-auth-screen");
 let errorScreen = document.getElementById("error-screen");
 let successScreen = document.getElementById("success-screen");
+let programFailureScreen = document.getElementById("program-failure-screen");
 
 
 /*
@@ -17,6 +18,7 @@ function hideAllScreens() {
     globusScreen.classList.add("hidden");
     errorScreen.classList.add("hidden");
     successScreen.classList.add("hidden");
+    programFailureScreen.classList.add("hidden");
 }
 
 // navigate to start screen
@@ -70,4 +72,15 @@ function goToSuccessScreen() {
 
     // show #success-screen
     successScreen.classList.remove("hidden");
+}
+
+// navigate to program failure screen
+eel.expose(goToProgramFailureScreen);
+
+function goToProgramFailureScreen() {
+
+    hideAllScreens();
+
+    // show #program-failure-screen
+    programFailureScreen.classList.remove("hidden");
 }

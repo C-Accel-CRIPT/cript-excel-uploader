@@ -324,6 +324,19 @@ class ExcelUploaderGUI:
         eel.pythonExitCleanUp()
         return
 
+    def handle_program_error(self, error_list):
+        """
+        This function is called when there is some uncaught exception thrown in the GUI
+        and is not caught anywhere else.
+        This function changes the GUI page to notify the user an error occurred,
+        and tell them the error
+        """
+        # take user to program failure screen
+        eel.goToProgramFailureScreen()
+
+        # show user the program errors
+        eel.showProgramFailureError(error_list)
+
 
 if __name__ == "__main__":
     app = ExcelUploaderGUI()
