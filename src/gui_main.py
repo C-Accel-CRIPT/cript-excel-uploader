@@ -1,3 +1,6 @@
+# setuptools must be imported even if not used
+# for PyInstaller to compile it into an executable for Linux
+import setuptools
 import atexit
 import os
 import sys
@@ -7,7 +10,6 @@ from tkinter import filedialog
 
 import cript
 import eel
-import requests
 
 from python.excel_uploader_main import ExcelUploader
 
