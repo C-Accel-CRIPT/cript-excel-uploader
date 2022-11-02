@@ -86,7 +86,13 @@
         <b><em>Mac:</em></b> simply double click on the executable to run
       </li>
       <li>
-        <b><em>Linux</em></b>  convert file to executable by <code>chmod +x excel_uploader_linux</code> and then run the file as usual
+        <b><em>Linux:</em></b> convert file to executable by <code>chmod +x excel_uploader_linux</code> and then run the file as usual
+      </li>
+      <li>
+        <b><em>Terminal Option:</em></b>
+        <a href="launch_gui_from_terminal.md">
+          Running GUI from terminal
+        </a>
       </li>
     </ul>
   </li>
