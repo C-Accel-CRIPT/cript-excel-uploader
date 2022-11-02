@@ -30,4 +30,4 @@ jobs:
           name: CRIPT Excel Uploader Linux Zip
           path: src/dist/
           if-no-files-found: error
-          retention-days: 10
+          retention-days: 90

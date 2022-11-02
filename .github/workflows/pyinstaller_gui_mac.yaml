@@ -19,6 +19,8 @@ jobs:
           python-version: "3.10"
       - name: pip install dependencies
         run: pip install -r requirements_dev.txt
+        # pillow is needed for Mac because Mac needs to change the file
+        # logo_condensed.ico to png that it can use
       - name: pip install Pillow
         run: pip install Pillow
       - name: compile GUI for Mac OS
@@ -32,4 +34,4 @@ jobs:
           name: CRIPT Excel Uploader Mac Zip
           path: src/dist/
           if-no-files-found: error
-          retention-days: 10
+          retention-days: 90
