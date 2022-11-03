@@ -1,12 +1,15 @@
+# setuptools must be imported even if not used
+# for PyInstaller to compile it into an executable for Linux
+import setuptools
 import atexit
 import os
 import sys
 import tkinter
+import traceback
 from tkinter import filedialog
 
 import cript
 import eel
-import requests
 
 from python.excel_uploader_main import ExcelUploader
 
@@ -97,7 +100,7 @@ class ExcelUploaderGUI:
                 user_input["host"], user_input["apiToken"]
             )
 
-        except (cript.exceptions.APIAuthError, requests.exceptions.RequestException):
+        except Exception as error:
             # send JSON to JS function with fields that have errors and give feedback
             error_dict["host"] = "invalid host or token"
             error_dict["apiToken"] = "invalid host or token"
@@ -108,13 +111,13 @@ class ExcelUploaderGUI:
         try:
             self.excel_uploader.set_project(user_input["projectName"])
 
-        except cript.exceptions.APIGetError:
+        except Exception as error:
             error_dict["project"] = "Please enter a valid Project name"
 
         try:
             self.excel_uploader.set_collection(user_input["collectionName"])
 
-        except cript.exceptions.APIGetError:
+        except Exception as error:
             error_dict["collection"] = "Please enter a valid Collection name"
 
         try:
@@ -145,20 +148,43 @@ class ExcelUploaderGUI:
         """
         eel.goToLoadingScreen()
 
-        # public data is not allowed from Excel Uploader
-        data_is_public = False
+        try:
+            # at the end it returns an error list that I can check for errors
+            error_list = self.excel_uploader.upload_driver(self.excel_file_path, self)
 
-        # at the end it returns an error list that I can check for errors
-        error_list = self.excel_uploader.upload_driver(self.excel_file_path, self)
+        except KeyError as error:
+            error_str = f"Error: {error}"
 
-        # TODO this throws TypeError: object of type 'NoneType' has no len() when taking to globus
-        #   screen and not returning any errors
-        if len(error_list) > 0:
-            print("hit error list")
-            self.display_errors(error_list)
+            # this is used in case of debugging
+            traceback_error = traceback.format_exc()
+
+            self.display_errors([error_str, traceback_error])
             return
-        else:
-            self.display_success(self.excel_uploader.get_collections_url())
+
+        except Exception as error:
+            error_str = f"Error: {error}"
+
+            # this is used in case of debugging
+            traceback_error = traceback.format_exc()
+
+            self.display_errors([error_str, traceback_error])
+            return
+
+        # when checking the len(error_list) throws "TypeError: object of type 'NoneType' has no len()"
+        # this happens because the user has been taken to globus auth screen
+        # and there is no error_list object yet
+        # the program doesn't need any action here and the exception catching here is
+        # to not display any errors to the terminal, but not necessarily needed
+        try:
+            if len(error_list) > 0:
+                print("hit error list")
+                self.display_errors(error_list)
+                return
+            else:
+                self.display_success(self.excel_uploader.get_collections_url())
+                return
+
+        except (TypeError, UnboundLocalError) as error:
             return
 
     def globus_auth(self, globus_auth_link):
