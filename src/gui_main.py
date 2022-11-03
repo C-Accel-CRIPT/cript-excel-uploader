@@ -111,13 +111,13 @@ class ExcelUploaderGUI:
         try:
             self.excel_uploader.set_project(user_input["projectName"])
 
-        except cript.exceptions.APIGetError:
+        except Exception as error:
             error_dict["project"] = "Please enter a valid Project name"
 
         try:
             self.excel_uploader.set_collection(user_input["collectionName"])
 
-        except cript.exceptions.APIGetError:
+        except Exception as error:
             error_dict["collection"] = "Please enter a valid Collection name"
 
         try:
