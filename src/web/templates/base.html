@@ -344,7 +344,7 @@
 
         <!-- Try again button -->
         <div class="d-grid gap-2" style="margin-top: 2rem;">
-            <button type="button" onclick="tryAgain();"
+            <button type="button" onclick="uploadAgain();"
                     class="btn btn-primary btn-lg margin-top d-flex justify-content-center"
                     style="padding: 0.7rem 7rem 0.7rem 7rem;">
                 Try again
@@ -378,12 +378,18 @@
         <img src="../assets/images/done.png" class="img-fluid" style="height: 30rem;"
              alt="cartoon picture of task completed">
 
+        <!-- success and upload again button -->
         <div class="d-grid gap-2">
-            <!-- onclick close the window -->
-            <a id="data-in-cript-link" class="btn" href="https://criptapp.org" target="_blank">
+            <!-- show uploaded collection -->
+            <a id="data-in-cript-link" class="btn btn-link" href="https://criptapp.org" target="_blank">
                 <i class="material-icons">cloud_done</i>
                 See my data in CRIPT
             </a>
+            <!-- upload again -->
+            <button class="btn btn-success" type="button" onclick="uploadAgain()">
+                <i class="material-icons">restart_alt</i>
+                Upload again
+            </button>
         </div>
     </div>
 
