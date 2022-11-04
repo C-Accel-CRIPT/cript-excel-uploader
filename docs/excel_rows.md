@@ -22,7 +22,7 @@ for a complete breakdown of each sheet
 
 ## <span class="row-1">Row 1</span>: **Category**
 
-Describes the abstract category of Row 2
+Row 1 can be thought of as describing the abstract category of Row 2
 
 <br>
 
