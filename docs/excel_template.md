@@ -9,6 +9,9 @@ the Excel sheets does not have the ability to get the newest vocabulary, is unaw
 This could result in the Excel sheet giving validation errors that your new key that you got from 
 <a href="https://criptapp.org/keys/" target="_blank">CRIPT controlled vocabulary</a> is not valid when in fact it is, but Excel is not aware of the changes on the <a href="https://criptapp.org/" target="_blank">CRIPT website</a>, and therefore might give you false warnings.
 
+The dropdown list is very large but is not a comprehensive list of every single possible value for row 2 (column name),
+and there can be values that are valid, but are not contained in the dropdown options for the Excel file.
+
 For most complete and up-to-date list of vocabulary please always check the 
 <a href="https://criptapp.org/keys/" target="_blank">CRIPT controlled vocabulary</a> page.
 
