@@ -1,4 +1,4 @@
-// get input elements, pack them inside JSON, and return JSON package
+// get input elements from start screen, pack them inside JSON, and return JSON package
 function getInputElements() {
     // get all input elements
     const host = document.getElementById("host-input");
@@ -18,12 +18,19 @@ function getInputElements() {
 }
 
 function submitForm(event) {
+
+    //restart start screen to remove all validations from previous attempt
+    restartStartScreen();
+
+    // get all input elements for start_screen
+    let inputElements = getInputElements();
+
     // get all input values
-    const host = document.getElementById("host-input").value;
-    const apiToken = document.getElementById("api-token-input").value;
-    const projectName = document.getElementById("project-name").value;
-    const collectionName = document.getElementById("collection-name").value;
-    const excelFilePath = document.getElementById("excel-file-path").value;
+    const host = inputElements.host.value;
+    const apiToken = inputElements.apiToken.value;
+    const projectName = inputElements.projectName.value;
+    const collectionName = inputElements.collectionName.value;
+    const excelFilePath = inputElements.excelFile.value;
 
     // JSON pack of user input from UI
     const userInput = {
