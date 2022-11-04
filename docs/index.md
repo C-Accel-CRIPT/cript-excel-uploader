@@ -118,4 +118,8 @@
   You can use an `ID` field in front of row 2 to separate out the different measurements more on that in
   the <a href="excel_rows/#id-optional" target="_blank">ID section of Row 2</a>
 
+- **_Does capitalization make a difference for units?_**  
+  Yes the units are very case-sensitive and the program will perceive KPa and kPa as two separate things and can cause errors and issues
+
+
 <div style="margin-bottom: 5rem;"></div>
