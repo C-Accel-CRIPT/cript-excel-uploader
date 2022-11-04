@@ -1,9 +1,12 @@
 name: Compile GUI for Mac
-# run this job manually
-on: workflow_dispatch
-#  push:
-#    branches:
-#      - develop_action_compiling_gui
+on:
+  push:
+    branches:
+      - master
+      - main
+
+# Allows you to run this workflow manually too
+  workflow_dispatch:
 
 jobs:
   deploy:
