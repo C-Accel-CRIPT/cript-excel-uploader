@@ -8,6 +8,7 @@ nav:
   - Filling Out First Screen: "filling_out_first_screen.md"
   - Structure of Excel Sheets: "excel_rows.md"
   - Individual Excel Sheets: "individual_sheets.md"
+  - Excel Template: "excel_template.md"
   - Terminal Option: "launch_gui_from_terminal.md"
 
 theme:
