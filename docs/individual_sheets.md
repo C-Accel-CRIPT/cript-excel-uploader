@@ -69,7 +69,7 @@ Define all materials that will be referenced throughout the document.
 > identifier</a>
 > and <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material property</a> columns as you needed
 
-| Row 2                                                                                                                            | Row 1      | Required | Row 4 - ∞ expected value |
+| Row 2                                                                                                                            | Row 1      | Required | Row 5 - ∞ expected value |
 |----------------------------------------------------------------------------------------------------------------------------------|------------|----------|--------------------------|
 | \*name                                                                                                                           | attribute  | yes      | unique name              |
 | pick from `Name` column of <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material identifiers</a> | identifier | no       | your values              |
@@ -198,7 +198,7 @@ This sheet Defines the components of mixture materials.
 <br>
 -->
 
-| Row 2      | Row 1    | Required | Row 4 - ∞ expected value                      |
+| Row 2      | Row 1    | Required | Row 5 - ∞ expected value                      |
 |------------|----------|----------|-----------------------------------------------|
 | \*mixture  | relation | yes      | value from `*name` column of `material` sheet |
 | \*material | relation | yes      | value from `*name` column of `material` sheet |
@@ -250,7 +250,7 @@ This sheet Defines the components of mixture materials.
 
 This sheet defines the experiment
 
-| Row 2   | Row 1     | Required | Row 4 - ∞ expected value                                |
+| Row 2   | Row 1     | Required | Row 5 - ∞ expected value                                |
 |---------|-----------|----------|---------------------------------------------------------|
 | \*name  | attribute | yes      | unique name                                             |
 | funding | attribute | no       | list of your funders (e.g, `funder1; funder2; funder3`) |
@@ -325,7 +325,7 @@ Define the processes of each experiment.
 > You can have as many <a href="https://criptapp.org/keys/process-property-key/" target="_blank">process property</a>
 > and <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> columns as you need
 
-| Row 2                                                                                                                     | Row 1     | Required | Row 4 - ∞ expected value                                                                                                                                               |
+| Row 2                                                                                                                     | Row 1     | Required | Row 5 - ∞ expected value                                                                                                                                               |
 |---------------------------------------------------------------------------------------------------------------------------|-----------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | \*experiment                                                                                                              | relation  | yes      | value from `*name`column of`experiment` sheet                                                                                                                          |
 | \*name                                                                                                                    | attribute | yes      | unique name                                                                                                                                                            |
@@ -609,7 +609,7 @@ Define the equipment used in a process.
 > You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Condition</a> columns as you
 > need
 
-| Row 2                                                                                                        | Row 1     | Required | Row 4 - ∞ expected value                                                                                     |
+| Row 2                                                                                                        | Row 1     | Required | Row 5 - ∞ expected value                                                                                     |
 |--------------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------|
 | \*process                                                                                                    | relation  | yes      | value from `*name` column of `process` sheet                                                                 |
 | \*key                                                                                                        | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> |
@@ -705,7 +705,7 @@ Define the immediate prerequisites for each process.
 
 > e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).
 
-| Row 2          | Row 1    | Required | Row 4 - ∞ expected value                     |
+| Row 2          | Row 1    | Required | Row 5 - ∞ expected value                     |
 |----------------|----------|----------|----------------------------------------------|
 | \*process      | relation | yes      | value from `*name` column of `process` sheet |
 | \*prerequisite | relation | yes      | value from `*name` column of `process` sheet |
@@ -763,7 +763,7 @@ Define the ingredients for each process and their respective quantities.
 > you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a> columns as needed for
 > your different materials
 
-| Row 2                                                                                                     | Row 1     | Required | Row 4 - ∞ expected value                                                                                           |
+| Row 2                                                                                                     | Row 1     | Required | Row 5 - ∞ expected value                                                                                           |
 |-----------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------------|
 | \*process                                                                                                 | relation  | yes      | value from `*name` column of `process` sheet                                                                       |
 | \*material                                                                                                | relation  | yes      | value from `*name` column of `material` sheet                                                                      |
@@ -879,7 +879,7 @@ Define the ingredients for each process and their respective quantities.
 
 Define the material products of each process.
 
-| Row 2      | Row 1    | Required | Row 4 - ∞ expected value                   |
+| Row 2      | Row 1    | Required | Row 5 - ∞ expected value                   |
 |------------|----------|----------|--------------------------------------------|
 | \*process  | relation | yes      | value from `*name`column of`process`sheet  |
 | \*material | relation | yes      | value from`*name`column of`material` sheet |
@@ -938,7 +938,7 @@ Define the material products of each process.
 
 Define the data sets you will be associating with properties, etc.
 
-| Row 2              | Row 1     | Required | Row 4 - ∞ expected value                                                                                 |
+| Row 2              | Row 1     | Required | Row 5 - ∞ expected value                                                                                 |
 |--------------------|-----------|----------|----------------------------------------------------------------------------------------------------------|
 | \*experiment       | relation  | yes      | value from `*name`column of`experiment`sheet                                                             |
 | \*name             | attribute | yes      | unique name                                                                                              |
@@ -1054,7 +1054,7 @@ Define the data sets you will be associating with properties, etc.
 
 Define references to be associated with properties, etc. as citations.
 
-| Row 2     | Row 1     | Required | Row 4 - ∞ expected value |
+| Row 2     | Row 1     | Required | Row 5 - ∞ expected value |
 |-----------|-----------|----------|--------------------------|
 | \*title   | attribute | yes      | unique title             |
 | doi       | attribute | no       | text                     |
