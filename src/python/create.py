@@ -461,7 +461,8 @@ def _create_object(obj_class, obj_dict, parsed_cell):
     ) as e:
         # Updates list of error messages to show to user and returns None if an object
         # couldn't be created
-        row_index = parsed_cell["index"] + 4
+        row_input_can_start_from = 5
+        row_index = parsed_cell["index"] + row_input_can_start_from
         sheet_name = parsed_cell["sheet"].capitalize()
         message = f"{sheet_name} sheet, Row {row_index}: {e}"
         error_list.append(message)
@@ -481,8 +482,9 @@ def _get_relation(related_objs, cell_value, parsed_cell):
         return related_objs[cell_value]
     except KeyError:
         # Adds error to list of errors and returns None
-        # Add 4 due to differences in DataFrame and excel format
-        row_index = parsed_cell["index"] + 4
+        # Add 5 due to differences in DataFrame and Excel format
+        row_input_can_start_from = 5
+        row_index = parsed_cell["index"] + row_input_can_start_from
         sheet_name = parsed_cell["sheet"].capitalize()
         related_sheet = parsed_cell["key"].capitalize()
         value = parsed_cell["value"][0]
