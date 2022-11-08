@@ -40,7 +40,7 @@
 
   <li>
     Download the
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.0/CRIPT_template.xlsx">
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/CRIPT_template.xlsx">
         CRIPT Excel Template
     </a>
     <ul>
@@ -52,7 +52,7 @@
       </li>
       <li>
         The 
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.0/CRIPT_template.Example.xlsx">
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/Example_filled_CRIPT_template.xlsx">
           CRIPT <b>Example</b> Excel Template
         </a>
         can serve as an example Excel file for users to see the overall flow and structure of the Excel file
@@ -60,10 +60,23 @@
     </ul>
   </li>
   <li>
-    Download the
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.0/CRIPT.Excel.Uploader.exe">
-      CRIPT Excel Uploader executable
-    </a>
+    Download the latest CRIPT Excel Uploader executable
+    <ul>
+      <li>
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/excel_uploader_gui_windows.exe">
+          Windows executable
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/excel_uploader_gui_linux">
+          Linux executable
+        </a>
+      </li>
+      <li>
+        The best place that can guarantee the latest version of the Excel uploader is always on our GitHub, under the 
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest">latest released assets</a>
+      </li>
+    </ul>
   <li>
     Input your data into the CRIPT Excel template
     <ul>
@@ -119,7 +132,7 @@
   the <a href="excel_rows/#id-optional" target="_blank">ID section of Row 2</a>
 
 - **_Does capitalization make a difference for units?_**  
-  Yes the units are very case-sensitive and the program will perceive KPa and kPa as two separate things and can cause errors and issues
-
+  Yes the units are very case-sensitive and the program will perceive KPa and kPa as two separate things and can cause
+  errors and issues
 
 <div style="margin-bottom: 5rem;"></div>
