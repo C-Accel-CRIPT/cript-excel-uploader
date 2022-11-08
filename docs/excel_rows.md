@@ -30,6 +30,7 @@ Row 1 can be thought of as describing the abstract category of Row 2
 
 - <span class="row-1">attribute</span>
     - Column with simple key-value pairs
+    - A singular characteristic that a node/object has and it better describes the object
 - <span class="row-1">condition</span>
     - The condition under which the property was found
     - Some examples include `temperature`, `mixing_rate`, `stirring`, `time_duration`
