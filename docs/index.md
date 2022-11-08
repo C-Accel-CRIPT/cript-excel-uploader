@@ -40,7 +40,7 @@
 
   <li>
     Download the
-    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/CRIPT_template.xlsx">
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/CRIPT_template.xlsx">
         CRIPT Excel Template
     </a>
     <ul>
@@ -52,7 +52,7 @@
       </li>
       <li>
         The 
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/Example_filled_CRIPT_template.xlsx">
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/Example_filled_CRIPT_template.xlsx">
           CRIPT <b>Example</b> Excel Template
         </a>
         can serve as an example Excel file for users to see the overall flow and structure of the Excel file
@@ -63,12 +63,12 @@
     Download the latest CRIPT Excel Uploader executable
     <ul>
       <li>
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/excel_uploader_gui_windows.exe">
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_gui_windows.exe">
           Windows executable
         </a>
       </li>
       <li>
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/download/v0.6.1/excel_uploader_gui_linux">
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_gui_linux">
           Linux executable
         </a>
       </li>
