@@ -24,27 +24,32 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
       <tr>
         <td class="row-1">
             <a href="excel_rows/#row-1-options-list" target="_blank">
-              abstract category
+              Category
             </a>
         </td>
       </tr>
       <tr>
         <td class="row-2">
             <a href="individual_sheets/#sheets" target="_blank">
-              field name
+              Column Name
             </a>
         </td>
       </tr>
       <tr class="row-3">
-        <th class="row-3">
+        <td class="row-3">
             <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">
               units
             </a>
+        </td>
+      </tr>
+      <tr>
+        <th class="instruction-row" style="font-style: italic; font-weight: 400">
+          Instructions
         </th>
       </tr>
-      <tr class="row-4">
-        <td>
-          <em>Your values</em>
+      <tr>
+        <td style="font-weight: bold; color: black">
+          Your Values
         </td>
       </tr>
     </table>
