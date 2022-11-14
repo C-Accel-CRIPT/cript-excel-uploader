@@ -105,7 +105,7 @@ class Sheet:
             "type": nested_types[-1],
             "unique_key": nested_keys[-1].strip("*"),
             "key": self._clean_key(nested_keys[-1]),
-            "value": row[column],
+            "value": row[column] if not pd.isna(row[column]) else None,
             "unit": column[2] if "Unnamed" not in column[2] else None,
         }
 
