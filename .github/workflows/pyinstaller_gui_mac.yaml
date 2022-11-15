@@ -1,0 +1,40 @@
+name: Compile GUI for Mac
+on:
+  push:
+    tags:
+      # Push events to every tag including hierarchical tags like v1.0/beta
+      - '**'
+
+# Allows you to run this workflow manually too
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: macos-latest
+    steps:
+      # used to check out different branches
+      - uses: actions/checkout@v3
+#        with:
+#          # checkout my specific branch
+#          ref: master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: pip install dependencies
+        run: pip install -r requirements_dev.txt
+        # pillow is needed for Mac because Mac needs to change the file
+        # logo_condensed.ico to png that it can use
+      - name: pip install Pillow
+        run: pip install Pillow
+      - name: compile GUI for Mac OS
+        working-directory: src/
+        run: python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_mac --icon=assets/logo_condensed.ico
+
+      # save compiled GUI
+      - uses: actions/upload-artifact@v3
+        with:
+          # artifact name
+          name: CRIPT Excel Uploader Mac Zip
+          path: src/dist/
+          if-no-files-found: error
+          retention-days: 90
