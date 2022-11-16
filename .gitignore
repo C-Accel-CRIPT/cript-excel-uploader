@@ -142,3 +142,6 @@ cython_debug/
 
 # Local
 config.yaml
+
+# keep dev.js for GUI private
+src/web/js/dev.js
