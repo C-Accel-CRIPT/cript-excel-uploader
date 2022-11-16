@@ -1,5 +1,12 @@
 # Updating Excel Uploader Docs
 
+## CI/CD
+Every time a push is made to the **docs** branch, a GitHub actions watching **docs** branch for changes automatically starts running, builds the documentation, and pushes it to **gh-pages** branch. The **gh-pages** branch is also being watched for changes, and any time there is a change then it reloads the documentation website based off of the new push to **gh-pages** branch.
+
+The GitHub actions file for building of the docs can be found in _.github/workflows/docs.yml_, it largely comes from the [Material MkDocs documentation regarding CI/CD](https://squidfunk.github.io/mkdocs-material/publishing-your-site/#with-github-actions)
+
+
+
 ## Technologies
 * The documentation for Excel Uploader utilizes [material mkdocs](https://squidfunk.github.io/mkdocs-material/).
 
