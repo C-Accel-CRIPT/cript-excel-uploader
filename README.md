@@ -1,7 +1,7 @@
-# Updating Excel Uploader Docs
+# Excel Uploader Docs
 
 ## CI/CD
-Every time a push is made to the **docs** branch, a GitHub actions watching **docs** branch for changes automatically starts running, builds the documentation, and pushes it to **gh-pages** branch. The **gh-pages** branch is also being watched for changes, and any time there is a change then it reloads the documentation website based off of the new push to **gh-pages** branch.
+Every time a push is made to the **docs** branch, a GitHub actions watching **docs** branch for changes automatically starts running, builds the documentation, and pushes it to **gh-pages** branch. The **gh-pages** branch is also being watched for changes, and any time there is a change then it reloads the [CRIPT Excel Uploader documentation](https://c-accel-cript.github.io/cript-excel-uploader/) based off of the new push to **gh-pages** branch.
 
 The GitHub actions file for building of the docs can be found in _.github/workflows/docs.yml_, it largely comes from the [Material MkDocs documentation regarding CI/CD](https://squidfunk.github.io/mkdocs-material/publishing-your-site/#with-github-actions)
 
@@ -24,6 +24,11 @@ The GitHub actions file for building of the docs can be found in _.github/workfl
 * **_docs/stylesheets/extra.css_**
   * contains the css that every page has
 
-## CI/CD
-* Any time there is a push to the docs branch GitHub actions the docs gets compiled and deployed to the [CRIPT Excel Uploader documentation](https://c-accel-cript.github.io/cript-excel-uploader/)
+## Running docs server locally
+
+To run mkdocs locally follow these steps:
+1. install docs dependencies
+   * `pip install -r requirements_docs.txt`
+2. start server
+   * in the terminal type: `mkdocs serve`
 
