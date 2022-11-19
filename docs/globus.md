@@ -4,16 +4,10 @@
 <img alt="screenshot of the Globus Authentication screen within the CRIPT Excel Uploader program" 
 src="../docs_assets/globus/globus_screen.png" 
 class="screenshot-border" style="width: 25rem;">
-<small style="display: block">
-    screenshot of the CRIPT Excel Uploader program Globus Authentication screen
-</small>
 
 <img alt="screenshot of the CRIPT Excel template data sheet source column" 
 src="../docs_assets/globus/data_sheet_source_column_screenshot.png" 
 class="screenshot-border" style="width: 15rem; margin-top: 0.8rem">
-<small style="display: block">
-    screenshot of the CRIPT Excel template data sheet <code>*source</code> column
-</small>
 
 ### Globus Screen Conditions
 The <u>Globus Authentication for Local File Uploads</u> screen is **required** if:
@@ -27,17 +21,13 @@ The program may **skip** this screen completely if:
 
 
 !!! note annotate "Storing linked files vs local files"
-    CRIPT uses <a href="https://www.globus.org/" target="_blank">Globus</a> to store uploaded files.
-    Authentication is not required with Globus when inputting links to web files under the `*source` column because CRIPT will only point to the links and not upload the linked files to CRIPT. 
+    CRIPT uses <a href="https://www.globus.org/" target="_blank">Globus</a> to store uploaded files. Authentication is **_not required_** with Globus when inputting links to web files under the `*source` column because CRIPT will only point to the links and not upload the linked files to CRIPT. 
 
 ### Globus Authentication
 
 <img alt="screenshot of the Globus Authentication screen" 
 src="../docs_assets/globus/globus_label.png" 
 class="screenshot-border" style="width: 30rem;">
-<small style="display: block">
-    Screenshot of the <a href="https://www.globus.org/" target="_blank">Globus</a> Authentication screen
-</small>
 
 Please provide a label in the field labeled “Provide a label for future reference” within the Globus Authentication page. The label is insignificant for our uses and can be anything you like, and then click the `Allow` button.
 
