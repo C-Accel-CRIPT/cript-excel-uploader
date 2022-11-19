@@ -6,7 +6,7 @@ repo_name: C-Accel-CRIPT/cript-excel-uploader
 nav:
   - Quick Start: index.md
   - Filling Out First Screen: "filling_out_first_screen.md"
-  - Globus: "globus.md"
+  - Globus Authentication: "globus.md"
   - Structure of Excel Sheets: "excel_rows.md"
   - Individual Excel Sheets: "individual_sheets.md"
   - Excel Template: "excel_template.md"

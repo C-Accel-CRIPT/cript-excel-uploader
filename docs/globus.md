@@ -1,6 +1,5 @@
-# Globus
+# Globus Authentication
 
-## Globus Screen
 <img alt="screenshot of the Globus Authentication screen within the CRIPT Excel Uploader program" 
 src="../docs_assets/globus/globus_screen.png" 
 class="screenshot-border" style="width: 25rem;">
@@ -9,7 +8,7 @@ class="screenshot-border" style="width: 25rem;">
 src="../docs_assets/globus/data_sheet_source_column_screenshot.png" 
 class="screenshot-border" style="width: 15rem; margin-top: 0.8rem">
 
-### Globus Screen Conditions
+## Globus Screen Conditions
 The <u>Globus Authentication for Local File Uploads</u> screen is **required** if:
 
 * You indicate on the `Excel file > data sheet > *source column` that you are uploading a local file from your computer to CRIPT via inputting an absolute path of a file on your computer.
@@ -23,7 +22,7 @@ The program may **skip** this screen completely if:
 !!! note annotate "Storing linked files vs local files"
     CRIPT uses <a href="https://www.globus.org/" target="_blank">Globus</a> to store uploaded files. Authentication is **_not required_** with Globus when inputting links to web files under the `*source` column because CRIPT will only point to the links and not upload the linked files to CRIPT. 
 
-### Globus Authentication
+## Globus Website
 
 <img alt="screenshot of the Globus Authentication screen" 
 src="../docs_assets/globus/globus_label.png" 
