@@ -19,8 +19,10 @@ The program may **skip** this screen completely if:
 2. All inputs under the *source column are only web URLs
 
 
-!!! note annotate "Storing linked files vs local files"
-    CRIPT uses <a href="https://www.globus.org/" target="_blank">Globus</a> to store uploaded files. Authentication is **_not required_** with Globus when inputting links to web files under the `*source` column because CRIPT will only point to the links and not upload the linked files to CRIPT. 
+??? info annotate "Storing Web files vs local files"
+    CRIPT uses <a href="https://www.globus.org/" target="_blank">Globus</a> to store uploaded local files from your computer. 
+    
+    Authentication is **_not required_** with Globus when inputting links to web files under the `*source` column because CRIPT will only point to the links and not upload the linked files to CRIPT. 
 
 ## Globus Website
 
