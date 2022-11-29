@@ -40,9 +40,13 @@ markdown_extensions:
   - toc:
       baselevel: 1
       permalink: True
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

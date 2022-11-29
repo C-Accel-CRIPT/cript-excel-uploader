@@ -7,40 +7,83 @@ You may want to run the program via terminal for several reasons.
 
 Follow these steps to launch the program via terminal:
 
-1. Git clone the
-   <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader" target="_blank">
-   master branch of the CRIPT Excel Uploader repository
-   </a>
-```bash
-git clone https://github.com/C-Accel-CRIPT/cript-excel-uploader.git
-```
+1. Download [python 3.9 or higher](https://www.python.org/downloads/)
 
-2. Navigate to the repository that was just cloned
-```bash
-cd cript-excel-uploader
-```
-3. Please be sure you are using `python version 3.9`
+2. Git clone the
+    <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader" target="_blank">
+    master branch of the CRIPT Excel Uploader repository
+    </a>
+
+    ```bash
+    git clone https://github.com/C-Accel-CRIPT/cript-excel-uploader.git
+    ```
+
+3. Navigate to the repository that was just cloned
+
+    ```bash
+    cd cript-excel-uploader
+    ```
 
 4. Create virtual environment for needed dependencies
-    * :fontawesome-brands-windows: **_Windows:_** `python -m venv .\venv`
-    * :fontawesome-brands-apple: :fontawesome-brands-linux: **_Mac & Linux:_** `python3 -m venv ./venv`
 
-5. Activate virtual environment
-    * :fontawesome-brands-windows: **_Windows:_** `.\venv\Scripts\activate`
-    * :fontawesome-brands-apple: :fontawesome-brands-linux: **_Mac & Linux:_** `source venv/bin/activate`
+    === ":fontawesome-brands-windows: Windows"
+        ``` bash 
+        python -m venv .\venv
+        ```
 
-7. Install needed dependencies
-```bash
-pip install -r requirements_dev.txt
-```
+    === ":fontawesome-brands-apple: Mac & :fontawesome-brands-linux: Linux"
 
-8. Navigate to correct directory
-    * :fontawesome-brands-windows: **_Windows:_** `cd .\src\`
-    * :fontawesome-brands-apple: :fontawesome-brands-linux: **_Mac & Linux:_** `cd src/`
+        ``` bash
+        python3 -m venv ./venv
+        ```
 
-9. Run the GUI
-    * :fontawesome-brands-windows: **_Windows:_** `python gui_main.py`
-    * :fontawesome-brands-apple: :fontawesome-brands-linux: **_Mac & Linux:_** `python3 gui_main.py`
+5.  Activate virtual environment
+
+    === ":fontawesome-brands-windows: Windows"
+
+        ``` bash
+        .\venv\Scripts\activate
+        ```
+
+    === ":fontawesome-brands-apple: Mac & :fontawesome-brands-linux: Linux"
+
+        ``` bash
+        source venv/bin/activate
+        ```
+
+6.  Install needed dependencies
+
+    ```bash
+    pip install -r requirements_dev.txt
+    ```
+
+7.  Navigate to directory
+
+    === ":fontawesome-brands-windows: Windows"
+
+        ``` bash
+        cd .\src\
+        ```
+
+    === ":fontawesome-brands-apple: Mac & :fontawesome-brands-linux: Linux"
+
+        ``` bash
+        cd src/
+        ```
+
+9.  Run the GUI
+
+    === ":fontawesome-brands-windows: Windows"
+
+        ``` bash
+        python gui_main.py
+        ```
+
+    === ":fontawesome-brands-apple: Mac & :fontawesome-brands-linux: Linux"
+
+        ``` bash
+        python3 gui_main.py
+        ```
 
 The CRIPT Excel Uploader graphical user interface should now be running
 
