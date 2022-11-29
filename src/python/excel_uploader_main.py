@@ -1,5 +1,3 @@
-import time
-
 import cript
 import globus_sdk
 
@@ -132,7 +130,7 @@ class ExcelUploader:
             self.has_authenticated_with_globus = False
             return self.has_authenticated_with_globus
 
-        # if authentication is successful, record that user authenticated and
+        # if authentication is successful, record that user authenticated
         self.has_authenticated_with_globus = True
         return self.has_authenticated_with_globus
 
