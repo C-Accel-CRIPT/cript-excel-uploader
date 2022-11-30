@@ -7,7 +7,7 @@ You may want to run the program via terminal for several reasons.
 
 Follow these steps to launch the program via terminal:
 
-1. Download [python 3.9 or higher](https://www.python.org/downloads/)
+1. Download <a href="https://www.python.org/downloads/" target="_blank">python 3.9 or higher</a>
 
 2. Git clone the
     <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader" target="_blank">
