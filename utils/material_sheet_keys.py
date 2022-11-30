@@ -16,7 +16,8 @@ def get_dict_of_all_excel_sheets(source_excel_file):
     excel_file = pd.ExcelFile(source_excel_file)
 
     for sheet_name in excel_file.sheet_names:
-        df = pd.read_excel(excel_file, sheet_name)
+        # skipping the first row because the first row is the label/link for the source file
+        df = pd.read_excel(excel_file, sheet_name, skiprows=[0])
 
         # adding metadata of sheet name into the df to be used later
         df.sheet_name = sheet_name
