@@ -1,0 +1,80 @@
+body {
+    --cript-primary-color: #4c2a80;
+}
+
+.material-icons {
+    vertical-align: bottom;
+}
+
+.margin-top {
+    margin-top: 1.5rem;
+}
+
+.margin-right {
+    margin-right: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/* styles for undraw images */
+.cartoon-img {
+    max-width: 40rem;
+}
+
+/* start screen styles */
+
+#data-privacy-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    width: 10rem;
+}
+
+.input-label {
+    min-width: 12rem;
+}
+
+#excel-file-button {
+    background-color: var(--cript-primary-color);
+    color: white;
+}
+
+#data-privacy-options {
+    margin-top: 1.2rem;
+}
+
+/* end start screen styles */
+
+
+/* error screen style */
+
+#error-window-parent {
+    height: 30rem;
+    width: 100%;
+    background-color: #f5f5f5;
+    overflow-y: scroll;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+/* success screen styles */
+
+#data-in-cript-link {
+    background-color: var(--cript-primary-color);
+    color: white;
+}
+
+/* end of success screen */
+
+/* end error screen styles */
+
+.documentation-link {
+    color: #bdbdbd;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    padding: 1rem;
+}
