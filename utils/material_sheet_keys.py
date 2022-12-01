@@ -110,8 +110,8 @@ def get_new_df():
     unit = "unit"
     instructions = "instructions"
 
-    df = pd.DataFrame(columns=[category, column_name, unit, instructions])
-    return df
+    # return df
+    return pd.DataFrame(columns=[category, column_name, unit, instructions])
 
 
 def single_options(sheet_df):
