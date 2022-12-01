@@ -105,13 +105,10 @@ def get_new_df():
     creates a new DF with columns needed for the Excel file options
     returns: pandas dataframe object
     """
-    category = "category"
-    column_name = "Name"
-    unit = "unit"
-    instructions = "instructions"
 
-    # return df
-    return pd.DataFrame(columns=[category, column_name, unit, instructions])
+    # return df with:
+    # Column 1: "category",  Column 2: "Name", Column 3: "unit", Column 4: instructions
+    return pd.DataFrame(columns=["category", "Name", "unit", "instructions"])
 
 
 def single_options(sheet_df):
