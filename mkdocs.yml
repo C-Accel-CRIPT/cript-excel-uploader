@@ -11,6 +11,7 @@ nav:
   - Individual Excel Sheets: "individual_sheets.md"
   - Excel Template: "excel_template.md"
   - Terminal Option: "launch_gui_from_terminal.md"
+  - FAQ: "faq.md"
 
 theme:
   name: material
