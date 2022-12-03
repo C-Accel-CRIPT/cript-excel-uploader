@@ -17,7 +17,7 @@ The CRIPT Excel Uploader has 2 required parts, an Excel template and Excel Uploa
     === ":fontawesome-brands-linux: Linux"
         [:fontawesome-brands-linux: Linux executable](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_linux)
 
-    === ":octicons-terminal-16: Launch GUI from terminal"
+    === ":octicons-terminal-16: Terminal Option"
         Please visit the <a href="../launch_gui_from_terminal" target="_blank">Terminal Option</a> page
 
 
