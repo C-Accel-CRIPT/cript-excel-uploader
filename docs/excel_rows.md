@@ -34,7 +34,7 @@ Row 1 can be thought of as describing the abstract category of Row 2
 - <span class="row-1">condition</span>
     - The condition under which the property was found
     - Some examples include `temperature`, `mixing_rate`, `stirring`, `time_duration`
-    - Please visit <a href="https://criptapp-staging.herokuapp.com/keys/condition-key/" target="_blank">
+    - Please visit <a href="https://criptapp.org/keys/condition-key/" target="_blank">
       condition controlled vocabulary</a> for a full list of conditions
 - <span class="row-1">identifier</span>
     - Column with key-value pairs for material identifiers
