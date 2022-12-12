@@ -136,6 +136,7 @@ def create_materials(parsed_materials, project, data, citations):
     materials = {}
 
     for key, parsed_material in parsed_materials.items():
+        use_existing = False
         material_dict = {
             "project": project,
             "identifiers": [],
@@ -159,16 +160,23 @@ def create_materials(parsed_materials, project, data, citations):
                 material_dict["identifiers"].append(identifier)
 
             elif cell_type == "property":
+                if parsed_cell["key"] == "use_existing":
+                    use_existing = (
+                        True
+                        if parsed_cell["value"] in [True, "TRUE", "true", "True"]
+                        else False
+                    )
+                    continue
                 property = _create_property(parsed_cell, data, citations)
                 material_dict["properties"].append(property)
 
         # Add characteristics to an already created material node
-        if "use_existing" in parsed_material.values():
+        if use_existing:
 
             try:
                 # try to get the material using its name
-                name_ = parsed_material["name"]
-                material = cript.Material.get(name=name_)
+                name_ = parsed_material["name"]["value"]
+                material = cript.Material.get(name=name_, project=project.uid)
 
             # If there is a get error add it to the errors sheet
             except ValueError as e:
