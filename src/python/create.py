@@ -162,9 +162,7 @@ def create_materials(parsed_materials, project, data, citations):
             elif cell_type == "property":
                 if parsed_cell["key"] == "use_existing":
                     use_existing = (
-                        True
-                        if parsed_cell["value"] in [True, "TRUE", "true", "True"]
-                        else False
+                        True if parsed_cell["value"].lower() == "true" else False
                     )
                     continue
                 property = _create_property(parsed_cell, data, citations)
