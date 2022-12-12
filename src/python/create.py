@@ -162,7 +162,9 @@ def create_materials(parsed_materials, project, data, citations):
             elif cell_type == "property":
                 if parsed_cell["key"] == "use_existing":
                     use_existing = (
-                        True if parsed_cell["value"].lower() == "true" else False
+                        True
+                        if parsed_cell["value"] in [True, "TRUE", "true", "True"]
+                        else False
                     )
                     continue
                 property = _create_property(parsed_cell, data, citations)
@@ -191,10 +193,10 @@ def create_materials(parsed_materials, project, data, citations):
                     material.add_property(property)
                 for identifier in material_dict["identifiers"]:
                     material.add_identifier(identifier)
-                for key in material_dict:
-                    if key == "keywords":
+                for key_ in material_dict:
+                    if key_ == "keywords":
                         material.keywords += material_dict["keywords"]
-                    elif key == "notes":
+                    elif key_ == "notes":
                         material.notes += material_dict["notes"]
         # create new material object otherwise
         else:
