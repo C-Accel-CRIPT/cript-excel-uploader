@@ -162,7 +162,37 @@ def create_materials(parsed_materials, project, data, citations):
                 property = _create_property(parsed_cell, data, citations)
                 material_dict["properties"].append(property)
 
-        material = _create_object(cript.Material, material_dict, parsed_cell)
+        # Add characteristics to an already created material node
+        if "use_existing" in parsed_material.values():
+
+            try:
+                # try to get the material using its name
+                name_ = parsed_material["name"]
+                material = cript.Material.get(name=name_)
+
+            # If there is a get error add it to the errors sheet
+            except ValueError as e:
+                row_input_can_start_from = 5
+                row_index = parsed_cell["index"] + row_input_can_start_from
+                sheet_name = parsed_cell["sheet"].capitalize()
+                message = f"{sheet_name} sheet, Row {row_index}: {e}"
+                error_list.append(message)
+                material = None
+            # If the material had a successful GET request, add properties, identifiers,
+            # and select attributes as written in the excel
+            else:
+                for property in material_dict["properties"]:
+                    material.add_property(property)
+                for identifier in material_dict["identifiers"]:
+                    material.add_identifier(identifier)
+                for key in material_dict:
+                    if key == "keywords":
+                        material.keywords += material_dict["keywords"]
+                    elif key == "notes":
+                        material.notes += material_dict["notes"]
+        # create new material object otherwise
+        else:
+            material = _create_object(cript.Material, material_dict, parsed_cell)
         if material is not None:
             materials[key] = material
 
