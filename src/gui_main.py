@@ -4,7 +4,7 @@ import setuptools
 import atexit
 import os
 import sys
-import tkinter
+from tkinter import *
 import traceback
 from tkinter import filedialog
 
