@@ -380,6 +380,7 @@ def _create_property(parsed_property, data, citations):
         "value": parsed_property["value"],
         "conditions": [],
         "citations": [],
+        # "method": None,
     }
     if parsed_property["unit"]:
         property_dict.update({"unit": parsed_property["unit"]})
@@ -396,6 +397,9 @@ def _create_property(parsed_property, data, citations):
             elif cell_type == "condition":
                 condition = _create_condition(parsed_cell, data)
                 property_dict["conditions"].append(condition)
+
+            elif cell_type == "method":
+                property_dict["method"] = parsed_cell["key"]
 
             elif cell_type == "relation":
                 if cell_key == "data":
