@@ -60,24 +60,6 @@
     </ul>
   </li>
   <li>
-    Download the latest CRIPT Excel Uploader executable
-    <ul>
-      <li>
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_windows.exe">
-          Windows executable
-        </a>
-      </li>
-      <li>
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_linux">
-          Linux executable
-        </a>
-      </li>
-      <li>
-        The best place that can guarantee the latest version of the Excel uploader is always on our GitHub, under the 
-        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest">latest released assets</a>
-      </li>
-    </ul>
-  <li>
     Input your data into the CRIPT Excel template
     <ul>
       <li>
@@ -89,6 +71,17 @@
       </li>
     </ul>
   </li>
+  <li>
+    <a href="/downloads" target="_blank">Download</a> the latest CRIPT Excel Uploader executable
+    <ul>
+     <li>
+        Please visit the Excel Uploader <a href="/downloads" target="_blank">Downloads</a>
+     </li>
+      <li>
+        The best place that can guarantee the latest version of the Excel uploader is always on our GitHub, under the 
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest">latest released assets</a>
+      </li>
+    </ul>
   <li>
     Run CRIPT Excel Uploader
     <ul>
