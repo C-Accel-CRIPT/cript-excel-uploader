@@ -22,3 +22,9 @@
 
 * **How should I go about fixing errors when I run Excel Uploader program?**
     * _Please be sure you have the latest Excel Uploader program for your operating system, and fix the errors from top down because often the errors that appear further down on the list are a result of the errors at the top of the list_ 
+
+* **Are there additional resources to upload my data to CRIPT?**
+    * _You can try:_
+        1. _inputting your data directly into [CRIPT](https://criptapp.org) via the user interface_
+        2. _using the [CRIPT Python SDK](https://pypi.org/project/cript/) to programmatically upload your data to [CRIPT](https://criptapp.org)_
+        3. _getting existing CRIPT Scripts and CRIPT Sheets from [criptscripts.org](https://criptscripts.org)_
