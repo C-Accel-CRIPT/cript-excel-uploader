@@ -87,11 +87,6 @@ class Sheet:
             # Asscoiated key should have an empty value, so it shouldn't be skipped
             if key == "associated":
                 return False
-
-            # if a type column has "method" in it then don't skip it
-            elif "method" in cell_type:
-                return False
-
             return True
 
         return False
