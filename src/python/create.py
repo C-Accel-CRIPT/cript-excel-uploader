@@ -161,11 +161,7 @@ def create_materials(parsed_materials, project, data, citations):
 
             elif cell_type == "property":
                 if parsed_cell["key"] == "use_existing":
-                    use_existing = (
-                        True
-                        if parsed_cell["value"] in [True, "TRUE", "true", "True"]
-                        else False
-                    )
+                    use_existing = cellToBool(parsed_cell["value"])
                     continue
                 property = _create_property(parsed_cell, data, citations)
                 material_dict["properties"].append(property)
@@ -529,3 +525,8 @@ def _get_relation(related_objs, cell_value, parsed_cell):
         message = f'{sheet_name} sheet, Row {row_index}: "{value}" does not exist in the {related_sheet} sheet.'
         error_list.append(message)
         return None
+
+
+def cellToBool(val):
+    """Converts a cell value to a useable boolean"""
+    return True if str(val).lower() == "true" else False
