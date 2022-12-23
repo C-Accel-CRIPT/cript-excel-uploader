@@ -399,7 +399,8 @@ def _create_property(parsed_property, data, citations):
                 property_dict["conditions"].append(condition)
 
             elif cell_type == "method":
-                property_dict["method"] = parsed_cell["key"]
+                if cellToBool(parsed_cell["value"]):
+                    property_dict["method"] = parsed_cell["key"]
 
             elif cell_type == "relation":
                 if cell_key == "data":
@@ -495,3 +496,8 @@ def _get_relation(related_objs, cell_value, parsed_cell):
         message = f'{sheet_name} sheet, Row {row_index}: "{value}" does not exist in the {related_sheet} sheet.'
         error_list.append(message)
         return None
+
+
+def cellToBool(val):
+    """Converts a cell value to a useable boolean"""
+    return True if str(val).lower() == "true" else False
