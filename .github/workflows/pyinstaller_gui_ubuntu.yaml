@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: pip install dependencies
-        run: pip install -r requirements_dev.txt
+        run: pip install -r requirements.txt
       - name: compile GUI for ubuntu
         working-directory: src/
         run: python -m eel gui_main.py web/ --onefile --noconsole --name excel_uploader_linux --icon=/assets/logo_condensed.ico
