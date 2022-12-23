@@ -226,6 +226,11 @@ if __name__ == "__main__":
         all_sheets_df["property"], all_sheets_df["type"]
     )
 
+    # creates all property:type df
+    material_property_colon_method = sheet1_colon_sheet2(
+        all_sheets_df["property"], all_sheets_df["method"]
+    )
+
     # the full list of options for material sheet to be written to Excel
     full_options_df = pd.concat(
         [
@@ -236,6 +241,7 @@ if __name__ == "__main__":
             material_property_colon_condition,
             material_property_colon_relation,
             material_property_colon_type,
+            material_property_colon_method,
         ]
     )
 
