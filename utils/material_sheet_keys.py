@@ -192,7 +192,7 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
 
     df.to_excel(output_path + output_file_name, sheet_name=sheet_name, index=False)
 
-    print(f"created all options for material in {output_path}{output_file_name}")
+    print(f"created all options in {output_path}{output_file_name}")
 
 
 def create_material_options():
@@ -253,8 +253,39 @@ def create_material_options():
 
 
 def create_process_options():
-    pass
+    # shows where to read all the options for the Excel file
+    all_sheets_df = get_dict_of_all_excel_sheets("excel_files/material_source.xlsx")
+
+    # the df that holds all the options. making a df with all needed columns
+    full_options_df = get_new_df()
+
+    # process property
+    process_property = single_options(all_sheets_df["property"])
+
+    # property:method
+    property_colon_method = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["method"])
+
+    # process condition
+    process_condition = single_options(all_sheets_df["condition"])
+
+    # property:condition
+    property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
+
+    # the full list of options for material sheet to be written to Excel
+    full_options_df = pd.concat(
+        [
+            full_options_df,
+            process_property,
+            property_colon_method,
+            process_condition,
+            property_colon_condition
+        ]
+    )
+
+    # write all options to an Excel file
+    write_to_excel(full_options_df, "./excel_files/", "process_output.xlsx", "process options")
 
 
 if __name__ == "__main__":
     create_material_options()
+    create_process_options()
