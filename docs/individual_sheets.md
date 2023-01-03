@@ -90,6 +90,8 @@ options for each row are clickable links in the chart below:
   each material you are using must have a unique name, no duplicates
 </blockquote>
 
+> You can have as many `Identifiers`, `property`, `property:condition`, `property:method`, `property:type` as you need
+
 
 <table>
   <tr>
@@ -106,7 +108,10 @@ options for each row are clickable links in the chart below:
       property
     </td>
     <td class="row-1">
-      property
+      property:condition
+    </td>
+    <td class="row-1">
+      property:method
     </td>
     <td class="row-1">
       attribute
@@ -115,21 +120,33 @@ options for each row are clickable links in the chart below:
   <tr>
     <td class="row-2">
       *name
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
       <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">Material Identifiers</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
       <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">Material Identifiers</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
       <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>:
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">Material Condition</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>:
+      <a href="https://criptapp.org/keys/property-method/" target="_blank">Material Method</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
       notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
   </tr>
   <tr>
@@ -153,6 +170,9 @@ options for each row are clickable links in the chart below:
     <th class="row-3-in-table">
         <div class="empty-row-3-placeholders"></div>
     </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
   </tr>
   <tr>
     <td class="row-4">
@@ -169,6 +189,9 @@ options for each row are clickable links in the chart below:
     </td>
     <td class="row-4">
       <em>Your values</em>
+    </td>
+    <td class="row-4">
+      <em>Your method for calculating the property</em>
     </td>
     <td class="row-4">
       <em>Your notes</em>
@@ -365,9 +388,10 @@ Define the processes of each experiment.
       <u class="row-1">attribute</u> 
     </td>
     <td class="row-1">
-      <u class="row-1">
-        property
-      </u> 
+      <u class="row-1">property</u> 
+    </td>
+      <td class="row-1">
+      <u class="row-1">property:method</u> 
     </td>
     <td class="row-1">
       <u class="row-1">condition</u> 
@@ -410,6 +434,11 @@ Define the processes of each experiment.
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>    
     <td class="row-2">
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank">property</a>:
+      <a href="https://criptapp.org/keys/property-method/" target="_blank">method</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
       <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
@@ -424,6 +453,9 @@ Define the processes of each experiment.
 
   </tr>
   <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
     <th class="row-3">
       <div></div>
     </th>
@@ -477,6 +509,9 @@ Define the processes of each experiment.
     </td>
     <td class="row-4 row-4-required-optional-label">
       your values
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your method for calculating this property
     </td>
     <td class="row-4 row-4-required-optional-label">
       100.0
