@@ -3,6 +3,7 @@ from beartype.roar import BeartypeException
 from cript.exceptions import CRIPTError
 
 error_list = []
+row_input_can_start_from = 5
 
 
 def create_experiments(parsed_experiments, collection):
@@ -136,6 +137,7 @@ def create_materials(parsed_materials, project, data, citations):
     materials = {}
 
     for key, parsed_material in parsed_materials.items():
+        use_existing = False
         material_dict = {
             "project": project,
             "identifiers": [],
@@ -159,10 +161,42 @@ def create_materials(parsed_materials, project, data, citations):
                 material_dict["identifiers"].append(identifier)
 
             elif cell_type == "property":
+                if parsed_cell["key"] == "use_existing":
+                    use_existing = cellToBool(parsed_cell["value"])
+                    continue
                 property = _create_property(parsed_cell, data, citations)
                 material_dict["properties"].append(property)
 
-        material = _create_object(cript.Material, material_dict, parsed_cell)
+        # Add characteristics to an already created material node
+        if use_existing:
+
+            try:
+                # try to get the material using its name
+                name_ = parsed_material["name"]["value"]
+                material = cript.Material.get(name=name_, project=project.uid)
+
+            # If there is a get error add it to the errors sheet
+            except ValueError as e:
+                row_index = parsed_cell["index"] + row_input_can_start_from
+                sheet_name = parsed_cell["sheet"].capitalize()
+                message = f"{sheet_name} sheet, Row {row_index}: {e}"
+                error_list.append(message)
+                material = None
+            # If the material had a successful GET request, add properties, identifiers,
+            # and select attributes as written in the excel
+            else:
+                for property in material_dict["properties"]:
+                    material.add_property(property)
+                for identifier in material_dict["identifiers"]:
+                    material.add_identifier(identifier)
+                for key_ in material_dict:
+                    if key_ == "keywords":
+                        material.keywords += material_dict["keywords"]
+                    elif key_ == "notes":
+                        material.notes += material_dict["notes"]
+        # create new material object otherwise
+        else:
+            material = _create_object(cript.Material, material_dict, parsed_cell)
         if material is not None:
             materials[key] = material
 
@@ -466,7 +500,6 @@ def _create_object(obj_class, obj_dict, parsed_cell):
     ) as e:
         # Updates list of error messages to show to user and returns None if an object
         # couldn't be created
-        row_input_can_start_from = 5
         row_index = parsed_cell["index"] + row_input_can_start_from
         sheet_name = parsed_cell["sheet"].capitalize()
         message = f"{sheet_name} sheet, Row {row_index}: {e}"
@@ -488,7 +521,6 @@ def _get_relation(related_objs, cell_value, parsed_cell):
     except KeyError:
         # Adds error to list of errors and returns None
         # Add 5 due to differences in DataFrame and Excel format
-        row_input_can_start_from = 5
         row_index = parsed_cell["index"] + row_input_can_start_from
         sheet_name = parsed_cell["sheet"].capitalize()
         related_sheet = parsed_cell["key"].capitalize()
