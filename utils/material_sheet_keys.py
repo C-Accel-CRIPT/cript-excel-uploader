@@ -48,21 +48,21 @@ def get_preferred_unit(row):
 
     # has a preferred unit ie not "", "None", nor nan, then return preferred_unit
     if (
-        preferred_unit != ""
-        and preferred_unit != "None"
-        and not pd.isna(preferred_unit)
+            preferred_unit != ""
+            and preferred_unit != "None"
+            and not pd.isna(preferred_unit)
     ):
         return preferred_unit
 
     # does not have preferred unit, but has SI unit
     elif (
-        preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
+            preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
     ) and (si_unit != "" and si_unit != "None" and not pd.isna(si_unit)):
         return si_unit
 
     # si unit and preferred unit are both empty or None
     elif (
-        preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
+            preferred_unit == "" or preferred_unit == "None" or pd.isna(preferred_unit)
     ) and (si_unit == "" or si_unit == "None" or pd.isna(si_unit)):
         return ""
 
@@ -195,7 +195,7 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
     print(f"created all options for material in {output_path}{output_file_name}")
 
 
-if __name__ == "__main__":
+def create_material_options():
     # shows where to read all the options for the Excel file
     all_sheets_df = get_dict_of_all_excel_sheets("excel_files/material_source.xlsx")
 
@@ -250,3 +250,11 @@ if __name__ == "__main__":
 
     # write all options to an Excel file
     write_to_excel(full_options_df, "./excel_files/", "material_output.xlsx", "material options")
+
+
+def create_process_options():
+    pass
+
+
+if __name__ == "__main__":
+    create_material_options()
