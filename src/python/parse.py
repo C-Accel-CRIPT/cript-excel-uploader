@@ -43,7 +43,7 @@ class Sheet:
                 cell_info = self._get_cell_info(index, row, column)
 
                 # Check if column should be skipped
-                if self._skip_column(column[1], cell_info["value"]):
+                if self._skip_column(column[1], cell_info["value"], cell_info["type"]):
                     continue
 
                 # Convert list values (with ";" separator) to Python lists
@@ -73,7 +73,7 @@ class Sheet:
 
         return parsed_objects
 
-    def _skip_column(self, key, value):
+    def _skip_column(self, key, value, cell_type):
         """Check if a column should be skipped.
         key-DataSeries
         value-any
