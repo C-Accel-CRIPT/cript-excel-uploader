@@ -249,4 +249,4 @@ if __name__ == "__main__":
     #     print(full_options_df)
 
     # write all options to an Excel file
-    write_to_excel(full_options_df, "./excel_files/", "output.xlsx", "material options")
+    write_to_excel(full_options_df, "./excel_files/", "material_output.xlsx", "material options")
