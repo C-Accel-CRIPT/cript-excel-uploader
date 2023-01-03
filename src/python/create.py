@@ -3,6 +3,7 @@ from beartype.roar import BeartypeException
 from cript.exceptions import CRIPTError
 
 error_list = []
+row_input_can_start_from = 5
 
 
 def create_experiments(parsed_experiments, collection):
@@ -176,7 +177,6 @@ def create_materials(parsed_materials, project, data, citations):
 
             # If there is a get error add it to the errors sheet
             except ValueError as e:
-                row_input_can_start_from = 5
                 row_index = parsed_cell["index"] + row_input_can_start_from
                 sheet_name = parsed_cell["sheet"].capitalize()
                 message = f"{sheet_name} sheet, Row {row_index}: {e}"
@@ -500,7 +500,6 @@ def _create_object(obj_class, obj_dict, parsed_cell):
     ) as e:
         # Updates list of error messages to show to user and returns None if an object
         # couldn't be created
-        row_input_can_start_from = 5
         row_index = parsed_cell["index"] + row_input_can_start_from
         sheet_name = parsed_cell["sheet"].capitalize()
         message = f"{sheet_name} sheet, Row {row_index}: {e}"
@@ -522,7 +521,6 @@ def _get_relation(related_objs, cell_value, parsed_cell):
     except KeyError:
         # Adds error to list of errors and returns None
         # Add 5 due to differences in DataFrame and Excel format
-        row_input_can_start_from = 5
         row_index = parsed_cell["index"] + row_input_can_start_from
         sheet_name = parsed_cell["sheet"].capitalize()
         related_sheet = parsed_cell["key"].capitalize()
