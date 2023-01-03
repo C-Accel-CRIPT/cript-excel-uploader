@@ -254,7 +254,7 @@ def create_material_options():
 
 def create_process_options():
     # shows where to read all the options for the Excel file
-    all_sheets_df = get_dict_of_all_excel_sheets("excel_files/material_source.xlsx")
+    all_sheets_df = get_dict_of_all_excel_sheets("excel_files/process_source.xlsx")
 
     # the df that holds all the options. making a df with all needed columns
     full_options_df = get_new_df()
