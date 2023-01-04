@@ -4,11 +4,10 @@ import setuptools
 import atexit
 import os
 import sys
-import tkinter
+from tkinter import *
 import traceback
 from tkinter import filedialog
 
-import cript
 import eel
 
 from python.excel_uploader_main import ExcelUploader
@@ -57,7 +56,7 @@ class ExcelUploaderGUI:
         # tell JS that tkinter dialog box has been opened
         eel.setIsDialogBoxOpen(True)
 
-        root = tkinter.Tk()
+        root = Tk()
 
         # remove the tkinter window, so we can just see the dialog box
         root.withdraw()

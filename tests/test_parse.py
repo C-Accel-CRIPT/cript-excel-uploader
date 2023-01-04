@@ -1,5 +1,5 @@
 import pandas as pd
-import src.parse as parse
+import src.python.parse as parse
 import pytest
 
 sheet_parameters = {
