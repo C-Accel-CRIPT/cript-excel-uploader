@@ -79,6 +79,7 @@ Define all materials that will be referenced throughout the document.
 | \*name                                                                                                                           | attribute  | yes      | unique name              |
 | pick from `Name` column of <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material identifiers</a> | identifier | no       | your values              |
 | pick from `Name` column of <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material properties</a>    | property   | no       | your values              |
+| update_existing                                                                                                                  | property   | no       | TRUE, FALSE, or blank    |
 | notes                                                                                                                            | attribute  | no       | regular text             |
 
 <br>
@@ -119,6 +120,9 @@ options for each row are clickable links in the chart below:
     <td class="row-1">
       attribute
     </td>
+    <td class="row-1">
+      property
+    </td>
   </tr>
   <tr>
     <td class="row-2">
@@ -153,6 +157,10 @@ options for each row are clickable links in the chart below:
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
+      update_existing
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
       notes
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
@@ -184,6 +192,9 @@ options for each row are clickable links in the chart below:
     <th class="row-3-in-table">
         <div class="empty-row-3-placeholders"></div>
     </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
   </tr>
   <tr>
     <td class="row-4">
@@ -208,10 +219,18 @@ options for each row are clickable links in the chart below:
       <em>Citation for property</em>
     </td>
     <td class="row-4">
+      You can put either: 
+      <em style="font-weight: bold">TRUE</em>, <em style="font-weight: bold">FALSE</em>, or <em>you can leave blank for False</em>
+    </td>
+    <td class="row-4">
       <em>Your notes</em>
     </td>
   </tr>
 </table>
+
+??? note "update_existing"
+    `update_existing` column field is best for when you already have a material within your project and 
+    you just want to name it and use it within your Excel file instead of creating a new material on every upload 
 
 <br>
 
