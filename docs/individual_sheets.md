@@ -135,13 +135,13 @@ options for each row are clickable links in the chart below:
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>:
-      <a href="https://criptapp.org/keys/condition-key/" target="_blank">Condition</a>
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank" class="nesting-first">Material Property</a>:
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank" class="nesting-second">Condition</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>:
-      <a href="https://criptapp.org/keys/property-method/" target="_blank">Material Method</a>
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank" class="nesting-first">Material Property</a>:
+      <a href="https://criptapp.org/keys/property-method/" target="_blank" class="nesting-second">Method</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">

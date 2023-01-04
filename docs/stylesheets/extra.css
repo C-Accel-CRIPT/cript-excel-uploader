@@ -28,6 +28,14 @@ body {
   text-align: center;
 }
 
+.nesting-first {
+  border-bottom: 1px solid blue;
+}
+
+.nesting-second {
+  border-bottom: 1px solid green;
+}
+
 .row-3 {
   background-color: #fefecc;
   color: black;
@@ -47,7 +55,7 @@ body {
 }
 
 .instruction-row {
-  background-color: #EDEDED;
+  background-color: #ededed;
   color: black;
   text-align: center;
 }
