@@ -114,6 +114,9 @@ options for each row are clickable links in the chart below:
       property:method
     </td>
     <td class="row-1">
+      property:type
+    </td>
+    <td class="row-1">
       attribute
     </td>
   </tr>
@@ -145,6 +148,11 @@ options for each row are clickable links in the chart below:
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank" class="nesting-first">Material Property</a>:
+      <a href="https://criptapp.org/keys/citation-type/" target="_blank" class="nesting-second">Citation Type</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
       notes
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
@@ -171,6 +179,9 @@ options for each row are clickable links in the chart below:
         <div class="empty-row-3-placeholders"></div>
     </th>
     <th class="row-3-in-table">
+       <em>blank</em>
+    </th>
+    <th class="row-3-in-table">
         <div class="empty-row-3-placeholders"></div>
     </th>
   </tr>
@@ -192,6 +203,9 @@ options for each row are clickable links in the chart below:
     </td>
     <td class="row-4">
       <em>Your method for calculating the property</em>
+    </td>
+    <td class="row-4">
+      <em>Citation for property</em>
     </td>
     <td class="row-4">
       <em>Your notes</em>
@@ -434,8 +448,8 @@ Define the processes of each experiment.
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>    
     <td class="row-2">
-      <a href="https://criptapp.org/keys/process-property-key/" target="_blank">property</a>:
-      <a href="https://criptapp.org/keys/property-method/" target="_blank">method</a>
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank" class="nesting-first">property</a>:
+      <a href="https://criptapp.org/keys/property-method/" target="_blank" class="nesting-second">method</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
