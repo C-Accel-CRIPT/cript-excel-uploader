@@ -15,7 +15,7 @@ The CRIPT Excel Uploader has 2 required parts, an Excel template and Excel Uploa
         [:fontawesome-brands-windows: Windows executable](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_windows.exe)
 
     === ":fontawesome-brands-apple: Mac"
-        1. Download [:fontawesome-brands-apple: Mac executable](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/excel_uploader_mac)
+        1. Download [:fontawesome-brands-apple: Mac executable](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/CRIPT_Excel_Uploader_Mac.zip)
         2. In the terminal run `chmod +x excel_uploader_mac`
         3. Double-click on excel_uploader_mac.app to run it
 
