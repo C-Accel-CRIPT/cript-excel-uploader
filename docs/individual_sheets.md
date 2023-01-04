@@ -426,6 +426,10 @@ Define the processes of each experiment.
       <td class="row-1">
       <u class="row-1">property:method</u> 
     </td>
+    </td>
+      <td class="row-1">
+      <u class="row-1">property:condition</u> 
+    </td>
     <td class="row-1">
       <u class="row-1">condition</u> 
     </td>
@@ -472,6 +476,11 @@ Define the processes of each experiment.
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank" class="nesting-first">property</a>:
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank" class="nesting-second">condition</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
       <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
@@ -486,6 +495,9 @@ Define the processes of each experiment.
 
   </tr>
   <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
     <th class="row-3">
       <div></div>
     </th>
@@ -545,6 +557,9 @@ Define the processes of each experiment.
     </td>
     <td class="row-4 row-4-required-optional-label">
       your method for calculating this property
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      condition for the process property
     </td>
     <td class="row-4 row-4-required-optional-label">
       100.0
