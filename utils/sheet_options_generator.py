@@ -231,6 +231,15 @@ def create_material_options():
         all_sheets_df["property"], all_sheets_df["method"]
     )
 
+    # update existing options
+    update_existing_option = get_new_df()
+    update_existing_option.loc[0, "category"] = "property"
+    update_existing_option.loc[0, "Name"] = "update_existing"
+    update_existing_option.loc[0, "unit"] = ""
+    update_existing_option.loc[0, "instructions"] = "Mark TRUE to update already saved material in CRIPT"
+
+    print(update_existing_option)
+
     # the full list of options for material sheet to be written to Excel
     full_options_df = pd.concat(
         [
@@ -242,6 +251,7 @@ def create_material_options():
             material_property_colon_relation,
             material_property_colon_type,
             material_property_colon_method,
+            update_existing_option
         ]
     )
 
