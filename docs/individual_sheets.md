@@ -118,10 +118,10 @@ options for each row are clickable links in the chart below:
       property:type
     </td>
     <td class="row-1">
-      attribute
+      property
     </td>
     <td class="row-1">
-      property
+      attribute
     </td>
   </tr>
   <tr>
