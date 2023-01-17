@@ -1,4 +1,4 @@
-cript==0.6.0
+cript==0.6.1
 openpyxl==3.0.10
 pandas==1.5.1
 black==22.10.0
