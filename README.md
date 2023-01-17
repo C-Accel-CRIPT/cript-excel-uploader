@@ -17,8 +17,4 @@
 [![Bootstrap CSS framework](https://img.shields.io/badge/CSS%20Framework-Bootstrap-blueviolet?style=flat-square&logo=bootstrap)](https://getbootstrap.com/)
 
 ---
-
-<h2>
-  Please refer to the
-  <a href="https://C-Accel-CRIPT.github.io/cript-excel-uploader/">CRIPT Excel Uploader documentation</a>
-</h2>
+## Please click [here](https://C-Accel-CRIPT.github.io/cript-excel-uploader/) to access the documentation.
