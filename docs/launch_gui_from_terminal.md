@@ -54,7 +54,7 @@ Follow these steps to launch the program via terminal:
 6.  Install needed dependencies
 
     ```bash
-    pip install -r requirements_dev.txt
+    pip install -r requirements.txt
     ```
 
 7.  Navigate to directory
