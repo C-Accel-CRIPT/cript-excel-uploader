@@ -1,4 +1,4 @@
-# Filling out first screen
+# Filling Out the First Screen
 
 <img 
    alt="Screenshot of CRIPT Excel Uploader GUI first screen" class="screenshot-border" style="width: 28rem;"
