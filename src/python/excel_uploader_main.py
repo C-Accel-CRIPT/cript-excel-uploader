@@ -256,6 +256,10 @@ class ExcelUploader:
 
         upload.upload(references, "Reference", self, gui_object)
 
+        # Reassigns saved file nodes into their corresponding unsaved data nodes
+        for key, file in files.items():
+            data[key].files[0] = file
+
         upload.upload(data, "Data", self, gui_object)
 
         upload.upload(materials, "Material", self, gui_object)
