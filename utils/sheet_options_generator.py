@@ -234,7 +234,7 @@ def create_material_options():
     # update existing options
     update_existing_option = get_new_df()
     update_existing_option.loc[0, "category"] = "property"
-    update_existing_option.loc[0, "Name"] = "update_existing"
+    update_existing_option.loc[0, "Name"] = "use_existing"
     update_existing_option.loc[0, "unit"] = ""
     update_existing_option.loc[0, "instructions"] = "Mark TRUE to update already saved material in CRIPT"
 
