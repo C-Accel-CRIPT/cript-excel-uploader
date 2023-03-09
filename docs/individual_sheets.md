@@ -667,10 +667,10 @@ Example:
       pick a unique process name
     </td>
     <td class="row-4 row-4-required-optional-label">
-      anionic; annealing_sol; annealing_thermo
+      affinity_pure
     </td>
     <td class="row-4 row-4-required-optional-label">
-      my keywords to find my process
+      anionic; annealing_sol; annealing_thermo
     </td>
     <td class="row-4 row-4-required-optional-label">
       description of my process
