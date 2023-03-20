@@ -173,7 +173,11 @@ def create_materials(parsed_materials, project, data, citations):
             try:
                 # try to get the material using its name
                 name_ = parsed_material["name"]["value"]
-                material = cript.Material.get(name=name_, project=project.uid)
+                print(parsed_material["use_existing"]["value"])
+                newProject = cript.Project.get(
+                    name=parsed_material["use_existing"]["value"]
+                )
+                material = cript.Material.get(name=name_, project=newProject.uid)
 
             # If there is a get error add it to the errors sheet
             except ValueError as e:
@@ -185,19 +189,42 @@ def create_materials(parsed_materials, project, data, citations):
             # If the material had a successful GET request, add properties, identifiers,
             # and select attributes as written in the excel
             else:
+                if newProject.name != project.name:
+                    material.project = project
+                    material.url = None
+                    material.uid = None
+                    if material.group.name != project.group.name:
+                        for property in material.properties:
+                            property.citations = []
+                        material.group = project.group
+
+                newProperties = []
+                for property in material.properties:
+                    if "+" not in property.key:
+                        newProperties.append(property)
+                material.properties = newProperties
+
                 for property in material_dict["properties"]:
+
                     material.add_property(property)
                 for identifier in material_dict["identifiers"]:
                     material.add_identifier(identifier)
                 for key_ in material_dict:
                     if key_ == "keywords":
-                        material.keywords += material_dict["keywords"]
+                        if material.keywords is not None:
+                            material.keywords += material_dict["keywords"]
+                        else:
+                            material.keywords = material_dict["keywords"]
                     elif key_ == "notes":
-                        material.notes += material_dict["notes"]
+                        if material.notes is not None:
+                            material.notes += material_dict["notes"]
+                        else:
+                            material.notes = material_dict["notes"]
         # create new material object otherwise
         else:
             material = _create_object(cript.Material, material_dict, parsed_cell)
         if material is not None:
+
             materials[key] = material
 
     return materials
@@ -532,4 +559,4 @@ def _get_relation(related_objs, cell_value, parsed_cell):
 
 def cellToBool(val):
     """Converts a cell value to a useable boolean"""
-    return True if str(val).lower() == "true" else False
+    return True if str(val).lower() != "no" else False
