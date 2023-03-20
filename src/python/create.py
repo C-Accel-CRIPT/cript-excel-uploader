@@ -173,7 +173,6 @@ def create_materials(parsed_materials, project, data, citations):
             try:
                 # try to get the material using its name
                 name_ = parsed_material["name"]["value"]
-                print(parsed_material["use_existing"]["value"])
                 newProject = cript.Project.get(
                     name=parsed_material["use_existing"]["value"]
                 )
