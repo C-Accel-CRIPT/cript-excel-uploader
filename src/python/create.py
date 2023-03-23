@@ -6,7 +6,7 @@ error_list = []
 row_input_can_start_from = 5
 
 
-def create_experiments(parsed_experiments, collection):
+def create_experiments_and_inventories(parsed_experiments, collection):
     """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
     into an Experiment object it is added to an experiments dictionary and that dictionary is returned.
     parsed_...-dict of dicts
@@ -14,10 +14,12 @@ def create_experiments(parsed_experiments, collection):
     collection-object
     returns- dict of objects"""
     experiments = {}
+    inventories = {}
 
     for key, parsed_experiment in parsed_experiments.items():
         experiment_dict = {"collection": collection}
-
+        inventory_dict = {"collection": collection}
+        inventory = False
         for parsed_cell in parsed_experiment.values():
             if isinstance(parsed_cell, dict):
                 cell_type = parsed_cell["type"]
@@ -26,13 +28,22 @@ def create_experiments(parsed_experiments, collection):
                 # Only attribute types should be in Experiment
                 if cell_type == "attribute":
                     experiment_dict[cell_key] = cell_value
+                    inventory_dict[cell_key] = cell_value
+                if cell_type == "identifier":
+                    if cell_key == "Experiment or Inventory":
+                        if cell_value == "I":
+                            inventory = True
+        if inventory:
+            invObj = _create_object(cript.Inventory, inventory_dict, parsed_cell)
+            if invObj is not None:
+                inventories[key] = invObj
+        else:
+            experiment = _create_object(cript.Experiment, experiment_dict, parsed_cell)
+            # Only adds Experiment objects
+            if experiment is not None:
+                experiments[key] = experiment
 
-        experiment = _create_object(cript.Experiment, experiment_dict, parsed_cell)
-        # Only adds Experiment objects
-        if experiment is not None:
-            experiments[key] = experiment
-
-    return experiments
+    return experiments, inventories
 
 
 def create_citations(parsed_citations, group):
@@ -135,6 +146,7 @@ def create_materials(parsed_materials, project, data, citations):
     citations-list
     return-dict of obj"""
     materials = {}
+    inventory_dict = {}
 
     for key, parsed_material in parsed_materials.items():
         use_existing = False
@@ -143,6 +155,8 @@ def create_materials(parsed_materials, project, data, citations):
             "identifiers": [],
             "properties": [],
         }
+        belongs_in_inv = False
+        inv_name = None
 
         for parsed_cell in parsed_material.values():
             cell_type = parsed_cell["type"]
@@ -166,6 +180,9 @@ def create_materials(parsed_materials, project, data, citations):
                     continue
                 property = _create_property(parsed_cell, data, citations)
                 material_dict["properties"].append(property)
+            elif cell_type == "relation":
+                belongs_in_inv = True
+                inv_name = cell_value
 
         # Add characteristics to an already created material node
         if use_existing:
@@ -173,7 +190,10 @@ def create_materials(parsed_materials, project, data, citations):
             try:
                 # try to get the material using its name
                 name_ = parsed_material["name"]["value"]
-                material = cript.Material.get(name=name_, project=project.uid)
+                newProject = cript.Project.get(
+                    name=parsed_material["use_existing"]["value"]
+                )
+                material = cript.Material.get(name=name_, project=newProject.uid)
 
             # If there is a get error add it to the errors sheet
             except ValueError as e:
@@ -185,22 +205,50 @@ def create_materials(parsed_materials, project, data, citations):
             # If the material had a successful GET request, add properties, identifiers,
             # and select attributes as written in the excel
             else:
+                if newProject.name != project.name:
+                    material.project = project
+                    material.url = None
+                    material.uid = None
+                    if material.group.name != project.group.name:
+                        for property in material.properties:
+                            property.citations = []
+                        material.group = project.group
+
+                newProperties = []
+                for property in material.properties:
+                    if "+" not in property.key:
+                        newProperties.append(property)
+                material.properties = newProperties
+
                 for property in material_dict["properties"]:
+
                     material.add_property(property)
                 for identifier in material_dict["identifiers"]:
                     material.add_identifier(identifier)
                 for key_ in material_dict:
                     if key_ == "keywords":
-                        material.keywords += material_dict["keywords"]
+                        if material.keywords is not None:
+                            material.keywords += material_dict["keywords"]
+                        else:
+                            material.keywords = material_dict["keywords"]
                     elif key_ == "notes":
-                        material.notes += material_dict["notes"]
+                        if material.notes is not None:
+                            material.notes += material_dict["notes"]
+                        else:
+                            material.notes = material_dict["notes"]
         # create new material object otherwise
         else:
             material = _create_object(cript.Material, material_dict, parsed_cell)
         if material is not None:
-            materials[key] = material
 
-    return materials
+            materials[key] = material
+            if belongs_in_inv:
+                if inventory_dict.get(cell_value, None):
+                    inventory_dict[inv_name].append(material)
+                else:
+                    inventory_dict[inv_name] = [material]
+
+    return materials, inventory_dict
 
 
 def create_mixtures(parsed_components, materials):
@@ -532,4 +580,4 @@ def _get_relation(related_objs, cell_value, parsed_cell):
 
 def cellToBool(val):
     """Converts a cell value to a useable boolean"""
-    return True if str(val).lower() == "true" else False
+    return True if str(val).lower() != "false" else False
