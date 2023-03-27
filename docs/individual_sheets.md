@@ -322,12 +322,12 @@ This sheet Defines the components of mixture materials.
 
 This sheet defines the experiment
 
-| Row 2                     | Row 1      | Required | Row 5 - ∞ expected value                                 |
-| ------------------------- | ---------- | -------- | -------------------------------------------------------- |
-| \*name                    | attribute  | yes      | unique name                                              |
-| \*Experiment or Inventory | identifier | yes      | Mark as either E or I to denote experiment or inverntory |
-| funding                   | attribute  | no       | list of your funders (e.g, `funder1; funder2; funder3`)  |
-| notes                     | attribute  | no       | regular text                                             |
+| Row 2                     | Row 1      | Required | Row 5 - ∞ expected value                                            |
+|---------------------------|------------|----------|---------------------------------------------------------------------|
+| \*name                    | attribute  | yes      | unique name                                                         |
+| \*Experiment or Inventory | identifier | yes      | Mark as either `E` or `I` to denote **Experiment** or **Inventory** |
+| funding                   | attribute  | no       | list of your funders (e.g, `funder1; funder2; funder3`)             |
+| notes                     | attribute  | no       | regular text                                                        |
 
 <br>
 
@@ -395,6 +395,20 @@ This sheet defines the experiment
     </td>
     <td class="row-4 row-4-required-optional-label">
       These are my notes
+    </td>
+
+  </tr>
+
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      unique inventory name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      I
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+    </td>
+    <td class="row-4 row-4-required-optional-label">
     </td>
 
   </tr>
