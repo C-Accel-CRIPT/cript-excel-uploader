@@ -197,6 +197,7 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
 
     print(f"created all options in {output_path}{output_file_name}")
 
+
 def create_one_option_df():
     """
     this function is essentially used to create a single option without any loops or nesting
@@ -216,9 +217,6 @@ def create_one_option_df():
     one_option.loc[0, "name"] = "citation"
     one_option.loc[0, "unit"] = ""
     one_option.loc[0, "instructions"] = "Pick a value from *name column of citation sheet"
-
-
-
 
 
 def create_material_options():
@@ -331,7 +329,6 @@ def create_computational_process_options():
 
     property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
 
-
     full_options_df = pd.concat(
         [
             full_options_df,
@@ -341,7 +338,8 @@ def create_computational_process_options():
         ]
     )
 
-    write_to_excel(full_options_df, "./excel_files/", "computational_process_output.xlsx", "computational_process options")
+    write_to_excel(full_options_df, "./excel_files/", "computational_process_output.xlsx",
+                   "computational_process options")
 
 
 def create_software_configuration_options():
@@ -357,8 +355,8 @@ def create_software_configuration_options():
         ]
     )
 
-    write_to_excel(full_options_df, "./excel_files/", "software_configuration_output.xlsx", "software_configuration_options")
-
+    write_to_excel(full_options_df, "./excel_files/", "software_configuration_output.xlsx",
+                   "software_configuration_options")
 
 
 if __name__ == "__main__":
