@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 
 
@@ -20,7 +22,8 @@ def get_dict_of_all_excel_sheets(source_excel_file):
         df = pd.read_excel(excel_file, sheet_name, skiprows=[0])
 
         # adding metadata of sheet name into the df to be used later
-        df.sheet_name = sheet_name
+        # if the sheet_name ends with a number then remove the number `attribute 1` becomes `attribute`
+        df.sheet_name = re.sub(r' \d+$', '', sheet_name)
 
         all_sheets_dict[sheet_name] = df
 
@@ -341,7 +344,25 @@ def create_computational_process_options():
     write_to_excel(full_options_df, "./excel_files/", "computational_process_output.xlsx", "computational_process options")
 
 
+def create_software_configuration_options():
+    all_sheets_df = get_dict_of_all_excel_sheets("excel_files/software_configuration.xlsx")
+    full_options_df = get_new_df()
+
+    algorithm_colon_parameter = sheet1_colon_sheet2(all_sheets_df["attribute"], all_sheets_df["attribute"])
+
+    full_options_df = pd.concat(
+        [
+            full_options_df,
+            algorithm_colon_parameter
+        ]
+    )
+
+    write_to_excel(full_options_df, "./excel_files/", "software_configuration_output.xlsx", "software_configuration_options")
+
+
+
 if __name__ == "__main__":
-    create_material_options()
-    create_process_options()
-    create_computational_process_options()
+    # create_material_options()
+    # create_process_options()
+    # create_computational_process_options()
+    create_software_configuration_options()
