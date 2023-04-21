@@ -194,6 +194,29 @@ def write_to_excel(df, output_path, output_file_name, sheet_name):
 
     print(f"created all options in {output_path}{output_file_name}")
 
+def create_one_option_df():
+    """
+    this function is essentially used to create a single option without any loops or nesting
+    it basically creates a df like `use_existing`, but in a nice function where you don't have to think about it
+    just pass in the things you need and get your df and put it in the other dfs
+
+    ```python
+    update_existing_option = get_new_df()
+    update_existing_option.loc[0, "category"] = "property"
+    update_existing_option.loc[0, "Name"] = "use_existing"
+    update_existing_option.loc[0, "unit"] = ""
+    update_existing_option.loc[0, "instructions"] = "Mark TRUE to update already saved material in CRIPT"
+    ```
+    """
+    one_option = get_new_df()
+    one_option.loc[0, "category"] = "relation"
+    one_option.loc[0, "name"] = "citation"
+    one_option.loc[0, "unit"] = ""
+    one_option.loc[0, "instructions"] = "Pick a value from *name column of citation sheet"
+
+
+
+
 
 def create_material_options():
     # shows where to read all the options for the Excel file
@@ -296,6 +319,29 @@ def create_process_options():
     write_to_excel(full_options_df, "./excel_files/", "process_output.xlsx", "process options")
 
 
+def create_computational_process_options():
+    all_sheets_df = get_dict_of_all_excel_sheets("excel_files/computational_process.xlsx")
+    full_options_df = get_new_df()
+
+    properties = single_options(all_sheets_df["property"])
+    conditions = single_options(all_sheets_df["condition"])
+
+    property_colon_condition = sheet1_colon_sheet2(all_sheets_df["property"], all_sheets_df["condition"])
+
+
+    full_options_df = pd.concat(
+        [
+            full_options_df,
+            properties,
+            conditions,
+            property_colon_condition
+        ]
+    )
+
+    write_to_excel(full_options_df, "./excel_files/", "computational_process_output.xlsx", "computational_process options")
+
+
 if __name__ == "__main__":
     create_material_options()
     create_process_options()
+    create_computational_process_options()
