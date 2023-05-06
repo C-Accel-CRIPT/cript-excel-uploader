@@ -164,7 +164,51 @@ def create_materials(parsed_materials, project, data, citations):
             cell_value = parsed_cell["value"]
 
             if cell_type == "attribute":
-                material_dict[cell_key] = cell_value
+
+                if cell_key == "computational_forcefield":
+                    # Try to assign all of computational_forcefield's attributes
+                    # Can't assign data and citation here
+                    building_block = (
+                        temp_dict.get("value")
+                        if (temp_dict := parsed_cell.get("building_block"))
+                        else None
+                    )
+                    coarse_grained_mapping = (
+                        temp_dict.get("value")
+                        if (temp_dict := parsed_cell.get("coarse_grained_mapping"))
+                        else None
+                    )
+                    implicit_solvent = (
+                        temp_dict.get("value")
+                        if (temp_dict := parsed_cell.get("implicit_solvent"))
+                        else None
+                    )
+                    source = (
+                        temp_dict.get("value")
+                        if (temp_dict := parsed_cell.get("source"))
+                        else None
+                    )
+                    description = (
+                        temp_dict.get("value")
+                        if (temp_dict := parsed_cell.get("description"))
+                        else None
+                    )
+
+                    object_dict = {
+                        "key": cell_value,
+                        "building_block": building_block,
+                        "coarse_grained_mapping": coarse_grained_mapping,
+                        "implicit_solvent": implicit_solvent,
+                        "source": source,
+                        "description": description,
+                    }
+                    material_dict[cell_key] = _create_object(
+                        cript.ComputationalForcefield, object_dict, parsed_cell
+                    )
+
+                    pass
+                else:
+                    material_dict[cell_key] = cell_value
 
             elif cell_type == "identifier":
                 identifier = _create_object(
