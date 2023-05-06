@@ -166,47 +166,9 @@ def create_materials(parsed_materials, project, data, citations):
             if cell_type == "attribute":
 
                 if cell_key == "computational_forcefield":
-                    # Try to assign all of computational_forcefield's attributes
-                    # Can't assign data and citation here
-                    building_block = (
-                        temp_dict.get("value")
-                        if (temp_dict := parsed_cell.get("building_block"))
-                        else None
+                    material_dict[cell_key] = create_computational_forcefield(
+                        parsed_cell
                     )
-                    coarse_grained_mapping = (
-                        temp_dict.get("value")
-                        if (temp_dict := parsed_cell.get("coarse_grained_mapping"))
-                        else None
-                    )
-                    implicit_solvent = (
-                        temp_dict.get("value")
-                        if (temp_dict := parsed_cell.get("implicit_solvent"))
-                        else None
-                    )
-                    source = (
-                        temp_dict.get("value")
-                        if (temp_dict := parsed_cell.get("source"))
-                        else None
-                    )
-                    description = (
-                        temp_dict.get("value")
-                        if (temp_dict := parsed_cell.get("description"))
-                        else None
-                    )
-
-                    object_dict = {
-                        "key": cell_value,
-                        "building_block": building_block,
-                        "coarse_grained_mapping": coarse_grained_mapping,
-                        "implicit_solvent": implicit_solvent,
-                        "source": source,
-                        "description": description,
-                    }
-                    material_dict[cell_key] = _create_object(
-                        cript.ComputationalForcefield, object_dict, parsed_cell
-                    )
-
-                    pass
                 else:
                     material_dict[cell_key] = cell_value
 
@@ -317,6 +279,86 @@ def create_mixtures(parsed_components, materials):
     return materials
 
 
+def create_computation(parsed_computations, experiments, data, citations):
+    """Creates a dictionary of Computation objects based on the parsed inputs
+    params:
+    @parsed_computations dictionary of dictionaries containing information about computation objects
+    @experiments dictionary of experiment objects
+    @data dictionary of data objects
+    @citations dictionary of citation objects
+
+    returns:
+    dictionary of Computation objects
+    """
+    pass
+
+
+def create_prerequisite_computation(parsed_prerequisites, computations):
+    """Attaches prerequisite Computation  to a Computation node.
+    params:
+        parsed_...-dict of dicts
+        processes-dict of objs
+
+    returns:
+        void
+    """
+    for key, parsed_prerequisite in parsed_prerequisites.items():
+        for parsed_cell in parsed_prerequisite.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "relation":
+                if cell_key == "process":
+                    computation = _get_relation(computations, cell_value, parsed_cell)
+
+                elif cell_key == "prerequisite":
+                    prerequisite = _get_relation(computations, cell_value, parsed_cell)
+
+    if None not in (computation, prerequisite):
+        computation.prerequisite_computation = prerequisite
+
+
+def create_computational_process(parsed_comp_processes, experiments, data, citation):
+    """Creates a dictionary of Computational_process objects to be returned.
+    params:
+        @parsed_comp_processes dict of dict of computational process information
+        @experiments -dict of Experiment objects
+        @data dict of data objects
+        @citations dict of citation objects
+    returns
+      dict of objects
+    """
+    pass
+
+
+def create_software_configuration(parsed_software, citations):
+    """Creates a dictionary of Software_Configuration objects based on the parsed inputs
+    params:
+    @parsed_computations dictionary of dictionaries containing information about software configuration objects
+    @citations dictionary of citation objects
+
+    returns:
+    dictionary of software_configuration objects
+    """
+    pass
+
+
+def create_in_out_data_connections(
+    parsed_in_out_data, computations, computational_processes
+):
+    """
+    Attaches input and output data to a Computation or Computatinal Process object
+    params:
+        @parsed_in_out_data dict of dicts of information relating data to another node
+        @computations dict of computation objects
+        @computational_processes dict of computational process objects
+    returns:
+        void
+    """
+    pass
+
+
 def create_processes(parsed_processes, experiments, data, citations):
     """Creates a dictionary of Process objects to be returned.
     parsed_...-dict of objects
@@ -360,7 +402,7 @@ def create_processes(parsed_processes, experiments, data, citations):
     return processes
 
 
-def create_prerequisites(parsed_prerequisites, processes):
+def create_prerequisite_process(parsed_prerequisites, processes):
     """Attaches prerequisite process information to a Process node.
     parsed_...-dict of dicts
     processes-dict of objs"""
@@ -645,3 +687,48 @@ def copyMaterial(material, new_project, project):
     material.properties = newProperties
 
     return material
+
+
+def create_computational_forcefield(parsed_cell):
+    """
+    Create a computational forcefield object
+    param:
+    @parsed_cell dictionary of information about object
+    returns:
+    Computational_forcefield object or None
+    """
+    # Try to assign all of computational_forcefield's attributes
+    # Can't assign data and citation here
+    building_block = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("building_block"))
+        else None
+    )
+    coarse_grained_mapping = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("coarse_grained_mapping"))
+        else None
+    )
+    implicit_solvent = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("implicit_solvent"))
+        else None
+    )
+    source = (
+        temp_dict.get("value") if (temp_dict := parsed_cell.get("source")) else None
+    )
+    description = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("description"))
+        else None
+    )
+
+    object_dict = {
+        "key": parsed_cell["value"],
+        "building_block": building_block,
+        "coarse_grained_mapping": coarse_grained_mapping,
+        "implicit_solvent": implicit_solvent,
+        "source": source,
+        "description": description,
+    }
+    return _create_object(cript.ComputationalForcefield, object_dict, parsed_cell)

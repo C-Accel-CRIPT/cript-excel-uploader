@@ -217,7 +217,9 @@ class ExcelUploader:
             return
 
         # create
-        create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
+        create.create_prerequisite_process(
+            parsed_sheets["prerequisite process"], processes
+        )
         create.create_ingredients(
             parsed_sheets["process ingredient"], processes, materials
         )
