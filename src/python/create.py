@@ -884,7 +884,6 @@ def copyMaterial(material, new_project, project):
 
     return material
 
-
 def create_computational_forcefield(parsed_cell):
     """
     Create a computational forcefield object
@@ -928,3 +927,4 @@ def create_computational_forcefield(parsed_cell):
         "description": description,
     }
     return _create_object(cript.ComputationalForcefield, object_dict, parsed_cell)
+
