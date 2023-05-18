@@ -32,3 +32,8 @@ The CRIPT Excel Uploader has 2 required parts, an Excel template and Excel Uploa
 
 ## Optional
 * [:simple-microsoftexcel: CRIPT **_Example_** Excel Template](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases/latest/download/Example_CRIPT_template.xlsx)
+
+## Release Notes
+For the latest changes to the CRIPT Excel Uploader program or the CRIPT Excel Uploader Template, 
+please visit the 
+[CRIPT Excel Uploader GitHub releases page](https://github.com/C-Accel-CRIPT/cript-excel-uploader/releases)
