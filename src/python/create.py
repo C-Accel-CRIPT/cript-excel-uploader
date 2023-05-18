@@ -6,40 +6,51 @@ error_list = []
 row_input_can_start_from = 5
 
 
-def create_experiments(parsed_experiments, collection):
-    """Compiles a dictionary of cript Experiment objects. If a parsed experiment is able to be turned
-    into an Experiment object it is added to an experiments dictionary and that dictionary is returned.
+def create_experiments_and_inventories(parsed_experiments, collection):
+    """Compiles dictionaries of CRIPT Experiment objects and CRIPT Inventory objects. If a parsed experiment/inventory is able to be turned
+    into an Experiment/Inventory object it is added to an experiments dictionary and that dictionary is returned.
     parsed_...-dict of dicts
     group-object
     collection-object
     returns- dict of objects"""
     experiments = {}
+    inventories = {}
 
     for key, parsed_experiment in parsed_experiments.items():
         experiment_dict = {"collection": collection}
-
+        inventory_dict = {"collection": collection}
+        inventory = False
         for parsed_cell in parsed_experiment.values():
             if isinstance(parsed_cell, dict):
                 cell_type = parsed_cell["type"]
                 cell_key = parsed_cell["key"]
                 cell_value = parsed_cell["value"]
-                # Only attribute types should be in Experiment
+                # Only attribute and that specific identifier should be in experiment
                 if cell_type == "attribute":
                     experiment_dict[cell_key] = cell_value
+                    inventory_dict[cell_key] = cell_value
+                elif cell_type == "identifier":
+                    if cell_key == "Experiment or Inventory":
+                        if cell_value.lower() == "i":
+                            inventory = True
+        if inventory:
+            invObj = _create_object(cript.Inventory, inventory_dict, parsed_cell)
+            if invObj is not None:
+                inventories[key] = invObj
+        else:
+            experiment = _create_object(cript.Experiment, experiment_dict, parsed_cell)
+            # Only adds Experiment objects
+            if experiment is not None:
+                experiments[key] = experiment
 
-        experiment = _create_object(cript.Experiment, experiment_dict, parsed_cell)
-        # Only adds Experiment objects
-        if experiment is not None:
-            experiments[key] = experiment
-
-    return experiments
+    return experiments, inventories
 
 
 def create_citations(parsed_citations, group):
     """Compiles dictionaries with Data and File cript objects.
     parsed_...-dict of dicts
-    group-obj
-    returns-tuple of dicts of objs
+    group-cript Group node
+    returns-tuple of dicts of reference nodes and citation nodes
     """
 
     references = {}
@@ -135,6 +146,7 @@ def create_materials(parsed_materials, project, data, citations):
     citations-list
     return-dict of obj"""
     materials = {}
+    inventory_dict = {}
 
     for key, parsed_material in parsed_materials.items():
         use_existing = False
@@ -143,6 +155,8 @@ def create_materials(parsed_materials, project, data, citations):
             "identifiers": [],
             "properties": [],
         }
+        belongs_in_inv = False
+        inv_name = None
 
         for parsed_cell in parsed_material.values():
             cell_type = parsed_cell["type"]
@@ -162,18 +176,24 @@ def create_materials(parsed_materials, project, data, citations):
 
             elif cell_type == "property":
                 if parsed_cell["key"] == "use_existing":
-                    use_existing = cellToBool(parsed_cell["value"])
+                    use_existing = is_cell_true(parsed_cell["value"])
                     continue
                 property = _create_property(parsed_cell, data, citations)
                 material_dict["properties"].append(property)
+            elif cell_type == "relation":
+                belongs_in_inv = True
+                inv_name = cell_value
 
         # Add characteristics to an already created material node
         if use_existing:
 
             try:
                 # try to get the material using its name
-                name_ = parsed_material["name"]["value"]
-                material = cript.Material.get(name=name_, project=project.uid)
+                mat_name = parsed_material["name"]["value"]
+                new_project = cript.Project.get(
+                    name=parsed_material["use_existing"]["value"]
+                )
+                material = cript.Material.get(name=mat_name, project=new_project.uid)
 
             # If there is a get error add it to the errors sheet
             except ValueError as e:
@@ -185,22 +205,39 @@ def create_materials(parsed_materials, project, data, citations):
             # If the material had a successful GET request, add properties, identifiers,
             # and select attributes as written in the excel
             else:
+
+                material = copyMaterial(material, new_project, project)
+
+                # Add properties,identifiers, and attributes to material
                 for property in material_dict["properties"]:
                     material.add_property(property)
                 for identifier in material_dict["identifiers"]:
                     material.add_identifier(identifier)
                 for key_ in material_dict:
                     if key_ == "keywords":
-                        material.keywords += material_dict["keywords"]
+                        if material.keywords is not None:
+                            material.keywords += material_dict["keywords"]
+                        else:
+                            material.keywords = material_dict["keywords"]
                     elif key_ == "notes":
-                        material.notes += material_dict["notes"]
+                        if material.notes is not None:
+                            material.notes += material_dict["notes"]
+                        else:
+                            material.notes = material_dict["notes"]
+
         # create new material object otherwise
         else:
             material = _create_object(cript.Material, material_dict, parsed_cell)
         if material is not None:
-            materials[key] = material
 
-    return materials
+            materials[key] = material
+            if belongs_in_inv:
+                if inventory_dict.get(cell_value, None):
+                    inventory_dict[inv_name].append(material)
+                else:
+                    inventory_dict[inv_name] = [material]
+
+    return materials, inventory_dict
 
 
 def create_mixtures(parsed_components, materials):
@@ -433,7 +470,7 @@ def _create_property(parsed_property, data, citations):
                 property_dict["conditions"].append(condition)
 
             elif cell_type == "method":
-                if cellToBool(parsed_cell["value"]):
+                if is_cell_true(parsed_cell["value"]):
                     property_dict["method"] = parsed_cell["key"]
 
             elif cell_type == "relation":
@@ -530,6 +567,37 @@ def _get_relation(related_objs, cell_value, parsed_cell):
         return None
 
 
-def cellToBool(val):
+def is_cell_true(val):
     """Converts a cell value to a useable boolean"""
-    return True if str(val).lower() == "true" else False
+    return str(val).lower() != "false"
+
+
+def copyMaterial(material, new_project, project):
+    """
+    Takes a material node and adjusts values to get rid of legacy code and incompatible features
+    inputs:
+    material - cript material node
+    new_project - cript project node
+    project - cript project node
+
+    returns - cript material node
+    """
+    if new_project.name != project.name:
+        # Sets new project and gets rid of url and uid to make new node object
+        material.project = project
+        material.url = None
+        material.uid = None
+        # Gets rid of citations that would cause permissions errors
+        if material.group.name != project.group.name:
+            for property in material.properties:
+                property.citations = []
+            material.group = project.group
+
+    newProperties = []
+    # Gets rid of any legacy properties/custom that won't upload
+    for property in material.properties:
+        if "+" not in property.key:
+            newProperties.append(property)
+    material.properties = newProperties
+
+    return material

@@ -1,7 +1,7 @@
 # Define sheet parameters
 sheet_parameters = [
     {
-        "name": "experiment",
+        "name": "experiment & inventory",
         "required_columns": ("name",),
         "unique_columns": ("name",),
     },

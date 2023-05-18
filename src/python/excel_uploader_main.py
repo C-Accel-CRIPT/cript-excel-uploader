@@ -186,8 +186,8 @@ class ExcelUploader:
         # Create and validate
         ###
 
-        experiments = create.create_experiments(
-            parsed_sheets["experiment"], self.collection_object
+        experiments, inventories = create.create_experiments_and_inventories(
+            parsed_sheets["experiment & inventory"], self.collection_object
         )
         references, citations = create.create_citations(
             parsed_sheets["citation"], self.project_object.group
@@ -195,7 +195,7 @@ class ExcelUploader:
         data, files = create.create_data(
             parsed_sheets["data"], self.project_object, experiments, citations
         )
-        materials = create.create_materials(
+        materials, inv_dict = create.create_materials(
             parsed_sheets["material"], self.project_object, data, citations
         )
         materials = create.create_mixtures(
@@ -256,6 +256,10 @@ class ExcelUploader:
 
         upload.upload(references, "Reference", self, gui_object)
 
+        # Reassigns saved file nodes into their corresponding unsaved data nodes
+        for key, file in files.items():
+            data[key].files[0] = file
+
         upload.upload(data, "Data", self, gui_object)
 
         upload.upload(materials, "Material", self, gui_object)
@@ -265,6 +269,13 @@ class ExcelUploader:
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object
         )
+
+        # Add saved material nodes to inventories and save inventories
+        for name, mat_arr in inv_dict.items():
+            inventory = inventories[name]
+            for mat in mat_arr:
+                inventory.add_material(mat)
+        upload.upload(inventories, "Inventory", self, gui_object)
 
         return self.error_list
 

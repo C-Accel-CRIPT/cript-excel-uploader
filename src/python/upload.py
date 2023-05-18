@@ -72,6 +72,10 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
                 continue
             else:
                 raise error
+        except cript.api.exceptions.APIError as error:
+            obj_dict[key] = cript.File.get(
+                name=obj.name, project=excel_uploader_object.project_object.uid
+            )
 
         # TODO this needs specific errors instead of a catch all
         except Exception as error:
