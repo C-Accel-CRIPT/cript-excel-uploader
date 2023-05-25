@@ -1,7 +1,7 @@
 # Define sheet parameters
 sheet_parameters = [
     {
-        "name": "experiment",
+        "name": "experiment & inventory",
         "required_columns": ("name",),
         "unique_columns": ("name",),
     },
@@ -49,5 +49,30 @@ sheet_parameters = [
         "name": "process equipment",
         "required_columns": ("process", "key"),
         "unique_columns": ("process", "key"),
+    },
+    {
+        "name": "computation",
+        "required_columns": ("experiment", "name", "type"),
+        "unique_columns": ("name"),
+    },
+    {
+        "name": "prerequisite computation",
+        "required_columns": ("computation", "prerequisite"),
+        "unique_columns": ("computation", "prerequisite"),
+    },
+    {
+        "name": "computational process",
+        "required_columns": ("experiment", "name", "type"),
+        "unique_columns": ("name"),
+    },
+    {
+        "name": "software configuration",
+        "required_columns": ("name", "version"),
+        "unique_columns": ("name"),
+    },
+    {
+        "name": "input & output data",
+        "required_columns": ("computation or computational process", "input data"),
+        "unique_columns": ("computation or computational process", "input data"),
     },
 ]

@@ -43,13 +43,15 @@ class Sheet:
                 cell_info = self._get_cell_info(index, row, column)
 
                 # Check if column should be skipped
-                if self._skip_column(column[1], cell_info["value"], cell_info["type"]):
+                if self._skip_column(
+                    cell_info["key"], cell_info["value"], cell_info["type"]
+                ):
                     continue
 
                 # Convert list values (with ";" separator) to Python lists
                 # Manually skip fields commonly containing semicolons
                 if (
-                    cell_info["value"] not in ("notes", "description")
+                    cell_info["key"] not in ("notes", "description")
                     and isinstance(cell_info["value"], str)
                     and ";" in cell_info["value"]
                 ):

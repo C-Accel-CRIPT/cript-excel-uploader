@@ -54,8 +54,20 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
     for key, obj in obj_dict.items():
 
         try:
-            if obj_type == "File" and obj.name is None:
-                obj.name = obj.source
+            if obj_type == "File":
+                # iterate through list of files
+                for file in obj:
+                    if file.name is None:
+                        file.name = file.source
+                    # nested try and except to handle duplicate file issues
+                    try:
+                        file.save(update_existing=True)
+                    except cript.api.exceptions.APIError as error:
+                        obj_dict[key] = cript.File.get(
+                            name=file.name,
+                            project=excel_uploader_object.project_object.uid,
+                        )
+                continue
 
             obj.save(update_existing=True)
 
@@ -72,6 +84,10 @@ def upload(obj_dict, obj_type, excel_uploader_object, gui_object):
                 continue
             else:
                 raise error
+        except cript.api.exceptions.APIError as error:
+            obj_dict[key] = cript.File.get(
+                name=obj.name, project=excel_uploader_object.project_object.uid
+            )
 
         # TODO this needs specific errors instead of a catch all
         except Exception as error:
