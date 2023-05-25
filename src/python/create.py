@@ -89,7 +89,7 @@ def create_data(parsed_data, project, experiments, citations):
 
     for key, parsed_datum in parsed_data.items():
         datum_dict = {"files": [], "citations": []}
-
+        files_list = []
         for parsed_cell in parsed_datum.values():
             if isinstance(parsed_cell, dict):
                 cell_type = parsed_cell["type"]
@@ -100,6 +100,18 @@ def create_data(parsed_data, project, experiments, citations):
                     if cell_key == "source":
                         # Grab File object source
                         file_source = cell_value
+                        files_list.append(
+                            _create_object(
+                                cript.File,
+                                {
+                                    "project": project,
+                                    "source": file_source,
+                                    "type": "data",
+                                },
+                                parsed_cell,
+                            )
+                        )
+
                         continue
                     else:
                         datum_dict[cell_key] = cell_value
@@ -118,21 +130,13 @@ def create_data(parsed_data, project, experiments, citations):
                     elif cell_key == "sample_preparation":
                         datum_dict["sample_preparation"] = None
 
-        file = _create_object(
-            cript.File,
-            {
-                "project": project,
-                "source": file_source,
-                "type": "data",
-            },
-            parsed_cell,
-        )
-        datum_dict["files"].append(file)
+        if None not in files_list:
+            files[key] = files_list
+
         datum = _create_object(cript.Data, datum_dict, parsed_cell)
 
-        if None not in (datum, file):
+        if datum:
             data[key] = datum
-            files[key] = file
 
     return data, files
 
@@ -164,7 +168,13 @@ def create_materials(parsed_materials, project, data, citations):
             cell_value = parsed_cell["value"]
 
             if cell_type == "attribute":
-                material_dict[cell_key] = cell_value
+
+                if cell_key == "computational_forcefield":
+                    material_dict[cell_key] = create_computational_forcefield(
+                        parsed_cell
+                    )
+                else:
+                    material_dict[cell_key] = cell_value
 
             elif cell_type == "identifier":
                 identifier = _create_object(
@@ -273,6 +283,248 @@ def create_mixtures(parsed_components, materials):
     return materials
 
 
+def create_computation(
+    parsed_computations, experiments, data, citations, software_configurations
+):
+    """Creates a dictionary of Computation objects based on the parsed inputs
+    params:
+    @parsed_computations dictionary of dictionaries containing information about computation objects
+    @experiments dictionary of experiment objects
+    @data dictionary of data objects
+    @citations dictionary of citation objects
+    @software_configurations dictionary of software configuration objects
+
+    returns:
+    dictionary of Computation objects
+    """
+    computations = {}
+
+    for key, parsed_process in parsed_computations.items():
+        comp_dict = {"conditions": [], "software_configurations": []}
+
+        for parsed_cell in parsed_process.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "attribute":
+                if cell_key == "citations":
+                    pass
+                else:
+                    comp_dict[cell_key] = cell_value
+
+            # Gets existing object if available
+            elif cell_type == "relation":
+                if cell_key == "experiment":
+                    comp_dict["experiment"] = _get_relation(
+                        experiments, cell_value, parsed_cell
+                    )
+                elif "software_configuration" in cell_key:
+                    software_config = _get_relation(
+                        software_configurations, cell_value, parsed_cell
+                    )
+                    if software_config:
+                        comp_dict["software_configurations"].append(software_config)
+
+            elif cell_type == "condition":
+                condition = _create_condition(parsed_cell, data, citations)
+                comp_dict["conditions"].append(condition)
+
+        computation = _create_object(cript.Computation, comp_dict, parsed_cell)
+        if computation is not None:
+            computations[key] = computation
+
+    return computations
+
+
+def create_prerequisite_computation(parsed_prerequisites, computations):
+    """Attaches prerequisite Computation  to a Computation node.
+    params:
+        parsed_...-dict of dicts
+        processes-dict of objs
+
+    returns:
+        void
+    """
+    for key, parsed_prerequisite in parsed_prerequisites.items():
+        for parsed_cell in parsed_prerequisite.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "relation":
+                if cell_key == "computation":
+                    computation = _get_relation(computations, cell_value, parsed_cell)
+
+                elif cell_key == "prerequisite":
+                    prerequisite = _get_relation(computations, cell_value, parsed_cell)
+
+        if None not in (computation, prerequisite):
+            computation.prerequisite_computation = prerequisite
+
+
+def create_computational_process(
+    parsed_comp_processes, experiments, software_configurations, data, citations
+):
+    """Creates a dictionary of Computational_process objects to be returned.
+    params:
+        @parsed_comp_processes dict of dict of computational process information
+        @experiments -dict of Experiment objects
+        @data dict of data objects
+        @citations dict of citation objects
+    returns
+      dict of objects
+    """
+    comp_processes = {}
+
+    for key, parsed_comp_process in parsed_comp_processes.items():
+        comp_process_dict = {
+            "properties": [],
+            "conditions": [],
+            "software_configurations": [],
+        }
+
+        for parsed_cell in parsed_comp_process.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "attribute":
+                comp_process_dict[cell_key] = cell_value
+
+            # Gets existing object if available
+            elif cell_type == "relation":
+                if cell_key == "experiment":
+                    comp_process_dict["experiment"] = _get_relation(
+                        experiments, cell_value, parsed_cell
+                    )
+                elif "software_configuration" in cell_key:
+                    software_config = _get_relation(
+                        software_configurations, cell_value, parsed_cell
+                    )
+                    if software_config:
+                        comp_process_dict["software_configurations"].append(
+                            software_config
+                        )
+
+            # Creates objects that will go into process node
+            elif cell_type == "property":
+                property = _create_property(parsed_cell, data, citations)
+                comp_process_dict["properties"].append(property)
+
+            elif cell_type == "condition":
+                condition = _create_condition(parsed_cell, data, citations)
+                comp_process_dict["conditions"].append(condition)
+
+        comp_process = _create_object(
+            cript.ComputationalProcess, comp_process_dict, parsed_cell
+        )
+        if comp_process is not None:
+            comp_processes[key] = comp_process
+
+    return comp_processes
+
+
+def create_software_configuration(parsed_software, citations, project):
+    """Creates a dictionary of Software_Configuration objects based on the parsed inputs
+    params:
+    @parsed_computations dictionary of dictionaries containing information about software configuration objects
+    @citations dictionary of citation objects
+
+    returns:
+    dictionary of software_configuration objects
+    """
+    software_configurations = {}
+    for key, parsed_process in parsed_software.items():
+        config_dict = {
+            "software": None,
+            "algorithms": [],
+        }  # dictionary for Software Configuartion object
+        software_dict = {"group": project.group}  # dictionary for Software object
+        for parsed_cell in parsed_process.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "attribute":
+                if cell_key == "citations":
+                    continue
+                elif cell_key in {"name", "version", "source"}:
+                    software_dict[cell_key] = cell_value
+                elif cell_key == "notes":
+                    config_dict[cell_key] = cell_value
+
+            # create algorithm
+            elif isinstance(cell_type, dict):
+
+                if cell_type["type"] == "attribute":
+                    alg_obj = create_algorithm(parsed_cell)
+                    if alg_obj:
+                        config_dict["algorithms"].append(alg_obj)
+
+        software = _create_object(cript.Software, software_dict, parsed_cell)
+        if software:
+            try:
+                software.save()
+            except:
+                software = cript.Software.get(
+                    name=software_dict["name"],
+                    version=software_dict["version"],
+                )
+
+        config_dict["software"] = software
+
+        # Take algorithms out if none are present
+        if not config_dict["algorithms"]:
+            config_dict.pop("algorithms")
+
+        software_configuration = _create_object(
+            cript.SoftwareConfiguration, config_dict, parsed_cell
+        )
+        if software_configuration is not None:
+            software_configurations[key] = software_configuration
+
+    return software_configurations
+
+
+def create_in_out_data_connections(
+    parsed_in_out_data, computations, computational_processes, data
+):
+    """
+    Attaches input and output data to a Computation or Computatinal Process object
+    params:
+        @parsed_in_out_data dict of dicts of information relating data to another node
+        @computations dict of computation objects
+        @computational_processes dict of computational process objects
+    returns:
+        void
+    """
+    merged_dict = (
+        computations | computational_processes
+    )  # merge dictionaries for ease of access
+
+    for key, parsed_info in parsed_in_out_data.items():
+        input_data = None
+        output_data = None
+        for parsed_cell in parsed_info.values():
+            cell_type = parsed_cell["type"]
+            cell_key = parsed_cell["key"]
+            cell_value = parsed_cell["value"]
+
+            if cell_type == "relation":
+                if cell_key == "computation or computational process":
+                    cript_obj = _get_relation(merged_dict, cell_value, parsed_cell)
+                elif cell_key == "input data":
+                    input_data = _get_relation(data, cell_value, parsed_cell)
+                elif cell_key == "output data":
+                    output_data = _get_relation(data, cell_value, parsed_cell)
+
+        if None not in (cript_obj, input_data):
+            cript_obj.input_data.append(input_data)
+        if None not in (cript_obj, output_data):
+            cript_obj.output_data.append(output_data)
+
+
 def create_processes(parsed_processes, experiments, data, citations):
     """Creates a dictionary of Process objects to be returned.
     parsed_...-dict of objects
@@ -316,7 +568,7 @@ def create_processes(parsed_processes, experiments, data, citations):
     return processes
 
 
-def create_prerequisites(parsed_prerequisites, processes):
+def create_prerequisite_process(parsed_prerequisites, processes):
     """Attaches prerequisite process information to a Process node.
     parsed_...-dict of dicts
     processes-dict of objs"""
@@ -436,6 +688,36 @@ def create_equipment(parsed_equipment, processes, data, citations):
         piece = _create_object(cript.Equipment, piece_dict, parsed_cell)
         if None not in (process, piece):
             process.equipment.append(piece)
+
+
+def create_algorithm(parsed_cell):
+    """
+    Auxilliary function to abstract the creation of an Algorithm object with Parameters
+    input:
+    @parsed_cell dictionary of information about Algorithm
+    returns:
+    algorithm object or None
+
+    """
+
+    cell_type = parsed_cell["type"]
+    cell_value = parsed_cell["value"]
+
+    alg_dict = {"parameters": []}
+    alg_dict["type"] = cell_type["value"]
+    alg_dict["key"] = cell_value
+    for key2, param in parsed_cell.items():
+        if "parameter" in key2:
+            param_dict = {}
+            param_dict["key"] = param["value"]
+            param_dict["value"] = param["input"]["value"]
+            param_dict["unit"] = param.get("unit")
+            param_object = _create_object(cript.Parameter, param_dict, parsed_cell)
+            if param_object:
+                alg_dict["parameters"].append(param_object)
+
+    alg_obj = _create_object(cript.Algorithm, alg_dict, parsed_cell)
+    return alg_obj
 
 
 def _create_property(parsed_property, data, citations):
@@ -601,3 +883,48 @@ def copyMaterial(material, new_project, project):
     material.properties = newProperties
 
     return material
+
+def create_computational_forcefield(parsed_cell):
+    """
+    Create a computational forcefield object
+    param:
+    @parsed_cell dictionary of information about object
+    returns:
+    Computational_forcefield object or None
+    """
+    # Try to assign all of computational_forcefield's attributes
+    # Can't assign data and citation here
+    building_block = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("building_block"))
+        else None
+    )
+    coarse_grained_mapping = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("coarse_grained_mapping"))
+        else None
+    )
+    implicit_solvent = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("implicit_solvent"))
+        else None
+    )
+    source = (
+        temp_dict.get("value") if (temp_dict := parsed_cell.get("source")) else None
+    )
+    description = (
+        temp_dict.get("value")
+        if (temp_dict := parsed_cell.get("description"))
+        else None
+    )
+
+    object_dict = {
+        "key": parsed_cell["value"],
+        "building_block": building_block,
+        "coarse_grained_mapping": coarse_grained_mapping,
+        "implicit_solvent": implicit_solvent,
+        "source": source,
+        "description": description,
+    }
+    return _create_object(cript.ComputationalForcefield, object_dict, parsed_cell)
+

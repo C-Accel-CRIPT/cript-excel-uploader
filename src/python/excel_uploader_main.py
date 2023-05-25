@@ -90,12 +90,13 @@ class ExcelUploader:
         if len(files) < 1:
             return False
 
-        for key in files:
-            # if file starts with http or https, then file is local, and returns true
-            if not files[key].source.startswith("http://") and not files[
-                key
-            ].source.startswith("https://"):
-                return True
+        for key, values in files.items():
+            for ix in range(len(values)):
+                # if file starts with http or https, then file is local, and returns true
+                if not files[key][ix].source.startswith("http://") and not files[key][
+                    ix
+                ].source.startswith("https://"):
+                    return True
 
         return False
 
@@ -205,6 +206,33 @@ class ExcelUploader:
             parsed_sheets["process"], experiments, data, citations
         )
 
+        software_configurations = create.create_software_configuration(
+            parsed_sheets["software configuration"], citations, self.project_object
+        )
+
+        computations = create.create_computation(
+            parsed_sheets["computation"],
+            experiments,
+            data,
+            citations,
+            software_configurations,
+        )
+
+        computational_processes = create.create_computational_process(
+            parsed_sheets["computational process"],
+            experiments,
+            software_configurations,
+            data,
+            citations,
+        )
+
+        create.create_in_out_data_connections(
+            parsed_sheets["input & output data"],
+            computations,
+            computational_processes,
+            data,
+        )
+
         # if there is local files to upload, and they have not authenticated with storage client yet
         # take them to authenticate with globus
         if (
@@ -217,9 +245,19 @@ class ExcelUploader:
             return
 
         # create
-        create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
+
+        create.create_prerequisite_process(
+            parsed_sheets["prerequisite process"], processes
+        )
+
+        create.create_prerequisite_computation(
+            parsed_sheets["prerequisite computation"], computations
+        )
+
+        merged_processes = processes | computational_processes
+
         create.create_ingredients(
-            parsed_sheets["process ingredient"], processes, materials
+            parsed_sheets["process ingredient"], merged_processes, materials
         )
         create.create_products(parsed_sheets["process product"], processes, materials)
         create.create_equipment(
@@ -257,12 +295,19 @@ class ExcelUploader:
         upload.upload(references, "Reference", self, gui_object)
 
         # Reassigns saved file nodes into their corresponding unsaved data nodes
-        for key, file in files.items():
-            data[key].files[0] = file
+        for key, vals in files.items():
+            for file in vals:
+                data[key].files.append(file)
 
         upload.upload(data, "Data", self, gui_object)
 
         upload.upload(materials, "Material", self, gui_object)
+
+        upload.upload(computations, "Computation", self, gui_object)
+
+        upload.upload(
+            computational_processes, "Computational Processes", self, gui_object
+        )
 
         upload.upload(processes, "Process", self, gui_object)
 
