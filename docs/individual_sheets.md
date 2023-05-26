@@ -240,9 +240,16 @@ options for each row are clickable links in the chart below:
   </tr>
 </table>
 
-??? note "use_existing"
-`use_existing` column field can be used to obtain materials from your own projects or other publicly available projects. If obtaining legacy materials or materials from outside your group, you may find some characteristics of the material to be missing.
-
+<details>
+<summary> Notes on use_existing column  </summary>
+The use_existing column field can be used to obtain materials from your own projects or other publicly available projects. If obtaining legacy materials or materials from outside your group, you may find some characteristics of the material to be missing.
+</details>
+<details>
+<summary> Notes on material attributes </summary>
+All attributes material can be added by marking the column as attribute in row 1 and using the attribute name from the <a href=https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/6322994103e27d9176d5b10c/original/main-supporting-information.pdf>data model</a>. 
+Additionally, for the more complex formatting of the computational_forcefield attribute reference the picture below:
+<img src="../docs_assets/comp_forcefield_setup.png" alt="picture of computational forcefield setup">
+</details>
 <br>
 
 ---
@@ -879,7 +886,7 @@ Define the ingredients for each process and their respective quantities.
 
 | Row 2                                                                                                     | Row 1     | Required | Row 5 - ∞ expected value                                                                                           |
 | --------------------------------------------------------------------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| \*process                                                                                                 | relation  | yes      | value from `*name` column of `process` sheet                                                                       |
+| \*process                                                                                                 | relation  | yes      | value from `*name` column of `process` sheet or `computational process` sheet                                      |
 | \*material                                                                                                | relation  | yes      | value from `*name` column of `material` sheet                                                                      |
 | keyword                                                                                                   | attribute | no       | pick from `Name` column of <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredients</a> |
 | pick from `Name` column of <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a> | quantity  | yes      | record your quantity here                                                                                          |
@@ -959,7 +966,7 @@ Define the ingredients for each process and their respective quantities.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet
+       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet or computational process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
@@ -1161,6 +1168,12 @@ Define the data sets you will be associating with properties, etc.
     </td>
   </tr>
 </table>
+
+<details>
+<summary>Notes on multiple sources/File nodes per Data node</summary>
+Multiple sources/File nodes can be added to a Data node by using the Id syntax described in <a href="excel_rows.md" target=_blank>Structure of Excel Sheets </a>. An example is shown below:
+<img src="../docs_assets/multiple_sources.png" alt="picture of multiple sources/File node syntax">
+</details>
 
 <br>
 
@@ -1398,3 +1411,120 @@ Define references to be associated with properties, etc. as citations.
 <br><br><br>
 
 ---
+
+#### <span class="required-excel-sheet-color"><u>computation</u></span> sheet
+
+Define the computations of each experiment.
+
+> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">condition</a> columns as you need
+
+| Row 2                                                                                               | Row 1     | Required | Row 5 - ∞ expected value                                                                                     |
+| --------------------------------------------------------------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------ |
+| \*experiment                                                                                        | relation  | yes      | value from `*name`column of`experiment` sheet                                                                |
+| \*name                                                                                              | attribute | yes      | unique name                                                                                                  |
+| \*type                                                                                              | attribute | yes      | pick from list of <a href="https://criptapp.org/keys/computation-type/" target="_blank">Computation Type</a> |
+| software_configuration                                                                              | attribute | no       | pick from `*name` column of `software_configuration` sheet                                                   |
+| pick from list of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
+| notes                                                                                               | attribute | no       | regular text                                                                                                 |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      software_configuration
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td> 
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your unique computation name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/computation-type/" target="_blank">Computation Type</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      name of software_configuration
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your notes
+    </td>
+
+  </tr>
+</table>
+
+<details>
+<summary>Notes on multiple software_configurations</summary>
+Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
+</details>
+
+<br> <br>
