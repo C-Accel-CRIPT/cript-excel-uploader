@@ -90,12 +90,13 @@ class ExcelUploader:
         if len(files) < 1:
             return False
 
-        for key in files:
-            # if file starts with http or https, then file is local, and returns true
-            if not files[key].source.startswith("http://") and not files[
-                key
-            ].source.startswith("https://"):
-                return True
+        for key, values in files.items():
+            for ix in range(len(values)):
+                # if file starts with http or https, then file is local, and returns true
+                if not files[key][ix].source.startswith("http://") and not files[key][
+                    ix
+                ].source.startswith("https://"):
+                    return True
 
         return False
 
@@ -186,8 +187,8 @@ class ExcelUploader:
         # Create and validate
         ###
 
-        experiments = create.create_experiments(
-            parsed_sheets["experiment"], self.collection_object
+        experiments, inventories = create.create_experiments_and_inventories(
+            parsed_sheets["experiment & inventory"], self.collection_object
         )
         references, citations = create.create_citations(
             parsed_sheets["citation"], self.project_object.group
@@ -195,7 +196,7 @@ class ExcelUploader:
         data, files = create.create_data(
             parsed_sheets["data"], self.project_object, experiments, citations
         )
-        materials = create.create_materials(
+        materials, inv_dict = create.create_materials(
             parsed_sheets["material"], self.project_object, data, citations
         )
         materials = create.create_mixtures(
@@ -203,6 +204,33 @@ class ExcelUploader:
         )
         processes = create.create_processes(
             parsed_sheets["process"], experiments, data, citations
+        )
+
+        software_configurations = create.create_software_configuration(
+            parsed_sheets["software configuration"], citations, self.project_object
+        )
+
+        computations = create.create_computation(
+            parsed_sheets["computation"],
+            experiments,
+            data,
+            citations,
+            software_configurations,
+        )
+
+        computational_processes = create.create_computational_process(
+            parsed_sheets["computational process"],
+            experiments,
+            software_configurations,
+            data,
+            citations,
+        )
+
+        create.create_in_out_data_connections(
+            parsed_sheets["input & output data"],
+            computations,
+            computational_processes,
+            data,
         )
 
         # if there is local files to upload, and they have not authenticated with storage client yet
@@ -217,9 +245,19 @@ class ExcelUploader:
             return
 
         # create
-        create.create_prerequisites(parsed_sheets["prerequisite process"], processes)
+
+        create.create_prerequisite_process(
+            parsed_sheets["prerequisite process"], processes
+        )
+
+        create.create_prerequisite_computation(
+            parsed_sheets["prerequisite computation"], computations
+        )
+
+        merged_processes = processes | computational_processes
+
         create.create_ingredients(
-            parsed_sheets["process ingredient"], processes, materials
+            parsed_sheets["process ingredient"], merged_processes, materials
         )
         create.create_products(parsed_sheets["process product"], processes, materials)
         create.create_equipment(
@@ -256,15 +294,33 @@ class ExcelUploader:
 
         upload.upload(references, "Reference", self, gui_object)
 
+        # Reassigns saved file nodes into their corresponding unsaved data nodes
+        for key, vals in files.items():
+            for file in vals:
+                data[key].files.append(file)
+
         upload.upload(data, "Data", self, gui_object)
 
         upload.upload(materials, "Material", self, gui_object)
+
+        upload.upload(computations, "Computation", self, gui_object)
+
+        upload.upload(
+            computational_processes, "Computational Processes", self, gui_object
+        )
 
         upload.upload(processes, "Process", self, gui_object)
 
         upload.add_sample_preparation_to_process(
             parsed_sheets["data"], data, processes, self.api, self, gui_object
         )
+
+        # Add saved material nodes to inventories and save inventories
+        for name, mat_arr in inv_dict.items():
+            inventory = inventories[name]
+            for mat in mat_arr:
+                inventory.add_material(mat)
+        upload.upload(inventories, "Inventory", self, gui_object)
 
         return self.error_list
 
