@@ -1,14 +1,5 @@
 # Customizing the <span style="color: var(--excel-light-color)">Excel</span> Sheets
 
-<img src="../docs_assets/screenshot_of_excel_sheets.png"
-alt="screenshot of the Excel sheets to show required and optional sheets">
-
-- Required sheets are colored
-  <span class="required-excel-sheet-color"> Orange </span>
-
-- Optional sheets are colored
-  <span class="optional-excel-sheet-color"> Grey </span>
-
 <br>
 
 > Any optional column not needed can be left blank or deleted
@@ -61,7 +52,7 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
 
 ## Sheets
 
-#### <span class="required-excel-sheet-color"><u>material</u></span> sheet
+#### <u>material</u> sheet
 
 This sheet is for both materials used at the beginning of the experiment (ingredients),
 and the material that occurs as a result of the experiment (process product)
@@ -75,15 +66,15 @@ Define all materials that will be referenced throughout the document.
 > and <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material property</a> columns as you needed
 
 | Row 2                                                                                                                            | Row 1      | Required | Row 5 - ∞ expected value |
-|----------------------------------------------------------------------------------------------------------------------------------|------------|----------|--------------------------|
+| -------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | ------------------------ |
+| inventory                                                                                                                        | relation   | no       | inventory name           |
 | \*name                                                                                                                           | attribute  | yes      | unique name              |
 | pick from `Name` column of <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material identifiers</a> | identifier | no       | your values              |
 | pick from `Name` column of <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material properties</a>    | property   | no       | your values              |
-| use_existing                                                                                                                  | property   | no       | TRUE, FALSE, or blank    |
+| \*use_existing                                                                                                                   | property   | yes      | project name or FALSE    |
 | notes                                                                                                                            | attribute  | no       | regular text             |
 
 <br>
-
 
 options for each row are clickable links in the chart below:
 
@@ -93,9 +84,11 @@ options for each row are clickable links in the chart below:
 
 > You can have as many `Identifiers`, `property`, `property:condition`, `property:method`, `property:type` as you need
 
-
 <table>
   <tr>
+    <td class="row-1">
+      relation
+    </td>
     <td class="row-1">
       attribute
     </td>
@@ -125,6 +118,10 @@ options for each row are clickable links in the chart below:
     </td>
   </tr>
   <tr>
+    <td class="row-2">
+      inventory
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
     <td class="row-2">
       *name
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
@@ -157,8 +154,8 @@ options for each row are clickable links in the chart below:
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      use_existing
-      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+      *use_existing
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
       notes
@@ -166,6 +163,9 @@ options for each row are clickable links in the chart below:
     </td>
   </tr>
   <tr>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
     <th class="row-3-in-table">
         <div class="empty-row-3-placeholders"></div>
     </th>
@@ -198,6 +198,9 @@ options for each row are clickable links in the chart below:
   </tr>
   <tr>
     <td class="row-4">
+      inventory name
+    </td>
+    <td class="row-4">
       your unique material name
     </td>
     <td class="row-4">
@@ -220,7 +223,7 @@ options for each row are clickable links in the chart below:
     </td>
     <td class="row-4">
       You can put either: 
-      <em style="font-weight: bold">TRUE</em>, <em style="font-weight: bold">FALSE</em>, or <em>you can leave blank for False</em>
+      <em>project name</em> or <em style="font-weight: bold">FALSE</em>
     </td>
     <td class="row-4">
       <em>Your notes</em>
@@ -228,31 +231,37 @@ options for each row are clickable links in the chart below:
   </tr>
 </table>
 
-??? note "use_existing"
-    `use_existing` column field is best for when you already have a material within your project and 
-    you just want to name it and use it within your Excel file instead of creating a new material on every upload 
-
+<details>
+<summary> Notes on use_existing column  </summary>
+The use_existing column field can be used to obtain materials from your own projects or other publicly available projects. If obtaining legacy materials or materials from outside your group, you may find some characteristics of the material to be missing.
+</details>
+<details>
+<summary> Notes on material attributes </summary>
+All attributes material can be added by marking the column as attribute in row 1 and using the attribute name from the <a href=https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/6322994103e27d9176d5b10c/original/main-supporting-information.pdf>data model</a>. 
+Additionally, for the more complex formatting of the computational_forcefield attribute reference the picture below:
+<img src="../docs_assets/comp_forcefield_setup.png" alt="picture of computational forcefield setup">
+</details>
 <br>
 
 ---
 
 <br>
 
-#### <span class="optional-excel-sheet-color"><u>mixture component</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### <u>mixture component</u> sheet
 
 This sheet Defines the components of mixture materials.
 
-<!-- 
+<!--
 <br>
 
 <blockquote>
-  Before recording any mixtures, the components and materials must be first defined in 
+  Before recording any mixtures, the components and materials must be first defined in
   <span class="required-excel-sheet-color">materials</span> sheet.
 </blockquote>
 
 
 <blockquote>
-  Row 1 is always <code>relation</code>, because the ingredients for a mixture come from 
+  Row 1 is always <code>relation</code>, because the ingredients for a mixture come from
   the <span class="required-excel-sheet-color">material</span> sheet
 </blockquote>
 
@@ -260,7 +269,7 @@ This sheet Defines the components of mixture materials.
 -->
 
 | Row 2      | Row 1    | Required | Row 5 - ∞ expected value                      |
-|------------|----------|----------|-----------------------------------------------|
+| ---------- | -------- | -------- | --------------------------------------------- |
 | \*mixture  | relation | yes      | value from `*name` column of `material` sheet |
 | \*material | relation | yes      | value from `*name` column of `material` sheet |
 
@@ -295,10 +304,10 @@ This sheet Defines the components of mixture materials.
   </tr>
   <tr>
     <td class="row-4">
-      value comes from *name column of <span class="required-excel-sheet-color">mixture</span> sheet
+      value comes from *name column of material sheet
     </td>
     <td class="row-4">
-      value from *name column of <span class="required-excel-sheet-color">materials</span> sheet
+      value from *name column of materials sheet
     </td>
   </tr>
 </table>
@@ -307,15 +316,16 @@ This sheet Defines the components of mixture materials.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u> experiment</u></span> sheet
+#### <u> experiment & inventory</u> sheet
 
 This sheet defines the experiment
 
-| Row 2   | Row 1     | Required | Row 5 - ∞ expected value                                |
-|---------|-----------|----------|---------------------------------------------------------|
-| \*name  | attribute | yes      | unique name                                             |
-| funding | attribute | no       | list of your funders (e.g, `funder1; funder2; funder3`) |
-| notes   | attribute | no       | regular text                                            |
+| Row 2                     | Row 1      | Required | Row 5 - ∞ expected value                                            |
+|---------------------------|------------|----------|---------------------------------------------------------------------|
+| \*name                    | attribute  | yes      | unique name                                                         |
+| \*Experiment or Inventory | identifier | yes      | Mark as either `E` or `I` to denote **Experiment** or **Inventory** |
+| funding                   | attribute  | no       | list of your funders (e.g, `funder1; funder2; funder3`)             |
+| notes                     | attribute  | no       | regular text                                                        |
 
 <br>
 
@@ -335,10 +345,17 @@ This sheet defines the experiment
     <td class="row-1">
       <u class="row-1">attribute</u> 
     </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
   </tr>
   <tr>
     <td class="row-2">
       *name
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *Experiment or Inventory
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
@@ -360,10 +377,16 @@ This sheet defines the experiment
     <th class="row-3">
       <div style="margin-bottom: 1rem;"></div>
     </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
       unique experiment name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      E
     </td>
     <td class="row-4 row-4-required-optional-label">
       funder 1; funder 2; funder 3; funder 4;
@@ -373,13 +396,27 @@ This sheet defines the experiment
     </td>
 
   </tr>
+
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      unique inventory name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      I
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+    </td>
+
+  </tr>
 </table>
 
 ---
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>process</u></span> sheet
+#### <u>process</u> sheet
 
 Define the processes of each experiment.
 
@@ -387,7 +424,7 @@ Define the processes of each experiment.
 > and <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> columns as you need
 
 | Row 2                                                                                                                     | Row 1     | Required | Row 5 - ∞ expected value                                                                                                                                               |
-|---------------------------------------------------------------------------------------------------------------------------|-----------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------------------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | \*experiment                                                                                                              | relation  | yes      | value from `*name`column of`experiment` sheet                                                                                                                          |
 | \*name                                                                                                                    | attribute | yes      | unique name                                                                                                                                                            |
 | \*type                                                                                                                    | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/process-type/" target="_blank">Process Type</a>                                                          |
@@ -535,7 +572,7 @@ Define the processes of each experiment.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+      value from *name column of experiment sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       your unique process name
@@ -661,7 +698,7 @@ Example:
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+      value from *name column of experiment sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       pick a unique process name
@@ -691,14 +728,15 @@ Example:
 
 <br>
 
-#### <span class="optional-excel-sheet-color">process equipment</span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### process equipment sheet
 
 Define the equipment used in a process.
+
 > You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Condition</a> columns as you
 > need
 
 | Row 2                                                                                                        | Row 1     | Required | Row 5 - ∞ expected value                                                                                     |
-|--------------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------------ | --------- | -------- | ------------------------------------------------------------------------------------------------------------ |
 | \*process                                                                                                    | relation  | yes      | value from `*name` column of `process` sheet                                                                 |
 | \*key                                                                                                        | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> |
 | description                                                                                                  | attribute | no       | regular text                                                                                                 |
@@ -766,7 +804,7 @@ Define the equipment used in a process.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value from <code>*name</code> column of <span class="required-excel-sheet-color">process</span> sheet
+       value from <code>*name</code> column of process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       <a href="https://criptapp.org/keys/equipment-key/" target="_blank">select equipment</a>
@@ -778,7 +816,7 @@ Define the equipment used in a process.
       your description of the condition
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value from <code>*name</code> column of <span class="optional-excel-sheet-color">citation</span> sheet
+      value from <code>*name</code> column of citation sheet
     </td>
   </tr>
 </table>
@@ -787,14 +825,14 @@ Define the equipment used in a process.
 
 <br>
 
-#### <span class="optional-excel-sheet-color"><u>prerequisite process</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### <u>prerequisite process</u> sheet
 
 Define the immediate prerequisites for each process.
 
 > e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).
 
 | Row 2          | Row 1    | Required | Row 5 - ∞ expected value                     |
-|----------------|----------|----------|----------------------------------------------|
+| -------------- | -------- | -------- | -------------------------------------------- |
 | \*process      | relation | yes      | value from `*name` column of `process` sheet |
 | \*prerequisite | relation | yes      | value from `*name` column of `process` sheet |
 
@@ -829,10 +867,10 @@ Define the immediate prerequisites for each process.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name of <span class="required-excel-sheet-color">process</span> sheet
+      value from *name of process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value from *name of <span class="required-excel-sheet-color">process</span> sheet
+      value from *name of process sheet
       <br> <em>immediate prerequisite step</em>
     </td>
   </tr>
@@ -842,20 +880,20 @@ Define the immediate prerequisites for each process.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>process ingredient</u></span> sheet
+#### <u>process ingredient</u> sheet
 
 <br>
 
 Define the ingredients for each process and their respective quantities.
 
 > you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a> columns as needed for
-> your different materials
+> your different materials, but at least one is required
 
 | Row 2                                                                                                     | Row 1     | Required | Row 5 - ∞ expected value                                                                                           |
-|-----------------------------------------------------------------------------------------------------------|-----------|----------|--------------------------------------------------------------------------------------------------------------------|
-| \*process                                                                                                 | relation  | yes      | value from `*name` column of `process` sheet                                                                       |
+| --------------------------------------------------------------------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| \*process                                                                                                 | relation  | yes      | value from `*name` column of `process` sheet or `computational process` sheet                                      |
 | \*material                                                                                                | relation  | yes      | value from `*name` column of `material` sheet                                                                      |
-| \*keyword                                                                                                 | attribute | yes      | pick from `Name` column of <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredients</a> |
+| keyword                                                                                                   | attribute | no       | pick from `Name` column of <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredients</a> |
 | pick from `Name` column of <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a> | quantity  | yes      | record your quantity here                                                                                          |
 
 <br>
@@ -891,23 +929,23 @@ Define the ingredients for each process and their respective quantities.
       <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>    
     <td class="row-2">
-      *keyword
-      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+      keyword
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
       <a href="https://criptapp.org/keys/quantity-key/" 
       target="_blank">quantity</a>
-      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
     </td>
     <td class="row-2">
       <a href="https://criptapp.org/keys/quantity-key/"
         target="_blank">quantity</a>
-      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required/optional)</span>
     </td>
       <td class="row-2">
       <a href="https://criptapp.org/keys/quantity-key/"
         target="_blank">quantity</a>
-      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required/optional)</span>
     </td>
 
   </tr>
@@ -933,10 +971,10 @@ Define the ingredients for each process and their respective quantities.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet
+       value comes from *name column of the process sheet or computational process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
+      value comes from *name column of the materials sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredient keywords</a>
@@ -957,7 +995,7 @@ Define the ingredients for each process and their respective quantities.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>process product</u></span> sheet
+#### <u>process product</u> sheet
 
 <br>
 
@@ -968,7 +1006,7 @@ Define the ingredients for each process and their respective quantities.
 Define the material products of each process.
 
 | Row 2      | Row 1    | Required | Row 5 - ∞ expected value                   |
-|------------|----------|----------|--------------------------------------------|
+| ---------- | -------- | -------- | ------------------------------------------ |
 | \*process  | relation | yes      | value from `*name`column of`process`sheet  |
 | \*material | relation | yes      | value from`*name`column of`material` sheet |
 
@@ -1003,10 +1041,10 @@ Define the material products of each process.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet
+       value comes from *name column of the process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
+      value comes from *name column of the materials sheet
     </td>
   </tr>
 </table>
@@ -1015,7 +1053,7 @@ Define the material products of each process.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>data</u></span> sheet
+#### <u>data</u> sheet
 
 <br>
 
@@ -1027,11 +1065,12 @@ Define the material products of each process.
 Define the data sets you will be associating with properties, etc.
 
 | Row 2              | Row 1     | Required | Row 5 - ∞ expected value                                                                                 |
-|--------------------|-----------|----------|----------------------------------------------------------------------------------------------------------|
+| ------------------ | --------- | -------- | -------------------------------------------------------------------------------------------------------- |
 | \*experiment       | relation  | yes      | value from `*name`column of`experiment`sheet                                                             |
 | \*name             | attribute | yes      | unique name                                                                                              |
 | \*type             | attribute | yes      | pick from `*name` column of <a href="https://criptapp.org/keys/data-type/" target="_blank">data type</a> |
 | \*source           | attribute | yes      | can either be a path to a local file on your computer or a url to a website                              |
+| notes              | attribute | no       | regular text                                                                                             |
 | sample_preparation | relation  | no       | pick from `*name` column of `process` sheet                                                              |
 
 <br>
@@ -1047,6 +1086,9 @@ Define the data sets you will be associating with properties, etc.
     <td class="row-1">
       <u class="row-1">attribute</u> 
     </td>    
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
     <td class="row-1">
       <u class="row-1">attribute</u> 
     </td>
@@ -1069,6 +1111,10 @@ Define the data sets you will be associating with properties, etc.
     </td>
     <td class="row-2">
       *source 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      notes
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
@@ -1092,10 +1138,13 @@ Define the data sets you will be associating with properties, etc.
     <th class="row-3">
       <div style="margin-bottom: 1rem;"></div>
     </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
   </tr>
   <tr>
     <td class="row-4">
-       value from <code>*name</code> column of <span class="required-excel-sheet-color">experiment</span> sheet
+       value from <code>*name</code> column of experiment sheet
     </td>
     <td class="row-4">
       Pick a unique name
@@ -1117,10 +1166,19 @@ Define the data sets you will be associating with properties, etc.
         </em>
     </td>
     <td class="row-4">
-      pick a process from <code>*name</code> column of <span class="required-excel-sheet-color">process sheet</span>
+      regular text
+    </td>
+    <td class="row-4">
+      pick a process from <code>*name</code> column of process sheet
     </td>
   </tr>
 </table>
+
+<details>
+<summary>Notes on multiple sources/File nodes per Data node</summary>
+Multiple sources/File nodes can be added to a Data node by using the Id syntax described in <a href="excel_rows.md" target=_blank>Structure of Excel Sheets </a>. An example is shown below:
+<img src="../docs_assets/multiple_sources.png" alt="picture of multiple sources/File node syntax">
+</details>
 
 <br>
 
@@ -1128,7 +1186,7 @@ Define the data sets you will be associating with properties, etc.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>citation</u></span> sheet
+####<u>citation</u> sheet
 
 > This sheet can be used to reference any sources used in the experiments that you want to cite in CRIPT
 
@@ -1143,7 +1201,7 @@ Define the data sets you will be associating with properties, etc.
 Define references to be associated with properties, etc. as citations.
 
 | Row 2     | Row 1     | Required | Row 5 - ∞ expected value |
-|-----------|-----------|----------|--------------------------|
+| --------- | --------- | -------- | ------------------------ |
 | \*title   | attribute | yes      | unique title             |
 | doi       | attribute | no       | text                     |
 | authors   | attribute | no       | text                     |
@@ -1359,3 +1417,476 @@ Define references to be associated with properties, etc. as citations.
 
 ---
 
+#### <u>computation</u> sheet
+
+Define the computations of each experiment.
+
+> You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">condition</a> columns as you need
+
+| Row 2                                                                                               | Row 1     | Required | Row 5 - ∞ expected value                                                                                     |
+| --------------------------------------------------------------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------ |
+| \*experiment                                                                                        | relation  | yes      | value from `*name`column of`experiment` sheet                                                                |
+| \*name                                                                                              | attribute | yes      | unique name                                                                                                  |
+| \*type                                                                                              | attribute | yes      | pick from list of <a href="https://criptapp.org/keys/computation-type/" target="_blank">Computation Type</a> |
+| software_configuration                                                                              | attribute | no       | pick from `*name` column of `software_configuration` sheet                                                   |
+| notes                                                                                               | attribute | no       | regular text                                                                                                 |
+| pick from list of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      software_configuration
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td> 
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name column of experiment sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your unique computation name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/computation-type/" target="_blank">Computation Type</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      name of software_configuration
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your notes
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+
+  </tr>
+</table>
+
+<details>
+<summary>Notes on multiple software_configurations</summary>
+Use the ID syntax described in <a href="../excel_rows/#id-optional" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
+</details>
+
+<br> <br>
+
+#### <u>prerequisite computation</u> sheet
+
+Define the immediate prerequisites for each computation.
+
+> e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).
+
+| Row 2          | Row 1    | Required | Row 5 - ∞ expected value                         |
+| -------------- | -------- | -------- | ------------------------------------------------ |
+| \*computaion   | relation | yes      | value from `*name` column of `computation` sheet |
+| \*prerequisite | relation | yes      | value from `*name` column of `computation` sheet |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *computation
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *prerequisite
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of computation sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of computation sheet
+      <br> <em>immediate prerequisite step</em>
+    </td>
+  </tr>
+</table>
+
+---
+
+<br>
+
+#### <u>computational process</u> sheet
+
+Define the computational processes of each experiment.
+
+> You can have as many <a href="https://criptapp.org/keys/computational-process-property-key/" target="_blank">property</a> and <a href="https://criptapp.org/keys/condition-key/" target="_blank">condition</a> columns as you need
+
+| Row 2                                                                                                                    | Row 1     | Required | Row 5 - ∞ expected value                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------ | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| \*experiment                                                                                                             | relation  | yes      | value from `*name`column of`experiment` sheet                                                                                    |
+| \*name                                                                                                                   | attribute | yes      | unique name                                                                                                                      |
+| \*type                                                                                                                   | attribute | yes      | pick from list of <a href="https://criptapp.org/keys/computational-process-type/" target="_blank">Computational Process Type</a> |
+| software_configuration                                                                                                   | attribute | no       | pick from `*name` column of `software_configuration` sheet                                                                       |
+| notes                                                                                                                    | attribute | no       | regular text                                                                                                                     |
+| pick from list of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>                      | condition | no       | record your values                                                                                                               |
+| pick from list of <a href="https://criptapp.org/keys/computational-process-property-key/" target="_blank">properties</a> | property  | no       | record your values                                                                                                               |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">property</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      software_configuration
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td> 
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/computational-process-property-key/" target="_blank">properties</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name column of experiment sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your unique computation name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/computational-process-type/" target="_blank">Computation Process Type</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      name of software_configuration
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your notes
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+
+  </tr>
+</table>
+
+<details>
+<summary>Notes on multiple software_configurations</summary>
+Use the ID syntax described in <a href="../excel_rows/#id-optional" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
+</details>
+
+<br> <br>
+
+#### <u>software configuration</u> sheet
+
+> This sheet can be used to define software configuration objects
+
+<details>
+<summary>Algorithm formatting</summary>
+Defining an algorithm requires specific formatting. An Algorithm must have a key and type. It also has parameters which are optional(multiple parameters can be defined with the id syntax). Parameters can have multiple inputs(also using the id syntax). An example is shown below:
+<img src="../docs_assets/algorithm_formatting.png" alt="algorithm formatting"> 
+</details>
+
+<br>
+
+| Row 2     | Row 1     | Required | Row 5 - ∞ expected value |
+| --------- | --------- | -------- | ------------------------ |
+| \*name    | attribute | yes      | unique name              |
+| \*version | attribute | yes      | text                     |
+| notes     | attribute | no       | text                     |
+| source    | attribute | no       | text                     |
+| algorithm | attribute | no       | text                     |
+
+<br>
+
+<table style="display: block; max-width: fit-content; margin: 0 auto; overflow-x: auto; white-space: nowrap;">
+  <tr>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *name
+      <br> <span style="font-size: 0.7rem; font-style: italic">(*Required)</span>
+    </td>
+    <td class="row-2">
+      *version
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      source
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      algorithm
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+      your name here
+    </td>
+    <td class="row-4">
+      your version here
+    </td>
+    <td class="row-4">
+      Notes Here
+    </td>
+    <td class="row-4">
+      Source here 
+    </td>
+    <td class="row-4">
+      Algorithm here
+    </td>
+
+  </tr>
+</table>
+
+<br><br><br>
+
+#### <u>input & output data</u> sheet
+
+Define the input and output data for computation and computational process.
+
+| Row 2                                 | Row 1    | Required | Row 5 - ∞ expected value                                                    |
+| ------------------------------------- | -------- | -------- | --------------------------------------------------------------------------- |
+| \*computaion or computational process | relation | yes      | value from `*name` column of `computation` or `computational process` sheet |
+| input data                            | relation | yes      | value from `*name` column of `data` sheet                                   |
+| output data                           | relation | yes      | value from `*name` column of `data` sheet                                   |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *computation or computational process
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      input data
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Optional)</span>
+    </td>
+    <td class="row-2">
+      input data
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of computation or computational process sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of data sheet
+      <br> <em>input data</em>
+    </td>
+     <td class="row-4 row-4-required-optional-label">
+      value from *name of data sheet
+      <br> <em>input data</em>
+    </td>
+  </tr>
+</table>
+
+---
+
+<br>
