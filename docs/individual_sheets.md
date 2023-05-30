@@ -1,14 +1,5 @@
 # Customizing the <span style="color: var(--excel-light-color)">Excel</span> Sheets
 
-<img src="../docs_assets/excel_uploader_tabs.png"
-alt="screenshot of the Excel sheets to show required and optional sheets">
-
-- Required sheets are colored
-  <span class="required-excel-sheet-color"> Orange </span>
-
-- Optional sheets are colored
-  <span class="optional-excel-sheet-color"> Grey </span>
-
 <br>
 
 > Any optional column not needed can be left blank or deleted
@@ -61,7 +52,7 @@ alt="screenshot of the Excel sheets to show required and optional sheets">
 
 ## Sheets
 
-#### <span class="required-excel-sheet-color"><u>material</u></span> sheet
+#### <u>material</u> sheet
 
 This sheet is for both materials used at the beginning of the experiment (ingredients),
 and the material that occurs as a result of the experiment (process product)
@@ -256,7 +247,7 @@ Additionally, for the more complex formatting of the computational_forcefield at
 
 <br>
 
-#### <span class="optional-excel-sheet-color"><u>mixture component</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### <u>mixture component</u> sheet
 
 This sheet Defines the components of mixture materials.
 
@@ -313,10 +304,10 @@ This sheet Defines the components of mixture materials.
   </tr>
   <tr>
     <td class="row-4">
-      value comes from *name column of <span class="required-excel-sheet-color">mixture</span> sheet
+      value comes from *name column of material sheet
     </td>
     <td class="row-4">
-      value from *name column of <span class="required-excel-sheet-color">materials</span> sheet
+      value from *name column of materials sheet
     </td>
   </tr>
 </table>
@@ -325,7 +316,7 @@ This sheet Defines the components of mixture materials.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u> experiment & inventory</u></span> sheet
+#### <u> experiment & inventory</u> sheet
 
 This sheet defines the experiment
 
@@ -411,7 +402,7 @@ This sheet defines the experiment
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>process</u></span> sheet
+#### <u>process</u> sheet
 
 Define the processes of each experiment.
 
@@ -567,7 +558,7 @@ Define the processes of each experiment.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+      value from *name column of experiment sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       your unique process name
@@ -693,7 +684,7 @@ Example:
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+      value from *name column of experiment sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       pick a unique process name
@@ -723,7 +714,7 @@ Example:
 
 <br>
 
-#### <span class="optional-excel-sheet-color">process equipment</span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### process equipment sheet
 
 Define the equipment used in a process.
 
@@ -799,7 +790,7 @@ Define the equipment used in a process.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value from <code>*name</code> column of <span class="required-excel-sheet-color">process</span> sheet
+       value from <code>*name</code> column of process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       <a href="https://criptapp.org/keys/equipment-key/" target="_blank">select equipment</a>
@@ -811,7 +802,7 @@ Define the equipment used in a process.
       your description of the condition
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value from <code>*name</code> column of <span class="optional-excel-sheet-color">citation</span> sheet
+      value from <code>*name</code> column of citation sheet
     </td>
   </tr>
 </table>
@@ -820,7 +811,7 @@ Define the equipment used in a process.
 
 <br>
 
-#### <span class="optional-excel-sheet-color"><u>prerequisite process</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### <u>prerequisite process</u> sheet
 
 Define the immediate prerequisites for each process.
 
@@ -862,10 +853,10 @@ Define the immediate prerequisites for each process.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name of <span class="required-excel-sheet-color">process</span> sheet
+      value from *name of process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value from *name of <span class="required-excel-sheet-color">process</span> sheet
+      value from *name of process sheet
       <br> <em>immediate prerequisite step</em>
     </td>
   </tr>
@@ -875,7 +866,7 @@ Define the immediate prerequisites for each process.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>process ingredient</u></span> sheet
+#### <u>process ingredient</u> sheet
 
 <br>
 
@@ -966,10 +957,10 @@ Define the ingredients for each process and their respective quantities.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet or computational process sheet
+       value comes from *name column of the process sheet or computational process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
+      value comes from *name column of the materials sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredient keywords</a>
@@ -990,7 +981,7 @@ Define the ingredients for each process and their respective quantities.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>process product</u></span> sheet
+#### <u>process product</u> sheet
 
 <br>
 
@@ -1036,10 +1027,10 @@ Define the material products of each process.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet
+       value comes from *name column of the process sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
+      value comes from *name column of the materials sheet
     </td>
   </tr>
 </table>
@@ -1048,7 +1039,7 @@ Define the material products of each process.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>data</u></span> sheet
+#### <u>data</u> sheet
 
 <br>
 
@@ -1139,7 +1130,7 @@ Define the data sets you will be associating with properties, etc.
   </tr>
   <tr>
     <td class="row-4">
-       value from <code>*name</code> column of <span class="required-excel-sheet-color">experiment</span> sheet
+       value from <code>*name</code> column of experiment sheet
     </td>
     <td class="row-4">
       Pick a unique name
@@ -1164,7 +1155,7 @@ Define the data sets you will be associating with properties, etc.
       regular text
     </td>
     <td class="row-4">
-      pick a process from <code>*name</code> column of <span class="required-excel-sheet-color">process sheet</span>
+      pick a process from <code>*name</code> column of process sheet
     </td>
   </tr>
 </table>
@@ -1181,7 +1172,7 @@ Multiple sources/File nodes can be added to a Data node by using the Id syntax d
 
 <br>
 
-#### <span class="optional-excel-sheet-color"><u>citation</u></span> sheet
+####<u>citation</u> sheet
 
 > This sheet can be used to reference any sources used in the experiments that you want to cite in CRIPT
 
@@ -1412,7 +1403,7 @@ Define references to be associated with properties, etc. as citations.
 
 ---
 
-#### <span class="required-excel-sheet-color"><u>computation</u></span> sheet
+#### <u>computation</u> sheet
 
 Define the computations of each experiment.
 
@@ -1501,7 +1492,7 @@ Define the computations of each experiment.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+      value from *name column of experiment sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       your unique computation name
@@ -1529,7 +1520,7 @@ Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure o
 
 <br> <br>
 
-#### <span class="optional-excel-sheet-color"><u>prerequisite computation</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+#### <u>prerequisite computation</u> sheet
 
 Define the immediate prerequisites for each computation.
 
@@ -1571,10 +1562,10 @@ Define the immediate prerequisites for each computation.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name of <span class="required-excel-sheet-color">computation</span> sheet
+      value from *name of computation sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
-      value from *name of <span class="required-excel-sheet-color">computation</span> sheet
+      value from *name of computation sheet
       <br> <em>immediate prerequisite step</em>
     </td>
   </tr>
@@ -1584,7 +1575,7 @@ Define the immediate prerequisites for each computation.
 
 <br>
 
-#### <span class="required-excel-sheet-color"><u>computational process</u></span> sheet
+#### <u>computational process</u> sheet
 
 Define the computational processes of each experiment.
 
@@ -1684,7 +1675,7 @@ Define the computational processes of each experiment.
   </tr>
   <tr>
     <td class="row-4 row-4-required-optional-label">
-      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+      value from *name column of experiment sheet
     </td>
     <td class="row-4 row-4-required-optional-label">
       your unique computation name
@@ -1715,7 +1706,7 @@ Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure o
 
 <br> <br>
 
-#### <span class="optional-excel-sheet-color"><u>software configuration</u></span> sheet
+#### <u>software configuration</u> sheet
 
 > This sheet can be used to define software configuration objects
 
@@ -1817,3 +1808,71 @@ Defining an algorithm requires specific formatting. An Algorithm must have a key
 </table>
 
 <br><br><br>
+
+#### <u>input & output data</u> sheet
+
+Define the input and output data for computation and computational process.
+
+| Row 2                                 | Row 1    | Required | Row 5 - ∞ expected value                                                    |
+| ------------------------------------- | -------- | -------- | --------------------------------------------------------------------------- |
+| \*computaion or computational process | relation | yes      | value from `*name` column of `computation` or `computational process` sheet |
+| input data                            | relation | yes      | value from `*name` column of `data` sheet                                   |
+| output data                           | relation | yes      | value from `*name` column of `data` sheet                                   |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *computation or computational process
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      input data
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Optional)</span>
+    </td>
+    <td class="row-2">
+      input data
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of computation or computational process sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of data sheet
+      <br> <em>input data</em>
+    </td>
+     <td class="row-4 row-4-required-optional-label">
+      value from *name of data sheet
+      <br> <em>input data</em>
+    </td>
+  </tr>
+</table>
+
+---
+
+<br>
