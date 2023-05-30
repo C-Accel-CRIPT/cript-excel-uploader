@@ -1424,8 +1424,8 @@ Define the computations of each experiment.
 | \*name                                                                                              | attribute | yes      | unique name                                                                                                  |
 | \*type                                                                                              | attribute | yes      | pick from list of <a href="https://criptapp.org/keys/computation-type/" target="_blank">Computation Type</a> |
 | software_configuration                                                                              | attribute | no       | pick from `*name` column of `software_configuration` sheet                                                   |
-| pick from list of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
 | notes                                                                                               | attribute | no       | regular text                                                                                                 |
+| pick from list of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> | condition | no       | record your values                                                                                           |
 
 <br>
 
@@ -1444,10 +1444,10 @@ Define the computations of each experiment.
       <u class="row-1">attribute</u> 
     </td>
     <td class="row-1">
-      <u class="row-1">condition</u> 
+      <u class="row-1">attribute</u> 
     </td>
     <td class="row-1">
-      <u class="row-1">attribute</u> 
+      <u class="row-1">condition</u> 
     </td>
 
   </tr>
@@ -1469,11 +1469,11 @@ Define the computations of each experiment.
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td> 
     <td class="row-2">
-      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      notes
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
     <td class="row-2">
-      notes
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
       <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
     </td>
 
@@ -1491,11 +1491,11 @@ Define the computations of each experiment.
     <th class="row-3">
       <div></div>
     </th>
-    <th class="row-3-in-table">
-      <div>units</div>
-    </th>
     <th class="row-3">
       <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
     </th>
 
   </tr>
@@ -1513,10 +1513,10 @@ Define the computations of each experiment.
       name of software_configuration
     </td>
     <td class="row-4 row-4-required-optional-label">
-      your values
+      your notes
     </td>
     <td class="row-4 row-4-required-optional-label">
-      your notes
+      your values
     </td>
 
   </tr>
@@ -1528,3 +1528,292 @@ Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure o
 </details>
 
 <br> <br>
+
+#### <span class="optional-excel-sheet-color"><u>prerequisite computation</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span>
+
+Define the immediate prerequisites for each computation.
+
+> e.g., Assuming `A -> B -> C`, the immediate prerequisite of `C` is `B` (not `A`).
+
+| Row 2          | Row 1    | Required | Row 5 - ∞ expected value                         |
+| -------------- | -------- | -------- | ------------------------------------------------ |
+| \*computaion   | relation | yes      | value from `*name` column of `computation` sheet |
+| \*prerequisite | relation | yes      | value from `*name` column of `computation` sheet |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *computation
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *prerequisite
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of <span class="required-excel-sheet-color">computation</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of <span class="required-excel-sheet-color">computation</span> sheet
+      <br> <em>immediate prerequisite step</em>
+    </td>
+  </tr>
+</table>
+
+---
+
+<br>
+
+#### <span class="required-excel-sheet-color"><u>computational process</u></span> sheet
+
+Define the computational processes of each experiment.
+
+> You can have as many <a href="https://criptapp.org/keys/computational-process-property-key/" target="_blank">property</a> and <a href="https://criptapp.org/keys/condition-key/" target="_blank">condition</a> columns as you need
+
+| Row 2                                                                                                                    | Row 1     | Required | Row 5 - ∞ expected value                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------ | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| \*experiment                                                                                                             | relation  | yes      | value from `*name`column of`experiment` sheet                                                                                    |
+| \*name                                                                                                                   | attribute | yes      | unique name                                                                                                                      |
+| \*type                                                                                                                   | attribute | yes      | pick from list of <a href="https://criptapp.org/keys/computational-process-type/" target="_blank">Computational Process Type</a> |
+| software_configuration                                                                                                   | attribute | no       | pick from `*name` column of `software_configuration` sheet                                                                       |
+| notes                                                                                                                    | attribute | no       | regular text                                                                                                                     |
+| pick from list of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>                      | condition | no       | record your values                                                                                                               |
+| pick from list of <a href="https://criptapp.org/keys/computational-process-property-key/" target="_blank">properties</a> | property  | no       | record your values                                                                                                               |
+
+<br>
+
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">property</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      software_configuration
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td> 
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/computational-process-property-key/" target="_blank">properties</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your unique computation name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/computational-process-type/" target="_blank">Computation Process Type</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      name of software_configuration
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your notes
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+
+  </tr>
+</table>
+
+<details>
+<summary>Notes on multiple software_configurations</summary>
+Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
+</details>
+
+<br> <br>
+
+#### <span class="optional-excel-sheet-color"><u>software configuration</u></span> sheet
+
+> This sheet can be used to define software configuration objects
+
+<details>
+<summary>Algorithm formatting</summary>
+Defining an algorithm requires specific formatting. An Algorithm must have a key and type. It also has parameters which are optional(multiple parameters can be defined with the id syntax). Parameters can have multiple inputs(also using the id syntax). An example is shown below:
+<img src="../docs_assets/algorithm_formatting.png" alt="algorithm formatting"> 
+</details>
+
+<br>
+
+| Row 2     | Row 1     | Required | Row 5 - ∞ expected value |
+| --------- | --------- | -------- | ------------------------ |
+| \*name    | attribute | yes      | unique name              |
+| \*version | attribute | yes      | text                     |
+| notes     | attribute | no       | text                     |
+| source    | attribute | no       | text                     |
+| algorithm | attribute | no       | text                     |
+
+<br>
+
+<table style="display: block; max-width: fit-content; margin: 0 auto; overflow-x: auto; white-space: nowrap;">
+  <tr>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *name
+      <br> <span style="font-size: 0.7rem; font-style: italic">(*Required)</span>
+    </td>
+    <td class="row-2">
+      *version
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      source
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      algorithm
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+      your name here
+    </td>
+    <td class="row-4">
+      your version here
+    </td>
+    <td class="row-4">
+      Notes Here
+    </td>
+    <td class="row-4">
+      Source here 
+    </td>
+    <td class="row-4">
+      Algorithm here
+    </td>
+
+  </tr>
+</table>
+
+<br><br><br>
