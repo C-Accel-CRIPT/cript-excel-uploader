@@ -1529,7 +1529,7 @@ Define the computations of each experiment.
 
 <details>
 <summary>Notes on multiple software_configurations</summary>
-Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
+Use the ID syntax described in <a href="../excel_rows" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
 </details>
 
 <br> <br>
@@ -1715,7 +1715,7 @@ Define the computational processes of each experiment.
 
 <details>
 <summary>Notes on multiple software_configurations</summary>
-Use the Id syntax described in <a href="excel_rows.md" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
+Use the ID syntax described in <a href="../excel_rows" target=_blank>Structure of Excel Sheets </a> to have multiple software_configurations in your Computation node
 </details>
 
 <br> <br>
