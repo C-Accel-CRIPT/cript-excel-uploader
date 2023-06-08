@@ -2,10 +2,10 @@
 # for PyInstaller to compile it into an executable for Linux
 import setuptools
 import atexit
-import os
 import sys
-from tkinter import *
 import traceback
+from pathlib import Path
+from tkinter import *
 from tkinter import filedialog
 
 import eel
@@ -21,8 +21,10 @@ class ExcelUploaderGUI:
         # creating an instance of ExcelUploader
         self.excel_uploader = ExcelUploader()
 
+        path_to_web_dir = Path(__file__).resolve().parent / "web"
+
         # initialize eel
-        eel.init("web")
+        eel.init(path_to_web_dir)
 
     def start_app(self):
         """
@@ -31,7 +33,9 @@ class ExcelUploaderGUI:
         """
 
         # cd into templates/base.html to get html path
-        html_path = os.path.join("templates", "base.html")
+        html_path = str(
+            Path(__file__).resolve().parent / "web" / "templates" / "base.html"
+        )
 
         eel.start(html_path, size=(800, 850), port=8001)
 
