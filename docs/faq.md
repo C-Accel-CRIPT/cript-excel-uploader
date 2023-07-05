@@ -28,3 +28,6 @@
         1. _inputting your data directly into [CRIPT](https://criptapp.org) via the user interface_
         2. _using the [CRIPT Python SDK](https://pypi.org/project/cript/) to programmatically upload your data to [CRIPT](https://criptapp.org)_
         3. _getting existing CRIPT Scripts and CRIPT Sheets from [criptscripts.org](https://criptscripts.org)_
+
+* **Where is the best place where I can contact the CRIPT Excel Uploader team for questions or support?**
+    * _We would love to hear from you! If you have any questions, need help, or just want to make suggestions for the CRIPT Excel Uploader, we would love to hear it! Please visit our [CRIPT Excel Uploader Repository GitHub Discussions](https://github.com/C-Accel-CRIPT/cript-excel-uploader/discussions) to easily send us questions. A GitHub account is required._
