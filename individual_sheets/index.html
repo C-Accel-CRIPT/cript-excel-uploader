@@ -1,0 +1,2326 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../excel_rows/">
+      
+      
+        <link rel="next" href="../excel_template/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.1.13">
+    
+    
+      
+        <title>Individual Excel Sheets - CRIPT Excel Uploader Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.85bb2934.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a6bdf11c.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#customizing-the-excel-sheets" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="CRIPT Excel Uploader Documentation" class="md-header__button md-logo" aria-label="CRIPT Excel Uploader Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CRIPT Excel Uploader Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Individual Excel Sheets
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+            
+              <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+            
+              <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+        </form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    C-Accel-CRIPT/cript-excel-uploader
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="CRIPT Excel Uploader Documentation" class="md-nav__button md-logo" aria-label="CRIPT Excel Uploader Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    CRIPT Excel Uploader Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/C-Accel-CRIPT/cript-excel-uploader" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    C-Accel-CRIPT/cript-excel-uploader
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../filling_out_first_screen/" class="md-nav__link">
+        Filling Out the First Screen
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../globus/" class="md-nav__link">
+        Globus Authentication
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../excel_rows/" class="md-nav__link">
+        Structure of Excel Sheets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Individual Excel Sheets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Individual Excel Sheets
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-general-structure-for-all-sheets" class="md-nav__link">
+    The general structure for all sheets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sheets" class="md-nav__link">
+    Sheets
+  </a>
+  
+    <nav class="md-nav" aria-label="Sheets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#material-sheet" class="md-nav__link">
+    material sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixture-component-sheet-optional" class="md-nav__link">
+    mixture component sheet (optional)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment-sheet" class="md-nav__link">
+     experiment sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-sheet" class="md-nav__link">
+    process sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-equipment-sheet-optional" class="md-nav__link">
+    process equipment sheet (optional)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prerequisite-process-sheet-optional" class="md-nav__link">
+    prerequisite process sheet (optional)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-ingredient-sheet" class="md-nav__link">
+    process ingredient sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-product-sheet" class="md-nav__link">
+    process product sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-sheet" class="md-nav__link">
+    data sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation-sheet" class="md-nav__link">
+    citation sheet
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../excel_template/" class="md-nav__link">
+        Excel Template
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../launch_gui_from_terminal/" class="md-nav__link">
+        Terminal Option
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../downloads/" class="md-nav__link">
+        Downloads
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-general-structure-for-all-sheets" class="md-nav__link">
+    The general structure for all sheets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sheets" class="md-nav__link">
+    Sheets
+  </a>
+  
+    <nav class="md-nav" aria-label="Sheets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#material-sheet" class="md-nav__link">
+    material sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixture-component-sheet-optional" class="md-nav__link">
+    mixture component sheet (optional)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment-sheet" class="md-nav__link">
+     experiment sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-sheet" class="md-nav__link">
+    process sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-equipment-sheet-optional" class="md-nav__link">
+    process equipment sheet (optional)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prerequisite-process-sheet-optional" class="md-nav__link">
+    prerequisite process sheet (optional)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-ingredient-sheet" class="md-nav__link">
+    process ingredient sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-product-sheet" class="md-nav__link">
+    process product sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-sheet" class="md-nav__link">
+    data sheet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation-sheet" class="md-nav__link">
+    citation sheet
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="customizing-the-excel-sheets">Customizing the <span style="color: var(--excel-light-color)">Excel</span> Sheets<a class="headerlink" href="#customizing-the-excel-sheets" title="Permanent link">&para;</a></h1>
+<p><img src="../docs_assets/screenshot_of_excel_sheets.png"
+alt="screenshot of the Excel sheets to show required and optional sheets"></p>
+<ul>
+<li>
+<p>Required sheets are colored
+  <span class="required-excel-sheet-color"> Orange </span></p>
+</li>
+<li>
+<p>Optional sheets are colored
+  <span class="optional-excel-sheet-color"> Grey </span></p>
+</li>
+</ul>
+<p><br></p>
+<blockquote>
+<p>Any optional column not needed can be left blank or deleted</p>
+<p><strong>Sheets CANNOT be renamed</strong>, but <strong>sheets CAN be removed</strong></p>
+</blockquote>
+<p><br></p>
+<h2 id="the-general-structure-for-all-sheets">The general structure for all sheets<a class="headerlink" href="#the-general-structure-for-all-sheets" title="Permanent link">&para;</a></h2>
+<blockquote>
+    <table>
+      <tr>
+        <td class="row-1">
+            <a href="excel_rows/#row-1-options-list" target="_blank">
+              Category
+            </a>
+        </td>
+      </tr>
+      <tr>
+        <td class="row-2">
+            <a href="individual_sheets/#sheets" target="_blank">
+              Column Name
+            </a>
+        </td>
+      </tr>
+      <tr class="row-3">
+        <td class="row-3">
+            <a href="https://github.com/hgrecco/pint/blob/master/pint/default_en.txt" target="_blank">
+              units
+            </a>
+        </td>
+      </tr>
+      <tr>
+        <th class="instruction-row" style="font-style: italic; font-weight: 400">
+          Instructions
+        </th>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; color: black">
+          Your Values
+        </td>
+      </tr>
+    </table>
+</blockquote>
+
+<p><br></p>
+<hr />
+<h2 id="sheets">Sheets<a class="headerlink" href="#sheets" title="Permanent link">&para;</a></h2>
+<h4 id="material-sheet"><span class="required-excel-sheet-color"><u>material</u></span> sheet<a class="headerlink" href="#material-sheet" title="Permanent link">&para;</a></h4>
+<p>This sheet is for both materials used at the beginning of the experiment (ingredients),
+and the material that occurs as a result of the experiment (process product)</p>
+<p><br></p>
+<p>Define all materials that will be referenced throughout the document.</p>
+<blockquote>
+<p>You can have as many <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material
+identifier</a>
+and <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material property</a> columns as you needed</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*name</td>
+<td>attribute</td>
+<td>yes</td>
+<td>unique name</td>
+</tr>
+<tr>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">material identifiers</a></td>
+<td>identifier</td>
+<td>no</td>
+<td>your values</td>
+</tr>
+<tr>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/material-property-key/" target="_blank">material properties</a></td>
+<td>property</td>
+<td>no</td>
+<td>your values</td>
+</tr>
+<tr>
+<td>use_existing</td>
+<td>property</td>
+<td>no</td>
+<td>TRUE, FALSE, or blank</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>attribute</td>
+<td>no</td>
+<td>regular text</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>options for each row are clickable links in the chart below:</p>
+<blockquote>
+  each material you are using must have a unique name, no duplicates
+</blockquote>
+
+<blockquote>
+<p>You can have as many <code>Identifiers</code>, <code>property</code>, <code>property:condition</code>, <code>property:method</code>, <code>property:type</code> as you need</p>
+</blockquote>
+<table>
+  <tr>
+    <td class="row-1">
+      attribute
+    </td>
+    <td class="row-1">
+      identifier
+    </td>
+    <td class="row-1">
+      identifier
+    </td>
+    <td class="row-1">
+      property
+    </td>
+    <td class="row-1">
+      property:condition
+    </td>
+    <td class="row-1">
+      property:method
+    </td>
+    <td class="row-1">
+      property:type
+    </td>
+    <td class="row-1">
+      property
+    </td>
+    <td class="row-1">
+      attribute
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *name
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">Material Identifiers</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-identifier-key/" target="_blank">Material Identifiers</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank">Material Property</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank" class="nesting-first">Material Property</a>:
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank" class="nesting-second">Condition</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank" class="nesting-first">Material Property</a>:
+      <a href="https://criptapp.org/keys/property-method/" target="_blank" class="nesting-second">Method</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/material-property-key/" target="_blank" class="nesting-first">Material Property</a>:
+      <a href="https://criptapp.org/keys/citation-type/" target="_blank" class="nesting-second">Citation Type</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      use_existing
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3-in-table">
+        units 
+        <br>
+        <em style="font-size: 0.5rem">(if needed)</em>
+    </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3-in-table">
+       <em>blank</em>
+    </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+    <th class="row-3-in-table">
+        <div class="empty-row-3-placeholders"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+      your unique material name
+    </td>
+    <td class="row-4">
+      <em>Your values</em>
+    </td>
+    <td class="row-4">
+      <em>Your values</em>
+    </td>
+    <td class="row-4">
+      <em>Your values</em>
+    </td>
+    <td class="row-4">
+      <em>Your values</em>
+    </td>
+    <td class="row-4">
+      <em>Your method for calculating the property</em>
+    </td>
+    <td class="row-4">
+      <em>Citation for property</em>
+    </td>
+    <td class="row-4">
+      You can put either: 
+      <em style="font-weight: bold">TRUE</em>, <em style="font-weight: bold">FALSE</em>, or <em>you can leave blank for False</em>
+    </td>
+    <td class="row-4">
+      <em>Your notes</em>
+    </td>
+  </tr>
+</table>
+
+<details class="note">
+<summary>use_existing</summary>
+<p><code>use_existing</code> column field is best for when you already have a material within your project and 
+you just want to name it and use it within your Excel file instead of creating a new material on every upload </p>
+</details>
+<p><br></p>
+<hr />
+<p><br></p>
+<h4 id="mixture-component-sheet-optional"><span class="optional-excel-sheet-color"><u>mixture component</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span><a class="headerlink" href="#mixture-component-sheet-optional" title="Permanent link">&para;</a></h4>
+<p>This sheet Defines the components of mixture materials.</p>
+<!-- 
+<br>
+
+<blockquote>
+  Before recording any mixtures, the components and materials must be first defined in 
+  <span class="required-excel-sheet-color">materials</span> sheet.
+</blockquote>
+
+
+<blockquote>
+  Row 1 is always <code>relation</code>, because the ingredients for a mixture come from 
+  the <span class="required-excel-sheet-color">material</span> sheet
+</blockquote>
+
+<br>
+-->
+
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*mixture</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>material</code> sheet</td>
+</tr>
+<tr>
+<td>*material</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>material</code> sheet</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *mixture
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *material
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+      value comes from *name column of <span class="required-excel-sheet-color">mixture</span> sheet
+    </td>
+    <td class="row-4">
+      value from *name column of <span class="required-excel-sheet-color">materials</span> sheet
+    </td>
+  </tr>
+</table>
+
+<hr />
+<p><br></p>
+<h4 id="experiment-sheet"><span class="required-excel-sheet-color"><u> experiment</u></span> sheet<a class="headerlink" href="#experiment-sheet" title="Permanent link">&para;</a></h4>
+<p>This sheet defines the experiment</p>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*name</td>
+<td>attribute</td>
+<td>yes</td>
+<td>unique name</td>
+</tr>
+<tr>
+<td>funding</td>
+<td>attribute</td>
+<td>no</td>
+<td>list of your funders (e.g, <code>funder1; funder2; funder3</code>)</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>attribute</td>
+<td>no</td>
+<td>regular text</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<blockquote>
+<p>If there are multiple sources for funding please list them and separate each one with a <code>";"</code>
+(e.g, <code>Grants; NSF; IRIS</code>)</p>
+</blockquote>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *name
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      funding 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      unique experiment name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      funder 1; funder 2; funder 3; funder 4;
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      These are my notes
+    </td>
+
+  </tr>
+</table>
+
+<hr />
+<p><br></p>
+<h4 id="process-sheet"><span class="required-excel-sheet-color"><u>process</u></span> sheet<a class="headerlink" href="#process-sheet" title="Permanent link">&para;</a></h4>
+<p>Define the processes of each experiment.</p>
+<blockquote>
+<p>You can have as many <a href="https://criptapp.org/keys/process-property-key/" target="_blank">process property</a>
+and <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a> columns as you need</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*experiment</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code>column of<code>experiment</code> sheet</td>
+</tr>
+<tr>
+<td>*name</td>
+<td>attribute</td>
+<td>yes</td>
+<td>unique name</td>
+</tr>
+<tr>
+<td>*type</td>
+<td>attribute</td>
+<td>yes</td>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/process-type/" target="_blank">Process Type</a></td>
+</tr>
+<tr>
+<td>keywords</td>
+<td>attribute</td>
+<td>no</td>
+<td>list from <code>Name</code> column of <a href="https://criptapp.org/keys/process-keyword/" target="_blank">Process keywords</a> <code>(e.g, anionic; annealing_sol; annealing_thermo)</code></td>
+</tr>
+<tr>
+<td>description</td>
+<td>attribute</td>
+<td>no</td>
+<td>regular text</td>
+</tr>
+<tr>
+<td>equipment</td>
+<td>attribute</td>
+<td>no</td>
+<td>list of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a> <code>(e.g, equipment1; equipment2; equipment3)</code></td>
+</tr>
+<tr>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/process-property-key/" target="_blank">process property</a></td>
+<td>property</td>
+<td>no</td>
+<td>record your values</td>
+</tr>
+<tr>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a></td>
+<td>condition</td>
+<td>no</td>
+<td>record your values</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>attribute</td>
+<td>no</td>
+<td>regular text</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">property</u> 
+    </td>
+      <td class="row-1">
+      <u class="row-1">property:method</u> 
+    </td>
+    </td>
+      <td class="row-1">
+      <u class="row-1">property:condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      keywords
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      description
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      equipment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank">process property</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>    
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank" class="nesting-first">property</a>:
+      <a href="https://criptapp.org/keys/property-method/" target="_blank" class="nesting-second">method</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/process-property-key/" target="_blank" class="nesting-first">property</a>:
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank" class="nesting-second">condition</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">conditions</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+    <th class="row-3-in-table">
+      <div>units</div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your unique process name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/process-type/" target="_blank">Process Type</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/process-keyword/" target="_blank">Process keywords</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your description
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipment used</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your values
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your method for calculating this property
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      condition for the process property
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      100.0
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      55.26
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your notes
+    </td>
+
+  </tr>
+</table>
+
+<p><br> <br></p>
+<p>Example:</p>
+<blockquote>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      keywords
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      description
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>    
+    <td class="row-2">
+      temperature
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      time_duration
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>degC</div>
+    </th>
+    <th class="row-3-in-table">
+      <div>min</div>
+    </th>
+
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name column of <span class="required-excel-sheet-color">experiment</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      pick a unique process name
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      affinity_pure
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      anionic; annealing_sol; annealing_thermo
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      description of my process
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      100.0
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      55.26
+    </td>
+
+  </tr>
+</table>
+
+</blockquote>
+
+<hr />
+<p><br></p>
+<h4 id="process-equipment-sheet-optional"><span class="optional-excel-sheet-color">process equipment</span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span><a class="headerlink" href="#process-equipment-sheet-optional" title="Permanent link">&para;</a></h4>
+<p>Define the equipment used in a process.</p>
+<blockquote>
+<p>You can have as many <a href="https://criptapp.org/keys/condition-key/" target="_blank">Condition</a> columns as you
+need</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*process</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>process</code> sheet</td>
+</tr>
+<tr>
+<td>*key</td>
+<td>attribute</td>
+<td>yes</td>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/equipment-key/" target="_blank">equipments</a></td>
+</tr>
+<tr>
+<td>description</td>
+<td>attribute</td>
+<td>no</td>
+<td>regular text</td>
+</tr>
+<tr>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/condition-key/" target="_blank">Conditions</a></td>
+<td>condition</td>
+<td>no</td>
+<td>record your values</td>
+</tr>
+<tr>
+<td>citation</td>
+<td>relation</td>
+<td>no</td>
+<td>value from <code>*name</code> column of <code>citation</code> sheet</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">condition</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *process
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *key
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>    
+    <td class="row-2">
+      description
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/condition-key/" target="_blank">condition</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+        citation
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      units
+    </th>
+    <th class="row-3-in-table">
+      <div></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+       value from <code>*name</code> column of <span class="required-excel-sheet-color">process</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/equipment-key/" target="_blank">select equipment</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your description of the equipment
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      your description of the condition
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value from <code>*name</code> column of <span class="optional-excel-sheet-color">citation</span> sheet
+    </td>
+  </tr>
+</table>
+
+<hr />
+<p><br></p>
+<h4 id="prerequisite-process-sheet-optional"><span class="optional-excel-sheet-color"><u>prerequisite process</u></span> sheet <span style="color: grey; font-size: 0.8rem;">(optional)</span><a class="headerlink" href="#prerequisite-process-sheet-optional" title="Permanent link">&para;</a></h4>
+<p>Define the immediate prerequisites for each process.</p>
+<blockquote>
+<p>e.g., Assuming <code>A -&gt; B -&gt; C</code>, the immediate prerequisite of <code>C</code> is <code>B</code> (not <code>A</code>).</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*process</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>process</code> sheet</td>
+</tr>
+<tr>
+<td>*prerequisite</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>process</code> sheet</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *process
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *prerequisite
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of <span class="required-excel-sheet-color">process</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value from *name of <span class="required-excel-sheet-color">process</span> sheet
+      <br> <em>immediate prerequisite step</em>
+    </td>
+  </tr>
+</table>
+
+<hr />
+<p><br></p>
+<h4 id="process-ingredient-sheet"><span class="required-excel-sheet-color"><u>process ingredient</u></span> sheet<a class="headerlink" href="#process-ingredient-sheet" title="Permanent link">&para;</a></h4>
+<p><br></p>
+<p>Define the ingredients for each process and their respective quantities.</p>
+<blockquote>
+<p>you can have as many <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a> columns as needed for
+your different materials</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*process</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>process</code> sheet</td>
+</tr>
+<tr>
+<td>*material</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code> column of <code>material</code> sheet</td>
+</tr>
+<tr>
+<td>*keyword</td>
+<td>attribute</td>
+<td>yes</td>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredients</a></td>
+</tr>
+<tr>
+<td>pick from <code>Name</code> column of <a href="https://criptapp.org/keys/quantity-key/" target="_blank">quantity</a></td>
+<td>quantity</td>
+<td>yes</td>
+<td>record your quantity here</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">quantity</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">quantity</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">quantity</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *process
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *material 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>    
+    <td class="row-2">
+      *keyword
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/quantity-key/" 
+      target="_blank">quantity</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      <a href="https://criptapp.org/keys/quantity-key/"
+        target="_blank">quantity</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+      <td class="row-2">
+      <a href="https://criptapp.org/keys/quantity-key/"
+        target="_blank">quantity</a>
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3">
+      <div></div>
+    </th>
+    <th class="row-3-in-table">
+      <div>ml</div>
+    </th>
+    <th class="row-3-in-table">
+      <div>g</div>
+    </th>
+    <th class="row-3-in-table">
+      <div>mole</div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      <a href="https://criptapp.org/keys/ingredient-keyword/" target="_blank">ingredient keywords</a>
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      5
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      0.455
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      10
+    </td>
+  </tr>
+</table>
+
+<hr />
+<p><br></p>
+<h4 id="process-product-sheet"><span class="required-excel-sheet-color"><u>process product</u></span> sheet<a class="headerlink" href="#process-product-sheet" title="Permanent link">&para;</a></h4>
+<p><br></p>
+<blockquote>
+<p>This sheet describes the resulting product after completing a process</p>
+</blockquote>
+<p><br></p>
+<p>Define the material products of each process.</p>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*process</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code>column of<code>process</code>sheet</td>
+</tr>
+<tr>
+<td>*material</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from<code>*name</code>column of<code>material</code> sheet</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *process
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *material 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4 row-4-required-optional-label">
+       value comes from *name column of the <span class="required-excel-sheet-color">process</span> sheet
+    </td>
+    <td class="row-4 row-4-required-optional-label">
+      value comes from *name column of the <span class="required-excel-sheet-color">materials</span> sheet
+    </td>
+  </tr>
+</table>
+
+<hr />
+<p><br></p>
+<h4 id="data-sheet"><span class="required-excel-sheet-color"><u>data</u></span> sheet<a class="headerlink" href="#data-sheet" title="Permanent link">&para;</a></h4>
+<p><br></p>
+<blockquote>
+<p>This sheet defines the data files you want to upload to CRIPT, such as a csv file from a robot, an image, or any other
+type of file</p>
+</blockquote>
+<p><br></p>
+<p>Define the data sets you will be associating with properties, etc.</p>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*experiment</td>
+<td>relation</td>
+<td>yes</td>
+<td>value from <code>*name</code>column of<code>experiment</code>sheet</td>
+</tr>
+<tr>
+<td>*name</td>
+<td>attribute</td>
+<td>yes</td>
+<td>unique name</td>
+</tr>
+<tr>
+<td>*type</td>
+<td>attribute</td>
+<td>yes</td>
+<td>pick from <code>*name</code> column of <a href="https://criptapp.org/keys/data-type/" target="_blank">data type</a></td>
+</tr>
+<tr>
+<td>*source</td>
+<td>attribute</td>
+<td>yes</td>
+<td>can either be a path to a local file on your computer or a url to a website</td>
+</tr>
+<tr>
+<td>sample_preparation</td>
+<td>relation</td>
+<td>no</td>
+<td>pick from <code>*name</code> column of <code>process</code> sheet</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+  <tr>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>    
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">relation</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *experiment
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *name 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *type 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(Required)</span>
+    </td>
+    <td class="row-2">
+      *source 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      sample_preparation
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+       value from <code>*name</code> column of <span class="required-excel-sheet-color">experiment</span> sheet
+    </td>
+    <td class="row-4">
+      Pick a unique name
+    </td>
+    <td class="row-4">
+      My type
+    </td>
+    <td class="row-4">
+        <b>Can be either local:</b>
+        <br>
+        <em>
+            C:\Users\myUsername\Desktop\MIT\cript-excel-uploader\example_template_v0-3-1.xlsx
+        </em>
+        <br> <br>
+        <b>Or on the web: </b>
+        <br>
+        <em>
+            https://google.com
+        </em>
+    </td>
+    <td class="row-4">
+      pick a process from <code>*name</code> column of <span class="required-excel-sheet-color">process sheet</span>
+    </td>
+  </tr>
+</table>
+
+<p><br></p>
+<hr />
+<p><br></p>
+<h4 id="citation-sheet"><span class="required-excel-sheet-color"><u>citation</u></span> sheet<a class="headerlink" href="#citation-sheet" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>This sheet can be used to reference any sources used in the experiments that you want to cite in CRIPT</p>
+</blockquote>
+<blockquote>
+  <code>Row 1:</code> can only be an <em><q>attribute</q></em> <br>
+  <code>Row 2:</code> MUST have a title column, but ALL other columns are optional <br>
+  <code>Row 3:</code> This row is left blank
+</blockquote>
+
+<p><br></p>
+<p>Define references to be associated with properties, etc. as citations.</p>
+<table>
+<thead>
+<tr>
+<th>Row 2</th>
+<th>Row 1</th>
+<th>Required</th>
+<th>Row 5 - ∞ expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*title</td>
+<td>attribute</td>
+<td>yes</td>
+<td>unique title</td>
+</tr>
+<tr>
+<td>doi</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>authors</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>journal</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>publisher</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>year</td>
+<td>attribute</td>
+<td>no</td>
+<td>number</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>issue</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>pages</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>issn</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>arxiv_id</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>pmid</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>website</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>attribute</td>
+<td>no</td>
+<td>text</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table style="display: block; max-width: fit-content; margin: 0 auto; overflow-x: auto; white-space: nowrap;">
+  <tr>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+    <td class="row-1">
+      <u class="row-1">attribute</u> 
+    </td>
+  </tr>
+  <tr>
+    <td class="row-2">
+      *title
+      <br> <span style="font-size: 0.7rem; font-style: italic">(*Required)</span>
+    </td>
+    <td class="row-2">
+      doi 
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      authors
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      journal
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      publisher
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      year
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      volume
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      issue
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      pages
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      issn
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      arxiv_id
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      pmid
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      website
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+    <td class="row-2">
+      notes
+      <br> <span style="font-size: 0.7rem; font-style: italic">(optional)</span>
+    </td>
+  </tr>
+  <tr>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+    <th class="row-3">
+      <div style="margin-bottom: 1rem;"></div>
+    </th>
+  </tr>
+  <tr>
+    <td class="row-4">
+      Each title must be unique
+    </td>
+    <td class="row-4">
+      your doi here
+    </td>
+    <td class="row-4">
+      Author Here
+    </td>
+    <td class="row-4">
+      Journal name
+    </td>
+    <td class="row-4">
+      publisher name
+    </td>
+    <td class="row-4">
+      year published
+    </td>
+    <td class="row-4">
+      volume number
+    </td>
+    <td class="row-4">
+      issue
+    </td>
+    <td class="row-4">
+      pages
+    </td>
+    <td class="row-4">
+      issn
+    </td>
+    <td class="row-4">
+      arxiv_id
+    </td>
+    <td class="row-4">
+      pmid
+    </td>
+    <td class="row-4">
+      https://www.example.com
+    </td>
+    <td class="row-4">
+      These are my notes
+    </td>
+
+  </tr>
+</table>
+
+<p><br><br><br></p>
+<hr />
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.b4d07000.min.js"></script>
+      
+    
+  </body>
+</html>
