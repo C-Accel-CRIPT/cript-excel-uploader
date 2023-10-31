@@ -3,7 +3,14 @@
 !!! danger "CRIPT Excel Uploader: Currently Unsupported"
     Due to recent technical advancements to our platform, we have suspended support for the Excel Uploader, 
     including its code, template, and documentation. We may reinstate support for it in the future, but at present, 
-    it remains unsupported. We appreciate your understanding and will keep you informed of any changes to its status.
+    it remains unsupported.
+
+    We understand that this may be inconvenient for some users, and we apologize for any disruption this may cause. We recommend using the following alternative solutions to upload data to CRIPT:
+
+    * [The CRIPT Python SDK](https://c-accel-cript.github.io/Python-SDK/)
+    * [The CRIPT online editor](https://app.criptapp.org/)
+
+    We appreciate your understanding and cooperation. We will keep you informed of any changes to the status of the Excel Uploader.
 
 ## Usage
 
