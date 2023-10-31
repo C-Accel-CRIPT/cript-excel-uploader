@@ -1,5 +1,10 @@
 # CRIPT Excel Uploader
 
+!!! danger "CRIPT Excel Uploader: Currently Unsupported"
+    Due to recent technical advancements to our platform, we have suspended support for the Excel Uploader, 
+    including its code, template, and documentation. We may reinstate support for it in the future, but at present, 
+    it remains unsupported. We appreciate your understanding and will keep you informed of any changes to its status.
+
 ## Usage
 
 ### Follow these steps
